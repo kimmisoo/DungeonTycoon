@@ -1,0 +1,208 @@
+fileFormatVersion: 2
+guid: 79765139bf5a62541b0bc158291c8ef8
+timeCreated: 1455696352
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: spriteSheet_0
+    21300002: spriteSheet_1
+    21300004: spriteSheet_2
+    21300006: spriteSheet_3
+    21300008: spriteSheet_4
+    21300010: spriteSheet_5
+    21300012: spriteSheet_6
+    21300014: spriteSheet_7
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: spriteSheet_0
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 14
+        width: 70
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 15, y: 61}
+        - {x: -17, y: 61}
+        - {x: -23, y: 60}
+        - {x: -32, y: 45}
+        - {x: -35, y: 31}
+        - {x: -35, y: -55}
+        - {x: -29, y: -61}
+        - {x: 21, y: -61}
+        - {x: 35, y: -47}
+        - {x: 35, y: 27}
+        - {x: 29, y: 49}
+    - name: spriteSheet_1
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 9
+        width: 63
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -10.5, y: 63.5}
+        - {x: -31.5, y: 50.5}
+        - {x: -31.5, y: -63.5}
+        - {x: 20.5, y: -63.5}
+        - {x: 31.5, y: -51.5}
+        - {x: 31.5, y: 48.5}
+        - {x: 24.5, y: 63.5}
+    - name: spriteSheet_2
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 9
+        width: 63
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -21.5, y: 63.5}
+        - {x: -31.5, y: 57.5}
+        - {x: -31.5, y: -58.5}
+        - {x: -20.5, y: -63.5}
+        - {x: 20.5, y: -63.5}
+        - {x: 31.5, y: -39.5}
+        - {x: 31.5, y: 63.5}
+    - name: spriteSheet_3
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 10
+        width: 60
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -30, y: 63}
+        - {x: -30, y: -48}
+        - {x: -28, y: -63}
+        - {x: 30, y: -63}
+        - {x: 30, y: 63}
+    - name: spriteSheet_4
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 15
+        width: 72
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -19, y: 61}
+        - {x: -30, y: 58}
+        - {x: -36, y: 27}
+        - {x: -36, y: -46}
+        - {x: -21, y: -61}
+        - {x: 36, y: -61}
+        - {x: 36, y: 57}
+        - {x: 23, y: 61}
+    - name: spriteSheet_5
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 10
+        width: 60
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -30, y: 63}
+        - {x: -30, y: -63}
+        - {x: 20, y: -63}
+        - {x: 30, y: -38}
+        - {x: 30, y: 51}
+        - {x: 23, y: 63}
+    - name: spriteSheet_6
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 9
+        width: 63
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -31.5, y: 63.5}
+        - {x: -31.5, y: -62.5}
+        - {x: -29.5, y: -63.5}
+        - {x: 31.5, y: -63.5}
+        - {x: 31.5, y: 63.5}
+    - name: spriteSheet_7
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 9
+        width: 62
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -31, y: 63.5}
+        - {x: -31, y: -56.5}
+        - {x: -19, y: -63.5}
+        - {x: 15, y: -63.5}
+        - {x: 31, y: -58.5}
+        - {x: 31, y: 63.5}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

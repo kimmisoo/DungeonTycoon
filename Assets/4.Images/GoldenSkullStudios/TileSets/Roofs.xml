@@ -1,0 +1,15 @@
+<TextureAtlas imagePath="Roofs.png">
+	<SubTexture name="ISO_Overlay_Roof_Hay_01.png" x="296" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_02.png" x="444" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_03.png" x="444" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_04.png" x="444" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_05.png" x="296" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_06.png" x="296" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_07.png" x="592" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_08.png" x="148" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_09.png" x="148" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_10.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_11.png" x="0" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_12.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Overlay_Roof_Hay_13.png" x="0" y="0" width="148" height="164"/>
+</TextureAtlas>

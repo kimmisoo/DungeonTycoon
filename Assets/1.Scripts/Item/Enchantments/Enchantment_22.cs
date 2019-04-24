@@ -1,0 +1,10 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Enchantment_22 : Enchantment {
+
+	//상흔
+	//받은피해 100당(방어적용 x) 공격속도 +0.05% . 최대 20%
+
+}

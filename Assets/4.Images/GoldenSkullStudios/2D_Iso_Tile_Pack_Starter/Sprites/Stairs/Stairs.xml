@@ -1,0 +1,14 @@
+<TextureAtlas imagePath="Stairs.png">
+	<SubTexture name="ISO_Prop_Stair_Stone_01.png" x="148" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_02.png" x="444" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_03.png" x="444" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_04.png" x="296" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_05.png" x="296" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_06.png" x="296" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_07.png" x="444" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_08.png" x="148" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_09.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_10.png" x="0" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_11.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Prop_Stair_Stone_12.png" x="0" y="0" width="148" height="164"/>
+</TextureAtlas>

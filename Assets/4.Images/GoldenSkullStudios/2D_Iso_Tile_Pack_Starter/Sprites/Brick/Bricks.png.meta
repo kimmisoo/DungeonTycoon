@@ -1,0 +1,372 @@
+fileFormatVersion: 2
+guid: 9d4466bc079ac4c4bb5a205fe3a40db0
+timeCreated: 1460285694
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Bricks_0
+    21300002: Bricks_1
+    21300004: Bricks_2
+    21300006: Bricks_3
+    21300008: Bricks_4
+    21300010: Bricks_5
+    21300012: Bricks_6
+    21300014: Bricks_7
+    21300016: Bricks_8
+    21300018: Bricks_9
+    21300020: Bricks_10
+    21300022: Bricks_11
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Bricks_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 348
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -43, y: 82}
+        - {x: -70, y: 63}
+        - {x: -70, y: -60}
+        - {x: -69, y: -66}
+        - {x: -36, y: -82}
+        - {x: 21, y: -82}
+        - {x: 71, y: -65}
+        - {x: 71, y: 76}
+        - {x: 33, y: 82}
+    - name: Bricks_1
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 348
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -38, y: 82}
+        - {x: -67, y: 59}
+        - {x: -67, y: -47}
+        - {x: -44, y: -79}
+        - {x: 39, y: -79}
+        - {x: 68, y: -53}
+        - {x: 68, y: 63}
+        - {x: 47, y: 82}
+      - - {x: -51, y: 69}
+        - {x: -50, y: 66}
+        - {x: -47, y: 66}
+        - {x: -45, y: 68}
+        - {x: -46, y: 71}
+        - {x: -49, y: 71}
+    - name: Bricks_2
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 348
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 23, y: 82}
+        - {x: -15, y: 82}
+        - {x: -66, y: 61}
+        - {x: -67, y: 50}
+        - {x: -67, y: -54}
+        - {x: -38, y: -80}
+        - {x: 35, y: -80}
+        - {x: 67, y: -52}
+        - {x: 68, y: -45}
+        - {x: 68, y: 55}
+      - - {x: -51, y: 68}
+        - {x: -50, y: 65}
+        - {x: -47, y: 65}
+        - {x: -45, y: 67}
+        - {x: -46, y: 70}
+        - {x: -49, y: 70}
+    - name: Bricks_3
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 348
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -22, y: 82}
+        - {x: -67, y: 60}
+        - {x: -67, y: -49}
+        - {x: -5, y: -82}
+        - {x: 4, y: -82}
+        - {x: 69, y: -51}
+        - {x: 69, y: 57}
+        - {x: 31, y: 82}
+      - - {x: -51, y: 68}
+        - {x: -50, y: 65}
+        - {x: -47, y: 65}
+        - {x: -45, y: 67}
+        - {x: -46, y: 70}
+        - {x: -49, y: 70}
+    - name: Bricks_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 184
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -38, y: 82}
+        - {x: -67, y: 59}
+        - {x: -67, y: -47}
+        - {x: -44, y: -79}
+        - {x: 39, y: -79}
+        - {x: 68, y: -53}
+        - {x: 68, y: 63}
+        - {x: 47, y: 82}
+      - - {x: -51, y: 69}
+        - {x: -50, y: 66}
+        - {x: -47, y: 66}
+        - {x: -45, y: 68}
+        - {x: -46, y: 71}
+        - {x: -49, y: 71}
+    - name: Bricks_5
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 184
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 23, y: 82}
+        - {x: -15, y: 82}
+        - {x: -66, y: 61}
+        - {x: -67, y: 50}
+        - {x: -67, y: -54}
+        - {x: -38, y: -80}
+        - {x: 35, y: -80}
+        - {x: 67, y: -52}
+        - {x: 68, y: -45}
+        - {x: 68, y: 55}
+      - - {x: -51, y: 68}
+        - {x: -50, y: 65}
+        - {x: -47, y: 65}
+        - {x: -45, y: 67}
+        - {x: -46, y: 70}
+        - {x: -49, y: 70}
+    - name: Bricks_6
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 184
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 23, y: 82}
+        - {x: -15, y: 82}
+        - {x: -66, y: 61}
+        - {x: -67, y: 50}
+        - {x: -67, y: -54}
+        - {x: -38, y: -80}
+        - {x: 35, y: -80}
+        - {x: 67, y: -52}
+        - {x: 68, y: -45}
+        - {x: 68, y: 55}
+      - - {x: -51, y: 68}
+        - {x: -50, y: 65}
+        - {x: -47, y: 65}
+        - {x: -45, y: 67}
+        - {x: -46, y: 70}
+        - {x: -49, y: 70}
+    - name: Bricks_7
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 184
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -22, y: 82}
+        - {x: -67, y: 60}
+        - {x: -67, y: -49}
+        - {x: -5, y: -82}
+        - {x: 4, y: -82}
+        - {x: 69, y: -51}
+        - {x: 69, y: 57}
+        - {x: 31, y: 82}
+      - - {x: -51, y: 68}
+        - {x: -50, y: 65}
+        - {x: -47, y: 65}
+        - {x: -45, y: 67}
+        - {x: -46, y: 70}
+        - {x: -49, y: 70}
+    - name: Bricks_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 20
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -38, y: 82}
+        - {x: -67, y: 59}
+        - {x: -67, y: -47}
+        - {x: -44, y: -79}
+        - {x: 39, y: -79}
+        - {x: 68, y: -53}
+        - {x: 68, y: 63}
+        - {x: 47, y: 82}
+      - - {x: -51, y: 69}
+        - {x: -50, y: 66}
+        - {x: -47, y: 66}
+        - {x: -45, y: 68}
+        - {x: -46, y: 71}
+        - {x: -49, y: 71}
+    - name: Bricks_9
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 20
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -22, y: 82}
+        - {x: -67, y: 60}
+        - {x: -67, y: -49}
+        - {x: -5, y: -82}
+        - {x: 4, y: -82}
+        - {x: 69, y: -51}
+        - {x: 69, y: 57}
+        - {x: 31, y: 82}
+      - - {x: -51, y: 68}
+        - {x: -50, y: 65}
+        - {x: -47, y: 65}
+        - {x: -45, y: 67}
+        - {x: -46, y: 70}
+        - {x: -49, y: 70}
+    - name: Bricks_10
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 20
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -16, y: 82}
+        - {x: -67, y: 64}
+        - {x: -67, y: -51}
+        - {x: 0, y: -81}
+        - {x: 9, y: -81}
+        - {x: 69, y: -49}
+        - {x: 69, y: 55}
+        - {x: 22, y: 82}
+      - - {x: -51, y: 69}
+        - {x: -50, y: 66}
+        - {x: -47, y: 66}
+        - {x: -45, y: 68}
+        - {x: -46, y: 71}
+        - {x: -49, y: 71}
+    - name: Bricks_11
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 20
+        width: 148
+        height: 164
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 23, y: 82}
+        - {x: -15, y: 82}
+        - {x: -66, y: 61}
+        - {x: -67, y: 50}
+        - {x: -67, y: -54}
+        - {x: -38, y: -80}
+        - {x: 35, y: -80}
+        - {x: 67, y: -52}
+        - {x: 68, y: -45}
+        - {x: 68, y: 55}
+      - - {x: -51, y: 68}
+        - {x: -50, y: 65}
+        - {x: -47, y: 65}
+        - {x: -45, y: 67}
+        - {x: -46, y: 70}
+        - {x: -49, y: 70}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

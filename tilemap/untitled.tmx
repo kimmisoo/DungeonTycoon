@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="isometric" renderorder="right-down" width="100" height="100" tilewidth="128" tileheight="64" nextobjectid="1">
+ <tileset firstgid="1" name="Bricks" tilewidth="148" tileheight="164" tilecount="18" columns="6">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Bricks.png" width="1024" height="512"/>
+ </tileset>
+ <tileset firstgid="19" name="Dirts" tilewidth="148" tileheight="164" tilecount="9" columns="3">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Dirts.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="28" name="Grasses" tilewidth="148" tileheight="164" tilecount="36" columns="6">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Grasses.png" width="1024" height="1024"/>
+ </tileset>
+ <tileset firstgid="64" name="Lavas" tilewidth="148" tileheight="164" tilecount="9" columns="3">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Lavas.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="73" name="Lows" tilewidth="131" tileheight="102" tilecount="15" columns="3">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Lows.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="88" name="Roofs" tilewidth="148" tileheight="164" tilecount="18" columns="6">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Roofs.png" width="1024" height="512"/>
+ </tileset>
+ <tileset firstgid="106" name="Sands" tilewidth="148" tileheight="164" tilecount="18" columns="6">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Sands.png" width="1024" height="512"/>
+ </tileset>
+ <tileset firstgid="124" name="Snows" tilewidth="148" tileheight="164" tilecount="9" columns="3">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Snows.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="133" name="Stairs" tilewidth="148" tileheight="164" tilecount="18" columns="6">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Stairs.png" width="1024" height="512"/>
+ </tileset>
+ <tileset firstgid="151" name="Stones" tilewidth="148" tileheight="164" tilecount="9" columns="3">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Stones.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="160" name="Waters" tilewidth="148" tileheight="164" tilecount="72" columns="6">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Waters.png" width="1024" height="2048"/>
+ </tileset>
+ <tileset firstgid="232" name="Woods" tilewidth="148" tileheight="164" tilecount="9" columns="3">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Woods.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="241" name="Overlays_148_164" tilewidth="148" tileheight="164" tilecount="72" columns="6">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Overlay_148_164.png" width="1024" height="2048"/>
+ </tileset>
+ <tileset firstgid="313" name="Overlay_169_84" tilewidth="169" tileheight="84" tilecount="1" columns="1">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Overlay_169_84.png" width="256" height="128"/>
+ </tileset>
+ <tileset firstgid="314" name="Overlay_174_194" tilewidth="174" tileheight="194" tilecount="1" columns="1">
+  <image source="../Assets/4.Images/GoldenSkullStudios/TileSets/Overlay_174_194.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="100" height="100" offsetx="0" offsety="-30">
+  <data encoding="base64" compression="zlib">
+   eJzt0UENAAAMhLAZOP92Z6MPmqCA3d2KKoZ+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WPph6YelH5Z+WFZcDywUFB0=
+  </data>
+ </layer>
+</map>

@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Movable
+  - Tile
+  - Structure
+  - Characters
+  - non_Tile
+  - LoadGameScroll
+  - timeScale_Pause
+  - timeScale_Play
+  - timeScale_Fast
+  - RootUI
+  - HorizontalScroll
+  - VerticalScroll
+  - guard
+  - skipButton
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Floor
+    uniqueID: 4266452705
+    locked: 0
+  - name: Extent Area
+    uniqueID: 1423936977
+    locked: 0
+  - name: SelectedEffect
+    uniqueID: 1073950921
+    locked: 0
+  - name: DestroyedObject
+    uniqueID: 3653994675
+    locked: 0
+  - name: Object
+    uniqueID: 668904367
+    locked: 0
+  - name: Character
+    uniqueID: 2866682835
+    locked: 0
+  - name: UI
+    uniqueID: 2506740741
+    locked: 0

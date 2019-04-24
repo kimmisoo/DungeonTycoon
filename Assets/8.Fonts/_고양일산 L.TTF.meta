@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: be9cbb5d7a85171478a9e8177691182f
+timeCreated: 1529896575
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: _GoyangIlsan L
+  fontNames:
+  - _GoyangIlsan L
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

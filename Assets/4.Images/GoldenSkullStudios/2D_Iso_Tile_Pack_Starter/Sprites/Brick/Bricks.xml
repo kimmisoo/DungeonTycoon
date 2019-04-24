@@ -1,0 +1,14 @@
+<TextureAtlas imagePath="Bricks.png">
+	<SubTexture name="ISO_Tile_Brick_Brick_01.png" x="148" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Brick_02.png" x="444" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Brick_03.png" x="444" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Brick_04.png" x="296" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_SandStone_01.png" x="296" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Snow_01.png" x="296" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Stone_01.png" x="444" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Stone_01_02.png" x="148" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Stone_01_03.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Stone_01_04.png" x="0" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Stone_01_05.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Brick_Stone_02_01.png" x="0" y="0" width="148" height="164"/>
+</TextureAtlas>

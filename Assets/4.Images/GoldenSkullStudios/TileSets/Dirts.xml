@@ -1,0 +1,10 @@
+<TextureAtlas imagePath="Dirts.png">
+	<SubTexture name="ISO_Tile_Dirt_01.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_ToSnow_01.png" x="296" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_ToSnow_02.png" x="148" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_ToStone_01.png" x="148" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_ToStone_02.png" x="296" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_02.png" x="0" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_02_ToStone_01.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_02_ToStone_02.png" x="0" y="0" width="148" height="164"/>
+</TextureAtlas>

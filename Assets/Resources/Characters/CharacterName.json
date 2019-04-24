@@ -1,0 +1,20 @@
+{
+  "traveler" : {
+                  "firstnamenumber" : 2,
+                  "lastnamenumber" : 2,
+                  "firstname" : ["a", "b"],
+                  "lastname" : ["c", "d"]
+               },
+  "adventurer" : {
+                    "firstnamenumber" : 2,
+                    "lastnamenumber" : 2,
+                    "firstname" : ["a", "b"],
+                    "lastname" : ["c", "d"]
+                 },
+  "specialadventurer" : {
+                          "number" : 1,
+                          "name" : ["adol"]
+                          
+                        }
+                        
+}

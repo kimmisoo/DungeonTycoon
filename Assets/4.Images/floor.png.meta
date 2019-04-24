@@ -1,0 +1,539 @@
+fileFormatVersion: 2
+guid: c4154b7d8a54d5b4c8a65ef302fbc478
+timeCreated: 1458213728
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: floor_0
+    21300002: floor_1
+    21300004: floor_2
+    21300006: floor_3
+    21300008: floor_4
+    21300010: floor_5
+    21300012: floor_6
+    21300014: floor_7
+    21300016: floor_8
+    21300018: floor_9
+    21300020: floor_10
+    21300022: floor_11
+    21300024: floor_12
+    21300026: floor_13
+    21300028: floor_14
+    21300030: floor_15
+    21300032: floor_16
+    21300034: floor_17
+    21300036: floor_18
+    21300038: floor_19
+    21300040: floor_20
+    21300042: floor_21
+    21300044: floor_22
+    21300046: floor_23
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: floor_0
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 333
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_1
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 333
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_2
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 333
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_3
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 333
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_4
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 333
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_5
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 321
+        width: 23
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: floor_6
+      rect:
+        serializedVersion: 2
+        x: 524
+        y: 329
+        width: 63
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 12.5, y: 15}
+        - {x: 6.5, y: 18}
+        - {x: -7.5, y: 18}
+        - {x: -16.5, y: 15}
+        - {x: -31.5, y: 6}
+        - {x: -31.5, y: -8}
+        - {x: -7.5, y: -18}
+        - {x: 10.5, y: -18}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 4}
+        - {x: 30.5, y: 5}
+    - name: floor_7
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 244
+        width: 70
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 35, y: -14}
+        - {x: 35, y: 44}
+        - {x: 21, y: 58}
+        - {x: -19, y: 58}
+        - {x: -22, y: 57}
+        - {x: -35, y: 49}
+        - {x: -35, y: -22}
+        - {x: -19, y: -56}
+        - {x: -18, y: -58}
+        - {x: 21, y: -58}
+        - {x: 21, y: -57}
+        - {x: 20, y: -41}
+    - name: floor_8
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 300
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_9
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 300
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_10
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 300
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_11
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 300
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_12
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 300
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_13
+      rect:
+        serializedVersion: 2
+        x: 473
+        y: 242
+        width: 35
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -17.5, y: 32.5}
+        - {x: -17.5, y: -25.5}
+        - {x: -3.5, y: -25.5}
+        - {x: -1.5, y: -23.5}
+        - {x: -1.5, y: -18.5}
+        - {x: 3.5, y: -8.5}
+        - {x: -3.5, y: -30.5}
+        - {x: -1.5, y: -32.5}
+        - {x: 17.5, y: -32.5}
+        - {x: 17.5, y: 26.5}
+        - {x: 6.5, y: 32.5}
+    - name: floor_14
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 290
+        width: 55
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 1.5, y: 18}
+        - {x: -27.5, y: 18}
+        - {x: -27.5, y: -4}
+        - {x: -3.5, y: -18}
+        - {x: 26.5, y: -18}
+        - {x: 27.5, y: -17}
+        - {x: 27.5, y: 11}
+        - {x: 23.5, y: 14}
+    - name: floor_15
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 267
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_16
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 267
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_17
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 267
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_18
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 267
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_19
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 267
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_20
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 236
+        width: 49
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -0.5, y: 24}
+        - {x: -19.5, y: 24}
+        - {x: -24.5, y: 20}
+        - {x: -24.5, y: -17}
+        - {x: -5.5, y: -24}
+        - {x: 15.5, y: -24}
+        - {x: 24.5, y: -17}
+        - {x: 24.5, y: 12}
+    - name: floor_21
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 234
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_22
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 234
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    - name: floor_23
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 234
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -11.5, y: 16}
+        - {x: -31.5, y: 4}
+        - {x: -31.5, y: -4}
+        - {x: -9.5, y: -16}
+        - {x: 5.5, y: -16}
+        - {x: 31.5, y: -4}
+        - {x: 31.5, y: 6}
+        - {x: 6.5, y: 16}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

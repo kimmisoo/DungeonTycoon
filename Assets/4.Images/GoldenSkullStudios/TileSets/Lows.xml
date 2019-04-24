@@ -1,0 +1,15 @@
+<TextureAtlas imagePath="Lows.png">
+	<SubTexture name="ISO_LowTile_DirtToStoneTransition_01.png" x="262" y="102" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_DirtToStoneTransition_02.png" x="262" y="0" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Dirt_01.png" x="131" y="102" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Riverbed_01.png" x="131" y="408" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Riverbed_02.png" x="131" y="306" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Riverbed_03.png" x="131" y="204" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Riverbed_04.png" x="262" y="204" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Sand_01.png" x="131" y="0" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Sand_02.png" x="0" y="408" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Sand_03.png" x="0" y="306" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Stone_01.png" x="0" y="204" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Stone_02.png" x="0" y="102" width="131" height="102"/>
+	<SubTexture name="ISO_LowTile_Stone_03.png" x="0" y="0" width="131" height="102"/>
+</TextureAtlas>

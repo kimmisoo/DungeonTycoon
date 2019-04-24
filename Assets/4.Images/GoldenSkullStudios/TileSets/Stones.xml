@@ -1,0 +1,9 @@
+<TextureAtlas imagePath="Stones.png">
+	<SubTexture name="ISO_Tile_Riverbed_01.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Riverbed_02.png" x="148" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Riverbed_03.png" x="148" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Riverbed_04.png" x="296" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Stone_01.png" x="0" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Stone_02.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Stone_03.png" x="0" y="0" width="148" height="164"/>
+</TextureAtlas>

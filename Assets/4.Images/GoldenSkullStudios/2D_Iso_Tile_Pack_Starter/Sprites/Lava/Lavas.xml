@@ -1,0 +1,6 @@
+<TextureAtlas imagePath="Lavas.png">
+	<SubTexture name="ISO_Tile_LavaCracks_01.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_LavaStone_01.png" x="0" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Lava_01.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Lava_02.png" x="0" y="328" width="148" height="164"/>
+</TextureAtlas>

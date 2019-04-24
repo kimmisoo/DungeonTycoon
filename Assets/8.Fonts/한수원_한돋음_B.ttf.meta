@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: a6f602d23dac8ac4f90332d68b0f5583
+timeCreated: 1529896814
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: KHNPHandotum Bold
+  fontNames:
+  - KHNPHandotum Bold
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

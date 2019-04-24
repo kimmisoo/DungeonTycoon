@@ -1,0 +1,2086 @@
+fileFormatVersion: 2
+guid: 73bc0cf373ce69743863d21d1f3339a7
+timeCreated: 1463068776
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: disgaea1_t_s_0
+    21300002: disgaea1_t_s_1
+    21300004: disgaea1_t_s_2
+    21300006: disgaea1_t_s_3
+    21300008: disgaea1_t_s_4
+    21300010: disgaea1_t_s_5
+    21300012: disgaea1_t_s_6
+    21300014: disgaea1_t_s_7
+    21300016: disgaea1_t_s_8
+    21300018: disgaea1_t_s_9
+    21300020: disgaea1_t_s_10
+    21300022: disgaea1_t_s_11
+    21300024: disgaea1_t_s_12
+    21300026: disgaea1_t_s_13
+    21300028: disgaea1_t_s_14
+    21300030: disgaea1_t_s_15
+    21300032: disgaea1_t_s_16
+    21300034: disgaea1_t_s_17
+    21300036: disgaea1_t_s_18
+    21300038: disgaea1_t_s_19
+    21300040: disgaea1_t_s_20
+    21300042: disgaea1_t_s_21
+    21300044: disgaea1_t_s_22
+    21300046: disgaea1_t_s_23
+    21300048: disgaea1_t_s_24
+    21300050: disgaea1_t_s_25
+    21300052: disgaea1_t_s_26
+    21300054: disgaea1_t_s_27
+    21300056: disgaea1_t_s_28
+    21300058: disgaea1_t_s_29
+    21300060: disgaea1_t_s_30
+    21300062: disgaea1_t_s_31
+    21300064: disgaea1_t_s_32
+    21300066: disgaea1_t_s_33
+    21300068: disgaea1_t_s_34
+    21300070: disgaea1_t_s_35
+    21300072: disgaea1_t_s_36
+    21300074: disgaea1_t_s_37
+    21300076: disgaea1_t_s_38
+    21300078: disgaea1_t_s_39
+    21300080: disgaea1_t_s_40
+    21300082: disgaea1_t_s_41
+    21300084: disgaea1_t_s_42
+    21300086: disgaea1_t_s_43
+    21300088: disgaea1_t_s_44
+    21300090: disgaea1_t_s_45
+    21300092: disgaea1_t_s_46
+    21300094: disgaea1_t_s_47
+    21300096: disgaea1_t_s_48
+    21300098: disgaea1_t_s_49
+    21300100: disgaea1_t_s_50
+    21300102: disgaea1_t_s_51
+    21300104: disgaea1_t_s_52
+    21300106: disgaea1_t_s_53
+    21300108: disgaea1_t_s_54
+    21300110: disgaea1_t_s_55
+    21300112: disgaea1_t_s_56
+    21300114: disgaea1_t_s_57
+    21300116: disgaea1_t_s_58
+    21300118: disgaea1_t_s_59
+    21300120: disgaea1_t_s_60
+    21300122: disgaea1_t_s_61
+    21300124: disgaea1_t_s_62
+    21300126: disgaea1_t_s_63
+    21300128: disgaea1_t_s_64
+    21300130: disgaea1_t_s_65
+    21300132: disgaea1_t_s_66
+    21300134: disgaea1_t_s_67
+    21300136: disgaea1_t_s_68
+    21300138: disgaea1_t_s_69
+    21300140: disgaea1_t_s_70
+    21300142: disgaea1_t_s_71
+    21300144: disgaea1_t_s_72
+    21300146: disgaea1_t_s_73
+    21300148: disgaea1_t_s_74
+    21300150: disgaea1_t_s_75
+    21300152: disgaea1_t_s_76
+    21300154: disgaea1_t_s_77
+    21300156: disgaea1_t_s_78
+    21300158: disgaea1_t_s_79
+    21300160: disgaea1_t_s_80
+    21300162: disgaea1_t_s_81
+    21300164: disgaea1_t_s_82
+    21300166: disgaea1_t_s_83
+    21300168: disgaea1_t_s_84
+    21300170: disgaea1_t_s_85
+    21300172: disgaea1_t_s_86
+    21300174: disgaea1_t_s_87
+    21300176: disgaea1_t_s_88
+    21300178: disgaea1_t_s_89
+    21300180: disgaea1_t_s_90
+    21300182: disgaea1_t_s_91
+    21300184: disgaea1_t_s_92
+    21300186: disgaea1_t_s_93
+    21300188: disgaea1_t_s_94
+    21300190: disgaea1_t_s_95
+    21300192: disgaea1_t_s_96
+    21300194: disgaea1_t_s_97
+    21300196: disgaea1_t_s_98
+    21300198: disgaea1_t_s_99
+    21300200: disgaea1_t_s_100
+    21300202: disgaea1_t_s_101
+    21300204: disgaea1_t_s_102
+    21300206: disgaea1_t_s_103
+    21300208: disgaea1_t_s_104
+    21300210: disgaea1_t_s_105
+    21300212: disgaea1_t_s_106
+    21300214: disgaea1_t_s_107
+    21300216: disgaea1_t_s_108
+    21300218: disgaea1_t_s_109
+    21300220: disgaea1_t_s_110
+    21300222: disgaea1_t_s_111
+    21300224: disgaea1_t_s_112
+    21300226: disgaea1_t_s_113
+    21300228: disgaea1_t_s_114
+    21300230: disgaea1_t_s_115
+    21300232: disgaea1_t_s_116
+    21300234: disgaea1_t_s_117
+    21300236: disgaea1_t_s_118
+    21300238: disgaea1_t_s_119
+    21300240: disgaea1_t_s_120
+    21300242: disgaea1_t_s_121
+    21300244: disgaea1_t_s_122
+    21300246: disgaea1_t_s_123
+    21300248: disgaea1_t_s_124
+    21300250: disgaea1_t_s_125
+    21300252: disgaea1_t_s_126
+    21300254: disgaea1_t_s_127
+    21300256: disgaea1_t_s_128
+    21300258: disgaea1_t_s_129
+    21300260: disgaea1_t_s_130
+    21300262: disgaea1_t_s_131
+    21300264: disgaea1_t_s_132
+    21300266: disgaea1_t_s_133
+    21300268: disgaea1_t_s_134
+    21300270: disgaea1_t_s_135
+    21300272: disgaea1_t_s_136
+    21300274: disgaea1_t_s_137
+    21300276: disgaea1_t_s_138
+    21300278: disgaea1_t_s_139
+    21300280: disgaea1_t_s_140
+    21300282: disgaea1_t_s_141
+    21300284: disgaea1_t_s_142
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 0
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 3
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 3
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 3
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: disgaea1_t_s_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 1237
+        width: 25
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_1
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 1236
+        width: 25
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_2
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 1235
+        width: 22
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_3
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 1237
+        width: 21
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_4
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 1236
+        width: 25
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_5
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 1277
+        width: 22
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_6
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 1236
+        width: 25
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_7
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 1236
+        width: 25
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_8
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 1243
+        width: 22
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_9
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 1180
+        width: 25
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_10
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 1182
+        width: 28
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_11
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 1184
+        width: 25
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_12
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 1183
+        width: 24
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_13
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 1183
+        width: 26
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_14
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 1182
+        width: 25
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_15
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 1180
+        width: 24
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_16
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 1180
+        width: 25
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_17
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 1124
+        width: 22
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_18
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 1124
+        width: 27
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_19
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 1124
+        width: 28
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_20
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 1124
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_21
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 1126
+        width: 22
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_22
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 1126
+        width: 24
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_23
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 1125
+        width: 24
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_24
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 1125
+        width: 25
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_25
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 1067
+        width: 26
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_26
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 1067
+        width: 26
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_27
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 1067
+        width: 24
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_28
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 1067
+        width: 25
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_29
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 1068
+        width: 23
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_30
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 1068
+        width: 23
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_31
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 1068
+        width: 23
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_32
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 1068
+        width: 23
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_33
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 982
+        width: 29
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_34
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 982
+        width: 29
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_35
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 979
+        width: 25
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_36
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 980
+        width: 27
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_37
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 980
+        width: 33
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_38
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 983
+        width: 33
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_39
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 925
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_40
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 925
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_41
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 925
+        width: 23
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_42
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 923
+        width: 25
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_43
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 928
+        width: 35
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_44
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 928
+        width: 35
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_45
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 868
+        width: 24
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_46
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 868
+        width: 26
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_47
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 869
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_48
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 869
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_49
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 877
+        width: 32
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_50
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 882
+        width: 31
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_51
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 813
+        width: 22
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_52
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 813
+        width: 22
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_53
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 813
+        width: 27
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_54
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 813
+        width: 27
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_55
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 829
+        width: 32
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_56
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 834
+        width: 31
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_57
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 786
+        width: 53
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_58
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 781
+        width: 31
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_59
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 786
+        width: 31
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_60
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 724
+        width: 26
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_61
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 726
+        width: 22
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_62
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 728
+        width: 23
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_63
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 725
+        width: 24
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_64
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 725
+        width: 24
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_65
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 725
+        width: 24
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_66
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 724
+        width: 29
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_67
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 723
+        width: 28
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_68
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 669
+        width: 22
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_69
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 671
+        width: 23
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_70
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 671
+        width: 23
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_71
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 670
+        width: 30
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_72
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 670
+        width: 29
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_73
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 670
+        width: 29
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_74
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 670
+        width: 21
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_75
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 667
+        width: 25
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_76
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 614
+        width: 27
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_77
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 614
+        width: 22
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_78
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 616
+        width: 23
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_79
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 613
+        width: 28
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_80
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 613
+        width: 28
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_81
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 613
+        width: 28
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_82
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 612
+        width: 24
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_83
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 559
+        width: 24
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_84
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 559
+        width: 27
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_85
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 559
+        width: 27
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_86
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 558
+        width: 32
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_87
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 558
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_88
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 558
+        width: 32
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_89
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 558
+        width: 21
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_90
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 469
+        width: 31
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_91
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 468
+        width: 35
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_92
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 468
+        width: 37
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_93
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 468
+        width: 37
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_94
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 468
+        width: 37
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_95
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 469
+        width: 31
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_96
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 508
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_97
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 492
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_98
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 412
+        width: 28
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_99
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 412
+        width: 29
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_100
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 413
+        width: 31
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_101
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 413
+        width: 31
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_102
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 413
+        width: 31
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_103
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 412
+        width: 28
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_104
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 356
+        width: 28
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_105
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 356
+        width: 27
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_106
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 356
+        width: 26
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_107
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 356
+        width: 26
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_108
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 357
+        width: 24
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_109
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 357
+        width: 25
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_110
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 357
+        width: 25
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_111
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 357
+        width: 25
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_112
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 266
+        width: 255
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_113
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 213
+        width: 23
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_114
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 213
+        width: 22
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_115
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 213
+        width: 32
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_116
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 213
+        width: 32
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_117
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 212
+        width: 27
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_118
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 212
+        width: 25
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_119
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 212
+        width: 24
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_120
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 158
+        width: 24
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_121
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 159
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_122
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 158
+        width: 31
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_123
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 158
+        width: 31
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_124
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 158
+        width: 24
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_125
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 157
+        width: 26
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_126
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 157
+        width: 24
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_127
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 100
+        width: 24
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_128
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 100
+        width: 24
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_129
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 100
+        width: 22
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_130
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 100
+        width: 30
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_131
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 107
+        width: 33
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_132
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 107
+        width: 29
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_133
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 102
+        width: 36
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_134
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 45
+        width: 26
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_135
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 45
+        width: 26
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_136
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 45
+        width: 24
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_137
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 46
+        width: 30
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_138
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 44
+        width: 26
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_139
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 38
+        width: 32
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_140
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 45
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_141
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 11
+        width: 42
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: disgaea1_t_s_142
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 11
+        width: 50
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

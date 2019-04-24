@@ -1,0 +1,3 @@
+<TextureAtlas imagePath="Overlay_169_84.png">
+	<SubTexture name="ISO_Overlay_Glow_02.png" x="0" y="0" width="169" height="84"/>
+</TextureAtlas>

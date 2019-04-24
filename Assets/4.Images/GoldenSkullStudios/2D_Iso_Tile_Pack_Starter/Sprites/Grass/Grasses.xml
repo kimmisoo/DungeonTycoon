@@ -1,0 +1,22 @@
+<TextureAtlas imagePath="Grasses.png">
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPatch_01.png" x="444" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPatch_02.png" x="296" y="820" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPatch_03.png" x="296" y="656" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_3Cross_01.png" x="296" y="492" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_3Cross_02.png" x="296" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_3Cross_03.png" x="296" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_3Cross_04.png" x="296" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_4Cross.png" x="148" y="820" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_Curve_01.png" x="148" y="656" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_Curve_02.png" x="444" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_Curve_03.png" x="148" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_Curve_04.png" x="148" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_End_01.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_End_02.png" x="0" y="820" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_End_03.png" x="0" y="656" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_End_04.png" x="0" y="492" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_Single.png" x="0" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_Straight_01.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_GrassPath_Straight_02.png" x="0" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Dirt_01_Grass_01.png" x="148" y="492" width="148" height="164"/>
+</TextureAtlas>

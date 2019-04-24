@@ -1,0 +1,12 @@
+<TextureAtlas imagePath="Sands.png">
+	<SubTexture name="ISO_Tile_Sand_01.png" x="148" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_01_ToStone_01.png" x="296" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_01_ToStone_02.png" x="296" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_02.png" x="296" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_02_ToStone_01.png" x="148" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_02_ToStone_02.png" x="444" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_03.png" x="148" y="0" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_03_ToStone_01.png" x="0" y="328" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_03_ToStone_02.png" x="0" y="164" width="148" height="164"/>
+	<SubTexture name="ISO_Tile_Sand_04.png" x="0" y="0" width="148" height="164"/>
+</TextureAtlas>
