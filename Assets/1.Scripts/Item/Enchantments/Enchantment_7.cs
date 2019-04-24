@@ -9,11 +9,11 @@ public class Enchantment_7 : Enchantment {
 	Coroutine cooldown;
 	WaitForSeconds interval = new WaitForSeconds(16.0f);
 
-	public override void OnDamage(Character user, Monster target, Monster[] targets, bool isCritical)
+	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
 	{
 		if(isCritical == true && isCooldown == false)
 		{
-			target.TakeDamageFromEnchantment(60.0f, 0.0f, user, this);
+			target.TakeDamageFromEnchantment(60.0f, user, this, false, out isHit, out isDead);
 			target.TakeStunned(user, this, 2.0f);
 			cooldown = StartCoroutine(StunCooldown());
 		}

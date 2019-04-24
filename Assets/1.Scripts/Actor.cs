@@ -27,70 +27,15 @@ public abstract class Actor : MonoBehaviour {
 	public int gold { get; set; }
 
 	public float healthMax { get; set; }
-	public float health { get; set; }
-	public float itemHealthMax { get; set; }
-	public float enchantmentHealthMax { get; set; }
-	public float healthMaxMult { get; set; }
-	public float itemHealthMaxMult { get; set; }
-	public float enchantmentHealthMaxMult { get; set; }
-	public float healthMaxMultFinal { get; set; } = 1.0f;
-
-	public float shieldMax { get; set; }
-	public float shield { get; set; }
-	public float itemShieldMax { get; set; }
-	public float enchantmentShieldMax { get; set; }
-	public float shieldMaxMult { get; set; }
-	public float itemshieldMaxMult { get; set; }
-	public float enchantmentShieldMaxMult { get; set; }
-	public float shieldMaxMultFinal { get; set; } = 1.0f;
-
+	public float currentHealth { get; set; }	
+	public float currentShield { get; set; }
 	public float attack { get; set; }
-	public float itemAttack { get; set; }
-	public float enchantmentAttack { get; set; }
-	public float attackMult { get; set; }
-	public float itemAttackMult { get; set; }
-	public float enchantmentAttackMult { get; set; }
-	public float attackMultFinal { get; set; } = 1.0f;
-
 	public float defence { get; set; }
-	public float itemDefence { get; set; }
-	public float enchantmentDefence { get; set; }
-	public float defenceMult { get; set; }
-	public float itemDefenceMult { get; set; }
-	public float enchantmentDefenceMult { get; set; }
-	public float defenceMultFinal { get; set; } = 1.0f;
-
 	public float penetration { get; set; }
-	public float itemPenetration { get; set; }
-	public float enchantmentPenetration { get; set; }
-	public float penetrationMult { get; set; }
-	public float itemPenetrationMult { get; set; }
-	public float enchantmentPenetrationMult { get; set; }
-	public float penetrationMultFinal { get; set; } = 1.0f;
-
-	/*public float avoid { get; set; }
-	public float itemAvoid { get; set; }
-	public float enchantmentAvoid { get; set; }*/
 	public float avoidMult { get; set; }
-	public float itemAvoidMult { get; set; }
-	public float enchantmentAvoidMult { get; set; }
-	public float avoidMultFinal { get; set; } = 1.0f;
-
-	/*public float criticalChance { get; set; }
-	public float itemCriticalChance { get; set; }
-	public float enchantmentCriticalChance { get; set; }*/
 	public float criticalChanceMult { get; set; }
-	public float itemCriticalChanceMult { get; set; }
-	public float enchantmentCriticalChanceMult { get; set; }
-	public float criticalChanceMultFinal { get; set; } = 1.0f;
-
-	/*public float criticalDamage { get; set; }
-	public float itemCriticalDamage { get; set; }
-	public float enchantmentCriticalDamage { get; set; }*/
 	public float criticalDamageMult { get; set; }
-	public float itemCriticalDamageMult { get; set; }
-	public float enchantmentCriticalDamageMult { get; set; }
-	public float criticalDamageMultFinal { get; set; } = 1.0f;
+	
 
 	public bool isStunned { get; set; }
 	public bool isDebuffed  { get; set; }
@@ -98,23 +43,18 @@ public abstract class Actor : MonoBehaviour {
 	public float damageTakedSum { get; set; }
 
 	public float movespeedMult { get; set; }
-	public float itemMovespeedMult { get; set; }
-	public float enchantmentMovespeedMult { get; set; }
 	public float movespeedMultFinal { get; set; } = 1.0f;
 
 	public float attackspeedMult { get; set; }
-	public float itemAttackspeedMult { get; set; }
-	public float enchantmentAttackspeedMult { get; set; }
 	public float attackspeedMultFinal { get; set;} = 1.0f;
 
 	public string name { get; set;}
 	public string explanation { get; set;}
-	
-	public int attackRange { get; set; }
-	public int itemAttackRange { get; set; }
-	public int enchantmentAttackRange { get; set; } 
-	
-	
+
+	public int attackRange { get; set; } = 1;
+	public bool isHitRecent { get; set; } = false;
+	public bool isCriticalRecent { get; set; } = false;
+
 	private Moveto moveto;
 	private List<Enchantment> enchantmentList;
 	private List<EquipmentEffect> equipmentEffectList;
@@ -133,14 +73,32 @@ public abstract class Actor : MonoBehaviour {
 	}
 
 
-
-	public abstract void TakeDamage(float damage, float penetration, Actor from);
-	public abstract void TakeDamageFromEnchantment(float damage, float penetration, Actor from, Enchantment enchantment);
+	
+	public abstract void TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead);
+	public abstract void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead);
 	public abstract void Die(Actor Opponent);
 	public abstract void TakeHeal(float heal, Actor from);
 	public abstract void TakeHealFromEnchantment(float heal, Actor from, Enchantment enchantment);
 	public abstract void AddEnchantment(Enchantment enchantment);
 	public abstract void RemoveEnchantment(Enchantment enchantment);
+	public void AddEquipmentEffect(EquipmentEffect equipmentEffect)
+	{
+		equipmentEffectList.Add(equipmentEffect);
+	}
+	public void RemoveEquipmentEffect(EquipmentEffect equipmentEffect)
+	{
+		equipmentEffectList.Remove(equipmentEffect);
+	}
+	public void RemoveAllEquipmentEffectByParent(IHasEquipmentEffect parent)
+	{
+		for (int i = 0; i < equipmentEffectList.Count; i++)
+		{
+			if (equipmentEffectList[i].GetParent().Equals(parent))
+			{
+				equipmentEffectList.RemoveAt(i);
+			}
+		}
+	}
 	public abstract void TakeStunned(Actor from, Enchantment enchantment, float during);
 	
 	
@@ -159,7 +117,8 @@ public abstract class Actor : MonoBehaviour {
 	}
 	public float GetCalculatedHealthMax()
 	{
-		return (healthMax * (1.0f + healthMaxMult)) + (itemHealthMax * (1.0f + itemHealthMaxMult)) + (enchantmentHealthMax * (1.0f + enchantmentHealthMaxMult));
+		
+		return ((healthMax + GetHealthMaxFromEquipmentEffect()) * (1.0f + GetHealthMaxMultFromEquipmentEffect()) * (1.0f + GetHealthMaxMultFinalFromEquipmentEffect()));
 	}
 	public void SetHealthMax(float _healthMax)
 	{
@@ -170,40 +129,40 @@ public abstract class Actor : MonoBehaviour {
 	{
 		//return 0.0f;
 		//실제 공식에따라 ~~~ 공격력 리턴
-		return ((attack + itemAttack + enchantmentAttack) * (1.0f + attackMult + itemAttackMult + enchantmentAttackMult) * attackMultFinal);
+		return ((attack + GetAttackFromEquipmentEffect()) * (1.0f + GetAttackMultFromEquipmentEffect()) * (1.0f + GetAttackMultFinalFromEquipmentEffect()));
 
 	}
 	public float GetCalculatedDefence()
 	{
-		return ((defence + itemDefence + enchantmentDefence) * (1.0f + defenceMult + itemDefenceMult + enchantmentDefenceMult) * defenceMultFinal);
+		return ((defence + GetDefenceFromEquipmentEffect()) * (1.0f + GetDefenceMultFromEquipmentEffect()) * (1.0f + GetDefenceMultFinalFromEquipmentEffect()));
 	}
 	public float GetCalculatedPenetration()
 	{
-		return (1.0f + penetrationMult + itemPenetrationMult + enchantmentPenetrationMult) * penetrationMultFinal;
+		return ((penetration + GetPenetrationFromEquipmentEffect()) * (1.0f + GetPenetrationMultFromEquipmentEffect()) * (1.0f + GetPenetrationMultFinalFromEquipmentEffect()));
 	}
-	public float GetCalculatedAvoid()
+	public float GetCalculatedAvoidMult()
 	{
-		return (1.0f + avoidMult + itemAvoidMult + enchantmentAvoidMult) * avoidMultFinal;
+		return (avoidMult * (1.0f + GetAvoidMultFromEquipmentEffect()) * (1.0f + GetAvoidMultFinalFromEquipmentEffect()));
 	}
 	public float GetCalculatedCriticalChance()
 	{
-		return (1.0f + criticalChanceMult + itemCriticalChanceMult + enchantmentCriticalChanceMult) * criticalChanceMultFinal;
+		return (criticalChanceMult * (1.0f + GetCriticalChanceMultFromEquipmentEffect()) * (1.0f + GetCriticalChanceMultFinalFromEquipmentEffect()));
 	}
 	public float GetCalculatedCriticalDamage()
 	{
-		return (1.0f + criticalDamageMult + itemCriticalDamageMult + enchantmentCriticalDamageMult) * criticalDamageMultFinal;
+		return (criticalDamageMult * (1.0f + GetCriticalDamageMultFromEquipmentEffect()) * (1.0f + GetCriticalDamageMultFinalFromEquipmentEffect()));
 	}
 	public float GetCalculatedMovespeed()
 	{
-		return (1.0f + movespeedMult + itemMovespeedMult + enchantmentMovespeedMult) * movespeedMultFinal;
+		return (movespeedMult * (1.0f + GetMovespeedMultFromEquipmentEffect()) * (1.0f + GetMovespeedMultFinalFromEquipmentEffect()));
 	}
 	public float GetCalculatedAttackspeed()
 	{
-		return (1.0f + attackspeedMult + itemAttackspeedMult + enchantmentAttackspeedMult) * attackspeedMultFinal;
+		return (attackspeedMult * (1.0f + GetAttackspeedMultFromEquipmentEffect()) * (1.0f + GetAttackspeedMultFinalFromEquipmentEffect()));
 	}
 	public int GetCalculatedAttackRange()
 	{
-		return attackRange + itemAttackRange + enchantmentAttackRange;
+		return attackRange + GetAttackRangeFromEquipmentEffect();
 	}
 	public Tile GetCurTile()
 	{
@@ -248,4 +207,240 @@ public abstract class Actor : MonoBehaviour {
 		//damage 연산 필요
 		
 	}
+
+	public float GetHealthMaxFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach(EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.healthMax;
+		}
+		return sum;
+	}
+	public float GetHealthMaxMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.healthMaxMult;
+		}
+		return sum;
+	}
+	public float GetHealthMaxMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.healthMaxMultFinal;
+		}
+		return sum;
+	}
+	public float GetShieldFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.shield;
+		}
+		return sum;
+	}
+	public float GetShieldMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.shieldMult;
+		}
+		return sum;
+	}
+	public float GetShieldMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.shieldMultFinal;
+		}
+		return sum;
+	}
+	public float GetAttackFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.attack;
+		}
+		return sum;
+	}
+	public float GetAttackMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.attackMult;
+		}
+		return sum;
+	}
+	public float GetAttackMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.attackMultFinal;
+		}
+		return sum;
+	}
+	public float GetDefenceFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.defence;
+		}
+		return sum;
+	}
+	public float GetDefenceMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.defenceMult;
+		}
+		return sum;
+	}
+	public float GetDefenceMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.defenceMultFinal;
+		}
+		return sum;
+	}
+	public float GetPenetrationFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.penetration;
+		}
+		return sum;
+	}
+	public float GetPenetrationMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.penetrationMult;
+		}
+		return sum;
+	}
+	public float GetPenetrationMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.penetrationMultFinal;
+		}
+		return sum;
+	}
+	public float GetAvoidMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.avoidMult;
+		}
+		return sum;
+	}
+	public float GetAvoidMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.avoidMultFinal;
+		}
+		return sum;
+	}
+	public float GetCriticalChanceMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.criticalChanceMult;
+		}
+		return sum;
+	}
+	public float GetCriticalChanceMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.criticalChanceMultFinal;
+		}
+		return sum;
+	}
+	public float GetCriticalDamageMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.criticalDamageMult;
+		}
+		return sum;
+	}
+	public float GetCriticalDamageMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.criticalDamageMultFinal;
+		}
+		return sum;
+	}
+	public float GetMovespeedMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.movespeedMult;
+		}
+		return sum;
+	}
+	public float GetMovespeedMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.movespeedMultFinal;
+		}
+		return sum;
+	}
+	public float GetAttackspeedMultFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.attackspeedMult;
+		}
+		return sum;
+	}
+	public float GetAttackspeedMultFinalFromEquipmentEffect()
+	{
+		float sum = 0.0f;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.attackspeedMultFinal;
+		}
+		return sum;
+	}
+	public int GetAttackRangeFromEquipmentEffect()
+	{
+		int sum = 0;
+		foreach (EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.attackRange;
+		}
+		return sum;
+	}
+
 }

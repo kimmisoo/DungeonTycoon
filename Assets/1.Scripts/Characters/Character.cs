@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Character : Actor {
+public abstract class Character : Actor {
 
 	public enum State
 	{ Idle, Move, Hunt, Indoor }
@@ -14,6 +15,9 @@ public class Character : Actor {
 	protected Moveto moveto;
 	protected State curState = State.Idle;
 	public Desire desire = new Desire();
+
+	List<Enchantment> enchantmentList = new List<Enchantment>();
+	List<EquipmentEffect> equipmentEffectList = new List<EquipmentEffect>();
 
     
 
@@ -42,16 +46,17 @@ public class Character : Actor {
 
 
 
-	public override void TakeDamage(float damage, Actor from)
+	public override void TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead)
 	{
-		//공격우선순위설정
-		//데미지 처리
+		isHit = false;
+		isDead = false;
 	}
-	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment)
+	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead)
 	{
-		//공격우선순위설정
-		//데미지 처리
+		isHit = false;
+		isDead = false;
 	}
+
 	public override void Die(Actor Opponent)
 	{
 		//사망 처리.
@@ -65,6 +70,10 @@ public class Character : Actor {
 	{
 		//힐 처리
 	}
+	public override void TakeStunned(Actor from, Enchantment enchantment, float during)
+	{
+		
+	}
 	public override void AddEnchantment(Enchantment enchantment)
 	{
 		//인챈트 
@@ -73,14 +82,15 @@ public class Character : Actor {
 	{
 		//인챈트 제거
 	}
-
+	
 	protected virtual void Start()
-    {
-		
+	{
+
 	}
+
 	protected virtual void Activate()
 	{
-		
+
 	}
 	protected virtual void Deactivate()
 	{

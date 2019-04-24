@@ -25,13 +25,18 @@ public class Enchantment : MonoBehaviour, IHasEquipmentEffect{
     int itemCode;
     string enchantmentName;
 	string enchantmentExplanation;
+	public bool isCriticalAttack; // 내가 적에게
+	public bool isCriticalAttacked; // 적이 나에게
+	public bool isHit; // 내가 적에게
+	public bool isHits; // 적이 나에게
+	public bool isDead;
     Character user;
 	Item item;
     
     
 	// Use this for initialization
 	void Start () {
-        user = GetComponent<Character>();
+        
 	}
     public virtual void OnCoroutine(Character user, Monster target, Monster[] targets)
     {
@@ -53,19 +58,19 @@ public class Enchantment : MonoBehaviour, IHasEquipmentEffect{
     {
 		return;
     }
-    public virtual void OnAttack(Character user, Monster target, Monster[] targets) // 공격 시도
+    public virtual void OnAttack(Character user, Monster target, Monster[] targets, bool isCritical) // 공격 시도
     {
         return;
     }
-    public virtual void OnAttacked(Character user, Monster target, Monster[] targets) //적이 공격시도
+    public virtual void OnAttacked(Character user, Monster target, Monster[] targets, bool isCritical) //적이 공격시도
     {
         return;
     }
-    public virtual void OnDamage(Character user, Monster target, Monster[] targets, bool isCritical) // 데미지 입힘
+    public virtual void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical ) // 데미지 입힘 // Hit
     {
         return;
     }
-    public virtual void OnDamaged(Character user, Monster target, Monster[] targets, float damage) //데미지 입음
+    public virtual void OnDamaged(Character user, Monster target, Monster[] targets, float damage, bool isCritical) //데미지 입음 // Hit
     {
         return;
     }
@@ -80,6 +85,10 @@ public class Enchantment : MonoBehaviour, IHasEquipmentEffect{
 	public virtual void SetItem(Item _item)
 	{
 		item = _item;
+	}
+	public virtual void OnDead(Character user, Monster target, Monster[] targets)
+	{
+		return;
 	}
 	
 }

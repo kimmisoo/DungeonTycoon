@@ -15,6 +15,7 @@ public class Item : IHasEquipmentEffect {
 	public float attackspeed { get; set; }
 	public float penetrate { get; set; }
 	public List<Enchantment> enchantments;
+	public List<EquipmentEffect> equipmentEffects;
     public int value { get; set; }
 	public int minProperLevel { get; set; }
 	public int maxProperLevel { get; set; }

@@ -8,9 +8,9 @@ public class Enchantment_8 : Enchantment {
 	//공격시 적에게 방어력 -6%. 5중첩
 	Monster opponent = null;
 	int damageCount = 0;
-	public override void OnDamage(Character user, Monster target, Monster[] targets, bool isCritical)
+	EquipmentEffect tempEffect;
+	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
 	{
-
 		if (opponent == null)
 			opponent = target;
 
@@ -18,6 +18,8 @@ public class Enchantment_8 : Enchantment {
 		{
 			//중첩
 			damageCount++;
+			tempEffect = new EquipmentEffect(this, user);
+			tempEffect.defenceMult -= 0.06f;
 			opponent.enchantmentDefenceMult -= 0.06f;
 		}
 		else
@@ -26,9 +28,10 @@ public class Enchantment_8 : Enchantment {
 			damageCount = 1;
 			opponent = target;
 			opponent.enchantmentDefenceMult -= 0.06f;
-			
+
 		}
 	}
+	
 	public override void OnEndBattle(Character user, Monster target, Monster[] targets)
 	{
 		if(target.gameObject.activeSelf == true)

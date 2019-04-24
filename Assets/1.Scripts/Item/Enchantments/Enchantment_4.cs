@@ -9,6 +9,7 @@ public class Enchantment_4 : Enchantment {
 	WaitForSeconds interval = new WaitForSeconds(5.0f);
 	List<Actor> near = new List<Actor>();
 	const float amount = 0.1f;
+	EquipmentEffect tempEffect;
 	public override void OnEquip(Character user)
 	{
 		nearMonsterCheck = StartCoroutine(NearMonsterCheck(user));
@@ -34,11 +35,17 @@ public class Enchantment_4 : Enchantment {
 			{
 				if (a is Monster)
 				{
-					a.enchantmentAttackMult -= 0.1f;
+					tempEffect = new EquipmentEffect(this, a);
+					tempEffect.attackMult = -0.1f;
+					a.AddEquipmentEffect(tempEffect);
 					nearCount++;
 				}
 			}
-			user.enchantmentAttackMult += amount * nearCount;
+
+			tempEffect = new EquipmentEffect(this, user);
+			tempEffect.attackMult += amount * nearCount;
+			user.AddEquipmentEffect(tempEffect);
+			
 			///버프, 디버프 추가
 
 			yield return interval;
@@ -46,9 +53,12 @@ public class Enchantment_4 : Enchantment {
 			foreach(Actor a in near)
 			{
 				if (a is Monster)
-					a.enchantmentAttackMult += 0.1f;
+				{
+					a.RemoveAllEquipmentEffectByParent(this); 
+				}
 			}
-			user.enchantmentAttackMult -= amount * nearCount;
+			user.RemoveAllEquipmentEffectByParent(this);
+			
 			///버프, 디버프 해제
 		}
 	}

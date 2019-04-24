@@ -8,6 +8,7 @@ public class Enchantment_6 : Enchantment {
 	Coroutine immerse;
 	int immerseCount = 0;
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
+	EquipmentEffect tempEffect;
 
 	public override void OnStartBattle(Character user, Monster target, Monster[] targets)
 	{
@@ -16,17 +17,23 @@ public class Enchantment_6 : Enchantment {
 	public override void OnEndBattle(Character user, Monster target, Monster[] targets)
 	{
 		StopCoroutine(immerse);
-		user.enchantmentAttackspeedMult -= 0.05f * immerseCount;
+		user.RemoveAllEquipmentEffectByParent(this);
 		immerseCount = 0;
 	}
 
 	IEnumerator Immerse(Character user)
 	{
-		yield return interval;
-		if (immerseCount < 5) // 총 누적 5번
+		while (true)
 		{
-			immerseCount++;
-			user.enchantmentAttackspeedMult += 0.05f;
+			yield return interval;
+			if (immerseCount < 5) // 총 누적 5번
+			{
+				tempEffect = new EquipmentEffect(this, user);
+				tempEffect.attackspeedMult += 0.1f;
+
+				immerseCount++;
+				user.AddEquipmentEffect(tempEffect);
+			}
 		}
 
 	}
