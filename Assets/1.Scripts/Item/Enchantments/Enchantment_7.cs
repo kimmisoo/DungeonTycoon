@@ -9,7 +9,7 @@ public class Enchantment_7 : Enchantment {
 	Coroutine cooldown;
 	WaitForSeconds interval = new WaitForSeconds(16.0f);
 
-	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamage(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		if(isCritical == true && isCooldown == false)
 		{
@@ -18,7 +18,7 @@ public class Enchantment_7 : Enchantment {
 			cooldown = StartCoroutine(StunCooldown());
 		}
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(cooldown);
 	}

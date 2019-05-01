@@ -11,16 +11,16 @@ public class Enchantment_4 : Enchantment {
 	const float amount = 0.1f;
 	EquipmentEffect tempEffect;
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		nearMonsterCheck = StartCoroutine(NearMonsterCheck(user));
 	}
 	
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(nearMonsterCheck);
 	}
-	IEnumerator NearMonsterCheck(Character user)
+	IEnumerator NearMonsterCheck(Actor user)
 	{
 
 		int nearCount = 0;

@@ -7,7 +7,7 @@ public class Enchantment_3 : Enchantment {
 	//공격범위 내 모든 적에게 25%데미지로 공격
 	// Use this for initialization
 	
-	public override void OnAttack(Character user, Monster target, Monster[] targets, bool isCritical)
+	public override void OnAttack(Actor user, Actor target, Actor[] targets, bool isCritical)
 	{
 		foreach (Actor a in targets)
 		{

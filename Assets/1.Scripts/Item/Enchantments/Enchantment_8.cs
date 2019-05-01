@@ -6,10 +6,10 @@ public class Enchantment_8 : Enchantment {
 
 	//균열
 	//공격시 적에게 방어력 -6%. 5중첩
-	Monster opponent = null;
+	Actor opponent = null;
 	int damageCount = 0;
 	EquipmentEffect tempEffect;
-	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamage(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		
 		if (opponent == null)
@@ -36,7 +36,7 @@ public class Enchantment_8 : Enchantment {
 		}
 	}
 	
-	public override void OnEndBattle(Character user, Monster target, Monster[] targets)
+	public override void OnEndBattle(Actor user, Actor target, Actor[] targets)
 	{
 		if(target.gameObject.activeSelf == true)
 		{

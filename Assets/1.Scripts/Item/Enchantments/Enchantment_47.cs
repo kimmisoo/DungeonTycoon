@@ -7,7 +7,7 @@ public class Enchantment_47 : Enchantment {
 	//용암
 	//매 공격시 26 추가데미지
 
-	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamage(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		target.TakeDamageFromEnchantment(26.0f, user, this, false, out isHit, out isDead);
 	}

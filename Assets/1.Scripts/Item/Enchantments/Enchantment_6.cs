@@ -10,18 +10,18 @@ public class Enchantment_6 : Enchantment {
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
 	EquipmentEffect tempEffect;
 
-	public override void OnStartBattle(Character user, Monster target, Monster[] targets)
+	public override void OnStartBattle(Actor user, Actor target, Actor[] targets)
 	{
 		immerse = StartCoroutine(Immerse(user));
 	}
-	public override void OnEndBattle(Character user, Monster target, Monster[] targets)
+	public override void OnEndBattle(Actor user, Actor target, Actor[] targets)
 	{
 		StopCoroutine(immerse);
 		user.RemoveAllEquipmentEffectByParent(this);
 		immerseCount = 0;
 	}
 
-	IEnumerator Immerse(Character user)
+	IEnumerator Immerse(Actor user)
 	{
 		while (true)
 		{

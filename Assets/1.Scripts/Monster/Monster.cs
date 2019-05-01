@@ -3,21 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Monster : Actor {
-
+	//선공 인식 범위 십자 3칸
+	//
+	int monsterCode;
 	SpriteRenderer spriteRenderer;
 	Animator animator;
-	List<EquipmentEffect> equipmentEffectList;
-	List<Enchantment> enchantmentList;
+	
 	int turn = 0;
 	void Start () {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
-		equipmentEffectList = new List<EquipmentEffect>();
-		enchantmentList = new List<Enchantment>();
+		
 	}
 	private void OnEnable()
 	{
-		
 		StartCoroutine(Acting());
 	}
 	
@@ -25,22 +24,8 @@ public class Monster : Actor {
 	{
 		yield return null;
 	}
-	
-	public void GetEnchantmentEffect()
-	{
-		
-	}
 
-	public override void TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead)
-	{
-		isHit = false;
-		isDead = false;
-	}
-	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead)
-	{
-		isHit = false;
-		isDead = false;
-	}
+	
 	public override void Die(Actor Opponent)
 	{
 
@@ -65,6 +50,15 @@ public class Monster : Actor {
 	{
 		
 	}
-	
-	
+	public override void TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead)
+	{
+		isHit = false;
+		isDead = false;
+	}
+	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead)
+	{
+		isHit = false;
+		isDead = false;
+	}
+
 }

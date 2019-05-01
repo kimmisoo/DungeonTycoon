@@ -18,7 +18,7 @@ public class Enchantment_37 : Enchantment {
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
 	bool isCooldown = false;
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.invincibleCount += 1;
@@ -26,12 +26,12 @@ public class Enchantment_37 : Enchantment {
 		cooldown = StartCoroutine(Cooldown(user));
 	}
 	
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(cooldown);
 		user.RemoveAllEquipmentEffectByParent(this);
 	}
-	IEnumerator Cooldown(Character user)
+	IEnumerator Cooldown(Actor user)
 	{
 		while (true)
 		{

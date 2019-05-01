@@ -5,7 +5,7 @@ using System.Threading;
 
 public class Adventurer : Character {
 
-	enum Type
+	/*enum Type
 	{ Human, Elf, Dwarf, Orc, Dog, Cat }
 	Type type;
 	public Tile dest;
@@ -263,5 +263,5 @@ public class Adventurer : Character {
 			transform.Translate(d / 20 * Time.unscaledDeltaTime);
 		}
 		yield return null;
-	}
+	}*/
 }

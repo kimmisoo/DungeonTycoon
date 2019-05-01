@@ -8,25 +8,25 @@ public class Enchantment_11 : Enchantment {
 	//상대 체력 30% 이하일때 공격력 + 25%
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
 	Coroutine targetHealthCheck;
-	Monster currentTarget = null;
+	Actor currentTarget = null;
 	EquipmentEffect tempEffect;
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.attackMult += 0.25f;
 		targetHealthCheck = StartCoroutine(TargetHealthCheck(user));
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(targetHealthCheck);
 		user.RemoveAllEquipmentEffectByParent(this);
 		tempEffect = null;
 	}
-	public override void OnAttack(Character user, Monster target, Monster[] targets, bool isCritical)
+	public override void OnAttack(Actor user, Actor target, Actor[] targets, bool isCritical)
 	{
 		currentTarget = target;
 	}
-	IEnumerator TargetHealthCheck(Character user)
+	IEnumerator TargetHealthCheck(Actor user)
 	{
 		while (true)
 		{

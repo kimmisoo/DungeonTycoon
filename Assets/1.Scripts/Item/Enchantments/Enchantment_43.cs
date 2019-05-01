@@ -16,13 +16,13 @@ public class Enchantment_43 : Enchantment {
 	const float amount = 0.1f;
 	EquipmentEffect tempEffect;
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		nearMonsterDamage = StartCoroutine(NearMonsterDamage(user));
 		nearMonsterDebuff = StartCoroutine(NearMonsterDebuff(user));
 	}
 
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(nearMonsterDamage);
 		StopCoroutine(nearMonsterDebuff);
@@ -31,7 +31,7 @@ public class Enchantment_43 : Enchantment {
 			a.RemoveAllEquipmentEffectByParent(this);
 		}
 	}
-	IEnumerator NearMonsterDamage(Character user)
+	IEnumerator NearMonsterDamage(Actor user)
 	{
 		while(true)
 		{
@@ -47,7 +47,7 @@ public class Enchantment_43 : Enchantment {
 			nearDamage.Clear();
 		}
 	}
-	IEnumerator NearMonsterDebuff(Character user)
+	IEnumerator NearMonsterDebuff(Actor user)
 	{
 
 		

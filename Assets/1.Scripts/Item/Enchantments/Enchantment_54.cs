@@ -8,14 +8,14 @@ public class Enchantment_54 : Enchantment {
 	//체력 + 120
 
 	EquipmentEffect tempEffect;
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.healthMax += 120.0f;
 		user.AddEquipmentEffect(tempEffect);
 	}
 
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 	}

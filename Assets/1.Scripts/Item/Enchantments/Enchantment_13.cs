@@ -11,13 +11,13 @@ public class Enchantment_13 : Enchantment {
 	EquipmentEffect tempEffect;
 	const int category = 2;
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.attackspeedMult += 0.1f;
 		user.AddEquipmentEffect(tempEffect);
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 	}

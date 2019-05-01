@@ -49,7 +49,7 @@ public abstract class Actor : MonoBehaviour {
 	public float attackspeedMult { get; set; }
 	public float attackspeedMultFinal { get; set; } = 1.0f;
 
-	public string name { get; set; }
+	public string actorName { get; set; }
 	public string explanation { get; set; }
 
 	public int attackRange { get; set; } = 1;
@@ -71,7 +71,8 @@ public abstract class Actor : MonoBehaviour {
 	{
 		moveto = GetComponent<Moveto>();
 		enchantmentList = new List<Enchantment>();
-		
+		equipmentEffectList = new List<EquipmentEffect>();
+		itemList = new List<Item>();
 	}
 
 

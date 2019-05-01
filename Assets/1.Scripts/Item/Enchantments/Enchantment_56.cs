@@ -11,7 +11,7 @@ public class Enchantment_56 : Enchantment {
 	EquipmentEffect tempEffect;
 	Coroutine healthCheck;
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.healthMaxMult -= 0.2f;
@@ -19,13 +19,13 @@ public class Enchantment_56 : Enchantment {
 		user.AddEquipmentEffect(tempEffect);
 		healthCheck = StartCoroutine(HealthCheck(user));
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(healthCheck);
 		user.RemoveAllEquipmentEffectByParent(this);
 
 	}
-	IEnumerator HealthCheck(Character user)
+	IEnumerator HealthCheck(Actor user)
 	{
 		while(true)
 		{

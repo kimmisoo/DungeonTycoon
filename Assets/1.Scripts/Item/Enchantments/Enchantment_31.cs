@@ -11,14 +11,14 @@ public class Enchantment_31 : Enchantment {
 
 	EquipmentEffect tempEffect;
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.movespeedMult += 0.25f;
 		tempEffect.healthMaxMult += 0.04f;
 		user.AddEquipmentEffect(tempEffect);
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 	}

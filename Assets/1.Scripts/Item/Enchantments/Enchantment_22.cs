@@ -9,7 +9,7 @@ public class Enchantment_22 : Enchantment {
 	EquipmentEffect tempEffect;
 
 
-	public override void OnDamaged(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamaged(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 		tempEffect = new EquipmentEffect(this, user);

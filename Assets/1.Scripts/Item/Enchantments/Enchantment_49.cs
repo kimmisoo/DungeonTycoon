@@ -8,7 +8,7 @@ public class Enchantment_49 : Enchantment {
 	//공격시 5%확률로 2칸내 적 2개체 300데미지
 	int randNum = 0;
 	List<Actor> near;
-	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamage(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		randNum = UnityEngine.Random.Range(0, 100);
 		if(randNum < 5)

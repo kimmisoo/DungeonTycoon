@@ -12,13 +12,13 @@ public class Enchantment_44 : Enchantment {
 	EquipmentEffect tempEffect;
 	const int category = 5;
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.criticalChanceMult += 0.20f;
 		user.AddEquipmentEffect(tempEffect);
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 	}

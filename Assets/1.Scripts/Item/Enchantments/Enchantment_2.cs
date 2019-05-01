@@ -6,7 +6,7 @@ public class Enchantment_2 : Enchantment {
 	//쌍수무기
 	//2번 공격하지만 데미지 절반
 	EquipmentEffect effect;
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		if(effect != null)
 		{
@@ -18,7 +18,7 @@ public class Enchantment_2 : Enchantment {
 		effect.attackspeedMultFinal += 1.0f;
 		user.AddEquipmentEffect(effect);
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{ 
 		//user.attackMultFinal += 0.5f;
 		//user.attackspeedMultFinal -= 1.0f;

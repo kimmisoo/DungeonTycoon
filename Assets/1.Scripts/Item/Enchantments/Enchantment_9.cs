@@ -9,18 +9,18 @@ public class Enchantment_9 : Enchantment {
 	
 	int attackMult = 0;
 	EquipmentEffect tempEffect;
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.attackRange += 1;
 		user.AddEquipmentEffect(tempEffect);
 		//user.enchantmentAttackRange += 1;
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 	}
-	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamage(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		//공격거리 검증은 Attack 단계에서 ~
 		attackMult = user.GetCalculatedAttackRange() - user.GetCurTileForMove().GetDistance(target.GetCurTileForMove());
@@ -29,7 +29,7 @@ public class Enchantment_9 : Enchantment {
 		target.TakeDamageFromEnchantment(user.GetCalculatedAttack() * 0.15f, user, this, false, out isHit, out isDead);
 		
 	}
-	public override void OnDead(Character user, Monster target, Monster[] targets)
+	public override void OnDead(Actor user, Actor target, Actor[] targets)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 	}

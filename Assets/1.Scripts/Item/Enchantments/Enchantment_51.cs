@@ -12,7 +12,7 @@ public class Enchantment_51 : Enchantment {
 	Coroutine cooldown;
 	WaitForSeconds interval = new WaitForSeconds(12.0f);
 	bool isCooldown = false;
-	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamage(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		rand = UnityEngine.Random.Range(0, 100);
 		if(rand < 4 && isCooldown == false)
@@ -22,11 +22,11 @@ public class Enchantment_51 : Enchantment {
 			cooldown = StartCoroutine(Cooldown(user));
 		}
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(cooldown);
 	}
-	IEnumerator Cooldown(Character user)
+	IEnumerator Cooldown(Actor user)
 	{
 		yield return interval;
 		isCooldown = false;

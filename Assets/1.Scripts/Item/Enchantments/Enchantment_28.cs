@@ -10,7 +10,7 @@ public class Enchantment_28 : Enchantment {
 	//성소에서 충전가능
 	int count = 3;
 
-	public override void OnEndBattle(Character user, Monster target, Monster[] targets)
+	public override void OnEndBattle(Actor user, Actor target, Actor[] targets)
 	{
 		if(user.GetCalculatedHealthMax() - user.GetCurrentHealth() > 30.0f && count > 0)
 		{

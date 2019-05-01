@@ -9,13 +9,13 @@ public class Enchantment_17 : Enchantment {
 	//공격력 + 10%
 	EquipmentEffect tempEffect;
 	
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.attackMult += 0.1f;
 		user.AddEquipmentEffect(tempEffect);
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		user.RemoveAllEquipmentEffectByParent(this);
 	}

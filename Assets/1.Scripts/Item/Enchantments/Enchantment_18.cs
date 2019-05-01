@@ -10,17 +10,17 @@ public class Enchantment_18 : Enchantment {
 	Coroutine flameAura;
 	WaitForSeconds interval = new WaitForSeconds(1.0f);
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		flameAura = StartCoroutine(FlameAura(user));
 	}
 
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(flameAura);
 	}
 
-	IEnumerator FlameAura(Character user)
+	IEnumerator FlameAura(Actor user)
 	{
 
 		while (true)

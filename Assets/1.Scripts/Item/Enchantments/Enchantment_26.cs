@@ -12,17 +12,17 @@ public class Enchantment_26 : Enchantment {
 	Coroutine healthCheck;
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.reduceDamageMult = 0.6f;
 		healthCheck = StartCoroutine(HealthCheck(user));
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(healthCheck);
 	}
-	IEnumerator HealthCheck(Character user)
+	IEnumerator HealthCheck(Actor user)
 	{
 		while (true)
 		{

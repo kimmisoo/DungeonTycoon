@@ -10,17 +10,17 @@ public class Enchantment_25 : Enchantment {
 	Coroutine regenerate;
 	WaitForSeconds interval = new WaitForSeconds(1.0f);
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		regenerate = StartCoroutine(Regenerate(user));
 	}
 
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(regenerate);
 	}
 
-	IEnumerator Regenerate(Character user)
+	IEnumerator Regenerate(Actor user)
 	{
 		while(true)
 		{

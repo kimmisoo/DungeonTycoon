@@ -9,25 +9,25 @@ public class Enchantment_40 : Enchantment{
 
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
 	Coroutine targetHealthCheck;
-	Monster currentTarget = null;
+	Actor currentTarget = null;
 	EquipmentEffect tempEffect;
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		tempEffect.attackMult += 1.0f;
 		targetHealthCheck = StartCoroutine(TargetHealthCheck(user));
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(targetHealthCheck);
 		user.RemoveAllEquipmentEffectByParent(this);
 		tempEffect = null;
 	}
-	public override void OnAttack(Character user, Monster target, Monster[] targets, bool isCritical)
+	public override void OnAttack(Actor user, Actor target, Actor[] targets, bool isCritical)
 	{
 		currentTarget = target;
 	}
-	IEnumerator TargetHealthCheck(Character user)
+	IEnumerator TargetHealthCheck(Actor user)
 	{
 		while (true)
 		{

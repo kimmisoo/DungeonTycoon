@@ -5,7 +5,7 @@ using System.Threading;
 
 public class Traveler : Character {
 
-	enum Type
+	/*enum Type
 	{ Human, Elf, Dwarf, Orc, Dog, Cat}
 	Type type;
 	public Tile dest;
@@ -270,6 +270,6 @@ public class Traveler : Character {
 		}
         yield return null;
 	}
-	
+	*/
     
 }

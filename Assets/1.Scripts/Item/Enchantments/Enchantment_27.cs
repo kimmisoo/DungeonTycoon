@@ -13,7 +13,7 @@ public class Enchantment_27 : Enchantment {
 	float eps = 0.01f;
 	WaitForSeconds interval = new WaitForSeconds(3.0f);
 
-	public override void OnEquip(Character user)
+	public override void OnEquip(Actor user)
 	{
 		tempEffect = new EquipmentEffect(this, user);
 		defenceOrigin = user.GetCalculatedDefence();
@@ -22,12 +22,12 @@ public class Enchantment_27 : Enchantment {
 		StartCoroutine(StatusCheck(user));
 		
 	}
-	public override void OnUnequip(Character user)
+	public override void OnUnequip(Actor user)
 	{
 		StopCoroutine(statusCheck);
 		user.RemoveAllEquipmentEffectByParent(this);
 	}
-	IEnumerator StatusCheck(Character user)
+	IEnumerator StatusCheck(Actor user)
 	{
 		while (true)
 		{

@@ -8,7 +8,7 @@ public class Enchantment_30 : Enchantment {
 	//매 공격시 주위 1칸범위 데미지 10
 
 
-	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
+	public override void OnDamage(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
 		foreach(Actor a in target.GetAdjacentActor(1))
 		{
