@@ -7,6 +7,19 @@ public class Enchantment_44 : Enchantment {
 	//급소포착2
 	//급소포착 중복 x
 	//치명타 +20%
+	//category == 5
 
-	
+	EquipmentEffect tempEffect;
+	const int category = 5;
+
+	public override void OnEquip(Character user)
+	{
+		tempEffect = new EquipmentEffect(this, user);
+		tempEffect.criticalChanceMult += 0.20f;
+		user.AddEquipmentEffect(tempEffect);
+	}
+	public override void OnUnequip(Character user)
+	{
+		user.RemoveAllEquipmentEffectByParent(this);
+	}
 }

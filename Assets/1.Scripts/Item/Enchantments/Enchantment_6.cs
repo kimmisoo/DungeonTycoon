@@ -29,7 +29,7 @@ public class Enchantment_6 : Enchantment {
 			if (immerseCount < 5) // 총 누적 5번
 			{
 				tempEffect = new EquipmentEffect(this, user);
-				tempEffect.attackspeedMult += 0.1f;
+				tempEffect.attackspeedMult += 0.05f;
 
 				immerseCount++;
 				user.AddEquipmentEffect(tempEffect);

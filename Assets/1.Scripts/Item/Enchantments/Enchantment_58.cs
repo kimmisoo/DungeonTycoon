@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enchantment_58 : MonoBehaviour {
+public class Enchantment_58 : Enchantment {
 
-	// Use this for initialization
-	void Start () {
-		
+	//날카로운 날
+	//방어구관통 + 30%
+
+	EquipmentEffect tempEffect;
+	public override void OnEquip(Character user)
+	{
+		tempEffect = new EquipmentEffect(this, user);
+		tempEffect.penetrationMult += 0.3f;
+		user.AddEquipmentEffect(tempEffect);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	public override void OnUnequip(Character user)
+	{
+		user.RemoveAllEquipmentEffectByParent(this);
 	}
 }

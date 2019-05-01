@@ -24,6 +24,7 @@ public class EquipmentEffect {
 	public float defence { get; set; } = 0.0f;
 	public float defenceMult { get; set; } = 0.0f;
 	public float defenceMultFinal { get; set; } = 0.0f;
+	public float reduceDamageMult { get; set; } = 0.0f;
 	public float penetration { get; set; } = 0.0f;
 	public float penetrationMult { get; set; } = 0.0f;
 	public float penetrationMultFinal { get; set; } = 0.0f;
@@ -38,8 +39,8 @@ public class EquipmentEffect {
 	public float attackspeedMult { get; set; } = 0.0f;
 	public float attackspeedMultFinal { get; set; } = 0.0f;
 	public int attackRange { get; set; } = 0;
-	
-	
+	public int category { get; set; } = -1;
+	public int invincibleCount { get; set; } = 0;
 
 	public void SetParent(IHasEquipmentEffect _parent)
 	{
@@ -57,6 +58,7 @@ public class EquipmentEffect {
 	{
 		return user;
 	}
+	
 
 
 }

@@ -2,15 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enchantment_50 : MonoBehaviour {
+public class Enchantment_50 : Enchantment {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	//파이어볼
+	//공격시 7% 확률로 2x2 범위에 80 데미지.
+	//2x2 계산
 }

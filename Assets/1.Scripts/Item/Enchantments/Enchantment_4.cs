@@ -10,19 +10,17 @@ public class Enchantment_4 : Enchantment {
 	List<Actor> near = new List<Actor>();
 	const float amount = 0.1f;
 	EquipmentEffect tempEffect;
+
 	public override void OnEquip(Character user)
 	{
 		nearMonsterCheck = StartCoroutine(NearMonsterCheck(user));
 	}
-	public override void OnCoroutine(Character user, Monster target, Monster[] targets)
-	{
-		//쓰일 일 없을듯
-	}
+	
 	public override void OnUnequip(Character user)
 	{
 		StopCoroutine(nearMonsterCheck);
 	}
-	IEnumerator NearMonsterCheck(Actor user)
+	IEnumerator NearMonsterCheck(Character user)
 	{
 
 		int nearCount = 0;

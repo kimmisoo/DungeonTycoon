@@ -32,7 +32,7 @@ public class Enchantment : MonoBehaviour, IHasEquipmentEffect{
 	public bool isDead;
     Character user;
 	Item item;
-    
+	
     
 	// Use this for initialization
 	void Start () {

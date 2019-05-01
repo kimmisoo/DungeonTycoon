@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Actor : MonoBehaviour {
-	
+
 	//-----기능-----
 	//이동
 	//인챈트
@@ -27,18 +27,19 @@ public abstract class Actor : MonoBehaviour {
 	public int gold { get; set; }
 
 	public float healthMax { get; set; }
-	public float currentHealth { get; set; }	
+	public float currentHealth { get; set; }
 	public float currentShield { get; set; }
 	public float attack { get; set; }
 	public float defence { get; set; }
+	public float reduceDamageMult { get; set; }
 	public float penetration { get; set; }
 	public float avoidMult { get; set; }
 	public float criticalChanceMult { get; set; }
 	public float criticalDamageMult { get; set; }
-	
+
 
 	public bool isStunned { get; set; }
-	public bool isDebuffed  { get; set; }
+	public bool isDebuffed { get; set; }
 	public bool isDead { get; set; }
 	public float damageTakedSum { get; set; }
 
@@ -46,14 +47,15 @@ public abstract class Actor : MonoBehaviour {
 	public float movespeedMultFinal { get; set; } = 1.0f;
 
 	public float attackspeedMult { get; set; }
-	public float attackspeedMultFinal { get; set;} = 1.0f;
+	public float attackspeedMultFinal { get; set; } = 1.0f;
 
-	public string name { get; set;}
-	public string explanation { get; set;}
+	public string name { get; set; }
+	public string explanation { get; set; }
 
 	public int attackRange { get; set; } = 1;
 	public bool isHitRecent { get; set; } = false;
 	public bool isCriticalRecent { get; set; } = false;
+	public int invincibleCount { get; set; } = 0;
 
 	private Moveto moveto;
 	private List<Enchantment> enchantmentList;
@@ -91,13 +93,16 @@ public abstract class Actor : MonoBehaviour {
 	}
 	public void RemoveAllEquipmentEffectByParent(IHasEquipmentEffect parent)
 	{
-		for (int i = 0; i < equipmentEffectList.Count; i++)
+		int i = 0;
+		while(i<equipmentEffectList.Count)
 		{
 			if (equipmentEffectList[i].GetParent().Equals(parent))
 			{
-				equipmentEffectList.RemoveAt(i);
+				equipmentEffectList.RemoveAt(i--);
 			}
+			i++;
 		}
+		
 	}
 	public abstract void TakeStunned(Actor from, Enchantment enchantment, float during);
 	
@@ -110,6 +115,14 @@ public abstract class Actor : MonoBehaviour {
 	public void SetGold(int _gold)
 	{
 		gold = _gold;
+	}
+	public float GetCurrentHealth()
+	{
+		return currentHealth;
+	}
+	public float GetCurrentShield()
+	{
+		return currentShield;
 	}
 	public float GetHealthMax()
 	{
@@ -164,6 +177,10 @@ public abstract class Actor : MonoBehaviour {
 	{
 		return attackRange + GetAttackRangeFromEquipmentEffect();
 	}
+	public int GetCalculatedInvincibleCount()
+	{
+		return invincibleCount + GetInvincibleCountFromEquipmentEffect();
+	}
 	public Tile GetCurTile()
 	{
 		//return moveto.cur
@@ -200,12 +217,20 @@ public abstract class Actor : MonoBehaviour {
 		}
 		return adjacentActors;
 	}
-	
+	public List<EquipmentEffect> GetSameCategoryEffects(int category)
+	{
+		List<EquipmentEffect> tempList = new List<EquipmentEffect>();
+		foreach(EquipmentEffect e in equipmentEffectList)
+		{
+			if (e.category != -1)
+				tempList.Add(e);
+		}
+		return tempList;
+	}
 	public float GetCalculatedDamage(float damage, float penetration, Actor from)
 	{
 		return 0.0f;
-		//damage 연산 필요
-		
+		//damage 연산 필요		
 	}
 
 	public float GetHealthMaxFromEquipmentEffect()
@@ -439,6 +464,15 @@ public abstract class Actor : MonoBehaviour {
 		foreach (EquipmentEffect e in equipmentEffectList)
 		{
 			sum += e.attackRange;
+		}
+		return sum;
+	}
+	public int GetInvincibleCountFromEquipmentEffect()
+	{
+		int sum = 0;
+		foreach(EquipmentEffect e in equipmentEffectList)
+		{
+			sum += e.invincibleCount;
 		}
 		return sum;
 	}

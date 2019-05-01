@@ -19,7 +19,7 @@ public class Enchantment_2 : Enchantment {
 		user.AddEquipmentEffect(effect);
 	}
 	public override void OnUnequip(Character user)
-	{
+	{ 
 		//user.attackMultFinal += 0.5f;
 		//user.attackspeedMultFinal -= 1.0f;
 		if(effect == null)
@@ -30,13 +30,7 @@ public class Enchantment_2 : Enchantment {
 		user.RemoveEquipmentEffect(effect);
 		effect = null;
 	}
-	public override void OnDead(Character user, Monster target, Monster[] targets)
-	{
-		if(effect != null)
-		{
-			OnUnequip(user);
-		}
-	}
+	
 
 
 }

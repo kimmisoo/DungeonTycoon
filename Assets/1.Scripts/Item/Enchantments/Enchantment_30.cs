@@ -7,13 +7,14 @@ public class Enchantment_30 : Enchantment {
 	//충격파 생성
 	//매 공격시 주위 1칸범위 데미지 10
 
-	public override void OnAttack(Character user, Monster target, Monster[] targets)
+
+	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
 	{
 		foreach(Actor a in target.GetAdjacentActor(1))
 		{
 			if(a is Monster)
 			{
-				a.TakeDamageFromEnchantment(10.0f, user.GetCalculatedPenetration(), user, this);
+				a.TakeDamageFromEnchantment(10.0f, user, this, false, out isHit, out isDead);
 			}
 		}
 	}

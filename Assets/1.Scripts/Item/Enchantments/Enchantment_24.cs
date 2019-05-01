@@ -7,12 +7,11 @@ public class Enchantment_24 : Enchantment {
 	//분신
 	//치명타시 50% 공격력의 추가타
 
-	public override void OnDamage(Character user, Monster target, Monster[] targets, bool isCritical)
+	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
 	{
 		if(isCritical == true)
 		{
-			target.TakeDamageFromEnchantment(user.GetCalculatedAttack() * 0.5f * (1 + user.GetCalculatedCriticalDamage()), user.GetCalculatedPenetration(), user, this);
+			target.TakeDamageFromEnchantment(damage * 0.5f, user, this, false, out isHit, out isDead);
 		}
 	}
-
 }

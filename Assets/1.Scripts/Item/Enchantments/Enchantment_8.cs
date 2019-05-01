@@ -11,6 +11,7 @@ public class Enchantment_8 : Enchantment {
 	EquipmentEffect tempEffect;
 	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
 	{
+		
 		if (opponent == null)
 			opponent = target;
 
@@ -20,14 +21,17 @@ public class Enchantment_8 : Enchantment {
 			damageCount++;
 			tempEffect = new EquipmentEffect(this, user);
 			tempEffect.defenceMult -= 0.06f;
-			opponent.enchantmentDefenceMult -= 0.06f;
+			opponent.AddEquipmentEffect(tempEffect);
 		}
 		else
 		{
-			opponent.enchantmentDefenceMult += 0.06f * damageCount;
+			opponent.RemoveAllEquipmentEffectByParent(this);
 			damageCount = 1;
 			opponent = target;
-			opponent.enchantmentDefenceMult -= 0.06f;
+			tempEffect = new EquipmentEffect(this, user);
+			tempEffect.defenceMult -= 0.06f;
+			opponent.AddEquipmentEffect(tempEffect);
+			
 
 		}
 	}
@@ -36,7 +40,8 @@ public class Enchantment_8 : Enchantment {
 	{
 		if(target.gameObject.activeSelf == true)
 		{
-			target.enchantmentDefenceMult += 0.06f * damageCount;
+			//target.enchantmentDefenceMult += 0.06f * damageCount;
+			target.RemoveAllEquipmentEffectByParent(this);
 		}
 	}
 }

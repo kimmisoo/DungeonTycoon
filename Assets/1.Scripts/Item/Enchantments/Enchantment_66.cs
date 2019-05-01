@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enchantment_66 : MonoBehaviour {
+public class Enchantment_66 : Enchantment {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	//인내심
+	//모든 욕구 생성 -30%
+	//최대 체력 + 4%
+	//2분이내 해제 불가
 }

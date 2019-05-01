@@ -30,7 +30,7 @@ public class Enchantment_18 : Enchantment {
 			{
 				if (a is Monster)
 				{
-					a.TakeDamageFromEnchantment(user.GetCalculatedAttack() * 0.08f, user.GetCalculatedPenetration(), user, this);
+					a.TakeDamageFromEnchantment(user.GetCalculatedAttack() * 0.08f, user, this, false, out isHit, out isDead);
 				}
 			}
 		}

@@ -25,7 +25,7 @@ public class Enchantment_25 : Enchantment {
 		while(true)
 		{
 			yield return interval;
-			user.TakeHealFromEnchantment((user.GetCalculatedHealthMax() - user.health) * 0.015f, user, this);
+			user.TakeHealFromEnchantment((user.GetCalculatedHealthMax() - user.GetCurrentHealth()) * 0.015f, user, this);
 		}
 	}
 }

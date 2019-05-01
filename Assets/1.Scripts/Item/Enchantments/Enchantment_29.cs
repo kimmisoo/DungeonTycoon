@@ -4,7 +4,19 @@ using UnityEngine;
 
 public class Enchantment_29 : Enchantment {
 
-	
+
 	//무기정비
 	//방관 + 15 (고정)
+
+	EquipmentEffect tempEffect;
+	public override void OnEquip(Character user)
+	{
+		tempEffect = new EquipmentEffect(this, user);
+		tempEffect.penetration = 15.0f;
+		user.AddEquipmentEffect(tempEffect);
+	}
+	public override void OnUnequip(Character user)
+	{
+		user.RemoveAllEquipmentEffectByParent(this);
+	}
 }

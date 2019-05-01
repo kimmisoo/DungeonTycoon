@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enchantment_52 : MonoBehaviour {
+public class Enchantment_52 : Enchantment {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+	//홍보용 휘장
+	//후원받는 기업의 선호도 + 10, 요금 + 5%
+	//2분이내 해제 불가
+
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

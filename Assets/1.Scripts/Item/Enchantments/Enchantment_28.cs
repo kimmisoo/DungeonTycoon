@@ -12,9 +12,9 @@ public class Enchantment_28 : Enchantment {
 
 	public override void OnEndBattle(Character user, Monster target, Monster[] targets)
 	{
-		if(user.GetCalculatedHealthMax() - user.health > 30.0f && count > 0)
+		if(user.GetCalculatedHealthMax() - user.GetCurrentHealth() > 30.0f && count > 0)
 		{
-			user.TakeHeal(30.0f, user);
+			user.TakeHealFromEnchantment(30.0f, user, this);
 			count--;
 		}
 	}

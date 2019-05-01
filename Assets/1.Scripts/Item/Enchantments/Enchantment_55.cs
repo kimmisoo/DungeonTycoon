@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enchantment_55 : MonoBehaviour {
+public class Enchantment_55 : Enchantment {
 
-	// Use this for initialization
-	void Start () {
-		
+	//하급 보호 마법
+	//체력 + 12%
+
+	EquipmentEffect tempEffect;
+	public override void OnEquip(Character user)
+	{
+		tempEffect = new EquipmentEffect(this, user);
+		tempEffect.healthMaxMult += 0.12f;
+		user.AddEquipmentEffect(tempEffect);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public override void OnUnequip(Character user)
+	{
+		user.RemoveAllEquipmentEffectByParent(this);
 	}
 }

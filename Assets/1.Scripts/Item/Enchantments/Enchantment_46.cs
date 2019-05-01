@@ -7,8 +7,8 @@ public class Enchantment_46 : Enchantment {
 	//불꽃
 	//매 공격시 12 추가데미지
 
-	public override void OnAttack(Character user, Monster target, Monster[] targets)
+	public override void OnDamage(Character user, Monster target, Monster[] targets, float damage, bool isCritical)
 	{
-		target.TakeDamageFromEnchantment(12.0f, user.GetCalculatedPenetration(), user, this);
+		target.TakeDamageFromEnchantment(12.0f, user, this, false, out isHit, out isDead);
 	}
 }
