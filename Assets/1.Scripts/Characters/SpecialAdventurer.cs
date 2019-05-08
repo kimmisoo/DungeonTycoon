@@ -77,27 +77,6 @@ public class SpecialAdventurer : Character {
 		while (true)
 		{
 			yield return null;
-			//fight monster 
-			/*
-			if (MonsterManager.Instance.GetRandomMonster_test() != null)
-			{
-				moveto.destination = MonsterManager.Instance.GetRandomMonster_test().GetComponent<Moveto>().GetCurPos();
-				monster = MonsterManager.Instance.GetRandomMonster_test().GetComponent<Monster>();
-				yield return StartCoroutine("MovetoTarget");
-				//end of the move
-				yield return StartCoroutine("Fight");
-			}*/
-			/*
-			if (strs.Count >= 1) // 건물이 하나라도 있으면?
-			{
-				int x, y;
-				index = Random.Range(0, strs.Count);
-				destStructure = strs[index];
-				x = strs[index].entrance[0].GetX();
-				y = strs[index].entrance[0].GetY();
-				moveto.destination = map.GetLayer(0).GetComponent<TileLayer>().GetTileForMove(x * 2, y * 2);
-
-			}*/
 			do
 			{
 				moveto.destination = map.GetLayer(0).GetComponent<TileLayer>().GetTileAsComponent(Random.Range((int)0, (int)50), Random.Range((int)0, (int)50)); // 범위 수정해줘야ㅏ함.
@@ -151,10 +130,6 @@ public class SpecialAdventurer : Character {
 		if (way == null || moveto.isNoPath == true)
 		{
 			yield return StartCoroutine(moveto.MoveinNoPath());
-			//if (moveto.GetPath() == null)
-			//Debug.Log("there is no path !!!!");
-
-
 		}
 		//Debug.Log("haaa");
 
@@ -165,7 +140,7 @@ public class SpecialAdventurer : Character {
 		wayForMove.Clear();
 		wayForMove.Add(way[0].curTile.GetChild(curChildIndex));
 		
-		//직선이동시 한번에 벡터계산//이동시 공격받을때도 생각해야함!
+		//직선이동시 한번에 벡터계산 x //이동시 공격받을때도 생각해야함!
 		for(int i=0; i<way.Count - 1; i++)
 		{
 			switch(wayForMove[wayForMove.Count - 1].GetChildNum())

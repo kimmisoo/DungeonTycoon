@@ -57,11 +57,13 @@ public abstract class Actor : MonoBehaviour {
 	public bool isCriticalRecent { get; set; } = false;
 	public int invincibleCount { get; set; } = 0;
 
-	private Moveto moveto;
-	private List<Enchantment> enchantmentList;
-	private List<EquipmentEffect> equipmentEffectList;
-	private List<Item> itemList;
-	
+	public Moveto moveto;
+	public List<Enchantment> enchantmentList;
+	public List<EquipmentEffect> equipmentEffectList;
+	public List<Item> itemList;
+	public Structure destStructure;
+	public List<Moveto.PathVertex> wayList;
+	public List<TileForMove> wayForMove;
 	
 	//실제 데미지 계산 =
 	//데미지 = 공격력 * 1/(1+( (방어 - 고정방관) * (1- %방관) * 1/100))
@@ -73,6 +75,8 @@ public abstract class Actor : MonoBehaviour {
 		enchantmentList = new List<Enchantment>();
 		equipmentEffectList = new List<EquipmentEffect>();
 		itemList = new List<Item>();
+		wayList = new List<Moveto.PathVertex>();
+		wayForMove = new List<TileForMove>();
 	}
 
 
@@ -106,8 +110,6 @@ public abstract class Actor : MonoBehaviour {
 		
 	}
 	public abstract void TakeStunned(Actor from, Enchantment enchantment, float during);
-	
-	
 
 	public int GetGold()
 	{
@@ -477,5 +479,23 @@ public abstract class Actor : MonoBehaviour {
 		}
 		return sum;
 	}
-
+	
+	public void SetCurPos(Tile _tile)
+	{
+		moveto.SetCurPos(_tile);
+	}
+	public Tile GetCurPos()
+	{
+		return moveto.GetCurPos();
+	}
+	public void SetCurPosForMove(TileForMove _tileForMove)
+	{
+		moveto.SetCurPosForMove(_tileForMove);
+	}
+	public TileForMove GetCurPosForMove()
+	{
+		return moveto.GetCurPosForMove();
+	}
 }
+
+

@@ -54,20 +54,6 @@ public class Moveto : MonoBehaviour {
 			prevVertex = null;
 		}
 		
-		/*
-		public PathVertex(PathVertex _prevVertex, Tile _curTile, Tile _endTile, int hgihCost)
-        {
-            curTile = _curTile;
-            prevVertex = _prevVertex;
-            if (prevVertex == null)
-                G = 1;
-            else
-                G = prevVertex.G + 100000;
-            H = Mathf.Abs(_endTile.GetX() - curTile.GetX()) + Mathf.Abs(_endTile.GetY() - curTile.GetY());
-            F = G + H;
-			X = curTile.GetX();
-			Y = curTile.GetY(); 
-		}*/
 		public int CompareTo(object other)
 		{
 			if ((other is PathVertex) == false) return 0;
@@ -160,18 +146,10 @@ public class Moveto : MonoBehaviour {
 		
 		path.Clear();
 		closeList.Clear();
-		//closeDic.Clear();
 		openList.HalfClear();
 		ClearVisited();
-		
-		//openDic.Clear();
-		//yield return StartCoroutine(Simulate());
 		found = false;
-		//ThreadStart ts = new ThreadStart(Simulate);
-		//Thread t = new Thread(ts);
 		ThreadPool.UnsafeQueueUserWorkItem(this.Simulate, null);
-		//ThreadPool.QueueUserWorkItem(this.Simulate);
-        //t.Start();
         while(found == false)
         {
 			//Debug.Log("found == false While looop");
@@ -303,27 +281,18 @@ public class Moveto : MonoBehaviour {
 	{
 		
 		latest_simulate = new PathVertex(null, myCurPos, destination);
-		//closeList.Add(latest_simulate);
-		bestKey = latest_simulate.X * 1000 + latest_simulate.Y;//latest_simulate.F;
-		//closeDic.Add(bestKey, new List<PathVertex>());
-		//closeDic[latest_simulate.F].Add(latest_simulate);
+		bestKey = latest_simulate.X * 1000 + latest_simulate.Y;
 		closeList.Add(latest_simulate.X * 1000 + latest_simulate.Y, latest_simulate);
 
 		visited[latest_simulate.Y, latest_simulate.X].isClosed = true;
 		Debug.Log("in");
         while (!latest_simulate.curTile.Equals(destination))
 		{
-			//yield return null;
-			//Debug.Log("OHOH");
 			for (int i = 0; i < 4; i++)
 			{
-				if ((next = tileLayer.GetTileAsComponent((int)(latest_simulate.myTilePos.GetX() + DirectionVectors[i].x), (int)(latest_simulate.myTilePos.GetY() + DirectionVectors[i].y))) != null && next.GetPassable()  /*&& next.GetParent().GetMonsterArea() == isAdventurer*/) //+Exception
+				if ((next = tileLayer.GetTileAsComponent((int)(latest_simulate.myTilePos.GetX() + DirectionVectors[i].x), (int)(latest_simulate.myTilePos.GetY() + DirectionVectors[i].y))) != null && next.GetPassable())
 				{
-					//PathVertex nextVertex = new PathVertex(latest_simulate, next, destination);
-					//AddOpenList(new PathVertex(latest_simulate, next, destination));
-					//Debug.Log("AddOpenLIst");
-
-					if (visited[next.GetY(), next.GetX()].isClosed == false)//!closeList.ContainsKey(next.GetX() * 1000 + next.GetY()))
+					if (visited[next.GetY(), next.GetX()].isClosed == false)
 					{
 						if (visited[next.GetY(), next.GetX()].isVisited == false)
 						{
@@ -332,12 +301,9 @@ public class Moveto : MonoBehaviour {
 								openList.Add(tempVertex = new PathVertex(latest_simulate, next, destination));
 								visited[next.GetY(), next.GetX()].isVisited = true;
 								visited[next.GetY(), next.GetX()].F = tempVertex.F;
-								//openList.useCount++;
 							}
 							else
 							{
-								//items.Add(item); 
-								//reuse 할때도 priority queue ~~~
 								openList[openList.useCount].ReUse(latest_simulate, next, destination);
 								tempVertex = openList[openList.useCount];
 								index = openList.useCount;
@@ -357,12 +323,12 @@ public class Moveto : MonoBehaviour {
 						}
 						else // visited 있는경우 - 최적의 값 비교.
 						{
-							// openList안에서 찾는것이 우선 . . .  F (F = G + H / 현재까지 온 거리 + 이상적인 남은 거리) 기준으로 정렬됨.
-							
+							// openList안에서 찾는것이 우선 . . .  F (F = G + H / 현재까지 온 거리 +남은 거리 최소값) 기준으로 정렬됨.
+
 							if (visited[next.GetY(), next.GetX()].F > (latest_simulate.G + 1 + (Mathf.Abs(destination.GetX() - next.GetX()) + Mathf.Abs(destination.GetY() - next.GetY()))))
 							{
 								bool find = false;
-								for(int u = 0; u<openList.useCount; u++)
+								for (int u = 0; u < openList.useCount; u++)
 								{
 									if (openList[u].X == next.GetX() && openList[u].Y == next.GetY())
 									{
@@ -371,9 +337,9 @@ public class Moveto : MonoBehaviour {
 										break;
 									}
 								}
-								
-								if(find == true)
-								{ 
+
+								if (find == true)
+								{
 									openList.RemoveAt(index);
 
 									if (openList.Count <= openList.useCount)
@@ -381,7 +347,6 @@ public class Moveto : MonoBehaviour {
 										openList.Add(tempVertex = new PathVertex(latest_simulate, next, destination));
 										visited[next.GetY(), next.GetX()].isVisited = true;
 										visited[next.GetY(), next.GetX()].F = tempVertex.F;
-										//openList.useCount++;
 									}
 									else
 									{
@@ -406,77 +371,30 @@ public class Moveto : MonoBehaviour {
 								}
 
 							}
-
-							
 						}
-						
-						//newVertex.curTile.AddedOpenList();
-					}
-					
-					/*
-					for(int i=0; i< openList.Count; i++)
-					{
-						Debug.Log("SearchCount! - " + i);
-						if(openList[i].myTilePos.Equals(newVertex.myTilePos) && openList[i].F > newVertex.F)
-						{
-							openList.RemoveAt(i);
-							openList.Add(newVertex);
-							return;
-						}
-					}*/
-					
-
+					}					
 				}
 			}
-
-			//yield return null;
 			if(openList.useCount != 0)
 			{
-				//베스트 찾기
 				best = openList.Pop();
-				bestKey = best.X * 1000 + best.Y; 
-				/*
-				foreach (KeyValuePair<int, PathVertex> kvp in openList)
-				{
-					best = openList[kvp.Key];
-					bestKey = kvp.Key;
-					break;
-				}*/
-				//Debug.Log("1");
-				
+				bestKey = best.X * 1000 + best.Y; 				
 			}
             else
             {
-                //길 못찾음.
-                //Debug.Log("Cannot Found Path");
                 isNoPath = true;
                 found = true;
-				//Debug.Log("2");
                 break;
             }
-
-			//Debug.Log("2.5");
-			//Debug.Log("bestkey : " + bestKey + " best = " + best.X + " , " + best.Y);
 			if (!closeList.ContainsKey(bestKey))
 			{
 				closeList.Add(bestKey, best);
 				best.curTile.AddedCloseList();
 			}
-			//Debug.Log("Het");
-			//best.curTile.GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 0.0f);
 			latest_simulate = best;
-			//Debug.Log("best - X : " + best.X + " Y : " + best.Y);
 		}
-		//Debug.Log("3");
 		latest = latest_simulate;
         found = true;
-		//Debug.Log("using openList - " + openList.Count);
-		//Debug.Log("using closeList - " + closeList.Count);
-		
-		//Debug.Log("count of PathVertex(open) - " + openList.Count + "count of Pathvertex(close) - " + closeList.Count);
-		//Debug.Log("found");
-
-
 	}
 	
 	void AddOpenList(PathVertex newVertex)
@@ -486,20 +404,8 @@ public class Moveto : MonoBehaviour {
 			
 			return;
 		}
-		/*
-		for(int i=0; i< openList.Count; i++)
-		{
-			Debug.Log("SearchCount! - " + i);
-			if(openList[i].myTilePos.Equals(newVertex.myTilePos) && openList[i].F > newVertex.F)
-			{
-				openList.RemoveAt(i);
-				openList.Add(newVertex);
-				return;
-			}
-		}*/
 		openList.Add(newVertex);
 		newVertex.curTile.AddedOpenList();
-		//newVertex.curTile.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f);
 	}
 
 	public Tile GetCurPos()

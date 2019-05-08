@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public abstract class Character : Actor {
-
+	//건물입장.
+	//골드 등~
 	public enum State
 	{ Idle, Move, Hunt, Indoor }
 

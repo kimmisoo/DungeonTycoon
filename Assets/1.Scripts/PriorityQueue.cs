@@ -28,8 +28,6 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 
 	public void Add(T item)
 	{
-		//new
-
 		items.Add(item);
 		useCount++;
 		index = useCount - 1;//items.Count - 1;
@@ -42,13 +40,8 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 			keepGoing = CompareAndSwap(index, parentIndex);
 			if (keepGoing) index = parentIndex;
 		}
-		
-
 	}
-	public void AddManual()
-	{
-		
-	}
+	
 	public void Clear()
 	{
 		items.Clear();
@@ -102,7 +95,6 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 			keepGoing = CompareAndSwap(childIndex, index);
 			if (keepGoing) index = childIndex;
 		}
-
 		return true;
 	}
 
@@ -123,8 +115,7 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 		if (/*items.Count*/useCount > 0)
 		{
 			item = items[0];
-			RemoveAt(0);
-			
+			RemoveAt(0);		
 		}
 
 		return item;
