@@ -5,9 +5,9 @@ using System.Collections.Generic;
 public abstract class Character : Actor {
 	//건물입장.
 	//골드 등~
-	public enum State
-	{ Idle, Move, Hunt, Indoor }
-
+	
+	public enum Type
+	{ Human, Elf, Dwarf, Orc, Dog, Cat }
 
 	protected TileMap map;
 	protected Animator animator;
@@ -47,15 +47,17 @@ public abstract class Character : Actor {
 
 
 
-	public override void TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead)
+	public override float TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead)
 	{
 		isHit = false;
 		isDead = false;
+		return 0.0f;
 	}
-	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead)
+	public override float TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead)
 	{
 		isHit = false;
 		isDead = false;
+		return 0.0f;
 	}
 
 	public override void Die(Actor Opponent)
@@ -82,11 +84,6 @@ public abstract class Character : Actor {
 	public override void RemoveEnchantment(Enchantment enchantment)
 	{
 		//인챈트 제거
-	}
-	
-	protected virtual void Start()
-	{
-
 	}
 
 	protected virtual void Activate()

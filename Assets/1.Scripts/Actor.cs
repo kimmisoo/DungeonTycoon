@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public abstract class Actor : MonoBehaviour {
 
 	//-----기능-----
@@ -58,31 +59,31 @@ public abstract class Actor : MonoBehaviour {
 	public int invincibleCount { get; set; } = 0;
 
 	public Moveto moveto;
-	public List<Enchantment> enchantmentList;
-	public List<EquipmentEffect> equipmentEffectList;
-	public List<Item> itemList;
-	public Structure destStructure;
-	public List<Moveto.PathVertex> wayList;
-	public List<TileForMove> wayForMove;
-	
+	public List<Enchantment> enchantmentList = new List<Enchantment>();
+	public List<EquipmentEffect> equipmentEffectList = new List<EquipmentEffect>();
+	public List<Item> itemList = new List<Item>();
+	public Structure destStructure = null;
+	public List<Moveto.PathVertex> wayList = new List<Moveto.PathVertex>();
+	public List<TileForMove> wayForMove = new List<TileForMove>();
+	public enum State
+	{
+		Idle, Move, Battle, Dead, Indoor
+	}
+	public State state = new State();
 	//실제 데미지 계산 =
 	//데미지 = 공격력 * 1/(1+( (방어 - 고정방관) * (1- %방관) * 1/100))
 	//데미지 입었을때 target에서 user OnDamage 호출.
 	
-	public void Start()
+	public virtual void Start()
 	{
 		moveto = GetComponent<Moveto>();
-		enchantmentList = new List<Enchantment>();
-		equipmentEffectList = new List<EquipmentEffect>();
-		itemList = new List<Item>();
-		wayList = new List<Moveto.PathVertex>();
-		wayForMove = new List<TileForMove>();
 	}
 
 
-	
-	public abstract void TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead);
-	public abstract void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead);
+	//public abstract void Attack();
+	//public abstract void Attacked();
+	public abstract float TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead);
+	public abstract float TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead);
 	public abstract void Die(Actor Opponent);
 	public abstract void TakeHeal(float heal, Actor from);
 	public abstract void TakeHealFromEnchantment(float heal, Actor from, Enchantment enchantment);
@@ -184,22 +185,14 @@ public abstract class Actor : MonoBehaviour {
 	{
 		return invincibleCount + GetInvincibleCountFromEquipmentEffect();
 	}
-	public Tile GetCurTile()
-	{
-		//return moveto.cur
-		return null; 
-	}
-	public TileForMove GetCurTileForMove()
-	{
-		return null;
-	}
+	
 	
 	public List<Actor> GetAdjacentActor(int range)
 	{
 		List<Actor> adjacentActors = new List<Actor>();
 		TileLayer layer = moveto.tileLayer;
-		int x = moveto.GetCurPosForMove().GetX();
-		int y = moveto.GetCurPosForMove().GetY();
+		int x = GetCurTileForMove().GetX();
+		int y = GetCurTileForMove().GetY();
 		TileForMove tileForMoveTemp;
 		for (int i = -range; i <= range; i++)
 		{
@@ -208,7 +201,7 @@ public abstract class Actor : MonoBehaviour {
 				if (Mathf.Abs(i) + Mathf.Abs(j) > range) // + 실제 actor가 타일 위에 있는지
 					continue;
 				tileForMoveTemp = layer.GetTileForMove(x + i, y + j);
-				if(tileForMoveTemp.Equals(tileForMoveTemp.GetRecentActor().moveto.GetCurPosForMove())) // tileForMoveTemp에 기록된 recentActor의 현재위치가 tileForMoveTemp와 일치하는지
+				if(tileForMoveTemp.Equals(tileForMoveTemp.GetRecentActor().moveto.GetCurTileForMove())) // tileForMoveTemp에 기록된 recentActor의 현재위치가 tileForMoveTemp와 일치하는지
 				{
 					adjacentActors.Add(layer.GetTileForMove(x + i, y + j).GetRecentActor());
 				}
@@ -480,21 +473,91 @@ public abstract class Actor : MonoBehaviour {
 		return sum;
 	}
 	
-	public void SetCurPos(Tile _tile)
+	public void SetCurTile(Tile _tile)
 	{
-		moveto.SetCurPos(_tile);
+		moveto.SetCurTile(_tile);
 	}
-	public Tile GetCurPos()
+	public Tile GetCurTile()
 	{
-		return moveto.GetCurPos();
+		return moveto.GetCurTile();
 	}
-	public void SetCurPosForMove(TileForMove _tileForMove)
-	{
-		moveto.SetCurPosForMove(_tileForMove);
+	public void SetCurTileForMove(TileForMove _tileForMove)
+	{ 
+		moveto.SetCurTileForMove(_tileForMove);
 	}
-	public TileForMove GetCurPosForMove()
+	public TileForMove GetCurTileForMove()
 	{
-		return moveto.GetCurPosForMove();
+		return moveto.GetCurTileForMove();
+	}
+	public int GetDistanceFromOtherActorForMove(Actor actor)
+	{
+		if(actor != null)
+		{
+			return Mathf.Abs(actor.GetCurTileForMove().GetX() - GetCurTileForMove().GetX()) + Mathf.Abs(actor.GetCurTileForMove().GetY() - GetCurTileForMove().GetY()); 
+		}
+		else
+		{
+			return int.MaxValue;
+		}
+	}
+	
+	public Direction GetDirectionFromOtherTileForMove(TileForMove tileForMove)
+	{
+		Direction direction = Direction.DownLeft;
+		int distanceX = GetCurTileForMove().GetX() - tileForMove.GetX();
+		int distanceY = GetCurTileForMove().GetY() - tileForMove.GetY();
+		int absX = Mathf.Abs(distanceX);
+		int absY = Mathf.Abs(distanceY);
+
+		if(absX == 0 && absY == 0)
+		{
+			direction = Direction.None;
+			return direction;
+		}
+		if (distanceX >= 0 && distanceY >= 0)
+		{
+			if (absX > absY)
+				direction = Direction.DownRight;
+			else
+				direction = Direction.DownLeft;
+			
+		}
+		else if (distanceX >=0 && distanceY < 0) //Right
+		{
+			if (absX > absY)
+				direction = Direction.DownRight;
+			else
+				direction = Direction.UpRight;
+		}
+		else if(distanceX < 0 && distanceY >= 0) //Left
+		{
+			if (absX > absY)
+				direction = Direction.UpLeft;
+			else
+				direction = Direction.DownLeft;
+		}
+		else
+		{
+			if (absX > absY)
+				direction = Direction.UpLeft;
+			else
+				direction = Direction.UpRight;
+		}
+
+		return direction;
+
+	}
+	public void AllOnAttack()
+	{
+
+	}
+	public bool GetIsCriticalAttack()
+	{
+		if (GetCalculatedCriticalChance() < 0.001f)
+			return false;
+		if (Random.Range(0.0f, 1.0f) < GetCalculatedCriticalChance())
+			return true;
+		return false;
 	}
 }
 

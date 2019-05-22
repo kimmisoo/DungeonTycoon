@@ -5,8 +5,7 @@ using System.Threading;
 
 public class SpecialAdventurer : Character {
 
-	enum Type
-	{ Human, Elf, Dwarf, Orc, Dog, Cat }
+	
 	Type type;
 	public Tile dest;
 	const int _typeSize = 6;
@@ -21,7 +20,7 @@ public class SpecialAdventurer : Character {
 	WaitForSeconds wait;
 	Transform mTransform;
 	
-	protected override void Start()
+	public override void Start()
 	{
 		base.Start();//
 		mTransform = this.transform;
@@ -40,7 +39,7 @@ public class SpecialAdventurer : Character {
 	}
 	protected override void Activate()
 	{
-		Actor a;
+		
 		
 	}
 	void OnEnable()
@@ -54,7 +53,6 @@ public class SpecialAdventurer : Character {
 	void OnDisable()
 	{
 		Deactivate();
-		
 	}
 	protected override void Deactivate()
 	{
@@ -72,7 +70,7 @@ public class SpecialAdventurer : Character {
 		List<Structure> strs = StructureManager.Instance.structures;
 		TileForMove dest;
 		moveto.isAdventurer = true;
-		moveto.SetCurPos(GameManager.Instance.GetRandomEntrance());
+		moveto.SetCurTile(GameManager.Instance.GetRandomEntrance());
 		int wanderCount = 0;
 		while (true)
 		{
@@ -407,8 +405,8 @@ public class SpecialAdventurer : Character {
 			yield return StartCoroutine(anim(wayForMove[i].GetPosition(), wayForMove[i + 1].GetPosition()));//
 			
 			//yield return wait;
-			moveto.SetCurPos(wayForMove[i + 1].GetParent());
-			moveto.SetCurPosForMove(wayForMove[i + 1]);
+			moveto.SetCurTile(wayForMove[i + 1].GetParent());
+			moveto.SetCurTileForMove(wayForMove[i + 1]);
 			wayForMove[i + 1].SetRecentActor(this);
 			curChildIndex = wayForMove[i + 1].GetChildNum();
 			mTransform.position = wayForMove[i + 1].GetPosition() + Vector3.up * 0.166f;//moveto.GetCurPos().GetPosition() + Vector3.up * 0.166f;

@@ -19,7 +19,6 @@ public class TileLayer : MonoBehaviour  {
 	int a;
 	Vector3 n;
 
-	
 	public void SetLayerNum(int _layer_Num)
 	{
 		layer_Num = _layer_Num;
@@ -145,6 +144,8 @@ public class TileLayer : MonoBehaviour  {
 			return null;			
 		}
 	}
+	
+
 	public string GetLayerName()
 	{
 		return layer_Name;

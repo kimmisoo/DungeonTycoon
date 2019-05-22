@@ -30,8 +30,8 @@ public class MonsterManager : MonoBehaviour {
 		
 		monsterDataText = Resources.Load<TextAsset>("Monsters/Monsters");
 		//monsterData = JSON.Parse(monsterDataText.text);
-		monsters.Add(Instantiate(Resources.Load<GameObject>("MonsterPrefabs/Monster_test")));
-		monsters[0].GetComponent<Moveto>().SetCurPos(GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetTileAsComponent(21, 33));
+		//monsters.Add(Instantiate(Resources.Load<GameObject>("MonsterPrefabs/Monster_test")));
+		//monsters[0].GetComponent<Moveto>().SetCurPos(GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetTileAsComponent(21, 33));
 		//monsters[0].transform.position = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetTile(21, 33).gameObject.transform.position + (Vector3.forward * 0.1f);
 		//monsters[0].transform.position += Vector3.up;
 	}

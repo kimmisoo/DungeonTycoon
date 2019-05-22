@@ -408,19 +408,19 @@ public class Moveto : MonoBehaviour {
 		newVertex.curTile.AddedOpenList();
 	}
 
-	public Tile GetCurPos()
+	public Tile GetCurTile()
 	{
 		return myCurPos;
 	}
-	public void SetCurPos(Tile t)
+	public void SetCurTile(Tile t)
 	{
 		myCurPos = t;
 	}
-	public TileForMove GetCurPosForMove()
+	public TileForMove GetCurTileForMove()
 	{
 		return myCurPosForMove;
 	}
-	public void SetCurPosForMove(TileForMove t)
+	public void SetCurTileForMove(TileForMove t)
 	{
 		myCurPosForMove = t;
 	}
