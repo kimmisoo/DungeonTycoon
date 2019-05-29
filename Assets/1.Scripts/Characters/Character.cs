@@ -47,10 +47,11 @@ public abstract class Character : Actor {
 
 
 
-	public override float TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead)
+	public override float TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead, out float damage)
 	{
 		isHit = false;
 		isDead = false;
+		
 		return 0.0f;
 	}
 	public override float TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead)

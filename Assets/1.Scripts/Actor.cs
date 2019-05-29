@@ -80,10 +80,11 @@ public abstract class Actor : MonoBehaviour {
 	}
 
 
-	//public abstract void Attack();
-	//public abstract void Attacked();
-	public abstract float TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead);
-	public abstract float TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead);
+	public abstract void Attack();
+	public abstract void Attacked(Actor from, bool isCritical, out bool isHit);
+	public abstract void AttackedFromEnchantment(Actor from, Enchantment enchantment, bool isCritical, out bool isHit);
+	public abstract void TakeDamage(Actor from, bool isCritical, out bool isDead, out float damage);
+	public abstract void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead);
 	public abstract void Die(Actor Opponent);
 	public abstract void TakeHeal(float heal, Actor from);
 	public abstract void TakeHealFromEnchantment(float heal, Actor from, Enchantment enchantment);
@@ -547,10 +548,7 @@ public abstract class Actor : MonoBehaviour {
 		return direction;
 
 	}
-	public void AllOnAttack()
-	{
-
-	}
+	
 	public bool GetIsCriticalAttack()
 	{
 		if (GetCalculatedCriticalChance() < 0.001f)

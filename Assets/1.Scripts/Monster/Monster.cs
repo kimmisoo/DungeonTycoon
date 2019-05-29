@@ -11,12 +11,15 @@ public class Monster : Actor {
 	Animator animator;
 	Character target;
 	WaitForSeconds searchInterval = new WaitForSeconds(2.0f);
+	WaitForSeconds moveInterval = new WaitForSeconds(1.0f);
 	int chaseMoveCount = 0;
 	ActingResult actingResult = new ActingResult();
 	TileLayer tileLayer;
 	//Coroutine currentCoroutine;
 	int turn = 0;
 	Direction curDirection = Direction.DownRight;
+	Coroutine moving;
+	Coroutine attacking;
 	//이동시 Monster Tile만 체크
 
 	public override void Start () {
@@ -27,8 +30,8 @@ public class Monster : Actor {
 	private void OnEnable()
 	{
 		tileLayer = GetCurTile().GetLayer();
-		StartCoroutine(Moving());
-		StartCoroutine(Attacking());
+		moving = StartCoroutine(Moving());
+		attacking = StartCoroutine(Attacking());
 	}
 	private void OnDisable()
 	{
@@ -42,49 +45,50 @@ public class Monster : Actor {
 		while (true)
 		{
 			actingResult.Clear();
+			chaseMoveCount = 0;	
 			while (actingResult.isFoundEnemy == false)
 			{
 				yield return StartCoroutine(EnemySearch(actingResult));
-				if (actingResult.isFoundEnemy == false)
+				if (actingResult.isFoundEnemy == false || target == null)
 					yield return StartCoroutine(Wander());
 				else
 					break;
 			}
-			while(target != null && (target.state == State.Dead || state == State.Dead))
+			while(target != null && !(target.state == State.Dead || state == State.Dead) || target.GetCurTile().GetMonsterArea() || chaseMoveCount <= 10)
 			{
-				yield return null;
+				yield return moveInterval;
 				SetAnimFlagFromDirection(GetDirectionFromOtherTileForMove(target.GetCurTileForMove()));
-
-				if (GetCurTile().Equals(target.GetCurTile()))
+				
+				if (GetCurTile().Equals(target.GetCurTile())) // 겹칠경우
 				{
 					//1칸 Tileformove 이동
 					yield return StartCoroutine(Wander());
 				}
-				else
+				else if(GetCurTileForMove().GetDistance(target.GetCurTileForMove()) <= GetCalculatedAttackRange()) // 공격범위내
 				{
-					if(GetCalculatedAttackRange() >= GetDistanceFromOtherActorForMove(target))
+					SetAnimFlagFromDirection(GetDirectionFromOtherTileForMove(target.GetCurTileForMove()));
+					actingResult.isReachEnemy = true;
+					//do nothing
+				}
+				else // 멀리있을경우
+				{
+					TileForMove nextTileForMove = GetNextTileForMoveFromDirection(GetDirectionFromOtherTileForMove(target.GetCurTileForMove()));
+					if (nextTileForMove.GetRecentActor().GetCurTileForMove().Equals(nextTileForMove))
 					{
-						//Nothing...
-						yield return null;
+						//이미 붙어있음
+						SetAnimFlagFromDirection(GetDirectionFromOtherTileForMove(target.GetCurTileForMove()));
 					}
 					else
 					{
-						TileForMove nextTileForMove = GetNextTileForMoveFromDirection(GetDirectionFromOtherTileForMove(target.GetCurTileForMove()));
-						if(nextTileForMove.GetRecentActor().GetCurTileForMove().Equals(nextTileForMove))
-						{
-							yield return StartCoroutine(Wander());
-						}
-						else
-						{
-							SetCurTile(nextTileForMove.GetParent());
-							SetCurTileForMove(nextTileForMove);
-							
-						}
-						//타일 차이나면 moveto 이동. 아니면 direction 계산해서 이동
+						SetCurTile(nextTileForMove.GetParent());
+						SetCurTileForMove(nextTileForMove);
+						MoveOnce(nextTileForMove);//한칸 이동
+						chaseMoveCount++;
 					}
+					//타일 차이나면 moveto 이동. 아니면 direction 계산해서 이동
 				}
-				
-				
+
+
 			}
 			
 			yield return null;
@@ -98,10 +102,17 @@ public class Monster : Actor {
 		//battle
 		while(true)
 		{
+			if(target != null && actingResult.isReachEnemy == true)
+			{
+				//공격루틴
+				yield return new WaitForSeconds(1.0f / (1.0f + GetCalculatedAttackspeed()));
+				Attack();
+			}
 			
 			yield return null;
 		}
 	}
+	
 	IEnumerator Acting()
 	{
 		//대기중(3초 1칸)
@@ -109,25 +120,6 @@ public class Monster : Actor {
 		//모험가로 이동 or 추격 -> 발각되는순간 target 이동 StopCoroutine. 그자리에 멈춰서게 하고 몬스터가 접근? 모험가가 접근? 중간지점? -> 모험가가 전투중이면 접근, 아니라면 모험가 StartBattle 호출하기
 		//전투 // 사정거리 2칸이상일때 도망가야하나?
 		//사망 or 승리
-		actingResult.Clear();
-		while(actingResult.isFoundEnemy == false)
-		{
-			yield return StartCoroutine(EnemySearch(actingResult));
-			if (actingResult.isFoundEnemy == false)
-				yield return StartCoroutine(Wander());
-		}
-		//target에 발각 메소드 호출하기(전투중인지 아닌지 체크)
-		//////enemy found
-		while(actingResult.isReachEnemy == false && target)
-		{
-			//yield return StartCoroutine(Chase(actingResult));
-		}
-		while(actingResult.isDeadEnemy == false && actingResult.isDead == false)
-		{
-			yield return StartCoroutine(Battle(actingResult));
-		}
-		if (actingResult.isDead == true)
-			yield return StartCoroutine(Respawn(actingResult)); //or monstermanager.AddDeadList
 		yield return null;
 	}
 	public IEnumerator EnemySearch(ActingResult result)
@@ -181,12 +173,7 @@ public class Monster : Actor {
 		}
 		
 	}*/
-	IEnumerator Battle(ActingResult result)
-	{
-		WaitForSeconds interval = new WaitForSeconds(1.0f / (1.0f+GetCalculatedAttackspeed()));
-		Attack();
-		yield return null;
-	}
+	
 	IEnumerator Die(ActingResult result)
 	{
 		yield return null;
@@ -220,49 +207,72 @@ public class Monster : Actor {
 	{
 		
 	}
-	public  void Attack()
+	public override void Attack()
 	{
+		
 		if(target != null && target.state != State.Dead)
 		{
 			float dealtDamage = 0.0f;
 			bool isCritical = false;
+			bool isHit = false;
+			bool isDead = false;
 			isCritical = GetIsCriticalAttack();
-			foreach(Enchantment e in enchantmentList)
+
+			target.Attacked(this, isCritical, out isHit, out dealtDamage);
+			foreach (Enchantment e in enchantmentList)
 			{
 				e.OnAttack(this, target, GetAdjacentActor(GetCalculatedAttackRange()).ToArray(), isCritical);
 			}
 			
-
-			
-			//크리티컬 계산
-			//onattack
-			//데미지 계산
-			//ondamage
-
-			
-			//target.TakeDamage(this, )
+			target.TakeDamage(this, isCritical, out isHit, out isDead, out dealtDamage);
+			foreach(Enchantment e in enchantmentList)
+			{
+				e.OnDamage(this, target, GetAdjacentActor(2).ToArray(), dealtDamage, isCritical);
+			}
 		}
 	}
-	public  void Attacked()
+	public override void Attacked(Actor from, bool isCritical, out bool isHit)
 	{
-
+		float rand = Random.Range(0.0f, 100.0f);
+		if(rand < GetCalculatedAvoidMult())
+		{
+			isHit = false;
+			return;
+		}
+		isHit = true;
+		foreach(Enchantment e in enchantmentList)
+		{
+			e.OnAttacked(this, target, GetAdjacentActor(GetCalculatedAttackRange()).ToArray(), isCritical);
+		}
 	}
-	public override float TakeDamage(Actor from, bool isCritical, out bool isHit, out bool isDead)
+	public override void AttackedFromEnchantment(Actor from, Enchantment enchantment, bool isCritical, out bool isHit)
+	{
+		float rand = Random.Range(0.0f, 100.0f);
+		if (rand < GetCalculatedAvoidMult())
+		{
+			isHit = false;
+			return;
+		}
+		isHit = true;
+	} // 인챈트공격 회피 판정
+	public void TakeDamage(Actor from, bool isCritical, out bool isDead, out float damage)
+	{
+		//데미지 계산
+		float opponentDamage = from.GetCalculatedAttack();
+		float myDefence = GetCalculatedDefence();
+		
+		isDead = false;
+		damage = 0.0f;
+	}
+	public void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead)
 	{
 		isHit = false;
 		isDead = false;
-		return 0.0f;
-	}
-	public override float TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isHit, out bool isDead)
-	{
-		isHit = false;
-		isDead = false;
-		return 0.0f;
+		
 	}
 	IEnumerator Wander() // 1칸이동
 	{
 		TileForMove tempTileForMove;
-		TileForMove origin = GetCurTileForMove();
 		
 		int rand = 0;
 		//랜덤 돌려서 4방향중 1방향으로.(Monster Area, 체크해야함)
@@ -285,16 +295,22 @@ public class Monster : Actor {
 				tempTileForMove = GetCurTileForMove();
 				break;
 		}
-		if (tempTileForMove.GetParent().GetMonsterArea() == true && !tempTileForMove.GetRecentActor().GetCurTileForMove().Equals(tempTileForMove))
+		if (!tempTileForMove.GetRecentActor().GetCurTileForMove().Equals(tempTileForMove))
 		{
-			SetCurTileForMove(tempTileForMove);
-			SetCurTile(tempTileForMove.GetParent());
-			//방향 파악 및 Animation Trigger 설정해야함.
-
-			curDirection = GetDirectionFromOtherTileForMove(tempTileForMove);
+			yield return StartCoroutine(MoveOnce(tempTileForMove));
+		}
+	}
+	IEnumerator MoveOnce(TileForMove destination)
+	{ 
+		if(destination.GetParent().GetMonsterArea())
+		{
+			TileForMove origin = GetCurTileForMove();
+			curDirection = GetDirectionFromOtherTileForMove(destination);
+			SetCurTileForMove(destination);
+			SetCurTile(destination.GetParent());
 			SetAnimFlagFromDirection(curDirection);
 			animator.SetBool("MoveFlg", true);
-			yield return StartCoroutine(MoveAnim(origin.GetPosition(), tempTileForMove.GetPosition()));
+			yield return StartCoroutine(MoveAnim(origin.GetPosition(), destination.GetPosition()));
 			animator.SetBool("MoveFlg", false);
 		}
 	}
