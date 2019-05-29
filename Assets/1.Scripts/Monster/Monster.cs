@@ -108,7 +108,6 @@ public class Monster : Actor {
 				yield return new WaitForSeconds(1.0f / (1.0f + GetCalculatedAttackspeed()));
 				Attack();
 			}
-			
 			yield return null;
 		}
 	}
@@ -149,30 +148,6 @@ public class Monster : Actor {
 		
 		
 	}
-	/*
-	IEnumerator Chase(ActingResult result)
-	{
-		yield return null;
-		
-		for(int i=0; i<7; i++)
-		{
-			if (target == null || target.isDead || !target.GetCurTileForMove().GetParent().GetMonsterArea() || GetDistanceFromOtherActorForMove(target) >=3)
-			{
-				result.isReachEnemy = true;
-				result.isDeadEnemy = true;
-				break; // 상대가 쓰러졌거나 Monster Area를 벗어났을때
-			}
-			else
-			{
-				//방향계산 후 한칸씩 이동하면서 추격
-				curDirection = GetDirectionFromOtherTileForMove(target.GetCurTileForMove());
-				SetAnimFlagFromDirection(curDirection);
-				GetNextTileForMoveFromDirection(curDirection);
-				
-			}
-		}
-		
-	}*/
 	
 	IEnumerator Die(ActingResult result)
 	{
@@ -189,19 +164,19 @@ public class Monster : Actor {
 	}
 	public override void TakeHeal(float heal, Actor from)
 	{
-
+		currentHealth = Mathf.Min(GetCalculatedHealthMax(), currentHealth + heal);
 	}
 	public override void TakeHealFromEnchantment(float heal, Actor from, Enchantment enchantment)
 	{
-
+		currentHealth = Mathf.Min(GetCalculatedHealthMax(), currentHealth + heal);
 	}
 	public override void AddEnchantment(Enchantment enchantment)
 	{
-
+		enchantmentList.Add(enchantment);
 	}
 	public override void RemoveEnchantment(Enchantment enchantment)
 	{
-
+		enchantmentList.Remove(enchantment);
 	}
 	public override void TakeStunned(Actor from, Enchantment enchantment, float during)
 	{
@@ -209,7 +184,6 @@ public class Monster : Actor {
 	}
 	public override void Attack()
 	{
-		
 		if(target != null && target.state != State.Dead)
 		{
 			float dealtDamage = 0.0f;
@@ -218,16 +192,18 @@ public class Monster : Actor {
 			bool isDead = false;
 			isCritical = GetIsCriticalAttack();
 
-			target.Attacked(this, isCritical, out isHit, out dealtDamage);
+			target.Attacked(this, isCritical, out isHit);
 			foreach (Enchantment e in enchantmentList)
 			{
 				e.OnAttack(this, target, GetAdjacentActor(GetCalculatedAttackRange()).ToArray(), isCritical);
 			}
-			
-			target.TakeDamage(this, isCritical, out isHit, out isDead, out dealtDamage);
-			foreach(Enchantment e in enchantmentList)
+			if (isHit == true)
 			{
-				e.OnDamage(this, target, GetAdjacentActor(2).ToArray(), dealtDamage, isCritical);
+				target.TakeDamage(this, isCritical, out isHit, out isDead, out dealtDamage);
+				foreach (Enchantment e in enchantmentList)
+				{
+					e.OnDamage(this, target, GetAdjacentActor(2).ToArray(), dealtDamage, isCritical);
+				}
 			}
 		}
 	}
@@ -255,20 +231,40 @@ public class Monster : Actor {
 		}
 		isHit = true;
 	} // 인챈트공격 회피 판정
-	public void TakeDamage(Actor from, bool isCritical, out bool isDead, out float damage)
+	public override void TakeDamage(Actor from, bool isCritical, out bool isDead, out float damage)
 	{
 		//데미지 계산
-		float opponentDamage = from.GetCalculatedAttack();
-		float myDefence = GetCalculatedDefence();
-		
-		isDead = false;
-		damage = 0.0f;
+		damage = GetCalculatedDamage(from);
+		currentHealth = Mathf.Max(0.0f, currentHealth - damage);
+		if(currentHealth <= 0.0f)
+		{
+			state = State.Dead;
+			isDead = true;
+			//Dead Process
+		}
+		else
+		{
+			isDead = false;
+			foreach(Enchantment e in enchantmentList)
+			{
+				e.OnDamaged(this, from, GetAdjacentActor(GetCalculatedAttackRange()).ToArray(), damage, isCritical);
+			}
+		}
 	}
-	public void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead)
+	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead)
 	{
-		isHit = false;
 		isDead = false;
-		
+		currentHealth = Mathf.Max(0.0f, currentHealth - damage);
+		if (currentHealth <= 0.0f)
+		{
+			state = State.Dead;
+			isDead = true;
+			//Dead Process
+		}
+		else
+		{
+			isDead = false;
+		}
 	}
 	IEnumerator Wander() // 1칸이동
 	{

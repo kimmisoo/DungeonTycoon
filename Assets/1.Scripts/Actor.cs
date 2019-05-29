@@ -158,6 +158,14 @@ public abstract class Actor : MonoBehaviour {
 	{
 		return ((penetration + GetPenetrationFromEquipmentEffect()) * (1.0f + GetPenetrationMultFromEquipmentEffect()) * (1.0f + GetPenetrationMultFinalFromEquipmentEffect()));
 	}
+	public float GetCalculatedFixedPenetration()
+	{
+		return (penetration + GetPenetrationFromEquipmentEffect());
+	}
+	public float GetCalculatedRatioPenetration()
+	{
+		return (1.0f + GetPenetrationMultFromEquipmentEffect()) * (1.0f + GetPenetrationMultFinalFromEquipmentEffect());
+	}
 	public float GetCalculatedAvoidMult()
 	{
 		return (avoidMult * (1.0f + GetAvoidMultFromEquipmentEffect()) * (1.0f + GetAvoidMultFinalFromEquipmentEffect()));
@@ -544,9 +552,7 @@ public abstract class Actor : MonoBehaviour {
 			else
 				direction = Direction.UpRight;
 		}
-
 		return direction;
-
 	}
 	
 	public bool GetIsCriticalAttack()
@@ -557,6 +563,13 @@ public abstract class Actor : MonoBehaviour {
 			return true;
 		return false;
 	}
+	public float GetCalculatedDamage(Actor opponent)
+	{
+		//데미지 = 공격력  / (1 + ( (방어 - 고정방관) * (1 - % 방관) ))
+
+		return opponent.GetCalculatedAttack() / (1.0f + (Mathf.Max(0.0f, (GetCalculatedDefence() - opponent.GetCalculatedFixedPenetration())) * Mathf.Max(0.0f, 2 - opponent.GetCalculatedRatioPenetration())));
+	}
+	
 }
 
 
