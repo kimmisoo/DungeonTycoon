@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System;
 
 public class SpecialAdventurer : Character {
 
 	
-	Type type;
+	
 	public Tile dest;
 	const int _typeSize = 6;
 	public int typeSize { get { return _typeSize; } }
@@ -26,6 +27,8 @@ public class SpecialAdventurer : Character {
 		mTransform = this.transform;
 		wait = new WaitForSeconds(1.0f);
 		wayForMove = new List<TileForMove>();
+		Type mType = Type.GetType("Enchantment" + "14");
+		
 	}
 	private void Update()
 	{
@@ -35,7 +38,7 @@ public class SpecialAdventurer : Character {
 	{
 		base.Init();
 		moveSpeed = 1.0f;///////
-		type = (Type)Random.Range(0, typeSize);
+		
 	}
 	protected override void Activate()
 	{

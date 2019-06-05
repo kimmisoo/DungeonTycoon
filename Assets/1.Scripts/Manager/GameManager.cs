@@ -87,8 +87,6 @@ public class GameManager : MonoBehaviour {
 		TextAsset sceneTxt = Resources.Load<TextAsset>("SceneData/scenedata");
 		SetMap();
 
-		
-
 		sceneData = JSON.Parse(sceneTxt.ToString());
 		setSceneData(sceneData);
 		//scene 정보 세팅 

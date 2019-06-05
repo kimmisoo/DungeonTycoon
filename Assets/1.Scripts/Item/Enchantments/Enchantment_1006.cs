@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enchantment_1006 : MonoBehaviour {
+public class Enchantment_1006 : Enchantment {
+	//1초마다 공속 5%
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+	EquipmentEffect tempEffect;
 	
-	// Update is called once per frame
-	void Update () {
+	int effectMax = 5;
+	public override void OnAttack(Actor user, Actor target, Actor[] targets, bool isCritical)
+	{
 		
 	}
+
+	IEnumerator
 }

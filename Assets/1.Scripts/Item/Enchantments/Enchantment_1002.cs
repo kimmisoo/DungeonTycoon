@@ -8,6 +8,11 @@ public class Enchantment_1002 : Enchantment {
 
 	public override void OnDamaged(Actor user, Actor target, Actor[] targets, float damage, bool isCritical)
 	{
-		user.TakeDamageFromEnchantment(damage * 0.05f, user, this, false, out isHit, out isDead);
+		bool isDead = false;
+		user.TakeDamageFromEnchantment(damage * 0.05f, user, this, false, out isDead);
+		if(isDead == true)
+		{
+			user.EndBattle(target);
+		}
 	}
 }

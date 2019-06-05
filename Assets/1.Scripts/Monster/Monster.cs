@@ -102,7 +102,7 @@ public class Monster : Actor {
 		//battle
 		while(true)
 		{
-			if(target != null && actingResult.isReachEnemy == true)
+			if(target != null && actingResult.isReachEnemy == true && isStunned == false)
 			{
 				//공격루틴
 				yield return new WaitForSeconds(1.0f / (1.0f + GetCalculatedAttackspeed()));
@@ -149,18 +149,29 @@ public class Monster : Actor {
 		
 	}
 	
-	IEnumerator Die(ActingResult result)
-	{
-		yield return null;
-	}
 	IEnumerator Respawn(ActingResult result)
 	{
 		yield return null;
 	}
-
+	
 	public override void Die(Actor Opponent)
 	{
-		
+		//object 비활성화 및 respawn 준비
+	}
+	public override void StartBattle(Actor opponent)
+	{
+		foreach(Enchantment e in enchantmentList)
+		{
+			e.OnStartBattle(this, opponent, GetAdjacentActor(2).ToArray());
+		}
+	}
+	public override void EndBattle(Actor opponent)
+	{
+		//전투 끝.(인챈트 호출용))
+		foreach(Enchantment e in enchantmentList)
+		{
+			e.OnEndBattle(this, opponent, GetAdjacentActor(2).ToArray());
+		}
 	}
 	public override void TakeHeal(float heal, Actor from)
 	{
@@ -180,8 +191,10 @@ public class Monster : Actor {
 	}
 	public override void TakeStunned(Actor from, Enchantment enchantment, float during)
 	{
-		
+		isStunned = true;
+
 	}
+	
 	public override void Attack()
 	{
 		if(target != null && target.state != State.Dead)
@@ -199,7 +212,7 @@ public class Monster : Actor {
 			}
 			if (isHit == true)
 			{
-				target.TakeDamage(this, isCritical, out isHit, out isDead, out dealtDamage);
+				target.TakeDamage(this, isCritical, out isDead, out dealtDamage);
 				foreach (Enchantment e in enchantmentList)
 				{
 					e.OnDamage(this, target, GetAdjacentActor(2).ToArray(), dealtDamage, isCritical);
@@ -234,13 +247,16 @@ public class Monster : Actor {
 	public override void TakeDamage(Actor from, bool isCritical, out bool isDead, out float damage)
 	{
 		//데미지 계산
-		damage = GetCalculatedDamage(from);
+		damage = GetCalculatedDamage(from, isCritical);
+		//sheild 계산
 		currentHealth = Mathf.Max(0.0f, currentHealth - damage);
 		if(currentHealth <= 0.0f)
 		{
 			state = State.Dead;
 			isDead = true;
+			Die(from);
 			//Dead Process
+			
 		}
 		else
 		{
@@ -254,6 +270,7 @@ public class Monster : Actor {
 	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead)
 	{
 		isDead = false;
+		//sheild 계산
 		currentHealth = Mathf.Max(0.0f, currentHealth - damage);
 		if (currentHealth <= 0.0f)
 		{
@@ -377,8 +394,18 @@ public class Monster : Actor {
 				break;
 		}
 	}
-
-	
+	public void SetMonsterCode(int code)
+	{
+		monsterCode = code;
+	}
+	public int GetMonsterCode()
+	{
+		return monsterCode;
+	}
+	public Character GetCurrentTarget()
+	{
+		return target;
+	}
 
 
 }

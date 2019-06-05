@@ -86,6 +86,8 @@ public abstract class Actor : MonoBehaviour {
 	public abstract void TakeDamage(Actor from, bool isCritical, out bool isDead, out float damage);
 	public abstract void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead);
 	public abstract void Die(Actor Opponent);
+	public abstract void StartBattle(Actor opponent);
+	public abstract void EndBattle(Actor opponent);
 	public abstract void TakeHeal(float heal, Actor from);
 	public abstract void TakeHealFromEnchantment(float heal, Actor from, Enchantment enchantment);
 	public abstract void AddEnchantment(Enchantment enchantment);
@@ -154,17 +156,15 @@ public abstract class Actor : MonoBehaviour {
 	{
 		return ((defence + GetDefenceFromEquipmentEffect()) * (1.0f + GetDefenceMultFromEquipmentEffect()) * (1.0f + GetDefenceMultFinalFromEquipmentEffect()));
 	}
-	public float GetCalculatedPenetration()
-	{
-		return ((penetration + GetPenetrationFromEquipmentEffect()) * (1.0f + GetPenetrationMultFromEquipmentEffect()) * (1.0f + GetPenetrationMultFinalFromEquipmentEffect()));
-	}
 	public float GetCalculatedFixedPenetration()
 	{
 		return (penetration + GetPenetrationFromEquipmentEffect());
 	}
 	public float GetCalculatedRatioPenetration()
 	{
-		return (1.0f + GetPenetrationMultFromEquipmentEffect()) * (1.0f + GetPenetrationMultFinalFromEquipmentEffect());
+		return (1.0f + GetPenetrationMultFromEquipmentEffect()) * (1.0f + GetPenetrationMultFinalFromEquipmentEffect()) >= 2.0f ?
+			    2.0f :
+			   (1.0f + GetPenetrationMultFromEquipmentEffect()) * (1.0f + GetPenetrationMultFinalFromEquipmentEffect());
 	}
 	public float GetCalculatedAvoidMult()
 	{
@@ -232,9 +232,20 @@ public abstract class Actor : MonoBehaviour {
 		}
 		return tempList;
 	}
-	public float GetCalculatedDamage(float damage, float penetration, Actor from)
+	public float GetCalculatedDamage(Actor from, bool isCritical)
 	{
-		return 0.0f;
+		//return 0.0f;
+		if(isCritical == true)
+		{
+			return from.GetCalculatedAttack() * from.GetCalculatedCriticalDamage() * 100.0f / 
+				(100.0f + (Mathf.Max(0.0f, GetCalculatedDefence() - from.GetCalculatedFixedPenetration()) * (2.0f - from.GetCalculatedRatioPenetration())) );
+		}
+		else
+		{
+			return from.GetCalculatedAttack() * 100.0f /
+				(100.0f + (Mathf.Max(0.0f, GetCalculatedDefence() - from.GetCalculatedFixedPenetration()) * (2.0f - from.GetCalculatedRatioPenetration())));
+		}
+		
 		//damage 연산 필요		
 	}
 
@@ -563,12 +574,7 @@ public abstract class Actor : MonoBehaviour {
 			return true;
 		return false;
 	}
-	public float GetCalculatedDamage(Actor opponent)
-	{
-		//데미지 = 공격력  / (1 + ( (방어 - 고정방관) * (1 - % 방관) ))
-
-		return opponent.GetCalculatedAttack() / (1.0f + (Mathf.Max(0.0f, (GetCalculatedDefence() - opponent.GetCalculatedFixedPenetration())) * Mathf.Max(0.0f, 2 - opponent.GetCalculatedRatioPenetration())));
-	}
+	
 	
 }
 

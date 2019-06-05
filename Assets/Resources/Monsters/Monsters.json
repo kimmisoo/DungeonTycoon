@@ -1,24 +1,24 @@
-ï»¿{
+{
   "Standard": [
     {
-      "name": "ì‘ì€ ìŠ¬ë¼ì„",
+      "name": "ÀÛÀº ½½¶óÀÓ",
       "level": 3,
       "exp": 30,
       "hp": 130,
       "def": 3,
       "atk": 6,
       "atkspeed": 0.6,
-      "critical": 5.0,
+      "critical": 5,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 21,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "í—ˆì•½í•œ ì½”ë³¼íŠ¸",
+      "name": "Çã¾àÇÑ ÄÚº¼Æ®",
       "level": 8,
       "exp": 80,
       "hp": 185,
@@ -31,11 +31,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 25,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¬ë¼ì„",
+      "name": "½½¶óÀÓ",
       "level": 13,
       "exp": 130,
       "hp": 225,
@@ -48,11 +48,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 30,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸",
+      "name": "ÄÚº¼Æ®",
       "level": 18,
       "exp": 180,
       "hp": 285,
@@ -65,11 +65,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 34,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì •ì˜ˆ ìŠ¬ë¼ì„",
+      "name": "Á¤¿¹ ½½¶óÀÓ",
       "level": 20,
       "exp": 200,
       "hp": 305,
@@ -82,11 +82,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 36,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì •ì˜ˆ ì½”ë³¼íŠ¸",
+      "name": "Á¤¿¹ ÄÚº¼Æ®",
       "level": 21,
       "exp": 210,
       "hp": 325,
@@ -99,28 +99,28 @@
       "movespeed": 100,
       "range": 1,
       "gold": 37,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ëŒ€í˜• ìŠ¬ë¼ì„",
+      "name": "´ëÇü ½½¶óÀÓ",
       "level": 23,
       "exp": 230,
       "hp": 345,
       "def": 23,
       "atk": 35,
       "atkspeed": 0.66,
-      "critical": 8.0,
+      "critical": 8,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 39,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "í˜¸ì „ì ì¸ ì½”ë³¼íŠ¸",
+      "name": "È£ÀüÀûÀÎ ÄÚº¼Æ®",
       "level": 28,
       "exp": 280,
       "hp": 405,
@@ -133,11 +133,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 43,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë©”íƒˆ ìŠ¬ë¼ì„",
+      "name": "¸ŞÅ» ½½¶óÀÓ",
       "level": 33,
       "exp": 330,
       "hp": 465,
@@ -150,11 +150,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 48,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸ ê´‘ë¶€",
+      "name": "ÄÚº¼Æ® ±¤ºÎ",
       "level": 38,
       "exp": 380,
       "hp": 485,
@@ -167,11 +167,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 52,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì •ì˜ˆ ë©”íƒˆ ìŠ¬ë¼ì„",
+      "name": "Á¤¿¹ ¸ŞÅ» ½½¶óÀÓ",
       "level": 40,
       "exp": 400,
       "hp": 500,
@@ -184,11 +184,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 54,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì •ì˜ˆ ì½”ë³¼íŠ¸ ê´‘ë¶€",
+      "name": "Á¤¿¹ ÄÚº¼Æ® ±¤ºÎ",
       "level": 41,
       "exp": 410,
       "hp": 520,
@@ -201,28 +201,28 @@
       "movespeed": 100,
       "range": 1,
       "gold": 55,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸ ë³‘ì •",
+      "name": "ÄÚº¼Æ® º´Á¤",
       "level": 43,
       "exp": 430,
       "hp": 580,
       "def": 43,
       "atk": 64,
       "atkspeed": 0.72,
-      "critical": 11.0,
+      "critical": 11,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 57,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸ ì‹­ì¥",
+      "name": "ÄÚº¼Æ® ½ÊÀå",
       "level": 48,
       "exp": 480,
       "hp": 640,
@@ -235,11 +235,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 61,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸ ì¤‘ë³´ë³‘",
+      "name": "ÄÚº¼Æ® Áßº¸º´",
       "level": 53,
       "exp": 530,
       "hp": 705,
@@ -252,11 +252,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 66,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸ ë°±ì¸ëŒ€ì¥",
+      "name": "ÄÚº¼Æ® ¹éÀÎ´ëÀå",
       "level": 58,
       "exp": 580,
       "hp": 765,
@@ -269,11 +269,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 70,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸ ê·¼ìœ„ëŒ€",
+      "name": "ÄÚº¼Æ® ±ÙÀ§´ë",
       "level": 60,
       "exp": 600,
       "hp": 785,
@@ -286,11 +286,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 72,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì½”ë³¼íŠ¸ ê·¼ìœ„ëŒ€ì¥",
+      "name": "ÄÚº¼Æ® ±ÙÀ§´ëÀå",
       "level": 61,
       "exp": 610,
       "hp": 805,
@@ -303,30 +303,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 73,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     }
   ],
   "Forest": [
     {
-      "name": "ì¡°ê·¸ë§Œ í”½ì‹œ",
+      "name": "Á¶±×¸¸ ÇÈ½Ã",
       "level": 3,
       "exp": 30,
       "hp": 100,
       "def": 3,
       "atk": 9,
       "atkspeed": 0.8,
-      "critical": 5.0,
+      "critical": 5,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 20,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "í—ˆì•½í•œ ë“œë¼ì´ì–´ë“œ",
+      "name": "Çã¾àÇÑ µå¶óÀÌ¾îµå",
       "level": 8,
       "exp": 80,
       "hp": 155,
@@ -339,11 +339,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 23,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "í”½ì‹œ",
+      "name": "ÇÈ½Ã",
       "level": 13,
       "exp": 130,
       "hp": 190,
@@ -356,11 +356,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 26,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë“œë¼ì´ì–´ë“œ",
+      "name": "µå¶óÀÌ¾îµå",
       "level": 18,
       "exp": 180,
       "hp": 240,
@@ -373,28 +373,28 @@
       "movespeed": 100,
       "range": 1,
       "gold": 29,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë¹›ë‚˜ëŠ” í”½ì‹œ",
+      "name": "ºû³ª´Â ÇÈ½Ã",
       "level": 23,
       "exp": 230,
       "hp": 290,
       "def": 23,
       "atk": 53,
       "atkspeed": 0.86,
-      "critical": 8.0,
+      "critical": 8,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 32,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë…¸ë ¨í•œ ë“œë¼ì´ì–´ë“œ",
+      "name": "³ë·ÃÇÑ µå¶óÀÌ¾îµå",
       "level": 28,
       "exp": 280,
       "hp": 350,
@@ -407,11 +407,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 35,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìš°ë‘ë¨¸ë¦¬ í”½ì‹œ",
+      "name": "¿ìµÎ¸Ó¸® ÇÈ½Ã",
       "level": 33,
       "exp": 330,
       "hp": 465,
@@ -424,11 +424,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 38,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë§ë¼ë¹„í‹€ì–´ì§„ ë‚˜ë¬´ ì •ë ¹",
+      "name": "¸»¶óºñÆ²¾îÁø ³ª¹« Á¤·É",
       "level": 38,
       "exp": 400,
       "hp": 600,
@@ -441,12 +441,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 41,
-      "special": [1],
-      "specialParameter" : [10],
+      "enchantment": [
+        1001
+      ],
       "explanation": "none"
     },
     {
-      "name": "ë“œë¼ì´ì–´ë“œ ê¶ìˆ˜",
+      "name": "µå¶óÀÌ¾îµå ±Ã¼ö",
       "level": 43,
       "exp": 430,
       "hp": 500,
@@ -459,11 +460,11 @@
       "movespeed": 100,
       "range": 2,
       "gold": 44,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë‚˜ë¬´ ì •ë ¹",
+      "name": "³ª¹« Á¤·É",
       "level": 48,
       "exp": 480,
       "hp": 620,
@@ -476,29 +477,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 47,
-      "special": [1],
-      "specialParameter" : [10],
+      "enchantment": [
+        1001
+      ],
       "explanation": "none"
     },
     {
-      "name": "ë“œë¼ì´ì–´ë“œ ì •ì˜ˆ ê¶ìˆ˜",
+      "name": "µå¶óÀÌ¾îµå Á¤¿¹ ±Ã¼ö",
       "level": 53,
       "exp": 530,
       "hp": 810,
       "def": 53,
       "atk": 119,
       "atkspeed": 0.75,
-      "critical": 15.0,
+      "critical": 15,
       "atkcritical": 200,
       "penetration": 10,
       "movespeed": 100,
       "range": 2,
       "gold": 50,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "í˜¸ì „ì ì¸ ë‚˜ë¬´ ì •ë ¹",
+      "name": "È£ÀüÀûÀÎ ³ª¹« Á¤·É",
       "level": 58,
       "exp": 600,
       "hp": 880,
@@ -511,30 +513,32 @@
       "movespeed": 100,
       "range": 1,
       "gold": 53,
-      "special": [1],
-      "specialParameter" : [10],
+      "enchantment": [
+        1001
+      ],
       "explanation": "none"
     },
     {
-      "name": "ë“œë¼ì´ì–´ë“œ ë§ˆê¶ìˆ˜",
+      "name": "µå¶óÀÌ¾îµå ¸¶±Ã¼ö",
       "level": 63,
       "exp": 630,
       "hp": 700,
       "def": 63,
       "atk": 150,
       "atkspeed": 0.78,
-      "critical": 19.0,
+      "critical": 19,
       "atkcritical": 200,
       "penetration": 25,
       "movespeed": 100,
       "range": 2,
       "gold": 56,
-      "special": [1],
-      "specialParameter" : [5],
+      "enchantment": [
+        1002
+      ],
       "explanation": "none"
     },
     {
-      "name": "ë“œë¼ì´ì–´ë“œ ì •ì˜ˆ ì „ì‚¬",
+      "name": "µå¶óÀÌ¾îµå Á¤¿¹ Àü»ç",
       "level": 68,
       "exp": 680,
       "hp": 800,
@@ -547,31 +551,32 @@
       "movespeed": 100,
       "range": 1,
       "gold": 59,
-      "special": [1],
-      "specialParameter" : [10],
+      "enchantment": [
+        1001
+      ],
       "explanation": "none"
     }
   ],
   "Hell": [
     {
-      "name": "ë‚¡ì€ ìŠ¤ì¼ˆë ˆí†¤",
+      "name": "³°Àº ½ºÄÌ·¹Åæ",
       "level": 3,
       "exp": 15,
       "hp": 100,
       "def": 3,
       "atk": 5,
       "atkspeed": 0.5,
-      "critical": 5.0,
+      "critical": 5,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 11,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì–´ì„¤í”ˆ ì„í”„",
+      "name": "¾î¼³ÇÂ ÀÓÇÁ",
       "level": 8,
       "exp": 60,
       "hp": 155,
@@ -584,11 +589,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 21,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¤ì¼ˆë ˆí†¤",
+      "name": "½ºÄÌ·¹Åæ",
       "level": 13,
       "exp": 65,
       "hp": 170,
@@ -601,11 +606,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 17,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì„í”„",
+      "name": "ÀÓÇÁ",
       "level": 18,
       "exp": 135,
       "hp": 240,
@@ -618,11 +623,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 30,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì •ì˜ˆ ìŠ¤ì¼ˆë ˆí†¤",
+      "name": "Á¤¿¹ ½ºÄÌ·¹Åæ",
       "level": 20,
       "exp": 100,
       "hp": 230,
@@ -635,11 +640,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 21,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì •ì˜ˆ ì„í”„",
+      "name": "Á¤¿¹ ÀÓÇÁ",
       "level": 21,
       "exp": 160,
       "hp": 270,
@@ -652,28 +657,28 @@
       "movespeed": 100,
       "range": 1,
       "gold": 32,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¤ì¼ˆë ˆí†¤ ì°½ë³‘",
+      "name": "½ºÄÌ·¹Åæ Ã¢º´",
       "level": 23,
       "exp": 115,
       "hp": 255,
       "def": 23,
       "atk": 26,
       "atkspeed": 0.55,
-      "critical": 8.0,
+      "critical": 8,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 23,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì•½ì‚­ë¹ ë¥¸ ì„í”„",
+      "name": "¾à»èºü¸¥ ÀÓÇÁ",
       "level": 28,
       "exp": 210,
       "hp": 340,
@@ -686,11 +691,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 39,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¤ì¼ˆë ˆí†¤ ì •ì˜ˆë³‘",
+      "name": "½ºÄÌ·¹Åæ Á¤¿¹º´",
       "level": 33,
       "exp": 165,
       "hp": 350,
@@ -703,11 +708,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 29,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ê²¬ìŠµ ë°ìŠ¤ë‚˜ì´íŠ¸",
+      "name": "°ß½À µ¥½º³ªÀÌÆ®",
       "level": 38,
       "exp": 440,
       "hp": 520,
@@ -720,11 +725,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 56,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¤ì¼ˆë ˆí†¤ ê·¼ìœ„ë³‘",
+      "name": "½ºÄÌ·¹Åæ ±ÙÀ§º´",
       "level": 40,
       "exp": 200,
       "hp": 376,
@@ -737,11 +742,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 33,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë¯¸ìˆ™í•œ ë°ìŠ¤ë‚˜ì´íŠ¸",
+      "name": "¹Ì¼÷ÇÑ µ¥½º³ªÀÌÆ®",
       "level": 41,
       "exp": 470,
       "hp": 560,
@@ -754,11 +759,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 59,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¤ì¼ˆë ˆí†¤ í• ë²„ë””ì–´",
+      "name": "½ºÄÌ·¹Åæ ÇÒ¹öµğ¾î",
       "level": 43,
       "exp": 215,
       "hp": 435,
@@ -771,11 +776,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 35,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë°ìŠ¤ë‚˜ì´íŠ¸",
+      "name": "µ¥½º³ªÀÌÆ®",
       "level": 48,
       "exp": 600,
       "hp": 640,
@@ -788,11 +793,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 66,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë§ˆê·¸ë§ˆ ìŠ¬ë¼ì„",
+      "name": "¸¶±×¸¶ ½½¶óÀÓ",
       "level": 53,
       "exp": 400,
       "hp": 590,
@@ -805,11 +810,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 62,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì„í”„ í™”ì—¼ìˆ ì‚¬",
+      "name": "ÀÓÇÁ È­¿°¼ú»ç",
       "level": 58,
       "exp": 435,
       "hp": 640,
@@ -822,11 +827,11 @@
       "movespeed": 100,
       "range": 2,
       "gold": 66,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ëŒ€í˜• ë§ˆê·¸ë§ˆ ìŠ¬ë¼ì„",
+      "name": "´ëÇü ¸¶±×¸¶ ½½¶óÀÓ",
       "level": 60,
       "exp": 450,
       "hp": 590,
@@ -839,11 +844,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 68,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë…¸ë ¨í•œ ì„í”„ í™”ì—¼ìˆ ì‚¬",
+      "name": "³ë·ÃÇÑ ÀÓÇÁ È­¿°¼ú»ç",
       "level": 61,
       "exp": 460,
       "hp": 640,
@@ -856,28 +861,28 @@
       "movespeed": 100,
       "range": 2,
       "gold": 68,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "í‘¸ë¥¸ ë¹›ì˜ ë§ˆê·¸ë§ˆ ìŠ¬ë¼ì„",
+      "name": "Çª¸¥ ºûÀÇ ¸¶±×¸¶ ½½¶óÀÓ",
       "level": 63,
       "exp": 475,
       "hp": 690,
       "def": 63,
       "atk": 78,
       "atkspeed": 0.78,
-      "critical": 14.0,
+      "critical": 14,
       "atkcritical": 200,
       "penetration": 30,
       "movespeed": 100,
       "range": 1,
       "gold": 71,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ê°•ë ¥í•œ ì„í”„ í™”ì—¼ìˆ ì‚¬",
+      "name": "°­·ÂÇÑ ÀÓÇÁ È­¿°¼ú»ç",
       "level": 68,
       "exp": 510,
       "hp": 745,
@@ -890,11 +895,11 @@
       "movespeed": 100,
       "range": 2,
       "gold": 75,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¤ì¼ˆë ˆí†¤ ëŒ€í˜•ë„ë¼ë³‘",
+      "name": "½ºÄÌ·¹Åæ ´ëÇüµµ³¢º´",
       "level": 73,
       "exp": 365,
       "hp": 980,
@@ -907,11 +912,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 53,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì§€íœ˜ê´€ ë°ìŠ¤ë‚˜ì´íŠ¸",
+      "name": "ÁöÈÖ°ü µ¥½º³ªÀÌÆ®",
       "level": 78,
       "exp": 935,
       "hp": 900,
@@ -924,29 +929,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 96,
-      "special": [2],
-      "specialParameter" : [20, 15, 200, 2],
+      "enchantment": [
+        1003
+      ],
       "explanation": "none"
     },
     {
-      "name": "ìŠ¤ì¼ˆë ˆí†¤ ë‘”ê¸°ë³‘",
+      "name": "½ºÄÌ·¹Åæ µĞ±âº´",
       "level": 83,
       "exp": 415,
       "hp": 1100,
       "def": 90,
       "atk": 123,
       "atkspeed": 0.63,
-      "critical": 17.0,
+      "critical": 17,
       "atkcritical": 200,
       "penetration": 40,
       "movespeed": 100,
       "range": 1,
       "gold": 59,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë°ìŠ¤ë¡œë“œ",
+      "name": "µ¥½º·Îµå",
       "level": 88,
       "exp": 1055,
       "hp": 980,
@@ -959,14 +965,15 @@
       "movespeed": 100,
       "range": 1,
       "gold": 106,
-      "special": [2],
-      "specialParameter" : [20, 15, 250, 2],
+      "enchantment": [
+        1004
+      ],
       "explanation": "none"
     }
   ],
   "Sea": [
     {
-      "name": "ë³€ì¢… ê²Œ",
+      "name": "º¯Á¾ °Ô",
       "level": 3,
       "exp": 30,
       "hp": 170,
@@ -979,11 +986,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 21,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë°”ë‹¤ ìŠ¬ë¼ì„",
+      "name": "¹Ù´Ù ½½¶óÀÓ",
       "level": 8,
       "exp": 80,
       "hp": 240,
@@ -996,11 +1003,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 26,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ê±°ëŒ€ ê²Œ",
+      "name": "°Å´ë °Ô",
       "level": 13,
       "exp": 130,
       "hp": 295,
@@ -1013,11 +1020,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 31,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë§ë‹¨ í•´ì ",
+      "name": "¸»´Ü ÇØÀû",
       "level": 18,
       "exp": 180,
       "hp": 370,
@@ -1030,29 +1037,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 36,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "í—ˆì•½í•œ ì„¸ì´ë Œ",
+      "name": "Çã¾àÇÑ ¼¼ÀÌ·»",
       "level": 23,
       "exp": 230,
       "hp": 325,
       "def": 23,
       "atk": 28,
       "atkspeed": 0.66,
-      "critical": 8.0,
+      "critical": 8,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 41,
-      "special": [3],
-      "specialParameter" : [1, 60, 6, 2],
+      "enchantment": [
+        1005
+      ],
       "explanation": "none"
     },
     {
-      "name": "ìŒê²€ì„ ë“  í•´ì ",
+      "name": "½Ö°ËÀ» µç ÇØÀû",
       "level": 28,
       "exp": 280,
       "hp": 405,
@@ -1065,12 +1073,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 46,
-      "special": [4],
-      "specialParameter" : [1, 0.05],
+      "enchantment": [
+        1006
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì„¸ì´ë Œ",
+      "name": "¼¼ÀÌ·»",
       "level": 33,
       "exp": 330,
       "hp": 440,
@@ -1083,12 +1092,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 51,
-      "special": [3],
-      "specialParameter" : [1, 70, 6, 2],
+      "enchantment": [
+        1007
+      ],
       "explanation": "none"
     },
     {
-      "name": "ê´‘ì „ì‚¬ í•´ì ",
+      "name": "±¤Àü»ç ÇØÀû",
       "level": 38,
       "exp": 380,
       "hp": 520,
@@ -1101,29 +1111,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 56,
-      "special": [4],
-      "specialParameter" : [1, 0.05],
+      "enchantment": [
+        1006
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì „íˆ¬ìš© ê²Œ",
+      "name": "ÀüÅõ¿ë °Ô",
       "level": 43,
       "exp": 430,
       "hp": 695,
       "def": 55,
       "atk": 51,
       "atkspeed": 0.72,
-      "critical": 11.0,
+      "critical": 11,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 61,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë§ˆë ¥ì´ ë†’ì€ ì„¸ì´ë Œ",
+      "name": "¸¶·ÂÀÌ ³ôÀº ¼¼ÀÌ·»",
       "level": 48,
       "exp": 480,
       "hp": 605,
@@ -1136,12 +1147,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 66,
-      "special": [3],
-      "specialParameter" : [1, 90, 6, 2],
+      "enchantment": [
+        1008
+      ],
       "explanation": "none"
     },
     {
-      "name": "ë§Œì·¨í•œ í•´ì ",
+      "name": "¸¸ÃëÇÑ ÇØÀû",
       "level": 53,
       "exp": 530,
       "hp": 810,
@@ -1154,12 +1166,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 71,
-      "special": [4],
-      "specialParameter" : [1, 0.05],
+      "enchantment": [
+        1006
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì‘ì€ í•´ë£¡",
+      "name": "ÀÛÀº ÇØ·æ",
       "level": 58,
       "exp": 640,
       "hp": 1070,
@@ -1172,29 +1185,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 76,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì„¸ì´ë Œ ì œì‚¬ì¥",
+      "name": "¼¼ÀÌ·» Á¦»çÀå",
       "level": 63,
       "exp": 630,
       "hp": 790,
       "def": 63,
       "atk": 75,
       "atkspeed": 0.78,
-      "critical": 14.0,
+      "critical": 14,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 2,
       "gold": 81,
-      "special": [3],
-      "specialParameter" : [1, 110, 6, 2],
+      "enchantment": [
+        1009
+      ],
       "explanation": "none"
     },
     {
-      "name": "í•´ë£¡",
+      "name": "ÇØ·æ",
       "level": 68,
       "exp": 680,
       "hp": 1245,
@@ -1207,11 +1221,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 86,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ìŒê¶Œì´ í•´ì ",
+      "name": "½Ö±ÇÃÑ ÇØÀû",
       "level": 73,
       "exp": 730,
       "hp": 1090,
@@ -1224,12 +1238,13 @@
       "movespeed": 100,
       "range": 2,
       "gold": 91,
-      "special": [4],
-      "specialParameter" : [1, 0.05],
+      "enchantment": [
+        1006
+      ],
       "explanation": "none"
     },
     {
-      "name": "ê³ ëŒ€ í•´ë£¡",
+      "name": "°í´ë ÇØ·æ",
       "level": 78,
       "exp": 780,
       "hp": 1520,
@@ -1242,13 +1257,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 96,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     }
   ],
   "Heaven": [
     {
-      "name": "ë‚ ê°œë‹¬ë¦° ìŠ¬ë¼ì„",
+      "name": "³¯°³´Ş¸° ½½¶óÀÓ",
       "level": 3,
       "exp": 30,
       "hp": 110,
@@ -1261,12 +1276,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 22,
-      "special": [5],
-      "specialParameter" : [1, 8],
+      "enchantment": [
+        1010
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì‘ì€ íˆí¬ê·¸ë¦¬í”„",
+      "name": "ÀÛÀº È÷Æ÷±×¸®ÇÁ",
       "level": 8,
       "exp": 80,
       "hp": 185,
@@ -1279,12 +1295,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 27,
-      "special": [6],
-      "specialParameter" : [20, 15, 30],
+      "enchantment": [
+        1011
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì‹ ì„±í•œ ìŠ¬ë¼ì„",
+      "name": "½Å¼ºÇÑ ½½¶óÀÓ",
       "level": 13,
       "exp": 130,
       "hp": 195,
@@ -1297,12 +1314,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 32,
-      "special": [5],
-      "specialParameter" : [1, 8],
+      "enchantment": [
+        1010
+      ],
       "explanation": "none"
     },
     {
-      "name": "íˆí¬ê·¸ë¦¬í”„",
+      "name": "È÷Æ÷±×¸®ÇÁ",
       "level": 18,
       "exp": 180,
       "hp": 285,
@@ -1315,30 +1333,32 @@
       "movespeed": 100,
       "range": 1,
       "gold": 37,
-      "special": [6],
-      "specialParameter" : [20, 15, 30],
+      "enchantment": [
+        1011
+      ],
       "explanation": "none"
     },
     {
-      "name": "êµ¬ë„ì",
+      "name": "±¸µµÀÚ",
       "level": 23,
       "exp": 230,
       "hp": 345,
       "def": 23,
       "atk": 35,
       "atkspeed": 0.66,
-      "critical": 8.0,
+      "critical": 8,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 42,
-      "special": [7],
-      "specialParameter" : [10],
+      "enchantment": [
+        1001
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì‚¬ë‚˜ìš´ íˆí¬ê·¸ë¦¬í”„",
+      "name": "»ç³ª¿î È÷Æ÷±×¸®ÇÁ",
       "level": 28,
       "exp": 280,
       "hp": 405,
@@ -1351,12 +1371,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 47,
-      "special": [6],
-      "specialParameter" : [20, 15, 30],
+      "enchantment": [
+        1011
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì¢…ì",
+      "name": "Á¾ÀÚ",
       "level": 33,
       "exp": 330,
       "hp": 465,
@@ -1369,11 +1390,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 52,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì„±ì „ì‚¬",
+      "name": "¼ºÀü»ç",
       "level": 38,
       "exp": 380,
       "hp": 520,
@@ -1386,29 +1407,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 57,
-      "special": [7],
-      "specialParameter" : [10],
+      "enchantment": [
+        1001
+      ],
       "explanation": "none"
     },
     {
-      "name": "ë¬´ì¥í•œ ì¢…ì",
+      "name": "¹«ÀåÇÑ Á¾ÀÚ",
       "level": 43,
       "exp": 430,
       "hp": 580,
       "def": 43,
       "atk": 51,
       "atkspeed": 1.08,
-      "critical": 11.0,
+      "critical": 11,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 62,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì„±ê¸°ì‚¬",
+      "name": "¼º±â»ç",
       "level": 48,
       "exp": 480,
       "hp": 640,
@@ -1421,12 +1443,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 67,
-      "special": [7],
-      "specialParameter" : [10],
+      "enchantment": [
+        1001
+      ],
       "explanation": "none"
     },
     {
-      "name": "ê°•ìŠµê¸°ë³‘",
+      "name": "°­½À±âº´",
       "level": 53,
       "exp": 530,
       "hp": 775,
@@ -1439,11 +1462,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 72,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ì‹¬ë¬¸ê´€",
+      "name": "½É¹®°ü",
       "level": 58,
       "exp": 580,
       "hp": 765,
@@ -1456,29 +1479,30 @@
       "movespeed": 100,
       "range": 1,
       "gold": 77,
-      "special": [0],
+      "enchantment": [],
       "explanation": "none"
     },
     {
-      "name": "ë§ˆë‚˜ êµ¬ë¦„",
+      "name": "¸¶³ª ±¸¸§",
       "level": 63,
       "exp": 630,
       "hp": 620,
       "def": 63,
       "atk": 94,
       "atkspeed": 0.78,
-      "critical": 14.0,
+      "critical": 14,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 82,
-      "special": [8],
-      "specialParameter" : [50, 100],
+      "enchantment": [
+        1012
+      ],
       "explanation": "none"
     },
     {
-      "name": "ê²¬ìŠµ ì²œì‚¬ë³‘",
+      "name": "°ß½À Ãµ»çº´",
       "level": 68,
       "exp": 680,
       "hp": 800,
@@ -1491,12 +1515,13 @@
       "movespeed": 100,
       "range": 3,
       "gold": 87,
-      "special": [9],
-      "specialParameter" : [5, 30, 12],
+      "enchantment": [
+        1013
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì§€ë‹ˆ",
+      "name": "Áö´Ï",
       "level": 73,
       "exp": 730,
       "hp": 710,
@@ -1509,12 +1534,13 @@
       "movespeed": 100,
       "range": 1,
       "gold": 92,
-      "special": [8],
-      "specialParameter" : [50, 100],
+      "enchantment": [
+        1012
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì²œì‚¬ë³‘",
+      "name": "Ãµ»çº´",
       "level": 78,
       "exp": 780,
       "hp": 910,
@@ -1527,30 +1553,32 @@
       "movespeed": 100,
       "range": 3,
       "gold": 97,
-      "special": [9],
-      "specialParameter" : [5, 30, 12],
+      "enchantment": [
+        1013
+      ],
       "explanation": "none"
     },
     {
-      "name": "ìƒê¸‰ ì§€ë‹ˆ",
+      "name": "»ó±Ş Áö´Ï",
       "level": 83,
       "exp": 830,
       "hp": 805,
       "def": 83,
       "atk": 123,
       "atkspeed": 0.84,
-      "critical": 17.0,
+      "critical": 17,
       "atkcritical": 200,
       "penetration": 0,
       "movespeed": 100,
       "range": 1,
       "gold": 102,
-      "special": [8],
-      "specialParameter" : [50, 100],
+      "enchantment": [
+        1012
+      ],
       "explanation": "none"
     },
     {
-      "name": "ë ˆë“œ ë“œë˜ê³¤",
+      "name": "·¹µå µå·¡°ï",
       "level": 88,
       "exp": 880,
       "hp": 1140,
@@ -1563,12 +1591,14 @@
       "movespeed": 100,
       "range": 1,
       "gold": 107,
-      "special": [10, 6],
-      "specialParameter" : [300, 20, 15, 30],
+      "enchantment": [
+        1014,
+        1011
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì²œì‚¬ì¥",
+      "name": "Ãµ»çÀå",
       "level": 93,
       "exp": 930,
       "hp": 1085,
@@ -1581,12 +1611,13 @@
       "movespeed": 100,
       "range": 3,
       "gold": 112,
-      "special": [9],
-      "specialParameter" : [5, 30, 12],
+      "enchantment": [
+        1009
+      ],
       "explanation": "none"
     },
     {
-      "name": "ì…€ë ˆìŠ¤í‹°ì–¼ ë“œë˜ê³¤",
+      "name": "¼¿·¹½ºÆ¼¾ó µå·¡°ï",
       "level": 98,
       "exp": 980,
       "hp": 1270,
@@ -1599,8 +1630,11 @@
       "movespeed": 100,
       "range": 1,
       "gold": 117,
-      "special": [10, 6, 5],
-      "specialParameter" : [375, 20, 15, 30, 1, 8],
+      "enchantment": [
+        1015,
+        1011,
+        1010
+      ],
       "explanation": "none"
     }
   ]
