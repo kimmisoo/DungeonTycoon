@@ -41,6 +41,7 @@ public class EquipmentEffect {
 	public int attackRange { get; set; } = 0;
 	public int category { get; set; } = -1;
 	public int invincibleCount { get; set; } = 0;
+	public bool immunedStun { get; set; } = false;
 
 	public void SetParent(IHasEquipmentEffect _parent)
 	{

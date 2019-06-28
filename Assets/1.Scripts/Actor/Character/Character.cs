@@ -2,22 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Character : Actor {
+public abstract class Character : Actor
+{
 	//건물입장.
 	//골드 등~
 
-	protected TileMap map;
+	
 	protected Animator animator;
 	protected SpriteRenderer[] spriteRenderers;
-	
-	protected Moveto moveto;
+
+	protected PathFinder moveto;
 	protected State curState = State.Idle;
 	public Desire desire = new Desire();
 
 	List<Enchantment> enchantmentList = new List<Enchantment>();
 	List<EquipmentEffect> equipmentEffectList = new List<EquipmentEffect>();
+	
 
-    
 
 	//공통 Attribute
 	public string names
@@ -48,12 +49,12 @@ public abstract class Character : Actor {
 	{
 		damage = 0.0f;
 		isDead = false;
-		
+
 	}
 	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead)
 	{
 		isDead = false;
-		
+
 	}
 
 	public override void Die(Actor Opponent)
@@ -71,7 +72,7 @@ public abstract class Character : Actor {
 	}
 	public override void TakeStunned(Actor from, Enchantment enchantment, float during)
 	{
-		
+
 	}
 	public override void AddEnchantment(Enchantment enchantment)
 	{
@@ -101,10 +102,10 @@ public abstract class Character : Actor {
 		animator = GetComponent<Animator>();
 		spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
 	}
-    public State GetCurState()
-    {
-        return curState;
-    }
-	
-	
+	public State GetCurState()
+	{
+		return curState;
+	}
+
+
 }
