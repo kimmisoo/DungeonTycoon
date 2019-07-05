@@ -2,15 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IAct : MonoBehaviour {
+public interface IAct {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+	IEnumerator Act();
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

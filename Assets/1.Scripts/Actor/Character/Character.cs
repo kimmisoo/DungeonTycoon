@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Character : Actor
+public abstract class Character : Actor, IMove, IAct, IUseStructure
 {
 	//건물입장.
 	//골드 등~

@@ -16,6 +16,12 @@ public class Monster : Actor {
 	MonsterMoveAI monsterMoveAI;
 	BattleStatus battleStatus;
 
+	Monster monster;
+	Character target;
+	ActingResult actingResult = new ActingResult();
+	Coroutine moving;
+	Coroutine attacking;
+	Coroutine stunning;
 
 	//이동시 Monster Tile만 체크
 	public void Awake()
@@ -174,6 +180,31 @@ public class Monster : Actor {
 	{
 		return target;
 	}
-	
+
+	public IEnumerator EnemySearch(ActingResult result)
+	{
+		target = null;
+		int distance = int.MaxValue;
+		yield return null;
+		foreach (Actor a in GetAdjacentActor(2))
+		{
+			if ((a is Adventurer || a is SpecialAdventurer) && a.state != State.Dead)
+			{
+				if (target == null)
+				{
+					target = a as Character;
+					distance = GetDistanceFromOtherActorForMove(target);
+					actingResult.isFoundEnemy = true;
+				}
+				else
+				{
+					if (distance > GetDistanceFromOtherActorForMove(a))
+					{
+						target = a as Character;
+					}
+				}
+			}
+		}
+	}
 
 }
