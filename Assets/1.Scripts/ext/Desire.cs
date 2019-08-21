@@ -23,7 +23,13 @@ public class Desire : MonoBehaviour{
 	private float convenienceTick;
 	//private float healthTick;
 
-	private float tickMult = 1.0f;
+	/*private float thirstyTickMult = 1.0f;
+	private float hungryTickMult = 1.0f;
+	private float sleepTickMult = 1.0f;
+	private float tourTickMult = 1.0f;
+	private float funTickMult = 1.0f;
+	private float convenienceTickMult = 1.0f;*/
+	private float tickAllMult = 1.0f;
 	private int tickTime = 10;
 	private Coroutine tickCoroutine;
 
@@ -125,7 +131,7 @@ public class Desire : MonoBehaviour{
 		if (health < minDesire)
 			health = minDesire;
 	}
-
+	
 
 
 	public void AddThirsty(float _thirstyAmount)
@@ -206,11 +212,7 @@ public class Desire : MonoBehaviour{
 	{
 		return sleepTick;
 	}
-	/*
-	public float GetEquipmentTick()
-	{
-		return EquipmentTick;
-	}*/
+	
 	public float GetTourTick()
 	{
 		return tourTick;
@@ -223,11 +225,7 @@ public class Desire : MonoBehaviour{
 	{
 		return convenienceTick;
 	}
-	/*
-	public float GetHealthTick()
-	{
-		return HealthTick;
-	}*/
+	
 
 	public void SetThirstyTick(float _thirstyTick)
 	{
@@ -278,17 +276,17 @@ public class Desire : MonoBehaviour{
 			convenienceTick = minDesire;
 	}
 
-	public float GetTickMult()
+	public float GetTickAllMult()
 	{
-		return tickMult;
+		return tickAllMult;
 	}
 	public int GetTickTime()
 	{
 		return tickTime;
 	}
-	public void SetTickMult(float _tickMult)
+	public void SetTickAllMult(float _tickAllMult)
 	{
-		tickMult = _tickMult;
+		tickAllMult = _tickAllMult;
 	}
 	public void SetTickTime(int _tickTime)
 	{
@@ -323,12 +321,12 @@ public class Desire : MonoBehaviour{
 	}
 	public void TickDesire()
 	{
-		AddThirsty(thirstyTick * tickMult);
-		AddHungry(hungryTick * tickMult);
-		AddSleep(sleepTick * tickMult);
-		AddTour(tourTick * tickMult);
-		AddFun(funTick * tickMult);
-		AddConvenience(convenienceTick * tickMult);
+		AddThirsty(thirstyTick * tickAllMult);
+		AddHungry(hungryTick * tickAllMult);
+		AddSleep(sleepTick * tickAllMult);
+		AddTour(tourTick * tickAllMult);
+		AddFun(funTick * tickAllMult);
+		AddConvenience(convenienceTick * tickAllMult);
 	}
 }
 

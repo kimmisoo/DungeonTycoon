@@ -22,7 +22,7 @@ public class TileMapGenerator : MonoBehaviour
 	JSONNode mapData;
 	JSONNode mappingData;
 	public TileMap tileMap;
-	public int road_Start = 227;
+	public const int road_Start = 227;
 	public List<GameObject> preLoadedTileObject;
 	int i = 0;
 	public GameObject GenerateMap(string path)  //맵 생성
@@ -154,9 +154,7 @@ public class TileMapGenerator : MonoBehaviour
 						int li = y * layer.GetLayerWidth() * 4 + 2 * x + 2 * layer.GetLayerWidth();
 						int ri = y * layer.GetLayerWidth() * 4 + 2 * x + 1;
 
-
 						Vector3 p = tile.transform.position;
-
 
 						layer.AddTileForMove(x * 2, y * 2, new Vector3(p.x, p.y + 0.666f, p.z), tile); // u
 						tile.SetChild(0, layer.GetTileForMove(x * 2, y * 2));
@@ -166,9 +164,6 @@ public class TileMapGenerator : MonoBehaviour
 						tile.SetChild(2, layer.GetTileForMove(x * 2, y * 2 + 1));
 						layer.AddTileForMove(x * 2 + 1, y * 2 + 1, new Vector3(p.x, p.y + 0.333f, p.z), tile); // d
 						tile.SetChild(3, layer.GetTileForMove(x * 2 + 1, y * 2 + 1));
-
-
-
 
 						break; // Layer 별로 겹치는 타일 없으니 바로 break;
 					}

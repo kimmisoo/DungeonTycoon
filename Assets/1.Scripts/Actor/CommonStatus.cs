@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommonStatus : MonoBehaviour {
+public class CommonStatus {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+	int code = 0;
+	Desire desire;
+	float moveSpeed = 0.0f;
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

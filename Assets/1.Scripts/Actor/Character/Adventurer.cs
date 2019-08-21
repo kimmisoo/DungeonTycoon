@@ -5,7 +5,7 @@ using UnityEngine;
 public class Adventurer : Actor, IDamagable {
 
 	BattleStatus battleStatus;
-
+	//StarBattle Method 필요함!
 	public void SetBattleStatus(BattleStatus bStatus)
 	{
 		battleStatus = bStatus;

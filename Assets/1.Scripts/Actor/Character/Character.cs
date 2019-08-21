@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Character : Actor, IMove, IAct, IUseStructure
+public abstract class Character : Actor, IMove, IUseStructure
 {
 	//건물입장.
 	//골드 등~
@@ -12,7 +12,7 @@ public abstract class Character : Actor, IMove, IAct, IUseStructure
 	protected SpriteRenderer[] spriteRenderers;
 
 	protected PathFinder moveto;
-	protected State curState = State.Idle;
+	
 	public Desire desire = new Desire();
 
 	List<Enchantment> enchantmentList = new List<Enchantment>();
@@ -45,31 +45,14 @@ public abstract class Character : Actor, IMove, IAct, IUseStructure
 
 
 
-	public override void TakeDamage(Actor from, bool isCritical, out bool isDead, out float damage)
-	{
-		damage = 0.0f;
-		isDead = false;
-
-	}
-	public override void TakeDamageFromEnchantment(float damage, Actor from, Enchantment enchantment, bool isCritical, out bool isDead)
-	{
-		isDead = false;
-
-	}
+	
 
 	public override void Die(Actor Opponent)
 	{
 		//사망 처리.
 		//상대방 경험치?
 	}
-	public override void TakeHeal(float heal, Actor from)
-	{
-		//힐 처리.
-	}
-	public override void TakeHealFromEnchantment(float heal, Actor from, Enchantment enchantment)
-	{
-		//힐 처리
-	}
+	
 	public override void TakeStunned(Actor from, Enchantment enchantment, float during)
 	{
 
@@ -102,9 +85,9 @@ public abstract class Character : Actor, IMove, IAct, IUseStructure
 		animator = GetComponent<Animator>();
 		spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
 	}
-	public State GetCurState()
+	public State GetState()
 	{
-		return curState;
+		return state;
 	}
 
 

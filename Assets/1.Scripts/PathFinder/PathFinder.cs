@@ -19,15 +19,12 @@ public class PathFinder : MonoBehaviour
 		}
 	}
 	public bool isNoPath = false;
-	enum Direction { left, right, up, down };
+	enum Direction {left, right, up, down};
 	static Vector2[] DirectionVectors = { new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, -1.0f) };
 	Dictionary<int, PathVertex> closeList = new Dictionary<int, PathVertex>();
 	PriorityQueue<PathVertex> openList = new PriorityQueue<PathVertex>();
 	List<PathVertex> path = new List<PathVertex>();
 	public openListVisited[,] visited;
-
-
-
 
 	int bestKey = 0;
 	PathVertex latest = null;
@@ -57,7 +54,7 @@ public class PathFinder : MonoBehaviour
 	{
 		tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
 		id = gameObject.GetInstanceID();
-		wait = new WaitForSeconds(1.0f);
+		wait = new WaitForSeconds(0.5f);
 		visited = new openListVisited[GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerHeight(), GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerWidth()];
 		for (int i = 0; i < GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerHeight(); i++)
 		{
@@ -65,18 +62,7 @@ public class PathFinder : MonoBehaviour
 			{
 				visited[i, j] = new openListVisited(false, false, 0);
 			}
-		}
-
-		//ts = new ThreadStart(Simulate);
-		//t = new Thread(ts);
-		//ThreadPool.SetMaxThreads(450, 450);
-		/*
-		for (int i = 0; i < 500; i++)
-		{
-			openList.Add(new PathVertex());
-		}
-		GameManager.Instance.AddPathvertex(500);*/
-		//StartCoroutine(TestCoroutine()); 		
+		}	
 	}
 
 	public IEnumerator Moves()
@@ -87,7 +73,6 @@ public class PathFinder : MonoBehaviour
 		{
 			path[i].ClearReference();
 		}
-
 		path.Clear();
 		closeList.Clear();
 		openList.HalfClear();
@@ -108,8 +93,7 @@ public class PathFinder : MonoBehaviour
 			yield return null;
 		}
 		path.Reverse();
-		//GameManager.Instance.vertexCount += openList.Count + closeList.Count;
-		//openList.Clear();
+		
 		closeList.Clear();
 		for (int i = 0; i < openList.Count; i++)
 		{
@@ -119,7 +103,7 @@ public class PathFinder : MonoBehaviour
 		{
 			closeList[i].ClearReference();
 		}
-		//Debug.Log("Path.Count - " + path.Count);
+		
 	}
 
 	public IEnumerator MoveinNoPath()
@@ -223,7 +207,6 @@ public class PathFinder : MonoBehaviour
 	//IEnumerator Simulate()
 	public void Simulate(System.Object threadContext)
 	{
-
 		latest_simulate = new PathVertex(null, myCurPos, destination);
 		bestKey = latest_simulate.X * 1000 + latest_simulate.Y;
 		closeList.Add(latest_simulate.X * 1000 + latest_simulate.Y, latest_simulate);
@@ -379,11 +362,6 @@ public class PathFinder : MonoBehaviour
 	public List<PathVertex> GetPath()
 	{
 		return path;
-	}
-
-	public void work()
-	{
-
 	}
 	public void ClearVisited()
 	{

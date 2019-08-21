@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public enum State
+{
+	Idle, Chasing, Moving, Battle, Indoor, Dead
+}
 public abstract class Actor : MonoBehaviour {
 
 	//이름
@@ -12,31 +16,29 @@ public abstract class Actor : MonoBehaviour {
 	//목적지
 	//현재상태
 	
+	public State state;
 	public string actorName { get; set; }
 	public string explanation { get; set; }
 	public int gold { get; set; }
 	public PathFinder pathFinder;
 	public List<TileForMove> wayForMove = new List<TileForMove>();
-	public enum State
-	{
-		Idle, Move, Battle, Dead, Indoor
-	}
-	public State state = new State();
+	protected Direction direction;
 
-	Animator animator;
-	SpriteRenderer spriteRenderer;
+	public Animator animator;
+	public SpriteRenderer spriteRenderer;
 
 
 	public List<Enchantment> enchantmentList = new List<Enchantment>();
 	public List<EquipmentEffect> equipmentEffectList = new List<EquipmentEffect>();
 	public List<Item> itemList = new List<Item>();
-		
+	public TileLayer tileLayer;
 	
 	
 	public virtual void Awake()
 	{
 		animator = GetComponent<Animator>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		
 	}
 
 
@@ -153,7 +155,7 @@ public abstract class Actor : MonoBehaviour {
 
 		if(absX == 0 && absY == 0)
 		{
-			direction = Direction.None;
+			direction = Direction.None; // 겹침
 			return direction;
 		}
 		if (distanceX >= 0 && distanceY >= 0)
@@ -187,10 +189,45 @@ public abstract class Actor : MonoBehaviour {
 		}
 		return direction;
 	}
-	
-	
-	
-	
+	public TileForMove GetNextTileForMoveFromDirection(Direction direction)
+	{
+		//TileForMove tempTileForMove;
+		switch (direction)
+		{
+			case Direction.DownRight:
+				return tileLayer.GetTileForMove(GetCurTile().GetX() + 1, GetCurTile().GetY());
+				break;
+			case Direction.UpRight:
+				return tileLayer.GetTileForMove(GetCurTile().GetX(), GetCurTile().GetY() - 1);
+				break;
+			case Direction.DownLeft:
+				return tileLayer.GetTileForMove(GetCurTile().GetX() + 1, GetCurTile().GetY());
+				break;
+			case Direction.UpLeft:
+				return tileLayer.GetTileForMove(GetCurTile().GetX() - 1, GetCurTile().GetY());
+				break;
+			case Direction.None:
+				return GetCurTileForMove();
+				break;
+			default:
+				return GetCurTileForMove();
+				break;
+		}
+	}
+	public State GetState()
+	{
+		return state;
+	}
+	public void SetDirection(Direction dir)
+	{
+		direction = dir;
+	}
+	public Direction GetDirection()
+	{
+		return direction;
+	}
+
+
 }
 
 
