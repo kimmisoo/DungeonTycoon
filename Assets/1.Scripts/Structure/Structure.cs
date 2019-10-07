@@ -61,7 +61,12 @@ public class Structure : MonoBehaviour {
     public void addEntrance(Tile t)
     {
         entrance.Add(t);
-    }
+    } // 활성화된 입구만 담겨있음
+	public Tile GetEntrance()
+	{
+		int randNum = Random.Range(0, entrance.Count);
+		return entrance[randNum];
+	}
 	public int extentWidth
 	{
 		get; set;

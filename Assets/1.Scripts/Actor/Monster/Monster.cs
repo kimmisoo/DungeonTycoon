@@ -16,7 +16,6 @@ public class Monster : Actor, IDamagable {
 		{
 			return _battleStatus;
 		}
-		
 	}
 
 	private BattleStatus _battleStatus;
@@ -30,21 +29,21 @@ public class Monster : Actor, IDamagable {
 	public void Awake()
 	{
 		base.Awake();
-		SetBattleStatus();
+		SetBattleStatus(GetComponent<BattleStatus>());
 	}
 	public void Start()
 	{
 		idleInterval = new WaitForSeconds(1.0f);
 		tileLayer = GetCurTile().GetLayer();
 		direction = Direction.DownRight;
-
+		state = State.Idle;
 	}
 	private void OnEnable()
 	{
-		
 		//moving = StartCoroutine(Moving());
 		//attacking = StartCoroutine(Attacking());
 		state = new State();
+		state = State.Idle;
 		StartCoroutine(Act());
 	}
 	private void OnDisable()
@@ -85,6 +84,7 @@ public class Monster : Actor, IDamagable {
 				yield return StartCoroutine(Wander());
 		}
 	}
+
 	IEnumerator Chasing()
 	{
 		int chaseCount = 0;
@@ -133,14 +133,22 @@ public class Monster : Actor, IDamagable {
 		}
 		//target.StartBattle!
 		EndBattle(target);
-		if()
+		if(state == State.Dead)
+		{
+			Die(target as IDamagable);
+		}
+		else
+		{
+			state = State.Idle;
+		}
 		//둘 중 하나가 죽을때까지 싸움
 	}
 	IEnumerator Dead()
 	{
 		yield return null;
 		yield return new WaitForSeconds(30.0f);
-
+		
+		state = State.Idle;
 		//respawn;
 		//N초 기다린 후 리스폰
 	}
@@ -168,7 +176,7 @@ public class Monster : Actor, IDamagable {
 		yield return null;
 		foreach (Actor a in GetAdjacentActor(3))
 		{
-			if ((a is Adventurer || a is SpecialAdventurer) && a.state != State.Dead)
+			if ((a is Adventurer || a is SpecialAdventurer) && a.GetState() != State.Dead)
 			{
 				if (target == null || GetDistanceFromOtherActorForMove(target) > GetDistanceFromOtherActorForMove(a))
 				{
@@ -222,6 +230,10 @@ public class Monster : Actor, IDamagable {
 			yield return StartCoroutine(MoveAnim(origin.GetPosition(), destination.GetPosition()));
 			animator.SetBool("MoveFlg", false);
 		}
+	}
+	public override bool ValidateNextTile(Tile tile)
+	{
+		return tile.GetMonsterArea();
 	}
 	public void SetAnimFlagFromDirection(Direction direction)
 	{
@@ -501,23 +513,21 @@ public class Monster : Actor, IDamagable {
 	}
 	
 	
-	
-	bool GetIsCriticalAttack()
-	{
-		
-		if (Random.Range(0, 100) < battleStatus.GetCalculatedCriticalChance() * 100.0f)
-			return true;
-		return false;
-	}
 
-	#region Battle
-	bool IsAttackable(IDamagable enemy)
+	
+	void Die(IDamagable Opponent)
 	{
-		if (!(enemy is Adventurer))
-			return false;
-		if (enemy != null && (enemy as Adventurer).GetCurTile().GetMonsterArea() && GetDistanceFromOtherActorForMove(enemy as Adventurer) <= battleStatus.GetCalculatedAttackRange())
-			return true;
-		return false;
+		//object 비활성화 및 respawn 준비
+		foreach(Enchantment e in enchantmentList)
+		{
+			e.OnDead(this, Opponent as Actor, GetAdjacentActor(2));
+		}
+		state = State.Dead;
+	}
+	#region IDamagable
+	public void SetBattleStatus(BattleStatus bs)
+	{
+		_battleStatus = bs;
 	}
 
 	public bool Attack(IDamagable enemy)
@@ -528,7 +538,7 @@ public class Monster : Actor, IDamagable {
 			bool isCritical = false;
 			bool isHit = false;
 			bool isDead = false;
-			isCritical = GetIsCriticalAttack();
+			isCritical = battleStatus.GetIsCriticalAttack();
 
 			enemy.Attacked(this, isCritical, out isHit);
 			foreach (Enchantment e in enchantmentList)
@@ -552,9 +562,10 @@ public class Monster : Actor, IDamagable {
 		}
 		return false;
 	}
+
 	public void Attacked(IDamagable from, bool isCritical, out bool isHit)
 	{
-		if(Random.Range(0.0f, 1.0f) < battleStatus.GetCalculatedAvoidMult())
+		if (Random.Range(0.0f, 1.0f) < battleStatus.GetCalculatedAvoidMult())
 			isHit = false;
 		else
 			isHit = true;
@@ -564,6 +575,7 @@ public class Monster : Actor, IDamagable {
 		}
 		return;
 	}
+
 	public void AttackedFromEnchantment(IDamagable from, Enchantment enchantment, bool isCritical, out bool isHit)
 	{
 		if (Random.Range(0.0f, 1.0f) < battleStatus.GetCalculatedAvoidMult())
@@ -572,12 +584,13 @@ public class Monster : Actor, IDamagable {
 			isHit = true;
 		return;
 	}
+
 	public void TakeDamage(IDamagable from, bool isCritical, out bool isDead, out float damage)
 	{
 		float calculatedDamage = battleStatus.GetCalculatedDamage(from.battleStatus, isCritical);
 		damage = calculatedDamage;
 		isDead = battleStatus.TakeDamageProcess(calculatedDamage);
-		foreach(Enchantment e in enchantmentList)
+		foreach (Enchantment e in enchantmentList)
 		{
 			e.OnDamaged(this, from as Actor, GetAdjacentActor(2), damage, isCritical);
 		}
@@ -592,10 +605,11 @@ public class Monster : Actor, IDamagable {
 				e.OnDead(this, from as Actor, GetAdjacentActor(2));
 			}*/
 		}
-		
+
 	}
+
 	public void TakeDamageFromEnchantment(float damage, IDamagable from, Enchantment enchantment, bool isCritical, out bool isDead)
-	{ 
+	{
 		isDead = battleStatus.TakeDamageProcess(damage);
 		if (isDead)
 		{
@@ -603,6 +617,7 @@ public class Monster : Actor, IDamagable {
 
 		}
 	}
+
 	public void TakeHeal(float heal, IDamagable from)
 	{
 
@@ -611,54 +626,54 @@ public class Monster : Actor, IDamagable {
 	{
 
 	}
-	void SetBattleStatus()
-	{
-		_battleStatus = GetComponent<BattleStatus>();
-	}
-	//HasBattleStatus!!
 
-	void StartBattle(IDamagable Opponent)
+	public void StartBattle(IDamagable Opponent)
 	{
-		foreach(Enchantment e in enchantmentList)
+		foreach (Enchantment e in enchantmentList)
 		{
 			e.OnStartBattle(this, Opponent as Actor, GetAdjacentActor(2));
 		}
-		
+
 	}
-	void EndBattle(IDamagable Opponent)
+
+	public void EndBattle(IDamagable Opponent)
 	{
-		foreach(Enchantment e in enchantmentList)
+		foreach (Enchantment e in enchantmentList)
 		{
 			e.OnEndBattle(this, Opponent as Actor, GetAdjacentActor(2));
 		}
-		
+
 	}
-	void Die(IDamagable Opponent)
-	{
-		//object 비활성화 및 respawn 준비
-		foreach(Enchantment e in enchantmentList)
-		{
-			e.OnDead(this, Opponent as Actor, GetAdjacentActor(2));
-		}
-		state = State.Dead;
-	}
-	void AddEnchantment(Enchantment enchantment)
+
+	public void AddEnchantment(Enchantment enchantment)
 	{
 		enchantmentList.Add(enchantment);
 	}
-	void RemoveEnchantmnet(Enchantment enchantment)
+
+	public void RemoveEnchantmnet(Enchantment enchantment)
 	{
 		enchantmentList.Remove(enchantment);
 	}
-	void TakeStunned(IDamagable from, Enchantment enchantment, float during)
+
+	public void TakeStunned(IDamagable from, Enchantment enchantment, float during)
 	{
 
 	}
-	IEnumerator Stun(float duration)
+
+	public bool IsAttackable(IDamagable enemy)
+	{
+		if (!(enemy is Adventurer))
+			return false;
+		if (enemy != null && (enemy as Adventurer).GetCurTile().GetMonsterArea() && GetDistanceFromOtherActorForMove(enemy as Adventurer) <= battleStatus.GetCalculatedAttackRange())
+			return true;
+		return false;
+	}
+
+	public IEnumerator Stun(float duration)
 	{
 		yield return null;
 	}
-	
-	#endregion
 
+	#endregion
+	
 }

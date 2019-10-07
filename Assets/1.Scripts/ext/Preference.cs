@@ -3,31 +3,6 @@ using System.Collections;
 
 public class Preference {
 
-	/*
-    public float adventurer
-    { get; set; }
-    public float tourist
-    { get; set; }
-    public float human
-    { get; set; }
-    public float elf
-    { get; set; }
-    public float dwarf
-    { get; set; }
-    public float orc
-    { get; set; }
-    public float dog
-    { get; set; }
-    public float cat
-    { get; set; }
-    public float upperclass
-    { get; set; }
-    public float middleclass
-    { get; set; }
-    public float lowerclass
-    { get; set; }
-	*/
-
 	//직업
 	private float prefAdventurer;
 	private float prefTourist;
@@ -134,4 +109,4 @@ public class Preference {
 		return prefLowerclass;
 	}
 
-}
+} 

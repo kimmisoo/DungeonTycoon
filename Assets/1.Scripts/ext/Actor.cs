@@ -7,79 +7,52 @@ public enum State
 {
 	Idle, Chasing, Moving, Battle, Indoor, Dead
 }
+/*
+ * Animator Tirggers
+ * MoveFlg
+ * AttackFlg
+ * JumpFlg
+ * DamageFlg
+ * WinFlg
+ * DeathFlg
+ * SkillFlg
+ * DownToUpFlg
+ * UpToDownFlg
+ * ResurrectingFlg
+ */
+
 public abstract class Actor : MonoBehaviour {
 
-	//이름
-	//설명
-	//가진금액
-	//이동메소드
-	//목적지
-	//현재상태
 	
-	public State state;
-	public string actorName { get; set; }
+	protected State state;
+	/*public string actorName { get; set; }
 	public string explanation { get; set; }
-	public int gold { get; set; }
-	public PathFinder pathFinder;
-	public List<TileForMove> wayForMove = new List<TileForMove>();
+	public int gold { get; set; }*/
+
+	protected PathFinder pathFinder;
+	protected List<TileForMove> wayForMove;
 	protected Direction direction;
+	protected Animator animator;
+	protected SpriteRenderer spriteRenderer;
+	
 
-	public Animator animator;
-	public SpriteRenderer spriteRenderer;
 
-
-	public List<Enchantment> enchantmentList = new List<Enchantment>();
-	public List<EquipmentEffect> equipmentEffectList = new List<EquipmentEffect>();
-	public List<Item> itemList = new List<Item>();
-	public TileLayer tileLayer;
+	protected Tile curTile;
+	protected TileForMove curTileForMove;
+	
+	protected  TileLayer tileLayer;
 	
 	
-	public virtual void Awake()
+	protected void Awake()
 	{
 		animator = GetComponent<Animator>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		pathFinder = GetComponent<PathFinder>();
+		wayForMove = new List<TileForMove>();
+		state = new State();
+		direction = new Direction();
 		
 	}
-
-
-	/*public abstract void Die(Actor Opponent);
-	public abstract void StartBattle(Actor opponent);
-	public abstract void EndBattle(Actor opponent);
-
-	public abstract void AddEnchantment(Enchantment enchantment);
-	public abstract void RemoveEnchantment(Enchantment enchantment);
-	public void AddEquipmentEffect(EquipmentEffect equipmentEffect)
-	{
-		equipmentEffectList.Add(equipmentEffect);
-	}
-	public void RemoveEquipmentEffect(EquipmentEffect equipmentEffect)
-	{
-		equipmentEffectList.Remove(equipmentEffect);
-	}
-	public void RemoveAllEquipmentEffectByParent(IHasEquipmentEffect parent)
-	{
-		int i = 0;
-		while(i<equipmentEffectList.Count)
-		{
-			if (equipmentEffectList[i].GetParent().Equals(parent))
-			{
-				equipmentEffectList.RemoveAt(i--);
-			}
-			i++;
-		}
-	}
-	public abstract void TakeStunned(Actor from, Enchantment enchantment, float during);
-	*/
-	public int GetGold()
-	{
-		return gold;
-	}
-	public void SetGold(int _gold)
-	{
-		gold = _gold;
-	}
-	
-	
 	public Actor[] GetAdjacentActor(int range)
 	{
 		List<Actor> adjacentActors = new List<Actor>();
@@ -94,7 +67,7 @@ public abstract class Actor : MonoBehaviour {
 				if (Mathf.Abs(i) + Mathf.Abs(j) > range) // + 실제 actor가 타일 위에 있는지
 					continue;
 				tileForMoveTemp = layer.GetTileForMove(x + i, y + j);
-				if(tileForMoveTemp.Equals(tileForMoveTemp.GetRecentActor().pathFinder.GetCurTileForMove())) // tileForMoveTemp에 기록된 recentActor의 현재위치가 tileForMoveTemp와 일치하는지
+				if(tileForMoveTemp.Equals(tileForMoveTemp.GetRecentActor().GetCurTileForMove())) // tileForMoveTemp에 기록된 recentActor의 현재위치가 tileForMoveTemp와 일치하는지
 				{
 					adjacentActors.Add(layer.GetTileForMove(x + i, y + j).GetRecentActor());
 				}
@@ -106,32 +79,24 @@ public abstract class Actor : MonoBehaviour {
 		}
 		return adjacentActors.ToArray();
 	}
-	public EquipmentEffect[] GetSameCategoryEffects(int category)
-	{
-		List<EquipmentEffect> tempList = new List<EquipmentEffect>();
-		foreach(EquipmentEffect e in equipmentEffectList)
-		{
-			if (e.category != -1)
-				tempList.Add(e);
-		}
-		return tempList.ToArray();
-	}
 	
 	public void SetCurTile(Tile _tile)
 	{
+		curTile = _tile;
 		pathFinder.SetCurTile(_tile);
 	}
 	public Tile GetCurTile()
 	{
-		return pathFinder.GetCurTile();
+		return curTile;//pathFinder.GetCurTile();
 	}
 	public void SetCurTileForMove(TileForMove _tileForMove)
-	{ 
-		pathFinder.SetCurTileForMove(_tileForMove);
+	{
+		curTileForMove = _tileForMove;
+		
 	}
 	public TileForMove GetCurTileForMove()
 	{
-		return pathFinder.GetCurTileForMove();
+		return curTileForMove;//pathFinder.GetCurTileForMove();
 	}
 	public int GetDistanceFromOtherActorForMove(Actor actor)
 	{
@@ -227,6 +192,10 @@ public abstract class Actor : MonoBehaviour {
 		return direction;
 	}
 
+	
+
+	public abstract bool ValidateNextTile(Tile tile);
+	public abstract void SetPathFindEvent();
 
 }
 

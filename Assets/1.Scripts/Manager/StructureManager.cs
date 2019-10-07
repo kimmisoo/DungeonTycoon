@@ -2,6 +2,7 @@
 using System.Collections;
 using SimpleJSON;
 using System.Collections.Generic;
+using System.Linq;
 
 public class StructureManager : MonoBehaviour {
 	static StructureManager _instance;
@@ -29,6 +30,7 @@ public class StructureManager : MonoBehaviour {
     
 
 	public List<Structure> structures;
+	
 	// Use this for initialization
 	void Start () {
 		_instance = this;
@@ -169,7 +171,8 @@ public class StructureManager : MonoBehaviour {
 		
 		structure.EndMove();
 		ResetConstructingAreas();
-		structures.Add(constructing.GetComponent<Structure>());		
+		structures.Add(structure);
+		
 		for(int i = 0; i<structure.extentHeight; i++)
 		{
 			for(int j = 0; j<structure.extentWidth; j++)
@@ -367,6 +370,7 @@ public class StructureManager : MonoBehaviour {
         if (s == null)
             return;
         structures.Remove(s);
+		
         int[,] ex = s.GetExtent();
         for (int i = 0; i<s.extentWidth; i++)
         {
@@ -394,9 +398,29 @@ public class StructureManager : MonoBehaviour {
             {
                 return s;
             }
-            
         }
         return null;
     }
+
+	public Structure[] FindStructureByDesire(Desire desire, Stat stat) // 전달받은 stat의 종족, 부, 소지골드, 직업에따라 최적의 건물 반환.
+	{
+		if (structures.Count <= 0)
+			return null;
+		switch(desire)
+		{
+			case Desire.Convenience:
+				return (from s in structures where s.resolveDesire.resolveConvenience > 0 orderby s.preference. descending select s).ToArray();
+				break;
+			case Desire.Equipment:
+				return (from s in structures where s.resolveDesire.resolveEquipment > 0 orderby s.resolveDesire.resolveEquipment descending select s).ToArray();
+				break;
+			case Desire.Fun:
+				return (from s in structures where s.resolveDesire.resolveFun > 0 orderby s.resolveDesire.resolveFun descending select s).ToArray();
+				break;
+			case Desire.
+			
+		}
+		
+	}
 	
 }

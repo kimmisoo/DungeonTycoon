@@ -4,8 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
+public delegate void NotifyToActor();
+public delegate bool TileValidation(Tile tile);
+
 public class PathFinder : MonoBehaviour
 {
+
+	
+	NotifyToActor pathFindSuccess;
+	NotifyToActor pathFindFail;
+	TileValidation validateTile;
+
 	public struct openListVisited
 	{
 		public bool isVisited;
@@ -21,6 +30,7 @@ public class PathFinder : MonoBehaviour
 	public bool isNoPath = false;
 	enum Direction {left, right, up, down};
 	static Vector2[] DirectionVectors = { new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, -1.0f) };
+	//
 	Dictionary<int, PathVertex> closeList = new Dictionary<int, PathVertex>();
 	PriorityQueue<PathVertex> openList = new PriorityQueue<PathVertex>();
 	List<PathVertex> path = new List<PathVertex>();
@@ -32,7 +42,6 @@ public class PathFinder : MonoBehaviour
 	PathVertex latest_simulate = null;
 
 	public Tile myCurPos;
-	public TileForMove myCurPosForMove;
 	public Tile destination;
 	public Tile nextMovePos;
 	Tile next;
@@ -64,11 +73,12 @@ public class PathFinder : MonoBehaviour
 			}
 		}	
 	}
-
-	public IEnumerator Moves()
+	
+	public IEnumerator Moves(Tile pcurPos, Tile pdestination)
 	{
 		yield return null;
-
+		myCurPos = pcurPos;
+		destination = pdestination;
 		for (int i = 0; i < path.Count; i++)
 		{
 			path[i].ClearReference();
@@ -106,105 +116,6 @@ public class PathFinder : MonoBehaviour
 		
 	}
 
-	public IEnumerator MoveinNoPath()
-	{
-		yield return null;
-
-		path.Clear();
-		closeList.Clear();
-		openList.Clear();
-		//closeDic.Clear();
-		//openDic.Clear();
-		yield return StartCoroutine(SimulateinNoPath());
-		//ThreadStart ts = new ThreadStart(SimulateinNoPath);
-		//Thread t = new Thread(ts);
-		//t.Start();
-		found = false;
-		while (found == false)
-		{
-			yield return null;
-		}
-		PathVertex trace = latest;
-		while (trace != null)
-		{
-			yield return null;
-			path.Add(trace);
-			trace = trace.Parent;
-
-		}
-		path.Reverse();
-
-	}
-
-	IEnumerator SimulateinNoPath()
-	{
-		yield return null;
-		Debug.Log("NoPath!");
-		/*latest_simulate = new PathVertex(null, myCurPos, destination);
-		
-		closeList.Add(latest_simulate);
-		//closeDic.Add(latest_simulate.F, new List<PathVertex>());
-		//closeDic[latest_simulate.F].Add(latest_simulate);
-		
-        int t = 0;
-        
-        while (!latest_simulate.curTile.Equals(destination))
-        {
-			yield return null;
-            t++;
-            
-            for (int i = 0; i < 4; i++)
-            {
-                if ((next = t1.GetTileForMove((int)(latest_simulate.curTile.GetX() + DirectionVectors[i].x), (int)(latest_simulate.curTile.GetY() + DirectionVectors[i].y))) != null && next.GetPassableParent()) //+Exception
-                {
-                    //PathVertex nextVertex = new PathVertex(latest_simulate, next, destination);
-                    AddOpenList(new PathVertex(latest_simulate, next, destination));
-                }
-                else if((next = t1.GetTileForMove((int)(latest_simulate.curTile.GetX() + DirectionVectors[i].x), (int)(latest_simulate.curTile.GetY() + DirectionVectors[i].y))) != null && next.GetPassableParent() == false && 
-                    t1.GetTileForMove((int)(latest_simulate.curTile.GetX() + DirectionVectors[i].x), (int)(latest_simulate.curTile.GetY() + DirectionVectors[i].y)).GetParent().GetNonTile() == false)//gameObject.tag != "non_Tile")
-                {
-                    //PathVertex nextVertex = new PathVertex(latest_simulate, next, destination, 1);
-                    AddOpenList(new PathVertex(latest_simulate, next, destination, 1));
-                }
-            }
-			
-            best = null;
-			if(openDic.Count != 0)
-				best = 
-            if (openList.Count != 0)
-                best = openList[0];
-            else
-            {
-                //길 못찾음.
-                //Debug.Log("Cannot Found Path");
-                found = true;
-            }
-
-            foreach (PathVertex vertex in openList)
-            {
-                if (best.F > vertex.F)
-                    best = vertex;
-                else if (best.F == vertex.F)
-                {
-                    //System.Random rd = new System.Random();
-
-                    if ((rd.Next() % 3) == 1)//Random.RandomRange(1, 3) == 1)
-                    {
-                        best = vertex;
-                    }
-                }
-
-            }
-
-            openList.Remove(best);
-            closeList.Add(best);
-            latest_simulate = best;
-        }
-        latest = latest_simulate;
-        found = true;*/
-	}
-
-	//IEnumerator Simulate()
 	public void Simulate(System.Object threadContext)
 	{
 		latest_simulate = new PathVertex(null, myCurPos, destination);
@@ -311,6 +222,7 @@ public class PathFinder : MonoBehaviour
 			{
 				isNoPath = true;
 				found = true;
+				//not found Callback
 				break;
 			}
 			if (!closeList.ContainsKey(bestKey))
@@ -328,29 +240,17 @@ public class PathFinder : MonoBehaviour
 	{
 		if (closeList.ContainsKey(newVertex.X * 1000 + newVertex.Y))
 		{
-
 			return;
 		}
 		openList.Add(newVertex);
 		newVertex.curTile.AddedOpenList();
 	}
 
-	public Tile GetCurTile()
-	{
-		return myCurPos;
-	}
 	public void SetCurTile(Tile t)
 	{
 		myCurPos = t;
 	}
-	public TileForMove GetCurTileForMove()
-	{
-		return myCurPosForMove;
-	}
-	public void SetCurTileForMove(TileForMove t)
-	{
-		myCurPosForMove = t;
-	}
+	
 	public Tile GetDestination()
 	{
 		return destination;
@@ -373,6 +273,15 @@ public class PathFinder : MonoBehaviour
 				visited[i, j].isVisited = false;
 			}
 		}
+	}
+	public void SetNotifyEvent(NotifyToActor success, NotifyToActor fail)
+	{
+		pathFindSuccess = success;
+		pathFindFail = fail;
+	}
+	public void SetValidateTile(TileValidation validatingFunc)
+	{
+		validateTile = validatingFunc;
 	}
 }
 

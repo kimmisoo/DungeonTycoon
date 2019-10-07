@@ -2,49 +2,387 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleStatus {
+public enum Race
+{
+	Human, Elf, Dwarf, Orc, Dog, Cat
+}
+public enum Wealth
+{
+	Upper, Middle, Lower
+}
+public enum Desire
+{
+	Thirsty, Hungry, Sleep, Tour, Fun, Convenience, Equipment, Health
+}
 
 
-	public float healthMax { get; set; }
-	public float currentHealth { get; set; }
-	public float currentShield { get; set; }
-	public float attack { get; set; }
-	public float defence { get; set; }
-	public float reduceDamageMult { get; set; }
-	public float penetration { get; set; }
-	public float avoidMult { get; set; }
-	public float criticalChanceMult { get; set; }
-	public float criticalDamageMult { get; set; }
-	public bool isStunned { get; set; }
-	public bool isImmunedStun { get; set; }
-	public bool isDebuffed { get; set; }
-	public float damageTakedSum { get; set; }
-	public float movespeedMult { get; set; }
+public class Stat {
+	#region BattleStat
+	public float healthMax { get; set; } = 1.0f;
+	public float currentHealth { get; set; } = 1.0f;
+	public float currentShield { get; set; } = 0.0f;
+	public float attack { get; set; } = 0.0f;
+	public float defence { get; set; } = 0.0f;
+	public float reduceDamageMult { get; set; } = 0.0f;
+	public float penetration { get; set; } = 0.0f;
+	public float avoidMult { get; set; } = 0.0f;
+	public float criticalChanceMult { get; set; } = 0.0f;
+	public float criticalDamageMult { get; set; } = 0.0f;
+	public bool isStunned { get; set; } = false;
+	public bool isImmunedStun { get; set; } = false;
+	public bool isDebuffed { get; set; } = false;
+	public float damageTakenSum { get; set; } = 0.0f;
+	public float movespeedMult { get; set; } = 1.0f;
 	public float movespeedMultFinal { get; set; } = 1.0f;
-	public float attackspeedMult { get; set; }
+	public float attackspeedMult { get; set; } = 1.0f;
 	public float attackspeedMultFinal { get; set; } = 1.0f;
 	public int attackRange { get; set; } = 1;
 	public bool isHitRecent { get; set; } = false;
 	public bool isCriticalRecent { get; set; } = false;
 	public int invincibleCount { get; set; } = 0;
-	//inventory 랑 옵저버?
-	List<EquipmentEffect> equipmentEffectList;
+	#endregion
 
-	//
-	public float GetCalculatedDamage(BattleStatus enemyBattleStatus, bool isCritical)
+	#region CommonStat
+	public int id
 	{
-		//return 0.0f;
-		if (isCritical == true)
+		get; set;
+	}
+	Race race
+	{
+		get; set;
+	}
+	Wealth wealth
+	{
+		get; set;
+	}
+	string name
+	{
+		get; set;
+	}
+	string explanation
+	{
+		get; set;
+	}
+	int gender
+	{
+		get; set;
+	}// 0 - male, 1 - female;
+	int gold
+	{
+		get; set;
+	}
+	#endregion
+	#region desires _ Tick 포함
+	private const float maxDesire = 100.0f;
+	private const float minDesire = 0.0f;
+
+	
+	public float thirsty
+	{
+		get
 		{
-			return enemyBattleStatus.GetCalculatedAttack() * enemyBattleStatus.GetCalculatedCriticalDamage() * 100.0f /
-				(100.0f + (Mathf.Max(0.0f, GetCalculatedDefence() - enemyBattleStatus.GetCalculatedFixedPenetration()) * (2.0f - enemyBattleStatus.GetCalculatedRatioPenetration())));
+			return thirsty;
 		}
-		else
+		set
 		{
-			return enemyBattleStatus.GetCalculatedAttack() * 100.0f /
-				(100.0f + (Mathf.Max(0.0f, GetCalculatedDefence() - enemyBattleStatus.GetCalculatedFixedPenetration()) * (2.0f - enemyBattleStatus.GetCalculatedRatioPenetration())));
+			thirsty = Mathf.Clamp(value, minDesire, maxDesire);
 		}
 	}
+	public float hungry
+	{
+		get
+		{
+			return hungry;
+		}
+		set
+		{
+			thirsty = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float sleep
+	{
+		get
+		{
+			return sleep;
+		}
+		set
+		{
+			sleep = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float equipment
+	{
+		get
+		{
+			return equipment;
+		}
+		set
+		{
+			equipment = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float tour
+	{
+		get
+		{
+			return tour;
+		}
+		set
+		{
+			tour = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float fun
+	{
+		get
+		{
+			return fun;
+		}
+		set
+		{
+			fun = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float convenience
+	{
+		get
+		{
+			return convenience;
+		}
+		set
+		{
+			convenience = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float health
+	{
+		get
+		{
+			return health;
+		}
+		set
+		{
+			health = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+
+	public float thirstyTick
+	{
+		get
+		{
+			return thirstyTick;
+		}
+		set
+		{
+			thirstyTick = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float hungryTick
+	{
+		get
+		{
+			return hungryTick;
+		}
+		set
+		{
+			hungryTick = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float sleepTick
+	{
+		get
+		{
+			return sleepTick;
+		}
+		set
+		{
+			sleepTick = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	//private float equipmentTick;
+	public float tourTick
+	{
+		get
+		{
+			return tourTick;
+		}
+		set
+		{
+			tourTick = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float funTick
+	{
+		get
+		{
+			return funTick;
+		}
+		set
+		{
+			funTick = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float convenienceTick
+	{
+		get
+		{
+			return convenienceTick;
+		}
+		set
+		{
+			convenienceTick = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+	public float equipmentTick
+	{
+		get
+		{
+			return equipmentTick;
+		}
+		set
+		{
+			equipmentTick = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+	}
+
+
+	public float tickAllMult
+	{
+		get
+		{
+			return tickAllMult;
+		}
+		set
+		{
+			tickAllMult = Mathf.Clamp(value, minDesire, maxDesire);
+		}
+
+	}
+	public float tickTime
+	{
+		get; set;
+	}
+	#endregion
+
+	//inventory 랑 옵저버?
+	List<EquipmentEffect> equipmentEffectList;
+	Traveler owner;
+	public Stat(int _id, Race _race, Wealth _wealth, string _name, string _explanation, int _gender, int _gold,
+		float _thirstyTick, float _hungryTick, float _sleepTick, float _tourTick, float _funTick, float _convenienceTick, float _equipmentTick,
+		float _tickAllMult, float _tickTime, Traveler _owner)
+	{
+		id = _id;
+		race = _race;
+		wealth = _wealth;
+		name = _name;
+		explanation = _explanation;
+		gender = _gender;
+		gold = _gold;
+
+		thirsty = 0.0f;
+		hungry = 0.0f;
+		sleep = 0.0f;
+		tour = 0.0f;
+		fun = 0.0f;
+		convenience = 0.0f;
+		equipment = 0.0f;
+		health = 0.0f;
+		///desire
+
+		thirstyTick = _thirstyTick;
+		hungryTick = _hungryTick;
+		sleepTick = _sleepTick;
+		tourTick = _tourTick;
+		funTick = _funTick;
+		convenienceTick = _convenienceTick;
+		equipmentTick = _equipmentTick;
+		///desireTick
+
+		tickAllMult = _tickAllMult;
+		tickTime = _tickTime;
+		owner = _owner;
+	}
+
+	#region Desire Tick메소드
+	IEnumerator Ticking()
+	{
+		float tickTimeOrigin = tickTime;
+		float eps = 0.0001f;
+		WaitForSeconds wait = new WaitForSeconds(tickTime);
+
+		while (owner.GetState() != State.Dead)
+		{
+			yield return wait;
+			TickDesire();
+			if (Mathf.Abs(tickTimeOrigin - tickTime) > eps)
+			{
+				tickTimeOrigin = tickTime;
+				wait = new WaitForSeconds(tickTimeOrigin);
+			}
+		}
+
+	}
+
+	public void TickDesire()
+	{
+
+		thirsty += (thirstyTick * tickAllMult);
+		hungry += (hungryTick * tickAllMult);
+		sleep += (sleepTick * tickAllMult);
+		tour += (tourTick * tickAllMult);
+		fun += (funTick * tickAllMult);
+		convenience += (convenienceTick * tickAllMult);
+		equipment += (equipmentTick * tickAllMult);
+		health = (1.0f - (owner.stat.GetCurrentHealth() / owner.stat.GetCalculatedHealthMax())) * 100.0f;
+	}
+
+	#endregion
+
+	public Desire GetHighestDesire()
+	{
+		//thirsty, hungry, sleep, tour, fun, convenience, equipment, health....
+		float max = thirsty;
+		Desire highestDesire = Desire.Thirsty;
+
+		if (max < hungry)
+		{
+			max = hungry;
+			highestDesire = Desire.Hungry;
+		}
+		if (max < sleep)
+		{
+			max = sleep;
+			highestDesire = Desire.Sleep;
+		}
+		if (max < tour)
+		{
+			max = tour;
+			highestDesire = Desire.Tour;
+		}
+		if (max < fun)
+		{
+			max = fun;
+			highestDesire = Desire.Fun;
+		}
+		if (max < convenience)
+		{
+			max = convenience;
+			highestDesire = Desire.Convenience;
+		}
+		if (max < equipment)
+		{
+			max = equipment;
+			highestDesire = Desire.Equipment;
+		}
+		if (max < health)
+		{
+			max = health;
+			highestDesire = Desire.Health;
+		}
+		return highestDesire;
+	}
+
+	#region 스탯Get
 	public float GetCurrentHealth()
 	{
 		return currentHealth;
@@ -119,7 +457,8 @@ public class BattleStatus {
 	{
 		return GetImmunedStunFromEquipmentEffect();
 	}
-
+	#endregion
+	#region EquipmentEffect 계산
 	public float GetHealthMaxFromEquipmentEffect()
 	{
 		float sum = 0.0f;
@@ -374,21 +713,38 @@ public class BattleStatus {
 		}
 		return false;
 	}
-	public bool TakeDamageProcess(float damage)
+	#endregion
+
+	public float GetCalculatedDamage(BattleStatus enemyBattleStatus, bool isCritical) // 상대방으로 부터 받는 데미지 계산
+	{
+		//return 0.0f;
+		if (isCritical == true)
+		{
+			return enemyBattleStatus.GetCalculatedAttack() * enemyBattleStatus.GetCalculatedCriticalDamage() * 100.0f /
+				(100.0f + (Mathf.Max(0.0f, GetCalculatedDefence() - enemyBattleStatus.GetCalculatedFixedPenetration()) * (2.0f - enemyBattleStatus.GetCalculatedRatioPenetration())));
+		}
+		else
+		{
+			return enemyBattleStatus.GetCalculatedAttack() * 100.0f /
+				(100.0f + (Mathf.Max(0.0f, GetCalculatedDefence() - enemyBattleStatus.GetCalculatedFixedPenetration()) * (2.0f - enemyBattleStatus.GetCalculatedRatioPenetration())));
+		}
+	}
+
+	public bool TakeDamageProcess(float damage) //계산된 데미지로 피해 처리
 	{
 		//returns true if Dead
 
-		if(currentShield + currentHealth - damage <= 0.0f)
+		if (currentShield + currentHealth - damage <= 0.0f)
 		{
 			//Dead
 			currentShield = 0.0f;
 			currentHealth = 0.0f;
-			damageTakedSum += damage;
+			damageTakenSum += damage;
 			return true;
 		}
 		else
 		{
-			damageTakedSum += damage;
+			damageTakenSum += damage;
 			if (currentShield - damage < 0.0f)
 			{
 				damage = damage - currentShield;
@@ -398,9 +754,15 @@ public class BattleStatus {
 			else
 			{
 				currentShield = currentShield - damage;
-				
 			}
 			return false;
 		}
 	}
+	public bool GetIsCriticalAttack() // 크리티컬 계산
+	{
+		if (Random.Range(0, 100) < GetCalculatedCriticalChance() * 100.0f)
+			return true;
+		return false;
+	}
+
 }

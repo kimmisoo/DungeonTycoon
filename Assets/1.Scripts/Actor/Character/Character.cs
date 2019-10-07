@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class Character : Actor, IMove, IUseStructure
+public abstract class Character : Actor, IUseStructure
 {
 	//건물입장.
 	//골드 등~
@@ -42,29 +42,6 @@ public abstract class Character : Actor, IMove, IUseStructure
 		get; set;
 	}
 	//end of 공통 Attribute
-
-
-
-	
-
-	public override void Die(Actor Opponent)
-	{
-		//사망 처리.
-		//상대방 경험치?
-	}
-	
-	public override void TakeStunned(Actor from, Enchantment enchantment, float during)
-	{
-
-	}
-	public override void AddEnchantment(Enchantment enchantment)
-	{
-		//인챈트 
-	}
-	public override void RemoveEnchantment(Enchantment enchantment)
-	{
-		//인챈트 제거
-	}
 
 	protected virtual void Activate()
 	{
