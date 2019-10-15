@@ -7,8 +7,9 @@ public class Traveler : Actor {
 	//useStructure ~ 구현
 	
 
-	Structure destination = null;
+	Tile destination = null;
 	protected int pathFindCount = 0;
+	Coroutine act;
 	protected void Awake()
 	{
 		base.Awake();
@@ -19,7 +20,15 @@ public class Traveler : Actor {
 		pathFinder.SetValidateTile(ValidateNextTile);
 		SetPathFindEvent();
 	}
-
+	public void OnEnable()
+	{
+		act = StartCoroutine(Act());
+	}
+	public void OnDisable()
+	{
+		StopCoroutine(act);
+		//골드, 능력치 초기화...  // current , origin 따로둬야할까?
+	}
 	public Stat stat
 	{
 		get
@@ -32,15 +41,20 @@ public class Traveler : Actor {
 
 	IEnumerator Act()
 	{
+		Structure[] structureListByPref;
 		while(true)
 		{
 			yield return null;
 			switch(state)
 			{
 				case State.Idle:
-					destination = FindNextDestinationByDesire();
-					yield return StartCoroutine(pathFinder.Moves(curTile, destination.GetEntrance()));
+					structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), stat); // 1위 욕구에 따라 타입 결정하고 정렬된 건물 List 받아옴
+					
+					destination = pathFindCount > structureListByPref.Length ? structureListByPref[pathFindCount].GetEntrance() : GameManager.Instance.GetRandomEntrance(); 
+					// list 순회 다했는데도 맞는 건물이 없다면 퇴장..
+					yield return StartCoroutine(pathFinder.Moves(curTile, destination));
 					//길찾기 후 State = Moving으로 변경.
+					//길 못찾음 Event 처리...(다음 건물로 건너뛰어야함.
 					//delegate call됨()
 					break;
 				case State.Moving:
@@ -49,18 +63,15 @@ public class Traveler : Actor {
 				case State.Indoor:
 					//건물 들어가서 계산을 마치고 invisible로 건물
 					break;
+				case State.Exit:
+					break;
 				default:
 					break;
 			}
 		}
 	}
 	
-	public Structure FindNextDestinationByDesire()
-	{
-		Desire next = stat.GetHighestDesire();
-		return StructureManager.Instance.FindStructureByDesire(next, stat);
-		
-	}
+	
 	public override void SetPathFindEvent()
 	{
 		pathFinder.SetNotifyEvent(PathFindSuccess, PathFindFail);

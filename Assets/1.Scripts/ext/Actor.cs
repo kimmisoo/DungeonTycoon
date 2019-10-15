@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum State
 {
-	Idle, Chasing, Moving, Battle, Indoor, Dead
+	Idle, Chasing, Moving, Battle, Indoor, Dead, Exit
 }
 /*
  * Animator Tirggers

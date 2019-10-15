@@ -108,5 +108,56 @@ public class Preference {
 	{
 		return prefLowerclass;
 	}
+	public float GetPrefSum(Race race, Wealth wealth, Job job)
+	{
+		float sum = 0.0f;
+		switch (race)
+		{
+			case Race.Cat:
+				sum += GetPrefCat();
+				break;
+			case Race.Dog:
+				sum += GetPrefDog();
+				break;
+			case Race.Dwarf:
+				sum += GetPrefDwarf();
+				break;
+			case Race.Elf:
+				sum += GetPrefElf();
+				break;
+			case Race.Human:
+				sum += GetPrefHuman();
+				break;
+			case Race.Orc:
+				sum += GetPrefOrc();
+				break;
+		}
 
+		switch (wealth)
+		{
+			case Wealth.Lower:
+				sum += GetPrefLowerclass();
+				break;
+			case Wealth.Middle:
+				sum += GetPrefMiddleclass();
+				break;
+			case Wealth.Upper:
+				sum += GetPrefUpperclass();
+				break;
+		}
+
+		switch (job)
+		{
+			case Job.Traveler:
+				sum += GetPrefTourist();
+				break;
+			case Job.Adventurer:
+				sum += GetPrefAdventurer();
+				break;
+			case Job.SpecialAdventurer:
+				sum += GetPrefAdventurer();
+				break;
+		}
+		return sum;
+	}
 } 

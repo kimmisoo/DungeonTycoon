@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public enum Race
 {
@@ -10,12 +11,10 @@ public enum Wealth
 {
 	Upper, Middle, Lower
 }
-public enum Desire
+public enum Job
 {
-	Thirsty, Hungry, Sleep, Tour, Fun, Convenience, Equipment, Health
+	Traveler, Adventurer, SpecialAdventurer
 }
-
-
 public class Stat {
 	#region BattleStat
 	public float healthMax { get; set; } = 1.0f;
@@ -47,230 +46,47 @@ public class Stat {
 	{
 		get; set;
 	}
-	Race race
+	public Race race
 	{
 		get; set;
 	}
-	Wealth wealth
+	public Wealth wealth
 	{
 		get; set;
 	}
-	string name
+	public Job job
 	{
 		get; set;
 	}
-	string explanation
+	public string name
 	{
 		get; set;
 	}
-	int gender
+	public string explanation
+	{
+		get; set;
+	}
+	public int gender
 	{
 		get; set;
 	}// 0 - male, 1 - female;
-	int gold
+	public int gold
 	{
 		get; set;
 	}
 	#endregion
-	#region desires _ Tick 포함
-	private const float maxDesire = 100.0f;
-	private const float minDesire = 0.0f;
 
-	
-	public float thirsty
-	{
-		get
-		{
-			return thirsty;
-		}
-		set
-		{
-			thirsty = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float hungry
-	{
-		get
-		{
-			return hungry;
-		}
-		set
-		{
-			thirsty = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float sleep
-	{
-		get
-		{
-			return sleep;
-		}
-		set
-		{
-			sleep = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float equipment
-	{
-		get
-		{
-			return equipment;
-		}
-		set
-		{
-			equipment = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float tour
-	{
-		get
-		{
-			return tour;
-		}
-		set
-		{
-			tour = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float fun
-	{
-		get
-		{
-			return fun;
-		}
-		set
-		{
-			fun = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float convenience
-	{
-		get
-		{
-			return convenience;
-		}
-		set
-		{
-			convenience = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float health
-	{
-		get
-		{
-			return health;
-		}
-		set
-		{
-			health = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-
-	public float thirstyTick
-	{
-		get
-		{
-			return thirstyTick;
-		}
-		set
-		{
-			thirstyTick = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float hungryTick
-	{
-		get
-		{
-			return hungryTick;
-		}
-		set
-		{
-			hungryTick = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float sleepTick
-	{
-		get
-		{
-			return sleepTick;
-		}
-		set
-		{
-			sleepTick = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	//private float equipmentTick;
-	public float tourTick
-	{
-		get
-		{
-			return tourTick;
-		}
-		set
-		{
-			tourTick = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float funTick
-	{
-		get
-		{
-			return funTick;
-		}
-		set
-		{
-			funTick = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float convenienceTick
-	{
-		get
-		{
-			return convenienceTick;
-		}
-		set
-		{
-			convenienceTick = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-	public float equipmentTick
-	{
-		get
-		{
-			return equipmentTick;
-		}
-		set
-		{
-			equipmentTick = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-	}
-
-
-	public float tickAllMult
-	{
-		get
-		{
-			return tickAllMult;
-		}
-		set
-		{
-			tickAllMult = Mathf.Clamp(value, minDesire, maxDesire);
-		}
-
-	}
-	public float tickTime
-	{
-		get; set;
-	}
-	#endregion
+	public List<DesireBase> desireList;
 
 	//inventory 랑 옵저버?
 	List<EquipmentEffect> equipmentEffectList;
 	Traveler owner;
-	public Stat(int _id, Race _race, Wealth _wealth, string _name, string _explanation, int _gender, int _gold,
+	public void Init(int _id, Race _race, Wealth _wealth, string _name, string explanation, int _gender, int _gold, )
+	/*
+	public void Init(int _id, Race _race, Wealth _wealth, string _name, string _explanation, int _gender, int _gold,
 		float _thirstyTick, float _hungryTick, float _sleepTick, float _tourTick, float _funTick, float _convenienceTick, float _equipmentTick,
 		float _tickAllMult, float _tickTime, Traveler _owner)
-	{
+	{ 
 		id = _id;
 		race = _race;
 		wealth = _wealth;
@@ -278,7 +94,7 @@ public class Stat {
 		explanation = _explanation;
 		gender = _gender;
 		gold = _gold;
-
+		desireList = new List<DesireBase>();
 		thirsty = 0.0f;
 		hungry = 0.0f;
 		sleep = 0.0f;
@@ -301,7 +117,7 @@ public class Stat {
 		tickAllMult = _tickAllMult;
 		tickTime = _tickTime;
 		owner = _owner;
-	}
+	}*/
 
 	#region Desire Tick메소드
 	IEnumerator Ticking()
@@ -337,49 +153,21 @@ public class Stat {
 	}
 
 	#endregion
-
-	public Desire GetHighestDesire()
+	
+	public DesireBase GetHighestDesire()
 	{
 		//thirsty, hungry, sleep, tour, fun, convenience, equipment, health....
-		float max = thirsty;
-		Desire highestDesire = Desire.Thirsty;
-
-		if (max < hungry)
+		float maxVal = 0.0f;
+		DesireBase max = desireList[0];
+		foreach(DesireBase item in desireList)
 		{
-			max = hungry;
-			highestDesire = Desire.Hungry;
+			if (maxVal >= item.desireValue)
+			{
+				maxVal = item.desireValue;
+				max = item;
+			}
 		}
-		if (max < sleep)
-		{
-			max = sleep;
-			highestDesire = Desire.Sleep;
-		}
-		if (max < tour)
-		{
-			max = tour;
-			highestDesire = Desire.Tour;
-		}
-		if (max < fun)
-		{
-			max = fun;
-			highestDesire = Desire.Fun;
-		}
-		if (max < convenience)
-		{
-			max = convenience;
-			highestDesire = Desire.Convenience;
-		}
-		if (max < equipment)
-		{
-			max = equipment;
-			highestDesire = Desire.Equipment;
-		}
-		if (max < health)
-		{
-			max = health;
-			highestDesire = Desire.Health;
-		}
-		return highestDesire;
+		return max;
 	}
 
 	#region 스탯Get
@@ -715,7 +503,7 @@ public class Stat {
 	}
 	#endregion
 
-	public float GetCalculatedDamage(BattleStatus enemyBattleStatus, bool isCritical) // 상대방으로 부터 받는 데미지 계산
+	public float GetCalculatedDamage(Stat enemyBattleStatus, bool isCritical) // 상대방으로 부터 받는 데미지 계산
 	{
 		//return 0.0f;
 		if (isCritical == true)
@@ -758,9 +546,10 @@ public class Stat {
 			return false;
 		}
 	}
+
 	public bool GetIsCriticalAttack() // 크리티컬 계산
 	{
-		if (Random.Range(0, 100) < GetCalculatedCriticalChance() * 100.0f)
+		if (UnityEngine.Random.Range(0, 100) < GetCalculatedCriticalChance() * 100.0f)
 			return true;
 		return false;
 	}

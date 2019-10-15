@@ -28,6 +28,10 @@ public class Structure : MonoBehaviour {
 	{
 		get; set;
 	}
+	public Desire resolveType
+	{
+		get; set;
+	}
 	public int capacity
 	{
 		get; set;
@@ -42,19 +46,9 @@ public class Structure : MonoBehaviour {
 	}
 
     
-	public struct ResolveDesire{
-		public float resolveThirsty;
-		public float resolveHungry;
-		public float resolveSleep;
-		public float resolveEquipment;
-		public float resolveTour;
-		public float resolveFun;
-		public float resolveConvenience;
-		public float resolveHealth;
-	}
-	public ResolveDesire resolveDesire = new ResolveDesire();
+	public float resolveAmount = 0.0f;
     public Preference preference = new Preference();
-
+	
     
 
     public List<Tile> entrance = new List<Tile>();
