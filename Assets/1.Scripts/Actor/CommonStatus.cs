@@ -306,7 +306,7 @@ public class CommonStat {
 		fun += (funTick * tickAllMult);
 		convenience += (convenienceTick * tickAllMult);
 		equipment += (equipmentTick * tickAllMult);
-		health = (1.0f - (owner.battleStatus.GetCurrentHealth() / owner.battleStatus.GetCalculatedHealthMax())) * 100.0f;
+		//health = (1.0f - (owner.battleStatus.GetCurrentHealth() / owner.battleStatus.GetCalculatedHealthMax())) * 100.0f;
 	}
 
 

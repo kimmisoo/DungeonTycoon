@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpecialAdventurer : Adventurer, IDamagable {
+public class SpecialAdventurer : Adventurer//, IDamagable {
+{ 
 
 	
 	public void Awake()

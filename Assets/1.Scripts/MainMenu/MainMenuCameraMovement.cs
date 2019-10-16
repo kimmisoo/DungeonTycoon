@@ -62,7 +62,7 @@ public class MainMenuCameraMovement : MonoBehaviour
         while (true)
         {
             yield return null;
-            if (character != null && character.GetComponent<Character>().GetCurState() == Character.State.Move && Time.fixedTime - startTime < 5.0f && character.active == true)
+            if (character != null && character.GetComponent<Actor>().GetState() == State.Moving && Time.fixedTime - startTime < 5.0f && character.active == true)
             {
                 Vector3 t = Vector3.Lerp(cam.transform.position, character.transform.position, 0.3f);
                 cam.transform.position = new Vector3(t.x, t.y, cam.transform.position.z);

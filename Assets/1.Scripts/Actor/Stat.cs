@@ -81,7 +81,8 @@ public class Stat {
 	//inventory 랑 옵저버?
 	List<EquipmentEffect> equipmentEffectList;
 	Traveler owner;
-	public void Init(int _id, Race _race, Wealth _wealth, string _name, string explanation, int _gender, int _gold, )
+	public void Init(int _id, Race _race, Wealth _wealth, string _name, string explanation, int _gender, int _gold)
+	{ }
 	/*
 	public void Init(int _id, Race _race, Wealth _wealth, string _name, string _explanation, int _gender, int _gold,
 		float _thirstyTick, float _hungryTick, float _sleepTick, float _tourTick, float _funTick, float _convenienceTick, float _equipmentTick,
@@ -120,6 +121,7 @@ public class Stat {
 	}*/
 
 	#region Desire Tick메소드
+		/*
 	IEnumerator Ticking()
 	{
 		float tickTimeOrigin = tickTime;
@@ -151,7 +153,7 @@ public class Stat {
 		equipment += (equipmentTick * tickAllMult);
 		health = (1.0f - (owner.stat.GetCurrentHealth() / owner.stat.GetCalculatedHealthMax())) * 100.0f;
 	}
-
+	*/
 	#endregion
 	
 	public DesireBase GetHighestDesire()

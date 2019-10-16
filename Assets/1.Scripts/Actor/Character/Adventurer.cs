@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Adventurer : Traveler, IDamagable {
-
+public class Adventurer : Traveler//, IDamagable {
+{ 
+	/*
 	public BattleStatus battleStatus
 	{
 		get
@@ -101,12 +102,12 @@ public class Adventurer : Traveler, IDamagable {
 		{
 			EndBattle(from);
 			Die(from);
-			/*state = State.Dead;
+			state = State.Dead;
 			foreach (Enchantment e in enchantmentList)
 			{
 				e.OnEndBattle(this, from as Actor, GetAdjacentActor(2));
 				e.OnDead(this, from as Actor, GetAdjacentActor(2));
-			}*/
+			}
 		}
 
 	}
@@ -178,5 +179,6 @@ public class Adventurer : Traveler, IDamagable {
 		yield return null;
 	}
 
-	#endregion
+	#endregion*/
+
 }

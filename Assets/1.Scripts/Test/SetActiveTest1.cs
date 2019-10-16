@@ -5,9 +5,17 @@ public class SetActiveTest1 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        StartCoroutine(Destroy());
+        
 	}
-	
+	public void OnEnable()
+	{
+		Debug.Log("Enabled!" + Time.time);
+		StartCoroutine(Destroy());
+	}
+	public void OnDisable()
+	{
+		Debug.Log("Disabled!" + Time.time);
+	}
 	// Update is called once per frame
 	void Update () {
 	

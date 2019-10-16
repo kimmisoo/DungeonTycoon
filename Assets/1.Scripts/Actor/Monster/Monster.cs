@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Monster : Actor, IDamagable {
-	
+public class Monster //:Actor, IDamagable {
+{ 
+	/*
 	//Stat 관련 처리. 데미지 처리. 등 ...
 	//선공 인식 범위 십자 3칸
 	
@@ -598,12 +599,12 @@ public class Monster : Actor, IDamagable {
 		{
 			EndBattle(from);
 			Die(from);
-			/*state = State.Dead;
+			state = State.Dead;
 			foreach (Enchantment e in enchantmentList)
 			{
 				e.OnEndBattle(this, from as Actor, GetAdjacentActor(2));
 				e.OnDead(this, from as Actor, GetAdjacentActor(2));
-			}*/
+			}
 		}
 
 	}
@@ -675,5 +676,5 @@ public class Monster : Actor, IDamagable {
 	}
 
 	#endregion
-	
+	*/
 }
