@@ -11,7 +11,7 @@ public class PathVertex : IComparable
 	public int X = 0;
 	public int Y = 0;
 	PathVertex prevVertex = null;
-	public Tile curTile = null;
+	private Tile curTile = null;
 	public int F = 0;
 	public int G = 0;
 	public int H = 0;

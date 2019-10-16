@@ -27,7 +27,7 @@ public class Tile : MonoBehaviour {
 	bool isOpen = false;
 	bool isClose = false;
 	TileLayer layer;
-	TileForMove[] childs = new TileForMove[4];// l u d r
+	TileForMove[] childs = new TileForMove[4];// u r l d
 	public void Start()
 	{
 		tile = this;
@@ -88,6 +88,14 @@ public class Tile : MonoBehaviour {
 	{
 		return isPassable;
 	}
+    public bool GetPassableTraveler()
+    {
+        return isPassable;
+    }
+    public bool GetPassableAdventurer()
+    {
+        return isPassable || isMonsterArea;
+    }
 	public void SetPassable(bool _isPassable)
 	{
 		isPassable = _isPassable;
@@ -159,5 +167,38 @@ public class Tile : MonoBehaviour {
 		else
 			return childs[index];
 	}
-	
+	public Direction GetDirectionFromOtherTile(Tile t)
+    {
+       
+        int distanceX = this.GetX() - t.GetX();
+        int distanceY = this.GetY() - t.GetY();
+        int abs = Mathf.Abs(distanceX) + Mathf.Abs(distanceY);
+        if (abs == 0 || abs >= 2)
+        {
+            return Direction.None;
+        }
+        // dX = 1 : UR
+        // dX = -1: DL
+        // dY = 1 : DR
+        // dY = -1: UL
+        if(distanceX > 1)
+        {
+            return Direction.UpRight;
+        }
+        else if(distanceX == 0)
+        {
+            if (distanceY > 0)
+                return Direction.DownRight;
+            else
+                return Direction.UpLeft;
+       
+        }
+        else if(distanceX < 0)
+        {
+            return Direction.DownLeft;
+        }
+        return Direction.None;
+        
+    }
+    
 }

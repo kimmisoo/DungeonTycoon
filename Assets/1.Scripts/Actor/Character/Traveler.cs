@@ -10,6 +10,7 @@ public class Traveler : Actor {
 	Tile destination = null;
 	protected int pathFindCount = 0;
 	Coroutine act;
+    List<TileForMove> wayToNext;
 	protected void Awake()
 	{
 		base.Awake();
@@ -23,6 +24,8 @@ public class Traveler : Actor {
 	public void OnEnable()
 	{
 		act = StartCoroutine(Act());
+        SetCurTile(GameManager.Instance.GetRandomEntrance());
+        SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
 	}
 	public void OnDisable()
 	{
@@ -42,28 +45,37 @@ public class Traveler : Actor {
 	IEnumerator Act()
 	{
 		Structure[] structureListByPref;
+        List<TileForMove> wayForNextDest;
 		while(true)
 		{
 			yield return null;
 			switch(state)
 			{
 				case State.Idle:
-					structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), stat); // 1위 욕구에 따라 타입 결정하고 정렬된 건물 List 받아옴
-					
-					destination = pathFindCount > structureListByPref.Length ? structureListByPref[pathFindCount].GetEntrance() : GameManager.Instance.GetRandomEntrance(); 
-					// list 순회 다했는데도 맞는 건물이 없다면 퇴장..
-					yield return StartCoroutine(pathFinder.Moves(curTile, destination));
-					//길찾기 후 State = Moving으로 변경.
-					//길 못찾음 Event 처리...(다음 건물로 건너뛰어야함.
-					//delegate call됨()
-					break;
-				case State.Moving:
+					structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), stat); // 1위 욕구에 따라 타입 결정하고 정렬된 건물 List 받아옴 // GC?
+                    while (state == State.Idle)
+                    {
+                        if (pathFindCount > structureListByPref.Length)
+                        {
+                            destination = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
+                        }
+                        else
+                        {
+                            state = State.Exit;
+                        }
+                        yield return StartCoroutine(pathFinder.Moves(curTile, destination));   
+                    }
+                    break;
+                case State.Moving: // path 존재
+                    
 					//찾은 경로를 통해 1칸씩 이동? 혹은 한번에(코루틴 통해) 이동.
 					break;
 				case State.Indoor:
-					//건물 들어가서 계산을 마치고 invisible로 건물
+					//건물 들어가서 계산을 마치고 invisible로~
 					break;
 				case State.Exit:
+                    destination = GameManager.Instance.GetRandomEntrance();
+
 					break;
 				default:
 					break;
@@ -72,33 +84,47 @@ public class Traveler : Actor {
 	}
 	
 	
-	public override void SetPathFindEvent()
-	{
+	public override void SetPathFindEvent() // Pathfinder Delegate 설정
+    {
 		pathFinder.SetNotifyEvent(PathFindSuccess, PathFindFail);
-	}
+	} 
 
-	public void PathFindSuccess()
+	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
 	{
 		pathFindCount = 0;
 		state = State.Moving;
 	}
-	public void PathFindFail()
+	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
 	{
 		pathFindCount++;
-		state = State.Idle;
 	}
 
 	public override bool ValidateNextTile(Tile tile) // Pathfinder delegate
 	{
-		if (tile.GetPassable())
-			return true;
-		return false;
+        return tile.GetPassableTraveler();
 	}
 
-	
+	public List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
+    {
+        List<TileForMove> tileForMoveWay = new List<TileForMove>();
+        Tile t = path[0].myTilePos;
 
-	
+        for(int i= 1; i<path.Count; i++)
+        {
+            switch(t.GetDirectionFromOtherTile(path[i].myTilePos))
+            {
+                case Direction.UpRight:
 
-	
-	
+                    break;
+            }
+        }
+    }
+    // dX = 1 : UR
+    // dX = -1: DL
+    // dY = 1 : DR
+    // dY = -1: UL
+
+
+
+
 }
