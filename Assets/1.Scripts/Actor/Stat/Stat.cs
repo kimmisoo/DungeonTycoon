@@ -17,6 +17,9 @@ public enum Job
 }
 public class Stat {
 	#region BattleStat
+	//BattleStatusEnum
+	//CurrentHealth, HealthMax, Attack, Defence, reduceDamageMult, Penetration, AvoidMult, criticalChance, cirticalDamage, movespeed, attackspeed, attackRange
+	//
 	public float healthMax { get; set; } = 1.0f;
 	public float currentHealth { get; set; } = 1.0f;
 	public float currentShield { get; set; } = 0.0f;
@@ -76,7 +79,7 @@ public class Stat {
 	}
 	#endregion
 
-	public List<DesireBase> desireList;
+	Dictionary<Desire, DesireBase> desireDict = new Dictionary<Desire, DesireBase>();
 
 	//inventory 랑 옵저버?
 	List<EquipmentEffect> equipmentEffectList;
@@ -156,20 +159,24 @@ public class Stat {
 	*/
 	#endregion
 	
-	public DesireBase GetHighestDesire()
+	public Desire GetHighestDesire()
 	{
 		//thirsty, hungry, sleep, tour, fun, convenience, equipment, health....
 		float maxVal = 0.0f;
-		DesireBase max = desireList[0];
-		foreach(DesireBase item in desireList)
+		Desire max = Desire.Base;
+		foreach (KeyValuePair<Desire, DesireBase> kvp in desireDict)
 		{
-			if (maxVal >= item.desireValue)
+			if (maxVal <= kvp.Value.desireValue)
 			{
-				maxVal = item.desireValue;
-				max = item;
+				maxVal = kvp.Value.desireValue;
+				max = kvp.Key;
 			}
 		}
 		return max;
+	}
+	public DesireBase GetSpecificDesire(Desire desire)
+	{
+		return desireDict[desire];	
 	}
 
 	#region 스탯Get

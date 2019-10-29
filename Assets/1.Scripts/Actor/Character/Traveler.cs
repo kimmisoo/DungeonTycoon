@@ -63,21 +63,26 @@ public class Traveler : Actor {
 	IEnumerator Act()
 	{
 		Structure[] structureListByPref;
-        
+		DesireBase curDesire = null; ;
 		while(true)
 		{
 			yield return null;
 			switch(state)
 			{
 				case State.Idle:
-					structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), stat); // 1위 욕구에 따라 타입 결정하고 정렬된 건물 List 받아옴 // GC?
+					structureListByPref = StructureManager.Instance.FindStructureByDesire(curDesire = stat.GetSpecificDesire(stat.GetHighestDesire()), stat); // 1위 욕구에 따라 타입 결정하고 정렬된 건물 List 받아옴 // GC?
+					while (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount].charge <= stat.gold)
+					{
+						yield return null;
+						pathFindCount++;
+					}
                     while (state == State.Idle)
                     {
-                        if (pathFindCount > structureListByPref.Length)
+                        if (pathFindCount < structureListByPref.Length)
                         {
                             destination = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
 							destinationStructure = structureListByPref[pathFindCount];
-                        }
+						}
                         else
                         {
                             state = State.Exit;
@@ -95,9 +100,20 @@ public class Traveler : Actor {
 				case State.Indoor:
 					animator.SetBool("MoveFlg", false);
 					spriteRenderer.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
-					//건물 들어가서 계산을 마치고 invisible로~ //Structure 대기열 및 순번 구현해야함.
+					while (true)
+					{
+						yield return new WaitForSeconds(1.0f); // 순번 설정해야되는디
+						if (destinationStructure.EnterTraveler(this))
+						{
+							
+							curDesire.desireValue -= destinationStructure.resolveAmount;
+							stat.gold -= destinationStructure.charge;
+							yield return new WaitForSeconds(destinationStructure.duration);
+							break;
+						}
+						//붐비고있음 알림?
+					}
 					spriteRenderer.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
 					break;
 				case State.Exit:
                     destination = GameManager.Instance.GetRandomEntrance();
@@ -127,6 +143,14 @@ public class Traveler : Actor {
 	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
 	{
 		pathFindCount++;
+		if(state == State.Exit)
+		{
+			//즉시 탈출
+			//최대 손님 - 1
+			//평판 --
+			//알림
+			//disable
+		}
 	}
 
 	public override bool ValidateNextTile(Tile tile) // Pathfinder delegate

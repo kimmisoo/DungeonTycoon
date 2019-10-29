@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Monster //:Actor, IDamagable {
 { 
+
+
 	/*
 	//Stat 관련 처리. 데미지 처리. 등 ...
 	//선공 인식 범위 십자 3칸
