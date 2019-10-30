@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPrefQuery{
-
-	//public float GetPrefByActorType;
+public enum RaceType
+{
+	Human, Elf, Dwarf, Orc, Dog, Cat
 }

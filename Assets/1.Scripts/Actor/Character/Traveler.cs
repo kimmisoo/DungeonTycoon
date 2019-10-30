@@ -28,6 +28,9 @@ public class Traveler : Actor {
 	Coroutine act;
 	Coroutine moveAnimation;
 	Structure destinationStructure;
+	//Dictionary<StatType, StatBaseDiscrete> discreteStats;   
+	//Dictionary<StatType, StatBaseContinuous> continuousStats;   => 전투스탯들
+	Dictionary<DesireType, DesireBase> desire;
 	protected void Awake()
 	{
 		base.Awake();

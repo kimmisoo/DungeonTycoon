@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatMod {
-
-	
-
+public class StatModContinuous
+{
 	public float modValue
 	{
 		get
@@ -14,7 +12,7 @@ public class StatMod {
 		}
 		set
 		{
-			
+			_modValue = value; 
 		}
 	}
 	public ModType type
@@ -25,7 +23,7 @@ public class StatMod {
 		}
 		set
 		{
-
+			_type = value;
 		}
 	}
 

@@ -3,18 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public enum Race
-{
-	Human, Elf, Dwarf, Orc, Dog, Cat
-}
-public enum Wealth
-{
-	Upper, Middle, Lower
-}
-public enum Job
-{
-	Traveler, Adventurer, SpecialAdventurer
-}
+
 public class Stat {
 	#region BattleStat
 	//BattleStatusEnum
@@ -84,8 +73,11 @@ public class Stat {
 	//inventory 랑 옵저버?
 	List<EquipmentEffect> equipmentEffectList;
 	Traveler owner;
+	
 	public void Init(int _id, Race _race, Wealth _wealth, string _name, string explanation, int _gender, int _gold)
-	{ }
+	{
+		
+	}
 	/*
 	public void Init(int _id, Race _race, Wealth _wealth, string _name, string _explanation, int _gender, int _gold,
 		float _thirstyTick, float _hungryTick, float _sleepTick, float _tourTick, float _funTick, float _convenienceTick, float _equipmentTick,
@@ -562,5 +554,6 @@ public class Stat {
 			return true;
 		return false;
 	}
+	
 
 }

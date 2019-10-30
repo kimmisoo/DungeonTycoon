@@ -3,18 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum Desire
-{
-	Base, Thirsty, Hungry, Sleep, Tour, Fun, Convenience, Equipment, Health
-}
-
-
 public class DesireBase {
-
 	public const float desireMax = 100.0f;
 	public const float desireMin = 0.0f;
-	public const float tickMax = 10.0f;
-	public const float tickMin = 0.01f;
+	public const float tickMax = 100.0f;
+	public const float tickMin = 0.001f;
 	
 	protected WaitForSeconds tickBetweenWait;
 	public float desireValue
@@ -69,7 +62,7 @@ public class DesireBase {
 			
 		}
 	}
-	public Desire desireName
+	public DesireType desireName
 	{
 		get
 		{
@@ -80,10 +73,11 @@ public class DesireBase {
 	protected float _tickAmount;
 	protected float _tickAmountMult = 1.0f;
 	protected float _tickBetween = 1.0f;
-	protected Desire _desireName;
+	protected DesireType _desireName;
 	protected Coroutine tickCoroutine;
 	protected Traveler owner;
-	public void Init(Desire name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
+
+	public void Init(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
 	{
 		_desireName = name;
 		desireValue = initDesireValue;
