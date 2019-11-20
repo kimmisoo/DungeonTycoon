@@ -8,4 +8,9 @@ public class DesireTour : DesireBase {
 	{
 		yield return base.Tick();
 	}
+	public DesireTour(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
+		: base(name, initDesireValue, initTickAmount, initTickMult, initTickBetween, _owner)
+	{
+
+	}
 }

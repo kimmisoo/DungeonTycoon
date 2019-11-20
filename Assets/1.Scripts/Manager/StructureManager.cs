@@ -396,11 +396,12 @@ public class StructureManager : MonoBehaviour {
         return null;
     }
 
-	public Structure[] FindStructureByDesire(DesireBase desire, Stat stat) // 전달받은 stat의 종족, 부, 소지골드, 직업에따라 최적의 건물 반환.
+	public Structure[] FindStructureByDesire(DesireType type, Traveler t) // 전달받은 stat의 종족, 부, 소지골드, 직업에따라 최적의 건물 반환.
 	{
 		
-		return (from s in structures where s.resolveType == desire.desireName orderby s.preference.GetPrefSum(stat.race, stat.wealth, stat.job) descending select s).ToArray();
-		
+		return (from s in structures where s.resolveType == type && s.GetWaitSeconds() < 120.0f orderby s.preference.GetPrefSum(stat.race, stat.wealth, stat.job) descending select s).ToArray();
+		//욕구 타입과 대기 시간 고려
+		//순서는 종족, 부, 직업 고려
 	}
 	
 }

@@ -28,7 +28,7 @@ public class Structure : MonoBehaviour {
 	{
 		get; set;
 	}
-	public Desire resolveType
+	public DesireType resolveType
 	{
 		get; set;
 	}
@@ -53,6 +53,8 @@ public class Structure : MonoBehaviour {
 
     public List<Tile> entrance = new List<Tile>();
 	Queue<Traveler> curTravelerQueue = new Queue<Traveler>();
+	Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
+	Queue<Coroutine> curWaitingCoroutine = new Queue<Coroutine>();
     public void addEntrance(Tile t)
     {
         entrance.Add(t);
@@ -155,9 +157,30 @@ public class Structure : MonoBehaviour {
 		Invoke("ExitTraveler", duration);
 		return true;
 	}
+	public void AddWaitTraveler(Traveler t, Coroutine waitCoroutine)
+	{
+		curWaitingQueue.Enqueue(t);
+		curWaitingCoroutine.Enqueue(waitCoroutine);
+	}
 	public void ExitTraveler()
 	{
-		curTravelerQueue.Dequeue();
+
+		Traveler exitTraveler = curTravelerQueue.Dequeue();
+		if(curWaitingCoroutine.Count > 0 && curWaitingQueue.Count > 0)
+		{
+			StopCoroutine(curWaitingCoroutine.Dequeue());
+			EnterTraveler(curWaitingQueue.Dequeue());
+		}
+
+	}
+	public float GetWaitSeconds()
+	{
+		if (curTravelerQueue.Count < capacity)
+			return 0.0f;
+		else
+		{
+			return curWaitingQueue.Count * duration;
+		}
 	}
     
 }

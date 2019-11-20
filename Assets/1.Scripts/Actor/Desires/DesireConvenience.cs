@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class DesireConvenience : DesireBase {
 
-	public override IEnumerator Tick()
+	public DesireConvenience(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner) 
+		: base(name, initDesireValue, initTickAmount, initTickMult, initTickBetween, _owner)
 	{
-		yield return base.Tick();
+
 	}
 }

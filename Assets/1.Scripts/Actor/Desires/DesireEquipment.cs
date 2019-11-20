@@ -6,11 +6,16 @@ public class DesireEquipment : DesireBase {
 
 	public override IEnumerator Tick()
 	{
-		if (!(owner is Adventurer))
+		if (!(owner is Adventurer) && owner.GetState() != State.Indoor)
 			yield break;
 		else
 			yield return base.Tick();
 			
 		
+	}
+	public DesireEquipment(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
+		: base(name, initDesireValue, initTickAmount, initTickMult, initTickBetween, _owner)
+	{
+
 	}
 }

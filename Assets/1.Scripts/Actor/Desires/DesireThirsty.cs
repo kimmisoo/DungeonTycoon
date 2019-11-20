@@ -8,4 +8,9 @@ public class DesireThirsty : DesireBase {
 	{
 		yield return base.Tick();
 	}
+	public DesireThirsty(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
+		: base(name, initDesireValue, initTickAmount, initTickMult, initTickBetween, _owner)
+	{
+
+	}
 }

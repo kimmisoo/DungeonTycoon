@@ -8,6 +8,7 @@ public class StatHealth : StatBaseContinuous
 	NotifyDie notifyDie;
 	private float statMax;
 	private float statMin;
+	
 	public const StatType type = StatType.Health;
 	
 	public override float baseValue

@@ -39,7 +39,7 @@ public abstract class Actor : MonoBehaviour {
 
 	protected Tile curTile;
 	protected TileForMove curTileForMove;
-	
+	protected Tile destination;
 	protected  TileLayer tileLayer;
 	
 	
@@ -51,7 +51,6 @@ public abstract class Actor : MonoBehaviour {
 		wayForMove = new List<TileForMove>();
 		state = new State();
 		direction = new Direction();
-		
 	}
 	public Actor[] GetAdjacentActor(int range)
 	{

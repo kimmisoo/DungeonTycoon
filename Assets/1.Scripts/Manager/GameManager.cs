@@ -25,10 +25,11 @@ public class GameManager : MonoBehaviour {
     public int playerPopularity = 0;
     //Characters
 
-    public List<GameObject> characters;
 	public List<GameObject> travelers;
 	public List<GameObject> adventurers;
 	public List<GameObject> specialAdventurers;
+	public List<GameObject> inactiveTravelers;
+	public List<GameObject> inactiveAdventurers;
 
     public int corporateNum = 1;
     public List<float> popular;
@@ -94,6 +95,8 @@ public class GameManager : MonoBehaviour {
         travelers = new List<GameObject>();
         adventurers = new List<GameObject>();
 		specialAdventurers = new List<GameObject>();
+		inactiveTravelers = new List<GameObject>();
+		inactiveAdventurers = new List<GameObject>();
 		
         for (int i = 0; i < traveler_Max; i++)
         {
@@ -319,4 +322,15 @@ public class GameManager : MonoBehaviour {
     {
         Application.LoadLevel(sceneName);
     }
+
+	public Stat ResetTravelerStat(Traveler owner)
+	{
+		
+		Stat stat = owner.stat;
+		
+		//owner Type 별로 race, job, name, wealth, gender 부여
+		//stat 생성하여 owner.Init
+		return null;
+	}
+	
 }
