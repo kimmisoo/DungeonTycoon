@@ -87,18 +87,38 @@ public class Traveler : Actor {
 	{
 		switch(nextState)
 		{
-			case State.Idle:
+			/*case State.Idle:
 				StartCoroutine(StructureFinding());
-				
 				break;
 			case State.Moving:
+				StartCoroutine(MoveToDestination());
 				break;
 			case State.Indoor:
+				//욕구 낮추기 및 사용시간 대기
+				//
 				break;
 			case State.Exit:
 				break;
 			default:
-				state = State.Exit;
+				curState = State.Exit;
+				break;
+			*/
+			case State.Idle:
+				//Traveler이므로 무조건 SearchingStructure 부터
+				
+				break;
+			case State.SearchingStructure:
+				break;
+			case State.MovingToStructure:
+				break;
+			case State.WaitingStructure:
+				break;
+			case State.UsingStructure:
+				break;
+			case State.Exit:
+				break;
+			case State.None:
+				curState = State.Idle;
 				break;
 		}
 	}
@@ -115,20 +135,14 @@ public class Traveler : Actor {
 			case State.Exit:
 				break;
 			default:
-				state = State.Exit;
+				curState = State.Exit;
 				break;
 		}
 	}
 	IEnumerator StructureFinding()
 	{
 		Structure[] structureListByPref;
-		structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this); // 1위 욕구에 따라 타입 결정하고 정렬된 건물 List 받아옴 // GC?
-																											  //대기열도 고려해야함. !!
-		while (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount].charge <= stat.gold)
-		{
-			yield return null;
-			pathFindCount++;
-		}
+		structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
 		while (curState == State.Idle)
 		{
 			if (pathFindCount < structureListByPref.Length) // 길찾기 횟수가 선호건물 수 보다 적다면
@@ -143,8 +157,36 @@ public class Traveler : Actor {
 				break;
 			}
 			yield return StartCoroutine(pathFinder.Moves(curTile, destination));   //길찾기 시작
+			//pathfind success, fail delegate call
 		}
 	}
+	IEnumerator MoveToDestination()
+	{
+		//길찾기 성공!
+		wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+		animator.SetBool("MoveFlg", true); // animation 이동으로
+		yield return moveAnimation = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation
+																				//순번 or 대기 여부 결정
+		if (destinationStructure.GetWaitSeconds() > 120.0f) // const?
+		{
+			curState = State.Idle;
+			yield break;
+		}
+		else
+		{
+			if (destinationStructure.EnterTraveler(this))
+			{
+				curState = State.Indoor;
+				yield break;
+			}
+			else
+			{
+				
+				//대기 or 다시 길찾기
+			}
+		}
+	}
+	/*
 	IEnumerator Act()
 	{
 		
@@ -153,30 +195,7 @@ public class Traveler : Actor {
 			yield return null;
 			switch(state)
 			{
-				case State.Idle:
-					structureListByPref = StructureManager.Instance.FindStructureByDesire(curDesire = stat.GetHighestDesire(), this); // 1위 욕구에 따라 타입 결정하고 정렬된 건물 List 받아옴 // GC?
-					//대기열도 고려해야함. !!
-					while (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount].charge <= stat.gold)
-					{
-						yield return null;
-						pathFindCount++;
-					}
-                    while (state == State.Idle) 
-                    {
-                        if (pathFindCount < structureListByPref.Length) // 길찾기 횟수가 선호건물 수 보다 적다면
-						{
-                            destination = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
-							destinationStructure = structureListByPref[pathFindCount];
-						}
-                        else
-                        {
-                            state = State.Exit;
-							pathFindCount = 0;
-							break;
-                        }
-                        yield return StartCoroutine(pathFinder.Moves(curTile, destination));   //길찾기 시작
-                    }
-                    break;
+				
                 case State.Moving: // path 존재
 					wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
 					animator.SetBool("MoveFlg", true); // animation 이동으로
@@ -207,7 +226,7 @@ public class Traveler : Actor {
 					//state = State.Idle 결정하기
 
 
-					/*
+					///////////////////////////////
 					 animator.SetBool("MoveFlg", false);
 					spriteRenderer.color = Color.clear;
 					while (true)
@@ -223,7 +242,7 @@ public class Traveler : Actor {
 						//붐비고있음 알림?
 					}
 					spriteRenderer.color = Color.white;
-					 */
+					 ///////////////////////////////////
 					break;
 				case State.Indoor:
 					//Do nothing...
@@ -242,17 +261,17 @@ public class Traveler : Actor {
 			}
 		}
 	}
-	
+	*/
 	
 	public override void SetPathFindEvent() // Pathfinder Delegate 설정
     {
 		pathFinder.SetNotifyEvent(PathFindSuccess, PathFindFail);
-	} 
+	}
 
 	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
 	{
 		pathFindCount = 0;
-		state = State.Moving;
+		curState = State.Moving;
 	}
 	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
 	{

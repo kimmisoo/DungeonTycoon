@@ -164,7 +164,6 @@ public class Structure : MonoBehaviour {
 	}
 	public void ExitTraveler()
 	{
-
 		Traveler exitTraveler = curTravelerQueue.Dequeue();
 		if(curWaitingCoroutine.Count > 0 && curWaitingQueue.Count > 0)
 		{
