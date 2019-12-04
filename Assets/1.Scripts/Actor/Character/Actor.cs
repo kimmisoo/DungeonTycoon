@@ -6,7 +6,7 @@ using UnityEngine;
 public enum State
 {
 	//Idle, Chasing, Moving, Battle, Indoor, Dead, Exit
-	None, Idle, SearchingStructure, MovingToStructure, WaitingStructure, UsingStructure, SearhcingMonster, MovingToMonster, Battle, Dead, Exit
+	None, Idle, Wandering, SearchingStructure, PathFinding, MovingToStructure, WaitingStructure, UsingStructure, SearhcingMonster, MovingToMonster, Battle, Dead, Exit
 }
 /*
  * Animator Tirggers
@@ -40,7 +40,6 @@ public abstract class Actor : MonoBehaviour {
 
 	protected Tile curTile;
 	protected TileForMove curTileForMove;
-	protected Tile destination;
 	protected  TileLayer tileLayer;
 	
 	

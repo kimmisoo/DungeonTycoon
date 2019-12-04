@@ -62,8 +62,6 @@ public class TileMapGenerator : MonoBehaviour
 		} while (t != null);
 
 		layer_Count--;
-
-		int a;
 		//맵 데이터 읽기 완료
 
 		tileMap_Object = new GameObject("TileMap"); // instantiate 할 필요 없음. 씬에 추가까찌 자동으로 됨

@@ -16,8 +16,6 @@ public class TileLayer : MonoBehaviour  {
 	GameObject[ , ] tiles;
 	Tile[,] tilesComponent;
 	TileForMove [ , ] tilesforMove;
-	int a;
-	Vector3 n;
 
 	public void SetLayerNum(int _layer_Num)
 	{
@@ -144,7 +142,6 @@ public class TileLayer : MonoBehaviour  {
 			return null;			
 		}
 	}
-	
 
 	public string GetLayerName()
 	{

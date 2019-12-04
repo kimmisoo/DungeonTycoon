@@ -39,21 +39,17 @@ public class Traveler : Actor {
 		}
 	}
 	protected int pathFindCount = 0;
-	Coroutine act;
-	Coroutine moveAnimation;
-	Structure destinationStructure;
-	
-	
+	protected Coroutine curCoroutine;
+	protected Tile destinationTile;
+	protected Structure destinationStructure;
+	protected Structure[] structureListByPref;
+
 	protected void Awake()
 	{
 		base.Awake();
 	}
 	// Use this for initialization
-	void Start () {
-		//_stat = GameManager.Instance.GetNewStats(Type Traveler);
-		pathFinder.SetValidateTile(ValidateNextTile);
-		SetPathFindEvent();
-	}
+	
 	public void InitTraveler(Stat stat) //
 	{
 		pathFinder.SetValidateTile(ValidateNextTile);
@@ -64,15 +60,21 @@ public class Traveler : Actor {
 	}
 	public void OnEnable()
 	{
-		act = StartCoroutine(Act());
-        SetCurTile(GameManager.Instance.GetRandomEntrance());
-        SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
 		//매니저로 부터 세부 stat 받아오기
+		SetCurTile(GameManager.Instance.GetRandomEntrance());
+        SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
+		pathFinder.SetValidateTile(ValidateNextTile);
+		SetPathFindEvent();
+		pathFindCount = 0;
+		curCoroutine = null;
+		structureListByPref = null;
+		curState = State.Idle;
+		
+		
 	}
 	public void OnDisable()
 	{
-		StopCoroutine(act);
-		
+		StopAllCoroutines();
 		//골드, 능력치 초기화...  // current , origin 따로둬야할까?
 	}
 	
@@ -87,29 +89,27 @@ public class Traveler : Actor {
 	{
 		switch(nextState)
 		{
-			/*case State.Idle:
-				StartCoroutine(StructureFinding());
-				break;
-			case State.Moving:
-				StartCoroutine(MoveToDestination());
-				break;
-			case State.Indoor:
-				//욕구 낮추기 및 사용시간 대기
-				//
-				break;
-			case State.Exit:
-				break;
-			default:
-				curState = State.Exit;
-				break;
-			*/
+			
 			case State.Idle:
+
+				if(structureListByPref == null)
+				{
+					//Do something at first move...
+				}
 				//Traveler이므로 무조건 SearchingStructure 부터
-				
+				//이외에 체크할거 있으면 여기서
+				break;
+			case State.Wandering:
+				curCoroutine = StartCoroutine(Wandering());
 				break;
 			case State.SearchingStructure:
+				curCoroutine = StartCoroutine(StructureFinding());
+				break;
+			case State.PathFinding:
+				curCoroutine = StartCoroutine(PathFinding());
 				break;
 			case State.MovingToStructure:
+				curCoroutine = StartCoroutine(MoveToDestination());
 				break;
 			case State.WaitingStructure:
 				break;
@@ -128,55 +128,75 @@ public class Traveler : Actor {
 		{
 			case State.Idle:
 				break;
-			case State.Moving:
+			case State.Wandering:
 				break;
-			case State.Indoor:
+			case State.SearchingStructure:
+				break;
+			case State.PathFinding:
+				break;
+			case State.MovingToStructure:
+				break;
+			case State.WaitingStructure:
+				break;
+			case State.UsingStructure:
 				break;
 			case State.Exit:
 				break;
-			default:
-				curState = State.Exit;
+			case State.None:
+				curState = State.Idle;
 				break;
 		}
 	}
+	IEnumerator Wandering()
+	{
+		//랜덤 거리, 사방으로 이동
+		yield return null;
+		//이동 끝난 후 State = Idle.
+	}
 	IEnumerator StructureFinding()
 	{
-		Structure[] structureListByPref;
+		
 		structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
 		while (curState == State.Idle)
 		{
-			if (pathFindCount < structureListByPref.Length) // 길찾기 횟수가 선호건물 수 보다 적다면
+			yield return null;
+			if (structureListByPref[pathFindCount] != null && pathFindCount < structureListByPref.Length) // 길찾기 횟수가 선호건물 수 보다 적다면
 			{
-				destination = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
+				destinationTile = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
 				destinationStructure = structureListByPref[pathFindCount];
+				curState = State.PathFinding;
 			}
 			else
 			{
-				curState = State.Exit;
 				pathFindCount = 0;
+				curState = State.Exit;
 				break;
 			}
-			yield return StartCoroutine(pathFinder.Moves(curTile, destination));   //길찾기 시작
+			//길찾기 시작
 			//pathfind success, fail delegate call
 		}
+	}
+	IEnumerator PathFinding()
+	{
+		yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 	}
 	IEnumerator MoveToDestination()
 	{
 		//길찾기 성공!
 		wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
 		animator.SetBool("MoveFlg", true); // animation 이동으로
-		yield return moveAnimation = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation
+		yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation
 																				//순번 or 대기 여부 결정
-		if (destinationStructure.GetWaitSeconds() > 120.0f) // const?
+		if (destinationStructure != null && destinationStructure.GetWaitSeconds() > 120.0f) // const?
 		{
 			curState = State.Idle;
 			yield break;
 		}
 		else
 		{
-			if (destinationStructure.EnterTraveler(this))
+			if (destinationStructure != null && destinationStructure.EnterTraveler(this))
 			{
-				curState = State.Indoor;
+				curState = State.UsingStructure;
 				yield break;
 			}
 			else
@@ -186,82 +206,7 @@ public class Traveler : Actor {
 			}
 		}
 	}
-	/*
-	IEnumerator Act()
-	{
-		
-		while(true)
-		{
-			yield return null;
-			switch(state)
-			{
-				
-                case State.Moving: // path 존재
-					wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
-					animator.SetBool("MoveFlg", true); // animation 이동으로
-					yield return moveAnimation = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation
-																							//순번 or 대기 여부 결정
-					if(destinationStructure.GetWaitSeconds() > 120.0f) // const?
-					{
-						state = State.Idle;
-						break;
-					}
-					else
-					{
-						if(destinationStructure.EnterTraveler(this))
-						{
-							state = State.Indoor;
-							break;
-						}
-						else
-						{
-
-						}
-					}
-
-					//if(destinationStructure.GetCurWaitingSec() > 120.0f) // 2분 이상 걸리면 다른건물 검색, 
-					//state = State.Indoor 
-					//바로입장.
-					//입장까지 대기 할 수도 있고
-					//state = State.Idle 결정하기
-
-
-					///////////////////////////////
-					 animator.SetBool("MoveFlg", false);
-					spriteRenderer.color = Color.clear;
-					while (true)
-					{
-						yield return new WaitForSeconds(1.0f); // 순번 설정해야되는디
-						if (destinationStructure.EnterTraveler(this))
-						{
-							stat.GetSpecificDesire(curDesire).desireValue -= destinationStructure.resolveAmount;
-							stat.gold -= destinationStructure.charge;
-							yield return new WaitForSeconds(destinationStructure.duration);
-							break;
-						}
-						//붐비고있음 알림?
-					}
-					spriteRenderer.color = Color.white;
-					 ///////////////////////////////////
-					break;
-				case State.Indoor:
-					//Do nothing...
-					
-					break;
-				case State.Exit:
-                    destination = GameManager.Instance.GetRandomEntrance();
-					yield return StartCoroutine(pathFinder.Moves(curTile, destination));
-					destinationStructure = null;
-					wayForMove = GetWay(pathFinder.GetPath());
-					yield return moveAnimation = StartCoroutine(MoveAnimation(wayForMove));
-					gameObject.SetActive(false);
-					break;
-				default:
-					break;
-			}
-		}
-	}
-	*/
+	
 	
 	public override void SetPathFindEvent() // Pathfinder Delegate 설정
     {
@@ -271,13 +216,14 @@ public class Traveler : Actor {
 	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
 	{
 		pathFindCount = 0;
-		curState = State.Moving;
+		curState = State.MovingToStructure;
 	}
 	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
 	{
 		pathFindCount++;
-		if(state == State.Exit)
+		if(curState == State.Exit)
 		{
+			//타일맵 입구가 막혔을때!
 			//즉시 탈출
 			//최대 손님 - 1
 			//평판 --

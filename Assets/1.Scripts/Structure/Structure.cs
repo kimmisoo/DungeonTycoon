@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-
 public class Structure : MonoBehaviour {
 	public Tile point //extent 기준 0,0의 타일
 	{
@@ -52,9 +51,9 @@ public class Structure : MonoBehaviour {
     
 
     public List<Tile> entrance = new List<Tile>();
-	Queue<Traveler> curTravelerQueue = new Queue<Traveler>();
+	Queue<Traveler> curUsingQueue = new Queue<Traveler>();
 	Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
-	Queue<Coroutine> curWaitingCoroutine = new Queue<Coroutine>();
+	
     public void addEntrance(Tile t)
     {
         entrance.Add(t);
@@ -86,14 +85,6 @@ public class Structure : MonoBehaviour {
 		get; set;
 	}
     
-	void Start()
-	{
-		
-	}
-	void Update()
-	{
-
-	}
 	protected bool isMovable = false;
 
 
@@ -147,38 +138,38 @@ public class Structure : MonoBehaviour {
 	{
 		isConstructable = isc;
 	}
-	public bool EnterTraveler(Traveler t)
+	public void EnterTraveler(Traveler t)
 	{
-		if(curTravelerQueue.Count >= capacity)
-		{
-			return false;
-		}
-		curTravelerQueue.Enqueue(t);
+		curUsingQueue.Enqueue(t);
 		Invoke("ExitTraveler", duration);
-		return true;
 	}
-	public void AddWaitTraveler(Traveler t, Coroutine waitCoroutine)
+	public void AddWaitTraveler(Traveler t) // 첫번째로 호출.
 	{
 		curWaitingQueue.Enqueue(t);
-		curWaitingCoroutine.Enqueue(waitCoroutine);
+		t.curState = State.WaitingStructure;
+		if (curUsingQueue.Count < capacity)
+		{
+			EnterTraveler(curWaitingQueue.Dequeue());
+			t.curState = State.UsingStructure;
+		}
 	}
 	public void ExitTraveler()
 	{
-		Traveler exitTraveler = curTravelerQueue.Dequeue();
-		if(curWaitingCoroutine.Count > 0 && curWaitingQueue.Count > 0)
+		Traveler exitTraveler = curUsingQueue.Dequeue();
+		exitTraveler.curState = State.Idle;
+		if(curWaitingQueue.Count > 0) // 대기열에 사람이 있다면
 		{
-			StopCoroutine(curWaitingCoroutine.Dequeue());
 			EnterTraveler(curWaitingQueue.Dequeue());
 		}
 
 	}
 	public float GetWaitSeconds()
 	{
-		if (curTravelerQueue.Count < capacity)
+		if (curUsingQueue.Count < capacity)
 			return 0.0f;
 		else
 		{
-			return curWaitingQueue.Count * duration;
+			return (curWaitingQueue.Count) * duration;
 		}
 	}
     
