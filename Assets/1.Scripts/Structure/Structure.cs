@@ -152,6 +152,10 @@ public class Structure : MonoBehaviour {
 			EnterTraveler(curWaitingQueue.Dequeue());
 			t.curState = State.UsingStructure;
 		}
+		else
+		{
+			//대기 코루틴?
+		}
 	}
 	public void ExitTraveler()
 	{

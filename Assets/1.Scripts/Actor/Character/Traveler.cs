@@ -91,7 +91,6 @@ public class Traveler : Actor {
 		{
 			
 			case State.Idle:
-
 				if(structureListByPref == null)
 				{
 					//Do something at first move...
@@ -112,8 +111,12 @@ public class Traveler : Actor {
 				curCoroutine = StartCoroutine(MoveToDestination());
 				break;
 			case State.WaitingStructure:
+				destinationStructure.AddWaitTraveler(this);
 				break;
 			case State.UsingStructure:
+				//욕구 감소
+				//소지 골드 감소
+				//
 				break;
 			case State.Exit:
 				break;
@@ -155,7 +158,6 @@ public class Traveler : Actor {
 	}
 	IEnumerator StructureFinding()
 	{
-		
 		structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
 		while (curState == State.Idle)
 		{
@@ -185,23 +187,24 @@ public class Traveler : Actor {
 		//길찾기 성공!
 		wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
 		animator.SetBool("MoveFlg", true); // animation 이동으로
-		yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation
+		yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?
 																				//순번 or 대기 여부 결정
-		if (destinationStructure != null && destinationStructure.GetWaitSeconds() > 120.0f) // const?
+		
+		if (destinationStructure != null && destinationStructure.GetWaitSeconds() > 120.0f) // const? // 대기시간 2분 이상이면
 		{
 			curState = State.Idle;
 			yield break;
 		}
 		else
 		{
-			if (destinationStructure != null && destinationStructure.EnterTraveler(this))
+			if (destinationStructure != null)
 			{
-				curState = State.UsingStructure;
+				curState = State.WaitingStructure;
 				yield break;
 			}
 			else
 			{
-				
+				curState = State.Idle;
 				//대기 or 다시 길찾기
 			}
 		}
@@ -359,6 +362,7 @@ public class Traveler : Actor {
 			yield return null;
 		}
 	}
+	
 	
 
 }
