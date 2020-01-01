@@ -18,7 +18,7 @@ public enum Desire
 
 public class CommonStat {
 
-	public CommonStat(int _id, Race _race, Wealth _wealth, string _name, string _explanation, int _gender, int _gold,
+	public CommonStat(int _id, RaceType _race, WealthType _wealth, string _name, string _explanation, int _gender, int _gold,
 		float _thirstyTick, float _hungryTick, float _sleepTick, float _tourTick, float _funTick, float _convenienceTick, float _equipmentTick,
 		float _tickAllMult, float _tickTime, Traveler _owner)
 	{
@@ -60,11 +60,11 @@ public class CommonStat {
 	{
 		get;set;
 	}
-	Race race
+	RaceType race
 	{
 		get;set;
 	}
-	Wealth wealth
+	WealthType wealth
 	{
 		get;set;
 	}

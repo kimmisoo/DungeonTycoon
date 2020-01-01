@@ -87,7 +87,6 @@ public class Structure : MonoBehaviour {
     
 	protected bool isMovable = false;
 
-
 	public void StartMove()
 	{
 		isMovable = true;
@@ -111,7 +110,6 @@ public class Structure : MonoBehaviour {
         while (isMovable == true)
 		{
 			yield return new WaitForSeconds(0.1f);
-			
 			
 			if ( sp.color.a < 0.3f)
 				factor = 0.1f;

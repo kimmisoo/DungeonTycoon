@@ -399,7 +399,7 @@ public class StructureManager : MonoBehaviour {
 	public Structure[] FindStructureByDesire(DesireType type, Traveler t) // 전달받은 stat의 종족, 부, 소지골드, 직업에따라 최적의 건물 반환.
 	{
 		
-		return (from s in structures where s.resolveType == type && s.GetWaitSeconds() < 120.0f && t.stat.gold > s.charge orderby s.preference.GetPrefSum(stat.race, stat.wealth, stat.job) descending select s).ToArray();
+		return (from s in structures where s.resolveType == type && s.GetWaitSeconds() < 120.0f && t.stat.gold > s.charge orderby s.preference.GetPrefSum(t.stat.race, t.stat.wealth, t.stat.job) descending select s).ToArray();
 		//이용 요금 고려
 		//욕구 타입과 대기 시간 고려
 		//순서는 종족, 부, 직업 고려

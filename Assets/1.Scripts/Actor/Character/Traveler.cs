@@ -52,6 +52,7 @@ public class Traveler : Actor {
 	
 	public void InitTraveler(Stat stat) //
 	{
+
 		pathFinder.SetValidateTile(ValidateNextTile);
 		SetPathFindEvent();
 		//stat 초기화
@@ -69,13 +70,13 @@ public class Traveler : Actor {
 		curCoroutine = null;
 		structureListByPref = null;
 		curState = State.Idle;
-		
-		
 	}
 	public void OnDisable()
 	{
+
 		StopAllCoroutines();
 		//골드, 능력치 초기화...  // current , origin 따로둬야할까?
+
 	}
 	
 	public Stat stat
@@ -89,7 +90,6 @@ public class Traveler : Actor {
 	{
 		switch(nextState)
 		{
-			
 			case State.Idle:
 				if(structureListByPref == null)
 				{
@@ -116,9 +116,11 @@ public class Traveler : Actor {
 			case State.UsingStructure:
 				//욕구 감소
 				//소지 골드 감소
-				//
+				stat.gold -= destinationStructure.charge; // 쫌더 우아하게?
+				stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // ??
 				break;
 			case State.Exit:
+				//Going to outside 
 				break;
 			case State.None:
 				curState = State.Idle;
@@ -339,7 +341,7 @@ public class Traveler : Actor {
 			{
 				before = transform.position; // 이전 프레임 위치 기록
 				yield return null;
-				transform.Translate(directionVec * stat.GetCalculatedMovespeed() * Time.deltaTime); //TimeScale 말고
+				transform.Translate(directionVec * /*stat.GetCalculatedMovespeed()...Traveler는 모두 이동속도 1*/ 1.0f * Time.deltaTime); //TimeScale 말고
 				moveDistanceSum += Vector3.Distance(before, transform.position); // 총 이동한 거리 합산.
 			}
 			transform.position = destPos;

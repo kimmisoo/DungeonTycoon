@@ -103,7 +103,7 @@ public class DesireBase {
 		while(true)
 		{
 			yield return tickBetweenWait;
-			if(owner.GetState() != State.Indoor)
+			if(owner.GetState() != State.UsingStructure)
 				desireValue += tickAmount * tickAmountMult;
 		}
 	}

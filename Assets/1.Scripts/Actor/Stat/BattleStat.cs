@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class BattleStat {
 
-	Dictionary <StatType, StatBaseContinuous> battleStatContinuous = new Dictionary<StatType, StatBaseContinuous> 
+	Dictionary<StatType, StatBaseContinuous> battleStatContinuous = new Dictionary<StatType, StatBaseContinuous>();
+	Dictionary<StatType, StatBaseDiscrete> battleStatDiscrete = new Dictionary<StatType, StatBaseDiscrete>();
 	
 	public bool TakeDamageProcess(float damage) //계산된 데미지로 피해 처리
 	{
+		return true;
 		//returns true if Dead
 
-		if (currentShield + currentHealth - damage <= 0.0f)
+		/*if (currentShield + currentHealth - damage <= 0.0f)
 		{
 			//Dead
 			currentShield = 0.0f;
@@ -32,6 +34,6 @@ public class BattleStat {
 				currentShield = currentShield - damage;
 			}
 			return false;
-		}
+		}*/
 	}
 }
