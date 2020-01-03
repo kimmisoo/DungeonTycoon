@@ -73,10 +73,8 @@ public class Traveler : Actor {
 	}
 	public void OnDisable()
 	{
-
 		StopAllCoroutines();
 		//골드, 능력치 초기화...  // current , origin 따로둬야할까?
-
 	}
 	
 	public Stat stat
@@ -95,6 +93,7 @@ public class Traveler : Actor {
 				{
 					//Do something at first move...
 				}
+				curState = State.SearchingStructure;
 				//Traveler이므로 무조건 SearchingStructure 부터
 				//이외에 체크할거 있으면 여기서
 				break;
@@ -116,7 +115,7 @@ public class Traveler : Actor {
 			case State.UsingStructure:
 				//욕구 감소
 				//소지 골드 감소
-				stat.gold -= destinationStructure.charge; // 쫌더 우아하게?
+				stat.gold -= destinationStructure.charge; 
 				stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // ??
 				break;
 			case State.Exit:
@@ -160,11 +159,12 @@ public class Traveler : Actor {
 	}
 	IEnumerator StructureFinding()
 	{
-		structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
-		while (curState == State.Idle)
+		if(pathFindCount <= 0 && structureListByPref == null) // Fail 기록 없을때
+			structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
+		while (curState == State.SearchingStructure)
 		{
 			yield return null;
-			if (structureListByPref[pathFindCount] != null && pathFindCount < structureListByPref.Length) // 길찾기 횟수가 선호건물 수 보다 적다면
+			if (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount] != null) // 길찾기 횟수가 선호건물 수 보다 적다면
 			{
 				destinationTile = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
 				destinationStructure = structureListByPref[pathFindCount];
@@ -235,6 +235,7 @@ public class Traveler : Actor {
 			//알림
 			//disable
 		}
+		curState = State.SearchingStructure;
 	}
 
 	public override bool ValidateNextTile(Tile tile) // Pathfinder delegate
