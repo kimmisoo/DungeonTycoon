@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour {
 	private object lockObject = new object();
 	private object lockObject2 = new object();
 	//////////////////////////////////////////SceneData
-	int traveler_Max = 0;
+	int traveler_Max = 100;
 	int adventurer_Max = 0;
 	int specialAdventurer_Max = 0;
 	int drink_Max = 0;
@@ -107,89 +107,11 @@ public class GameManager : MonoBehaviour {
             travelers.Add(Instantiate(go));
             go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             travelers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
-			   
+			Debug.Log("character instantiate - " + i);
         }
         
 		
 
-		for (int i = 0; i < adventurer_Max; i++)
-		{
-			//씬마다 ~~~ Traveler , Adventurer 숫자 정해줘야함.
-            
-			GameObject go = (GameObject)Resources.Load("CharacterPrefabs/Adventurer_test");
-			go.SetActive(false);
-			adventurers.Add(Instantiate(go));
-			go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
-			adventurers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
-
-		}
-
-		for (int i = 0; i < specialAdventurer_Max; i++)
-		{
-			GameObject go;
-			//씬마다 ~~~ Traveler , Adventurer 숫자 정해줘야함.
-			int randNumber = Random.Range(0, 15);
-			switch(randNumber)
-			{
-				case 0:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character01_c01_test");//SpecialAdventurer_test");
-					break;
-				case 1:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character01_c02_test");
-					break;
-				case 2:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character01_c03_test");
-					break;
-				case 3:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character02_c01_test");
-					break;
-				case 4:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character02_c02_test");
-					break;
-				case 5:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character02_c03_test");
-					break;
-				case 6:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character03_c01_test");
-					break;
-				case 7:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character03_c02_test");
-					break;
-				case 8:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character03_c03_test");
-					break;
-				case 9:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character04_c01_test");
-					break;
-				case 10:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character04_c02_test");
-					break;
-				case 11:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character04_c03_test");
-					break;
-				case 12:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character05_c01_test");
-					break;
-				case 13:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character05_c02_test");
-					break;
-				case 14:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character05_c03_test");
-					break;
-				default:
-					go = (GameObject)Resources.Load("CharacterPrefabs/Character01_c01_test");
-					break;
-			}
-			
-
-			go.SetActive(false);
-			specialAdventurers.Add(Instantiate(go));
-			go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
-			specialAdventurers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
-		}
-
-
-		//StartCoroutine(EnteringCharacter());
 		StartCoroutine(TEnter());
 		
 		//StartCoroutine(GCcall());
@@ -202,12 +124,12 @@ public class GameManager : MonoBehaviour {
 
 	IEnumerator TEnter()
 	{
-		Debug.Log(specialAdventurer_Max);
-		for (int i = 0; i < specialAdventurer_Max; i++)
+		
+		for (int i = 0; i < traveler_Max; i++)
 		{
 			//yield return wait;
 			yield return null;
-			specialAdventurers[i].SetActive(true);
+			travelers[i].SetActive(true);
 		}
 	}
 	public void AddPop(int who, float amount)
@@ -235,22 +157,7 @@ public class GameManager : MonoBehaviour {
 	{
 		Time.timeScale = ts;
 	}
-	IEnumerator EnteringCharacter()
-	{
-		
-		int remain;
-        int traveler_Offset = 0;
-		int adventurer_Offset = 0;
-		int specialAdventurer_Offset = 0;
-		bool isDup = false;
-		
-		for(int i=0; i<specialAdventurer_Max; i++)
-		{
-			yield return wait;
-			specialAdventurers[i].SetActive(true);
-		}
-
-	}
+	
 
     public void AddGold(int amount)
     {

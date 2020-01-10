@@ -39,6 +39,7 @@ public class Traveler : Actor {
 		}
 	}
 	protected int pathFindCount = 0;
+	protected int wanderCount = 0;
 	protected Coroutine curCoroutine;
 	protected Tile destinationTile;
 	protected Structure destinationStructure;
@@ -51,13 +52,11 @@ public class Traveler : Actor {
 	// Use this for initialization
 	
 	public void InitTraveler(Stat stat) //
-	{
-
+	{ 
 		pathFinder.SetValidateTile(ValidateNextTile);
 		SetPathFindEvent();
 		//stat 초기화
 		//pathfinder 초기화 // delegate 그대로
-
 	}
 	public void OnEnable()
 	{
@@ -69,6 +68,7 @@ public class Traveler : Actor {
 		pathFindCount = 0;
 		curCoroutine = null;
 		structureListByPref = null;
+		tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
 		curState = State.Idle;
 	}
 	public void OnDisable()
@@ -89,6 +89,7 @@ public class Traveler : Actor {
 		switch(nextState)
 		{
 			case State.Idle:
+				Debug.Log("Idle");
 				if(structureListByPref == null)
 				{
 					//Do something at first move...
@@ -98,27 +99,34 @@ public class Traveler : Actor {
 				//이외에 체크할거 있으면 여기서
 				break;
 			case State.Wandering:
+				Debug.Log("Wandering");
 				curCoroutine = StartCoroutine(Wandering());
 				break;
 			case State.SearchingStructure:
+				Debug.Log("SS");
 				curCoroutine = StartCoroutine(StructureFinding());
 				break;
 			case State.PathFinding:
+				Debug.Log("PF");
 				curCoroutine = StartCoroutine(PathFinding());
 				break;
 			case State.MovingToStructure:
+				Debug.Log("MTS");
 				curCoroutine = StartCoroutine(MoveToDestination());
 				break;
 			case State.WaitingStructure:
+				Debug.Log("WS");
 				destinationStructure.AddWaitTraveler(this);
 				break;
 			case State.UsingStructure:
+				Debug.Log("US");
 				//욕구 감소
 				//소지 골드 감소
 				stat.gold -= destinationStructure.charge; 
 				stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // ??
 				break;
 			case State.Exit:
+				Debug.Log("EXIT");
 				//Going to outside 
 				break;
 			case State.None:
@@ -147,29 +155,46 @@ public class Traveler : Actor {
 			case State.Exit:
 				break;
 			case State.None:
-				curState = State.Idle;
 				break;
 		}
 	}
 	IEnumerator Wandering()
 	{
-		//랜덤 거리, 사방으로 이동
-		yield return null;
+		while (true)
+		{
+			//랜덤 거리, 사방으로 이동
+			do
+			{
+				destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
+				yield return null;
+			} while (!destinationTile.GetPassable());
+			yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+			yield return StartCoroutine(MoveToDestination());
+			yield return null;
+		}
 		//이동 끝난 후 State = Idle.
 	}
 	IEnumerator StructureFinding()
 	{
 		if(pathFindCount <= 0 && structureListByPref == null) // Fail 기록 없을때
-			structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
+			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
 		while (curState == State.SearchingStructure)
-		{
-			yield return null;
+			{
+			//temporary
+			if (structureListByPref == null || structureListByPref.Length == 0)
+			{
+				curState = State.Wandering;
+				yield break;
+			}
+			//temporary
+				yield return null;
 			if (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount] != null) // 길찾기 횟수가 선호건물 수 보다 적다면
 			{
 				destinationTile = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
 				destinationStructure = structureListByPref[pathFindCount];
 				curState = State.PathFinding;
 			}
+			
 			else
 			{
 				pathFindCount = 0;

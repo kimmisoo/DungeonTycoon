@@ -106,12 +106,13 @@ public class PathFinder : MonoBehaviour
         closeList.Clear();
         for (int i = 0; i < openList.Count; i++)
         {
+			Debug.Log(i);
             openList[i].ClearReference();
         }
-        for (int i = 0; i < closeList.Count; i++)
+        /*for (int i = 0; i < closeList.Count; i++)
         {
             closeList[i].ClearReference();
-        }
+        }*/
         //delegate call
         if (isNoPath)
         {
