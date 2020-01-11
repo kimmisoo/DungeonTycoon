@@ -10,6 +10,13 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager _instance = null;
 
+    #region PlayerStats
+    #region 세이브!
+    public int playerGold = 0;
+    public int playerPopularity = 0;
+    #endregion
+    #endregion
+
     #region Tiles
     public TileMapGenerator tmg;
 
@@ -20,8 +27,7 @@ public class GameManager : MonoBehaviour {
     public int enteringTimeMin = 1;
     public int enteringTimeMax = 5;
     public int enteringMax = 100;
-    public int playerGold = 0;
-    public int playerPopularity = 0;
+    
     #endregion
 
     #region Characters
@@ -171,12 +177,19 @@ public class GameManager : MonoBehaviour {
     // Save 메서드
     public void Save()
 	{
-		/*----------------------------------------------------------------*/ // 2016 02 26
+        /*----------------------------------------------------------------*/ // 2016 02 26
 
+        SaveLoadManager.SaveCurState(travelers);
 		Debug.Log("Saved . . .");
 
 		/*----------------------------------------------------------------*/ // 2016 02 26
 	}
+
+    // Load 메서드
+    public void Load()
+    {
+        Debug.Log("Load Complete");
+    }
 
     // 시간 배속 설정
     public void SetTimeScale(float ts)

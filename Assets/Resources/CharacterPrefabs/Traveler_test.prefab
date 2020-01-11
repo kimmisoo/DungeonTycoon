@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 114496638918021688}
   - component: {fileID: 114221652466524428}
   m_Layer: 0
-  m_Name: Character01_c01_test
+  m_Name: Traveler_test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

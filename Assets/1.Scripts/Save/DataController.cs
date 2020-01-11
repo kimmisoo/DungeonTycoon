@@ -65,6 +65,7 @@ public class DataController : MonoBehaviour
             Debug.Log("불러오기 성공!");
             string FromJsonData = File.ReadAllText(filePath);
             _data = JsonUtility.FromJson<GameData>(FromJsonData);
+            Debug.Log(_data);
         }
         else
         {
@@ -77,6 +78,7 @@ public class DataController : MonoBehaviour
     public void SaveGameData()
     {
         string toJsonData = JsonUtility.ToJson(Data);
+        Debug.Log(toJsonData);
         string filePath = Application.persistentDataPath + GameDataFileName;
         File.WriteAllText(filePath, toJsonData);
         Debug.Log("저장 완료");
@@ -96,7 +98,7 @@ public class DataController : MonoBehaviour
 [Serializable]
 public class GameData
 {
-    string str;
+    public string str;
 
     public GameData(string input)
     {
