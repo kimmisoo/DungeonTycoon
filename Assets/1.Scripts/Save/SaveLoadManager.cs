@@ -7,44 +7,53 @@ using System.IO;
 
 public static class SaveLoadManager
 {
-    public static void SaveCurState(List<GameObject> travler)
+    public static void SaveCurState(GameManager gameManager, out string savedataPath)
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream stream = new FileStream(Application.persistentDataPath + "/player.sav", FileMode.Create);
+        // 데이터 패스 설정
+        savedataPath = Application.persistentDataPath + "/test.sav"; // 임시
 
-        CurPlayingData data = new CurPlayingData(travler);
+        // 저장
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream stream = new FileStream(savedataPath, FileMode.Create);
+
+        GameSavedata data = new GameSavedata(gameManager);
 
         bf.Serialize(stream, data);
         stream.Close();
     }
 
-    public static CurPlayingData LoadCurState()
+    public static GameSavedata LoadFromSave(out string savedataPath)
     {
-        if (File.Exists(Application.persistentDataPath + "/player.sav"))
+        // 데이터 패스 설정
+        savedataPath = Application.persistentDataPath + "/test.sav";
+
+        // 불러오기
+        if (File.Exists(savedataPath))
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream stream = new FileStream(Application.persistentDataPath + "/player.sav", FileMode.Open);
+            FileStream stream = new FileStream(savedataPath, FileMode.Open);
 
-            CurPlayingData data = bf.Deserialize(stream) as CurPlayingData;
+            GameSavedata data = bf.Deserialize(stream) as GameSavedata;
 
             stream.Close();
             return data;
         }
         else
         {
-            Debug.Log("파일 없음");
             return null;
         }
     }
 }
 
 [Serializable]
-public class CurPlayingData
+public class GameSavedata
 {
-    public List<GameObject> travelers;
+    public int playerGold;
+    public int playerPopularity;
 
-    public CurPlayingData(List<GameObject> input)
+    public GameSavedata(GameManager input)
     {
-        travelers = input;
+        playerGold = input.playerGold;
+        playerPopularity = input.playerPopularity;
     }
 }
