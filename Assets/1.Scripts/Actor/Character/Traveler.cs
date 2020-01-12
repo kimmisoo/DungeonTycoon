@@ -58,6 +58,7 @@ public class Traveler : Actor {
 		//stat 초기화
 		//pathfinder 초기화 // delegate 그대로
 	}
+
 	public void OnEnable()
 	{
 		//매니저로 부터 세부 stat 받아오기
@@ -71,6 +72,7 @@ public class Traveler : Actor {
 		tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
 		curState = State.Idle;
 	}
+
 	public void OnDisable()
 	{
 		StopAllCoroutines();
@@ -83,6 +85,7 @@ public class Traveler : Actor {
 		set;
 	}
 	private Stat _stat;
+
 	//FSM Pattern...
 	protected void EnterState(State nextState)
 	{
@@ -271,6 +274,7 @@ public class Traveler : Actor {
 	protected List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
     {
         List<TileForMove> tileForMoveWay = new List<TileForMove>();
+
 		int childNum = GetCurTileForMove().GetChildNum();
 		tileForMoveWay.Add(GetCurTileForMove());
 		Direction dir;

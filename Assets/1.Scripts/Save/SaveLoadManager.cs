@@ -7,7 +7,8 @@ using System.IO;
 
 public static class SaveLoadManager
 {
-    public static void SaveCurState(GameManager gameManager, out string savedataPath)
+    // 현 상태 저장
+    public static void SaveCurState(out string savedataPath)
     {
         // 데이터 패스 설정
         savedataPath = Application.persistentDataPath + "/test.sav"; // 임시
@@ -16,16 +17,17 @@ public static class SaveLoadManager
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = new FileStream(savedataPath, FileMode.Create);
 
-        GameSavedata data = new GameSavedata(gameManager);
+        GameSavedata data = new GameSavedata();
 
         bf.Serialize(stream, data);
         stream.Close();
     }
 
+    // 세이브 파일에서 로드
     public static GameSavedata LoadFromSave(out string savedataPath)
     {
         // 데이터 패스 설정
-        savedataPath = Application.persistentDataPath + "/test.sav";
+        savedataPath = Application.persistentDataPath + "/test.sav"; // 임시
 
         // 불러오기
         if (File.Exists(savedataPath))
@@ -51,9 +53,16 @@ public class GameSavedata
     public int playerGold;
     public int playerPopularity;
 
-    public GameSavedata(GameManager input)
+    public GameSavedata()
     {
-        playerGold = input.playerGold;
-        playerPopularity = input.playerPopularity;
+        GameManager gameManager = GameManager.Instance;
+
+        playerGold = gameManager.playerGold;
+        playerPopularity = gameManager.playerPopularity;
     }
+}
+
+[Serializable]
+public class TravelerData
+{
 }

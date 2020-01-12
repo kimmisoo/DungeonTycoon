@@ -19,7 +19,9 @@ public class GameManager : MonoBehaviour
     #region Tiles
     public TileMapGenerator tmg;
 
+    #region 세이브!
     GameObject tileMap;
+    #endregion
 
     bool isUI = false;
     bool isConstructing = false;
@@ -50,6 +52,7 @@ public class GameManager : MonoBehaviour
     string sceneName;
     JSONNode sceneData;
 
+    [SerializeField]
     int traveler_Max = 100;
     int adventurer_Max = 0;
     int specialAdventurer_Max = 0;
@@ -177,7 +180,7 @@ public class GameManager : MonoBehaviour
     {
         string savedataPath;
 
-        SaveLoadManager.SaveCurState(this, out savedataPath);
+        SaveLoadManager.SaveCurState(out savedataPath);
         Debug.Log(savedataPath + " - 저장 성공");
     }
 
@@ -230,6 +233,14 @@ public class GameManager : MonoBehaviour
     {
         int sceneNumber = int.Parse(SceneManager.GetActiveScene().name);
 
+#if DEBUG
+        Debug.Log("Scenedata 읽어오기 디버그 시작");
+        Debug.Log("현재 씬 : " + sceneNumber);
+        Debug.Log(aData["scene"]);
+        Debug.Log(aData["scene"][sceneNumber]);
+        Debug.Log(aData["scene"][sceneNumber]["traveler_Max"].AsInt);
+#endif
+
         traveler_Max = aData["scene"][sceneNumber]["traveler_Max"].AsInt;
         adventurer_Max = aData["scene"][sceneNumber]["adventurer_Max"].AsInt;
         complete_Popularity = aData["scene"][sceneNumber]["complete_Popularity"].AsInt;
@@ -259,13 +270,13 @@ public class GameManager : MonoBehaviour
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, (y * 2) + 1));
         }
 
-        traveler_Max = 1;
-        adventurer_Max = 1;
-        specialAdventurer_Max = 800;
+        //traveler_Max = 1;
+        //adventurer_Max = 1;
+        //specialAdventurer_Max = 800;
 
     }
 
-    // 뭔지 모르겠음
+    // 입구 랜덤으로 찾기
     public Tile GetRandomEntrance()
     {
         int rand = Random.Range(0, mapEntranceCount);
@@ -273,7 +284,7 @@ public class GameManager : MonoBehaviour
         return mapEntrance[rand].GetParent();
     }
 
-    // 마찬가지
+    // 뭔지 모르겠음
     public string getCurrentDateForSave()
     {
         return "";

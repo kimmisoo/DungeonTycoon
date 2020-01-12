@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TileForMove {
-
+// 모험가 이동 타일 클래스
+public class TileForMove
+{
 	private Vector3 pos;
 	private int x;
 	private int y;
 	private Tile parent;
 	private int childNum = 0;
 	private Actor recentActor = null;
+
 	public TileForMove(int _x, int _y, Vector3 _pos, Tile _parent)
 	{
 		x = _x;

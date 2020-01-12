@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
+// A*용 클래스
 public class PathVertex : IComparable
 {
 	public float Cost { get { return F; } }
@@ -15,10 +16,13 @@ public class PathVertex : IComparable
 	public int F = 0;
 	public int G = 0;
 	public int H = 0;
+
 	public PathVertex()
 	{
 
 	}
+
+    // 생성자이며 비용계산도 함.
 	public PathVertex(PathVertex _prevVertex, Tile _curTile, Tile _endTile)
 	{
 		curTile = _curTile;
@@ -33,6 +37,7 @@ public class PathVertex : IComparable
 		Y = curTile.GetY();
 
 	}
+
 	public void ReUse(PathVertex _prevVertex, Tile _curTile, Tile _endTile)
 	{
 		curTile = _curTile;
@@ -46,11 +51,13 @@ public class PathVertex : IComparable
 		X = curTile.GetX();
 		Y = curTile.GetY();
 	}
+
 	public void ClearReference()
 	{
 		prevVertex = null;
 	}
 
+    // F값 비교
 	public int CompareTo(object other)
 	{
 		if ((other is PathVertex) == false) return 0;

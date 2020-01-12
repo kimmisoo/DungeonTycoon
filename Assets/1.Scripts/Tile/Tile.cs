@@ -3,33 +3,47 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Tile : MonoBehaviour {
-
-	Tile up;
+public class Tile : MonoBehaviour
+{
+    #region Near Tiles
+    Tile up;
 	Tile left;
 	Tile right;
 	Tile down;
 	Tile tile;
-	public int x = -1;
+    #endregion
+
+    #region Tile Attributes
+    public int x = -1;
 	public int y = -1;
 	int layer_Num = -1;
 	int tile_Type = -1;
-	bool isPassable = false;
+
+    bool isPassable = false;
     bool isStructed = false;
     bool isNonTile = false;
 	bool isBuildable = false;
 	bool isMonsterArea = false;
+
     Structure structure;
-	SpriteRenderer sr;
-	
-	
-	Vector3 position;
-	bool isOpen = false;
+    #endregion
+
+    #region Unity Attributes
+    SpriteRenderer sr;
+    Vector3 position;
+    #endregion
+
+    #region for PathFinder
+    bool isOpen = false;
 	bool isClose = false;
-	TileLayer layer;
-	TileForMove[] childs = new TileForMove[4];// u r l d
+    #endregion
+
+    TileLayer layer;
+	TileForMove[] childs = new TileForMove[4];// up, right, left, down
+
 	public void Start()
 	{
+        // 초기화
 		tile = this;
 		position = transform.position;
 		sr = GetComponent<SpriteRenderer>();
@@ -37,6 +51,8 @@ public class Tile : MonoBehaviour {
 		//StartCoroutine(CheckColor());
 			
 	}
+
+    // 길찾기 디버깅용인듯
 	IEnumerator CheckColor()
 	{
 		while(isPassable || isMonsterArea)
@@ -48,6 +64,8 @@ public class Tile : MonoBehaviour {
 				sr.color = Color.black;
 		}
 	}
+
+    // A*용 메서드
 	public void AddedOpenList()
 	{
 		isOpen = true;
@@ -56,6 +74,8 @@ public class Tile : MonoBehaviour {
 	{
 		isClose = true;	
 	}
+
+    // get, set
 	public Vector3 GetPosition()
 	{
 		return position;
@@ -152,11 +172,15 @@ public class Tile : MonoBehaviour {
 	{
 		return y;
 	}
+
+    // Child set
 	public void SetChild(int index, TileForMove child)
 	{
 		childs[index] = child;
 		child.SetChildNum(index);
 	}
+
+    // Child get. 이동용 타일임
 	public TileForMove GetChild(int index)
 	{
 		if (childs[index] == null)
@@ -167,6 +191,7 @@ public class Tile : MonoBehaviour {
 		else
 			return childs[index];
 	}
+
 	public Direction GetDirectionFromOtherTile(Tile t)
     {
        
