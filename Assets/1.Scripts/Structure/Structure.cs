@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Structure : MonoBehaviour {
+public class Structure : MonoBehaviour
+{
 	public Tile point //extent 기준 0,0의 타일
 	{
 		get; set;
@@ -11,6 +12,13 @@ public class Structure : MonoBehaviour {
     public int entCount = 0;
 	private bool isConstructable = true; //건설 가능한 위치에 배치 되어있는가 아닌가
     public int sitInCount = 0;
+
+    // 세이브, 로드용
+    public string structureCategory;
+    public int structureNumber;
+    public int structureIndex;
+    //
+
 	public bool isEnterable
 	{
 		get; set;
@@ -54,6 +62,16 @@ public class Structure : MonoBehaviour {
 	Queue<Traveler> curUsingQueue = new Queue<Traveler>();
 	Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
 	
+    public Traveler[] GetCurUsingQueAsArray()
+    {
+        return curUsingQueue.ToArray();
+    }
+    public Traveler[] GetCurWatingQueAsArray()
+    {
+        return curWaitingQueue.ToArray();
+    }
+
+
     public void addEntrance(Tile t)
     {
         entrance.Add(t);

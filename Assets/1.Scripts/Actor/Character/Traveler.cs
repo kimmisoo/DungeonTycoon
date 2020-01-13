@@ -44,6 +44,9 @@ public class Traveler : Actor {
 	protected Structure destinationStructure;
 	protected Structure[] structureListByPref;
 
+    // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
+    public int index;
+
 	protected void Awake()
 	{
 		base.Awake();
@@ -433,6 +436,11 @@ public class Traveler : Actor {
             return false; 
 
         GameObject tileLayer = GameManager.Instance.GetTileLayer();
+        if (tileLayer == null)
+            Debug.Log("타일 레이어 없음");
+        else
+            Debug.Log("타일레이어 존재!");
+        Debug.Log("Child 수 : " + tileLayer.transform.childCount);
         curTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
 
         if (curTile == null)

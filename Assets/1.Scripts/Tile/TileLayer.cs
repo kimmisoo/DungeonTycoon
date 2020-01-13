@@ -16,6 +16,12 @@ public class TileLayer : MonoBehaviour  {
 	GameObject[ , ] tiles;
 	Tile[,] tilesComponent;
 	TileForMove [ , ] tilesforMove;
+    
+    // Structure 세팅을 위해 Get가능
+    public GameObject[ , ] GetTiles()
+    {
+        return tiles;
+    }
 
 	public void SetLayerNum(int _layer_Num)
 	{

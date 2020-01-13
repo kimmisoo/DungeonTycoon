@@ -151,6 +151,10 @@ public class Tile : MonoBehaviour
 	{
 		layer_Num = _layer_Num;
 	}
+    public int GetLayerNum()
+    {
+        return layer_Num;
+    }
 	public void SetLayer(TileLayer _layer)
 	{
 		layer = _layer;

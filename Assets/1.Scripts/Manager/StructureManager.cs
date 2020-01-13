@@ -78,6 +78,10 @@ public class StructureManager : MonoBehaviour
 		structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
 		structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
 
+        // 저장용.
+        structure.structureCategory = tempStructureCategory;
+        structure.structureNumber = tempStructureNumber;
+
         //preference
         structure.preference.SetPrefAdventurer(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["adventurer"].AsFloat);
         structure.preference.SetPrefTourist(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["tourist"].AsFloat);
@@ -168,7 +172,13 @@ public class StructureManager : MonoBehaviour
 		
 		structure.EndMove();
 		ResetConstructingAreas();
-		structures.Add(structure);
+
+        // 인덱스 값 구하고 넣어줌.
+        structure.structureIndex = structures.Count;
+
+        // 리스트에 추가
+        structures.Add(structure);
+        
 		
 		for(int i = 0; i<structure.extentHeight; i++)
 		{

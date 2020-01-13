@@ -58,7 +58,10 @@ public class PathFinder : MonoBehaviour
 
     void Start()
     {
-        tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
+        TileMap tempTileMap = GameManager.Instance.GetMap();
+        Debug.Log("타일맵? " + tempTileMap);
+        tileLayer = tempTileMap.GetLayer(0).GetComponent<TileLayer>();
+        Debug.Log("타일레이어? " + tileLayer);
         id = gameObject.GetInstanceID();
         wait = new WaitForSeconds(0.5f);
         visited = new openListVisited[GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerHeight(), GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerWidth()];

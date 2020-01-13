@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using SimpleJSON;
+using UnityEngine.Events;
 
 
 public class GameManager : MonoBehaviour
@@ -132,6 +133,7 @@ public class GameManager : MonoBehaviour
             travelers.Add(Instantiate(go));
             go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             travelers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
+            travelers[i].GetComponent<Traveler>().index = i;
 //            Debug.Log("character instantiate - " + i);
         }
 
@@ -305,6 +307,8 @@ public class GameManager : MonoBehaviour
             Debug.Log(savedataPath + " - 불러오기 성공");
 
             LoadPlayerData(savedata);
+
+            LoadTileMap(savedata);
             LoadTravelerList(savedata);
         }
         // 실패 메시지 출력
@@ -336,7 +340,7 @@ public class GameManager : MonoBehaviour
         }
         travelers.Clear();
 
-        // Active 관련 요소는 이야기해보고 결정. 현재는 빠져있음.
+        // Active 관련 요소는 이야기해보고 결정.
         for (int i = 0; i < savedata.travelerDatas.Count; i++)
         {
             newObject = (GameObject)Resources.Load("CharacterPrefabs/Traveler_test");
@@ -355,11 +359,11 @@ public class GameManager : MonoBehaviour
 
             // 세이브 데이터에서 대입.
             travelers[i].SetActive(inputTravelerData.isActive);
+            newTraveler.index = inputTravelerData.index;
 
             if (travelers[i].activeSelf)
             {
                 travelers[i].transform.position = new Vector3(inputTravelerData.position.x, inputTravelerData.position.y, inputTravelerData.position.z);
-                Debug.Log(i + " Active? " + travelers[i].activeSelf);
                 newTraveler.curState = inputTravelerData.state;
                 newTraveler.SetDestinationTileLoad(inputTravelerData.destinationTile);
                 newTraveler.SetCurTileLoad(inputTravelerData.curTile);
@@ -373,7 +377,14 @@ public class GameManager : MonoBehaviour
 
     private void LoadTileMap(GameSavedata savedata)
     {
-        // Destroy 한 다음 타일맵 제네레이터로 넘겨주는게 나아보임.
+        // 일단 Layer 없이 구현.
+        tmg.ClearTileMap();
+        tileMap = tmg.GenerateMapFromSave("TileMap/" + sceneName, savedata);
+    }
+
+    private void LoadStructureList(GameSavedata savedata)
+    {
+        
     }
 
     public GameObject GetTileLayer()
