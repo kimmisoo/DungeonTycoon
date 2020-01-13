@@ -24,7 +24,7 @@ public enum State
 
 public abstract class Actor : MonoBehaviour {
 
-	
+	[SerializeField]
 	protected State state;
 	/*public string actorName { get; set; }
 	public string explanation { get; set; }

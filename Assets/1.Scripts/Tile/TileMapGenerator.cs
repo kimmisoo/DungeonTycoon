@@ -25,6 +25,7 @@ public class TileMapGenerator : MonoBehaviour
 	public const int road_Start = 227;
 	public List<GameObject> preLoadedTileObject;
 	int i = 0;
+
 	public GameObject GenerateMap(string path)  //맵 생성
 	{
 		LoadMapData(path);
@@ -107,7 +108,7 @@ public class TileMapGenerator : MonoBehaviour
 			{
 				for (i = 0; i < layer_Count; i++)//layer_Count; i++)
 				{
-					if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt != 0)
+                    if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt != 0)
 					{
 						GameObject tile_Object;
 						tile_Object = (GameObject)Instantiate(preLoadedTileObject[mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt]);//Resources.Load("TilePrefabs/" + mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt));                                                                                            //tile_Resources.Add(mapData["layers"][i]["data"][x * layer.GetLayerWidth() + y].AsInt, tile_Object);
@@ -116,7 +117,11 @@ public class TileMapGenerator : MonoBehaviour
 						tile_Object.transform.parent = layer_Object.transform;
 						//Tile tile = tile_Object.GetComponent<Tile>();
 						Tile tile = tile_Object.AddComponent<Tile>();
-						if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 227 && mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt <= 238)//~238 //길
+                        
+                        // 로드 했을 때 새로 할당하기 위해서.
+                        tile.prefabInfo = mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt;
+
+                        if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 227 && mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt <= 238)//~238 //길
 						{
 							tile.SetPassable(true);
 							tile.SetBuildable(false);

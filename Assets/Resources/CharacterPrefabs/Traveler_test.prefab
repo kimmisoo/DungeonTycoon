@@ -158,17 +158,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1083337244626922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2e6bed3f39e7294eb7a31f3feaa277e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e4452cffabf4784e8c572083ccc5fac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isNoPath: 0
-  calNum: 0
   myCurPos: {fileID: 0}
   destination: {fileID: 0}
   nextMovePos: {fileID: 0}
   tileLayer: {fileID: 0}
-  found: 0
-  isAdventurer: 0
+  isEnd: 0
   id: 0
 --- !u!114 &114496638918021688
 MonoBehaviour:
@@ -178,15 +176,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1083337244626922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2af25bd9ab49dc4d9cc9c3f82c3a1f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d6b84caed386934cae69e82754c2f54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveto: {fileID: 0}
-  enchantmentList: []
-  destStructure: {fileID: 0}
-  state: 0
-  desire: {fileID: 0}
-  dest: {fileID: 0}
 --- !u!212 &212354283700025392
 SpriteRenderer:
   m_ObjectHideFlags: 1

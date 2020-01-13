@@ -52,7 +52,6 @@ public class GameManager : MonoBehaviour
     string sceneName;
     JSONNode sceneData;
 
-    [SerializeField]
     int traveler_Max = 100;
     int adventurer_Max = 0;
     int specialAdventurer_Max = 0;
@@ -75,8 +74,6 @@ public class GameManager : MonoBehaviour
     WaitForSeconds countLogWait;
     #endregion
 
-
-
     public static GameManager Instance
     {
         // 싱글톤 사용
@@ -92,6 +89,9 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         _instance = this;
+
+        // 로드용. Scene 바뀌어도 이 오브젝트 유지함.
+        DontDestroyOnLoad(this.gameObject);
 
         // Scene 이름 받기
         sceneName = SceneManager.GetActiveScene().name;
@@ -132,10 +132,8 @@ public class GameManager : MonoBehaviour
             travelers.Add(Instantiate(go));
             go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             travelers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
-            Debug.Log("character instantiate - " + i);
+//            Debug.Log("character instantiate - " + i);
         }
-
-
 
         StartCoroutine(TEnter());
 
@@ -147,6 +145,7 @@ public class GameManager : MonoBehaviour
     }
 
     // 모험가 입장 코루틴
+    // 이거에 i 값을 던져주면 활성화 문제는 해결됨.
     IEnumerator TEnter()
     {
         for (int i = 0; i < traveler_Max; i++)
@@ -173,41 +172,6 @@ public class GameManager : MonoBehaviour
     public TileMap GetMap()
     {
         return tileMap.GetComponent<TileMap>();
-    }
-
-    // 현재 상황 Save
-    public void Save(int slot)
-    {
-        string savedataPath;
-
-        SaveLoadManager.SaveCurState(out savedataPath);
-        Debug.Log(savedataPath + " - 저장 성공");
-    }
-
-    // 세이브 파일에서 Load
-    public void Load(int slot)
-    {
-        string savedataPath;
-        // 세이브파일 읽기
-        GameSavedata savedata = SaveLoadManager.LoadFromSave(out savedataPath);
-
-        // 세이브에서 받아서 결과값 대입
-        if (savedata != null)
-        {
-            Debug.Log(savedataPath + " - 불러오기 성공");
-
-            #region PlayerStats
-            playerGold = savedata.playerGold;
-            playerPopularity = savedata.playerPopularity;
-            #endregion
-
-
-        }
-        // 실패 메시지 출력
-        else
-        {
-            Debug.Log(savedataPath + " - 불러오기 실패");
-        }
     }
 
     // 시간 배속 설정
@@ -317,4 +281,104 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    #region Save Load
+    // 현재 상황 Save
+    public void Save(int slot)
+    {
+        string savedataPath;
+
+        SaveLoadManager.SaveCurState(out savedataPath);
+        Debug.Log(savedataPath + " - 저장 성공");
+    }
+
+    // 세이브 파일에서 Load
+    public void Load(int slot)
+    {
+        string savedataPath;
+        // 세이브파일 읽기
+        GameSavedata savedata = SaveLoadManager.LoadFromSave(out savedataPath);
+
+        //        LoadScene(savedata.sceneName);
+        // 세이브에서 받아서 결과값 대입
+        if (savedata != null)
+        {
+            Debug.Log(savedataPath + " - 불러오기 성공");
+
+            LoadPlayerData(savedata);
+            LoadTravelerList(savedata);
+        }
+        // 실패 메시지 출력
+        else
+        {
+            Debug.Log(savedataPath + " - 불러오기 실패");
+        }
+    }
+
+    private void LoadPlayerData(GameSavedata savedata)
+    {
+        playerGold = savedata.playerGold;
+        playerPopularity = savedata.playerPopularity;
+    }
+
+    // 일단 완성
+    private void LoadTravelerList(GameSavedata savedata)
+    {
+        GameObject newObject;
+        TravelerData inputTravelerData;
+        Traveler newTraveler;
+        GameObject tileMapLayer;
+
+        // 할당 해제. 다른 Scene일 수도 있으니.
+        foreach (GameObject traveler in travelers)
+        {
+            traveler.GetComponent<Traveler>().StopAllCoroutines();
+            Destroy(traveler);
+        }
+        travelers.Clear();
+
+        // Active 관련 요소는 이야기해보고 결정. 현재는 빠져있음.
+        for (int i = 0; i < savedata.travelerDatas.Count; i++)
+        {
+            newObject = (GameObject)Resources.Load("CharacterPrefabs/Traveler_test");
+            newObject.SetActive(false);
+
+            inputTravelerData = savedata.travelerDatas[i];
+            
+            
+            // List에 추가
+            travelers.Add(Instantiate(newObject));
+
+            newTraveler = travelers[i].GetComponent<Traveler>();
+
+            travelers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
+            Debug.Log("character instantiate - " + i);
+
+            // 세이브 데이터에서 대입.
+            travelers[i].SetActive(inputTravelerData.isActive);
+
+            if (travelers[i].activeSelf)
+            {
+                travelers[i].transform.position = new Vector3(inputTravelerData.position.x, inputTravelerData.position.y, inputTravelerData.position.z);
+                Debug.Log(i + " Active? " + travelers[i].activeSelf);
+                newTraveler.curState = inputTravelerData.state;
+                newTraveler.SetDestinationTileLoad(inputTravelerData.destinationTile);
+                newTraveler.SetCurTileLoad(inputTravelerData.curTile);
+            }
+
+            // TEnter 관련은 아직 저장안함
+            // 현 상태에서, 모험가 입장도중 저장하면 다른 모험가가 들어오지 않을 가능성 있음.
+            // 어디까지 활성화했나 보고 그 뒤에꺼 이어가면 문제 X.
+        }
+    }
+
+    private void LoadTileMap(GameSavedata savedata)
+    {
+        // Destroy 한 다음 타일맵 제네레이터로 넘겨주는게 나아보임.
+    }
+
+    public GameObject GetTileLayer()
+    {
+        return tileMap.transform.GetChild(0).gameObject;
+    }
+    #endregion
 }

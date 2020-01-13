@@ -4,7 +4,8 @@ using SimpleJSON;
 using System.Collections.Generic;
 using System.Linq;
 
-public class StructureManager : MonoBehaviour {
+public class StructureManager : MonoBehaviour
+{
 	static StructureManager _instance;
     
 	public static StructureManager Instance
@@ -27,12 +28,14 @@ public class StructureManager : MonoBehaviour {
 	public JSONNode structureJson;
 	string tempStructureCategory;
 	int tempStructureNumber;
-    
 
-	public List<Structure> structures;
-	
-	// Use this for initialization
-	void Start () {
+    #region 세이브!
+    public List<Structure> structures;
+    #endregion
+
+    // Use this for initialization
+    void Start ()
+    {
 		_instance = this;
 		LoadStructureData();
 		structures = new List<Structure>();

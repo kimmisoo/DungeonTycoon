@@ -9,8 +9,6 @@ public delegate bool TileValidation(Tile tile);
 
 public class PathFinder : MonoBehaviour
 {
-
-
     NotifyToActor pathFindSuccess;
     NotifyToActor pathFindFail;
     TileValidation validateTile;

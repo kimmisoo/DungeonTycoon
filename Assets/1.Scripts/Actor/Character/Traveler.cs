@@ -22,9 +22,8 @@ using UnityEngine;
 	//이름, 종족, 성별, 선호도, 캐릭터 스프라이트와 애니메이션, 
 
 public class Traveler : Actor {
-	//acting 구성
-	//useStructure ~ 구현
-	
+    //acting 구성
+    //useStructure ~ 구현
 	public State curState
 	{
 		get
@@ -208,10 +207,12 @@ public class Traveler : Actor {
 			//pathfind success, fail delegate call
 		}
 	}
+
 	IEnumerator PathFinding()
 	{
 		yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 	}
+
 	IEnumerator MoveToDestination()
 	{
 		//길찾기 성공!
@@ -394,7 +395,50 @@ public class Traveler : Actor {
 			yield return null;
 		}
 	}
-	
-	
 
+    #region Save Load
+    public int GetDestinationTileSave()
+    {
+        if (destinationTile != null)
+            return int.Parse(destinationTile.name);
+        else
+            return -1;
+    }
+
+    public bool SetDestinationTileLoad(int tileNum)
+    {
+        if (tileNum == -1)
+            return false;
+
+        GameObject tileLayer = GameManager.Instance.GetTileLayer();
+        destinationTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
+
+        if (destinationTile == null)
+            return false;
+        else
+            return true;
+    }
+
+    public int GetCurTileSave()
+    {
+        if (curTile != null)
+            return int.Parse(curTile.name);
+        else
+            return -1;
+    }
+
+    public bool SetCurTileLoad(int tileNum)
+    {
+        if (tileNum == -1)
+            return false; 
+
+        GameObject tileLayer = GameManager.Instance.GetTileLayer();
+        curTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
+
+        if (curTile == null)
+            return false;
+        else
+            return true;
+    }
+    #endregion
 }

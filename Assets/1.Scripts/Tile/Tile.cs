@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#define DEBUG
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -41,16 +43,17 @@ public class Tile : MonoBehaviour
     TileLayer layer;
 	TileForMove[] childs = new TileForMove[4];// up, right, left, down
 
+    public int prefabInfo;
+
 	public void Start()
 	{
         // 초기화
 		tile = this;
 		position = transform.position;
 		sr = GetComponent<SpriteRenderer>();
-		
-		//StartCoroutine(CheckColor());
-			
-	}
+        //StartCoroutine(CheckColor());
+
+    }
 
     // 길찾기 디버깅용인듯
 	IEnumerator CheckColor()
@@ -180,8 +183,8 @@ public class Tile : MonoBehaviour
 		child.SetChildNum(index);
 	}
 
-    // Child get. 이동용 타일임
-	public TileForMove GetChild(int index)
+    // 이동용 타일 Child get
+    public TileForMove GetChild(int index)
 	{
 		if (childs[index] == null)
 		{
