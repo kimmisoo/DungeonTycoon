@@ -55,6 +55,7 @@ public class Traveler : Actor {
 	
 	public void InitTraveler(Stat stat) //
 	{ 
+        // 이동가능한 타일인지 확인할 delegate 설정.
 		pathFinder.SetValidateTile(ValidateNextTile);
 		SetPathFindEvent();
 		//stat 초기화
@@ -63,15 +64,23 @@ public class Traveler : Actor {
 
 	public void OnEnable()
 	{
-		//매니저로 부터 세부 stat 받아오기
+		// 입구 타일 랜덤으로 받아오기.
 		SetCurTile(GameManager.Instance.GetRandomEntrance());
         SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
-		pathFinder.SetValidateTile(ValidateNextTile);
+
+        // 이동가능한 타일인지 확인할 delegate 설정.
+        pathFinder.SetValidateTile(ValidateNextTile);
+        // PathFind 성공/실패에 따라 호출할 delegate 설정.
 		SetPathFindEvent();
+        // 아마 실패 횟수인 듯.
 		pathFindCount = 0;
 		curCoroutine = null;
 		structureListByPref = null;
+
+        // 타일레이어 받기.
 		tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
+
+        // 기본은 Idle.
 		curState = State.Idle;
 	}
 
@@ -163,6 +172,7 @@ public class Traveler : Actor {
 				break;
 		}
 	}
+
 	IEnumerator Wandering()
 	{
 		while (true)

@@ -192,6 +192,7 @@ public class StructureData
 {
     // 마찬가지로 바꿔야할 수 있음.
     public int pointTile;
+    public int[,] extent;
     public List<int> entranceList;
     public int entCount;
     public int sitInCount;
@@ -205,6 +206,7 @@ public class StructureData
     public StructureData(Structure input)
     {
         pointTile = int.Parse(input.point.name);
+        extent = input.extent;
         for (int i = 0; i < input.entrance.Count; i++)
             entranceList.Add(int.Parse(input.entrance[i].name));
         entCount = input.entCount;

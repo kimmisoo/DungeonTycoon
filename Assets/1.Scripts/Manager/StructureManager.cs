@@ -21,10 +21,20 @@ public class StructureManager : MonoBehaviour
 				return _instance;
 		}
 	}
+
+    // 건설 대상 지역 표시
 	public GameObject[] ConstructingAreas;
+
+    // 건설할 건물
 	public GameObject constructing; 
+
+    // 뭔지 모르겠음
 	public GameObject rootStructureObject;
+
+    // 건설 중인지 표시
 	public bool isConstructing = false;
+
+    // 건물 정보 읽어오기용
 	public JSONNode structureJson;
 	string tempStructureCategory;
 	int tempStructureNumber;
@@ -59,6 +69,8 @@ public class StructureManager : MonoBehaviour
 	{
 		tempStructureNumber = num;
 	}
+
+    // Resources에서 건물 정보 읽어오고 constructing에 올림
 	public void InstantiateStructure()
 	{
 		
@@ -95,8 +107,6 @@ public class StructureManager : MonoBehaviour
         structure.preference.SetPrefLowerclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["lowerclass"].AsFloat);
         //desire
 		
-        
-
 
         structure.genre = structureJson[tempStructureCategory][tempStructureNumber]["genre"];
 		structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
@@ -119,11 +129,13 @@ public class StructureManager : MonoBehaviour
 	public void AllocateStructure()
 	{
 		GameObject nearest = null;
+
 		GameObject[] gos = GameObject.FindGameObjectsWithTag("Tile");
 		Vector2 pos = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2, 0.0f));
 		float minDiff = Mathf.Infinity;
 		Debug.Log("Allocated!!!!");
 
+        //가장 가까운 타일 찾기(카메라 중심의 타일 찾기)
 		foreach (GameObject go in gos)
 		{
 			float diff = ((Vector2)go.transform.position - pos).magnitude;
@@ -133,6 +145,7 @@ public class StructureManager : MonoBehaviour
 				nearest = go;
 			}
 		}
+        // 건설할 건물의 position 설정(가장 가까운 타일에 맞춰)
 		constructing.transform.position = new Vector3(nearest.transform.position.x, nearest.transform.position.y, -50.0f) ;
 
 		//////////////////////////////////
@@ -151,6 +164,8 @@ public class StructureManager : MonoBehaviour
 		constructing.GetComponent<Structure>().StartMove();
 		
 	}
+
+    // 위까지 생략하되 constructing에 설정하는 건 가져와줘야.
 	public void ConstructStructure()
 	{
 		//Gold 소모
@@ -207,9 +222,9 @@ public class StructureManager : MonoBehaviour
 
         constructing = null;
         isConstructing = false;
-        
 
     }
+
 	public bool GetisConstructing()
 	{
 		return isConstructing;
@@ -265,18 +280,22 @@ public class StructureManager : MonoBehaviour
 
 		int areaIndex = 0;
 		conStructure.SetisConstructable(true);
+
+        // 건설영역을 돌면서 건설 가능한가를 봄.
 		for (int i = 0; i < conStructure.extentHeight; i++)//StructureManager.Instance.GetConstructing().GetComponent<Structure>().extentHeight; i++)
 		{
 			for (int j = 0; j < conStructure.extentWidth; j++)//StructureManager.Instance.GetConstructing().GetComponent<Structure>().extentWidth; j++) //건물의 영역 크기 만큼의 2차원 배열
 			{
-
 				if (extent[j, i] == 0) // 건물의 영역에서 0인 부분
 				{
 
 				}
 				else
 				{
+                    // 해당 영역의 타일 받기.
 					Tile t = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetTileAsComponent(x + j, y + i);
+
+                    // 건설 가능한가, 입구인가에 따라 색칠하고 건설 불가면 bool 변수 변경해줌.
 					if (t != null)
 					{
 						if (t.GetBuildable() == true && extent[j, i] == 1)
@@ -417,5 +436,72 @@ public class StructureManager : MonoBehaviour
 		//욕구 타입과 대기 시간 고려
 		//순서는 종족, 부, 직업 고려
 	}
-	
+
+    public void LoadStructureList(GameSavedata savedata)
+    {
+        List<StructureData> structureDatas = savedata.structureDatas;
+    }
+
+    private void ResetStructureList()
+    {
+    }
+
+    private void ConstructStructureFromLoad()
+    {
+        //Gold 소모
+
+        Structure structure = constructing.GetComponent<Structure>();
+
+        if (GameManager.Instance.GetPlayerGold() >= structure.expenses)
+        {
+            GameManager.Instance.playerGold -= structure.expenses;
+        }
+        else
+            return;
+        Tile tile = structure.point;
+        int[,] extent = structure.GetExtent();
+        TileLayer tileLayer = tile.GetLayer();
+
+        Debug.Log("Constructed!!!!");
+        constructing.tag = "Structure";
+
+        structure.EndMove();
+        ResetConstructingAreas();
+
+        // 인덱스 값 구하고 넣어줌.
+        structure.structureIndex = structures.Count;
+
+        // 리스트에 추가
+        structures.Add(structure);
+
+
+        for (int i = 0; i < structure.extentHeight; i++)
+        {
+            for (int j = 0; j < structure.extentWidth; j++)
+            {
+                Tile thatTile = tileLayer.GetTileAsComponent(tile.GetX() + j, tile.GetY() + i);
+
+                if (extent[j, i] == 1)
+                {
+                    thatTile.SetBuildable(false);
+                    thatTile.SetStructed(true);
+                    thatTile.SetStructure(structure);
+                }
+                else if (extent[j, i] == 2)
+                {
+                    thatTile.SetStructed(true);
+                    if (thatTile.GetBuildable())
+                    {
+                        structure.addEntrance(thatTile);
+                    }
+                }
+            }
+        }
+
+        CheckEntrance();
+
+        constructing = null;
+        isConstructing = false;
+
+    }
 }

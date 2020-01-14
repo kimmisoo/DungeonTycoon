@@ -9,15 +9,19 @@ public delegate bool TileValidation(Tile tile);
 
 public class PathFinder : MonoBehaviour
 {
+    // 길찾기 성공시 호출할 Delegate
     NotifyToActor pathFindSuccess;
+    // 길찾기 실패시 호출할 Delegate
     NotifyToActor pathFindFail;
+    // 타일이 passable인지 확인할 Delegate
     TileValidation validateTile;
 
+    // A* 오픈 리스트용 구조체
     public struct openListVisited
     {
         public bool isVisited;
         public bool isClosed;
-        public int F;
+        public int F; // 아마 A* 계산값일듯
         public openListVisited(bool _isVisited, bool _isClosed, int _F)
         {
             isVisited = _isVisited;
@@ -25,13 +29,20 @@ public class PathFinder : MonoBehaviour
             F = _F;
         }
     }
+
     public bool isNoPath = false;
+
+    // 방향 체크용
     enum Direction { left, right, up, down };
     static Vector2[] DirectionVectors = { new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, -1.0f) };
-    //
+    
+    // A* 클로즈 리스트
     Dictionary<int, PathVertex> closeList = new Dictionary<int, PathVertex>();
+    // A* 오픈 리스트
     PriorityQueue<PathVertex> openList = new PriorityQueue<PathVertex>();
+    // 지금까지의 path를 저장하는듯?
     List<PathVertex> path = new List<PathVertex>();
+    // 뭔지 모르겠음. 전체 타일맵?
     public openListVisited[,] visited;
 
     int bestKey = 0;
@@ -39,8 +50,11 @@ public class PathFinder : MonoBehaviour
     PathVertex best = null;
     PathVertex latest_simulate = null;
 
+    // 현재 타일
     public Tile myCurPos;
+    // 목적지 타일
     public Tile destination;
+    // 다음 타일?
     public Tile nextMovePos;
     Tile next;
 
@@ -58,13 +72,20 @@ public class PathFinder : MonoBehaviour
 
     void Start()
     {
+        // 게임 매니저에서 타일맵 받기
         TileMap tempTileMap = GameManager.Instance.GetMap();
         Debug.Log("타일맵? " + tempTileMap);
+        // 타일레이어 받기
         tileLayer = tempTileMap.GetLayer(0).GetComponent<TileLayer>();
         Debug.Log("타일레이어? " + tileLayer);
         id = gameObject.GetInstanceID();
+
         wait = new WaitForSeconds(0.5f);
+
+        // visited를 타일맵 x, y 만큼의 크기를 갖는 2차배열로 초기화
         visited = new openListVisited[GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerHeight(), GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerWidth()];
+
+        // 전체 타일에 대해서 방문했나, 클로즈드인가 저장하는 듯
         for (int i = 0; i < GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerHeight(); i++)
         {
             for (int j = 0; j < GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>().GetLayerWidth(); j++)
@@ -74,21 +95,24 @@ public class PathFinder : MonoBehaviour
         }
     }
 
+    // 이 부분에서 에러가 남.
     public IEnumerator Moves(Tile pcurPos, Tile pdestination)
     {
         yield return null;
         myCurPos = pcurPos;
         destination = pdestination;
+
+        // 리스트 및 큐들 초기화
         for (int i = 0; i < path.Count; i++)
         {
             path[i].ClearReference();
         }
         path.Clear();
         closeList.Clear();
-        openList.HalfClear();
+        openList.HalfClear(); // Clear도 있는데 왜 HalfClear인지
         ClearVisited();
         isEnd = false;
-        ThreadPool.UnsafeQueueUserWorkItem(this.Simulate, null);
+        ThreadPool.UnsafeQueueUserWorkItem(this.Simulate, null); // 이거 볼 차례
         while (isEnd == false)
         {
             //Debug.Log("found == false While looop");
@@ -108,7 +132,7 @@ public class PathFinder : MonoBehaviour
         for (int i = 0; i < openList.Count; i++)
         {
 			Debug.Log(i);
-            openList[i].ClearReference();
+            openList[i].ClearReference(); // NullPointerException 이 나는 곳.
         }
         /*for (int i = 0; i < closeList.Count; i++)
         {
