@@ -82,6 +82,7 @@ public class Traveler : Actor {
 
         // 기본은 Idle.
 		curState = State.Idle;
+        Debug.Log("OnEnable에서");
 	}
 
 	public void OnDisable()
@@ -184,6 +185,7 @@ public class Traveler : Actor {
 				yield return null;
 			} while (!destinationTile.GetPassable());
 			yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+            Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID());
 			yield return StartCoroutine(MoveToDestination());
 			yield return null;
 		}
@@ -231,8 +233,7 @@ public class Traveler : Actor {
 		//길찾기 성공!
 		wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
 		animator.SetBool("MoveFlg", true); // animation 이동으로
-		yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?
-																				//순번 or 대기 여부 결정
+		yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 		
 		if (destinationStructure != null && destinationStructure.GetWaitSeconds() > 120.0f) // const? // 대기시간 2분 이상이면
 		{

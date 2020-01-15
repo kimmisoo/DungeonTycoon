@@ -16,6 +16,7 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 	public int useCount = 0;
 	int parentIndex = 0;
 	int index = 0;
+
 	public PriorityQueue()
 	{
 		SortType = PRIORITY_SORT_TYPE.ASCENDING;
@@ -26,6 +27,7 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 		SortType = sortType;
 	}
 
+    // heap에서 삽입 메서드. 문제없음.
 	public void Add(T item)
 	{
 		items.Add(item);
@@ -35,10 +37,12 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 
 		while (keepGoing)
 		{
-			if (index == 0) break;
+			if (index == 0)
+                break;
 			parentIndex = (index - 1) / 2;
 			keepGoing = CompareAndSwap(index, parentIndex);
-			if (keepGoing) index = parentIndex;
+			if (keepGoing)
+                index = parentIndex;
 		}
 	}
 	
@@ -47,6 +51,7 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 		items.Clear();
 		useCount = 0;
 	}
+
 	public void HalfClear()
 	{
 		if(items.Count > 500)
@@ -72,6 +77,7 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 		return RemoveAt(items.IndexOf(item));
 	}
 
+    // 이거도 문제없음.
 	public bool RemoveAt(int index)
 	{
 		if (index < 0) return false;
@@ -169,6 +175,7 @@ public class PriorityQueue<T> : ICollection<T> where T : IComparable
 		int leftChildIndex = ((parentIndex + 1) * 2) - 1;
 		int rightChildIndex = (parentIndex + 1) * 2;
 
+        // 자식 둘다 있을 때.
 		if ((leftChildIndex < useCount/*items.Count*/) && (rightChildIndex < useCount/*items.Count*/))
 		{
 			int result = items[leftChildIndex].CompareTo(items[rightChildIndex]);

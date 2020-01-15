@@ -35,7 +35,6 @@ public class PathVertex : IComparable
 		F = G + H;
 		X = curTile.GetX();
 		Y = curTile.GetY();
-
 	}
 
 	public void ReUse(PathVertex _prevVertex, Tile _curTile, Tile _endTile)

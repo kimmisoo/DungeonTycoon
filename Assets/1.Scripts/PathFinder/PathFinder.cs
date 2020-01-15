@@ -42,7 +42,7 @@ public class PathFinder : MonoBehaviour
     PriorityQueue<PathVertex> openList = new PriorityQueue<PathVertex>();
     // 지금까지의 path를 저장하는듯?
     List<PathVertex> path = new List<PathVertex>();
-    // 뭔지 모르겠음. 전체 타일맵?
+    // 아마도 현재까지의 Path에서 밟았던 Tile인지 확인용인듯
     public openListVisited[,] visited;
 
     int bestKey = 0;
@@ -60,6 +60,7 @@ public class PathFinder : MonoBehaviour
 
     public TileLayer tileLayer; //for Test
     bool isCal = false;
+    // 길찾기 Thread(Simulate)가 끝났는가?
     public bool isEnd = false;
     System.Random rd = new System.Random();
     public int id;
@@ -80,6 +81,7 @@ public class PathFinder : MonoBehaviour
         Debug.Log("타일레이어? " + tileLayer);
         id = gameObject.GetInstanceID();
 
+        // simulate 결과 받기까지 기다리는 시간.
         wait = new WaitForSeconds(0.5f);
 
         // visited를 타일맵 x, y 만큼의 크기를 갖는 2차배열로 초기화
@@ -109,10 +111,10 @@ public class PathFinder : MonoBehaviour
         }
         path.Clear();
         closeList.Clear();
-        openList.HalfClear(); // Clear도 있는데 왜 HalfClear인지
+        openList.Clear(); // HalfClear() -> Clear()로 변경함.
         ClearVisited();
         isEnd = false;
-        ThreadPool.UnsafeQueueUserWorkItem(this.Simulate, null); // 이거 볼 차례
+        ThreadPool.UnsafeQueueUserWorkItem(this.Simulate, null);
         while (isEnd == false)
         {
             //Debug.Log("found == false While looop");
@@ -129,11 +131,12 @@ public class PathFinder : MonoBehaviour
         path.Reverse();
 
         closeList.Clear();
-        for (int i = 0; i < openList.Count; i++)
-        {
-			Debug.Log(i);
-            openList[i].ClearReference(); // NullPointerException 이 나는 곳.
-        }
+        //     for (int i = 0; i < openList.Count; i++)
+        //     {
+        //Debug.Log(i);
+        //         openList[i].ClearReference(); // NullPointerException 이 나는 곳.
+        //     }
+        openList.Clear();
         /*for (int i = 0; i < closeList.Count; i++)
         {
             closeList[i].ClearReference();
@@ -156,18 +159,25 @@ public class PathFinder : MonoBehaviour
         bestKey = latest_simulate.X * 1000 + latest_simulate.Y;
         closeList.Add(latest_simulate.X * 1000 + latest_simulate.Y, latest_simulate);
 
+        // Close 리스트에 집어넣음
         visited[latest_simulate.Y, latest_simulate.X].isClosed = true;
         Debug.Log("in");
-        while (!latest_simulate.myTilePos.Equals(destination))
+
+        while (!latest_simulate.myTilePos.Equals(destination)) // Dest에 도착하지 않은 동안
         {
+            // 주위 4칸 확인.
             for (int i = 0; i < 4; i++)
             {
+                // 타일이 있고 Passable일 때
                 if ((next = tileLayer.GetTileAsComponent((int)(latest_simulate.myTilePos.GetX() + DirectionVectors[i].x), (int)(latest_simulate.myTilePos.GetY() + DirectionVectors[i].y))) != null && next.GetPassable())
                 {
+                    // Closed가 아닐 때
                     if (visited[next.GetY(), next.GetX()].isClosed == false)
                     {
+                        // Visited가 아닐 때. 그러니깐 다른 노드에서 계산한 적 없을때는 그냥 새값을 넣음.
                         if (visited[next.GetY(), next.GetX()].isVisited == false)
                         {
+                            // 뭔지 모르겠음
                             if (openList.Count <= openList.useCount)
                             {
                                 openList.Add(tempVertex = new PathVertex(latest_simulate, next, destination));
