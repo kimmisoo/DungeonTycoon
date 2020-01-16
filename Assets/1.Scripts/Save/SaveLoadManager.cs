@@ -6,10 +6,40 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
 
-public static class SaveLoadManager
+public class SaveLoadManager : MonoBehaviour
 {
+    private static SaveLoadManager _instance;
+    private GameSavedata savedata;
+
+    private string savedataPath;
+
+    // 싱글톤으로 변경
+    public static SaveLoadManager GetInstance()
+    {
+        if(_instance == null)
+        {
+            _instance = FindObjectOfType<SaveLoadManager>();
+
+            if(_instance == null)
+            {
+                GameObject container = new GameObject("SaveLoadManager");
+
+                _instance = container.AddComponent<SaveLoadManager>();
+            }
+        }
+
+        return _instance;
+    }
+
+    private void Start()
+    {
+        if (_instance != null && _instance != this)
+                Destroy(gameObject);
+        DontDestroyOnLoad(this);
+    }
+
     // 현 상태 저장
-    public static void SaveCurState(out string savedataPath)
+    public void SaveCurState()
     {
         // 데이터 패스 설정
         savedataPath = Application.persistentDataPath + "/test.sav"; // 임시
@@ -24,8 +54,14 @@ public static class SaveLoadManager
         stream.Close();
     }
 
+    public void LoadFromData()
+    {
+        ReadSavedata();
+        InstantiateFromData();
+    }
+
     // 세이브 파일에서 로드
-    public static GameSavedata LoadFromSave(out string savedataPath)
+    public void ReadSavedata()
     {
         // 데이터 패스 설정
         savedataPath = Application.persistentDataPath + "/test.sav"; // 임시
@@ -36,14 +72,37 @@ public static class SaveLoadManager
             BinaryFormatter bf = new BinaryFormatter();
             FileStream stream = new FileStream(savedataPath, FileMode.Open);
 
-            GameSavedata data = bf.Deserialize(stream) as GameSavedata;
+           savedata = bf.Deserialize(stream) as GameSavedata;
 
-            stream.Close();
-            return data;
+           stream.Close();
         }
         else
         {
-            return null;
+            Debug.Log("로드 실패.");
+        }
+    }
+
+    private void InstantiateFromData()
+    {
+        //SceneManager.LoadScene(savedata.sceneName);
+        // 세이브에서 받아서 결과값 대입
+        if (savedata != null)
+        {
+            Debug.Log(savedataPath + " - 불러오기 성공");
+
+            GameManager.Instance.LoadPlayerData(savedata);
+
+            GameManager.Instance.LoadTileMap(savedata);
+            GameManager.Instance.LoadTravelerList(savedata);
+
+            GameManager.Instance.LoadStructures(savedata);
+
+            GameManager.Instance.SetTileStructure(savedata);
+        }
+        // 실패 메시지 출력
+        else
+        {
+            Debug.Log(savedataPath + " - 불러오기 실패");
         }
     }
 }
