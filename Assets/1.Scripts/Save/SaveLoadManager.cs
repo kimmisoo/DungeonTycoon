@@ -52,8 +52,11 @@ public static class SaveLoadManager
 public class GameSavedata
 {
     public string sceneName;
+
     public int playerGold;
     public int playerPopularity;
+    public Vector3Data cameraPosition;
+    public float cameraSize;
 
     public List<TravelerData> travelerDatas;
     public List<TileData> tileDatas;
@@ -67,6 +70,10 @@ public class GameSavedata
         sceneName = SceneManager.GetActiveScene().name;
         playerGold = gameManager.playerGold;
         playerPopularity = gameManager.playerPopularity;
+
+        cameraPosition = new Vector3Data(Camera.main.transform.position);
+        cameraSize = Camera.main.orthographicSize;
+        Camera.main.GetComponent<InputManager>().isLoading = true;
 
         travelerDatas = new List<TravelerData>();
 

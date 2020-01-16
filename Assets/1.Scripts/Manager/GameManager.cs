@@ -300,7 +300,7 @@ public class GameManager : MonoBehaviour
         // 세이브파일 읽기
         GameSavedata savedata = SaveLoadManager.LoadFromSave(out savedataPath);
 
-        //        LoadScene(savedata.sceneName);
+        // LoadScene(savedata.sceneName);
         // 세이브에서 받아서 결과값 대입
         if (savedata != null)
         {
@@ -326,6 +326,9 @@ public class GameManager : MonoBehaviour
     {
         playerGold = savedata.playerGold;
         playerPopularity = savedata.playerPopularity;
+
+        Camera.main.transform.position = new Vector3(savedata.cameraPosition.x, savedata.cameraPosition.y, savedata.cameraPosition.z);
+        Camera.main.orthographicSize = savedata.cameraSize;
     }
 
     // 일단 완성
