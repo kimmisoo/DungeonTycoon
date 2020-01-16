@@ -27,6 +27,7 @@ public class Tile : MonoBehaviour
 	bool isBuildable = false;
 	bool isMonsterArea = false;
 
+    [SerializeField]
     Structure structure;
     #endregion
 

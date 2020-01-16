@@ -14,6 +14,17 @@ using System.IO;
 
 public class TileMapGenerator : MonoBehaviour
 {
+    private static TileMapGenerator _instance = null;
+
+    public static TileMapGenerator Instance
+    {
+        get
+        {
+            if (_instance == null)
+                Debug.Log("TileMapGenerator = NULL");
+            return _instance;
+        }
+    }
 
     Dictionary<int, GameObject> tile_Resources; //타일 생성할때 . . .
                                                 // 딕셔너리 찾아봄.   있음 -> 사용,   없음 -> 로드 후 사용 및 딕셔너리 삽입
@@ -25,6 +36,11 @@ public class TileMapGenerator : MonoBehaviour
     public const int road_Start = 227;
     public List<GameObject> preLoadedTileObject;
     int i = 0;
+
+    public void Awake()
+    {
+        _instance = this;
+    }
 
     public GameObject GenerateMap(string path)  //맵 생성
     {

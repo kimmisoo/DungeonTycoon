@@ -190,6 +190,7 @@ public class TileData
 [Serializable]
 public class StructureData
 {
+    public Vector3Data position;
     // 마찬가지로 바꿔야할 수 있음.
     public int pointTile;
     public int[,] extent;
@@ -198,25 +199,47 @@ public class StructureData
     public int sitInCount;
 
     public Queue<int> curUsingQueue;
+    public Queue<float> elapsedTimeQueue;
     public Queue<int> curWaitingQueue;
 
     public string structureCategory;
     public int structureNumber;
+    public int structureIndex;
 
     public StructureData(Structure input)
     {
-        pointTile = int.Parse(input.point.name);
+        position = new Vector3Data(input.gameObject.transform.position);
+        entranceList = new List<int>();
+        curUsingQueue = new Queue<int>();
+        elapsedTimeQueue = new Queue<float>();
+        curWaitingQueue = new Queue<int>();
+
+        pointTile = int.Parse(input.point.gameObject.name);
         extent = input.extent;
         for (int i = 0; i < input.entrance.Count; i++)
-            entranceList.Add(int.Parse(input.entrance[i].name));
+        {
+            Debug.Log("i : " + i + " entrance count : " + input.entrance.Count);
+            
+            entranceList.Add(int.Parse(input.entrance[i].gameObject.name));
+        }
         entCount = input.entCount;
         sitInCount = input.sitInCount;
 
-        Traveler[] tempArr = input.GetCurUsingQueAsArray();
+        // Queue에 집어넣는 순서가 맞는지 모르겠음. 아니라면, Arr에 Reverse()해주면 됨.
+        Traveler[] tempArr = input.GetCurUsingQueueAsArray();
         for (int i = 0; i < tempArr.Length; i++)
             curUsingQueue.Enqueue(tempArr[i].index);
-        tempArr = input.GetCurWatingQueAsArray();
+        tempArr = input.GetCurWatingQueueAsArray();
         for (int i = 0; i < tempArr.Length; i++)
             curWaitingQueue.Enqueue(tempArr[i].index);
+
+        float timeNow = Time.fixedTime;
+        float[] timeArr = input.GetEnteredTimeQueueAsArray();
+        for (int i = 0; i < timeArr.Length; i++)
+            elapsedTimeQueue.Enqueue(timeNow - timeArr[i]);     
+
+        structureCategory = input.structureCategory;
+        structureNumber = input.structureNumber;
+        structureIndex = input.structureIndex;
     }
 }

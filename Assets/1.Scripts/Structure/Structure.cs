@@ -60,13 +60,18 @@ public class Structure : MonoBehaviour
 
     public List<Tile> entrance = new List<Tile>();
 	Queue<Traveler> curUsingQueue = new Queue<Traveler>();
+    Queue<float> EnteredTimeQueue = new Queue<float>();
 	Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
 	
-    public Traveler[] GetCurUsingQueAsArray()
+    public Traveler[] GetCurUsingQueueAsArray()
     {
         return curUsingQueue.ToArray();
     }
-    public Traveler[] GetCurWatingQueAsArray()
+    public float[] GetEnteredTimeQueueAsArray()
+    {
+        return EnteredTimeQueue.ToArray();
+    }
+    public Traveler[] GetCurWatingQueueAsArray()
     {
         return curWaitingQueue.ToArray();
     }
@@ -157,8 +162,20 @@ public class Structure : MonoBehaviour
 	public void EnterTraveler(Traveler t)
 	{
 		curUsingQueue.Enqueue(t);
+        // 테스트 필요
+        EnteredTimeQueue.Enqueue(Time.fixedTime);
 		Invoke("ExitTraveler", duration);
 	}
+    // data에 있던 잔여시간을 보고 관광객 입장시킴
+    public void LoadEnterdTraveler(Traveler t, float elapsedTime)
+    {
+        curUsingQueue.Enqueue(t);
+
+        // 음수가 되어도 문제 없을듯.
+        EnteredTimeQueue.Enqueue(Time.fixedTime - elapsedTime);
+        // 이거 수 제대로 계산되는지 볼 필요 있음.
+        Invoke("ExitTraveler", (float)duration - elapsedTime);
+    }
 	public void AddWaitTraveler(Traveler t) // 첫번째로 호출.
 	{
 		curWaitingQueue.Enqueue(t);

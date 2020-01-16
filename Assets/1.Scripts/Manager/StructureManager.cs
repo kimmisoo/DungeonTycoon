@@ -28,11 +28,11 @@ public class StructureManager : MonoBehaviour
     // 건설할 건물
 	public GameObject constructing; 
 
-    // 뭔지 모르겠음
+    // 건물들의 부모가 될 오브젝트
 	public GameObject rootStructureObject;
 
     // 건설 중인지 표시
-	public bool isConstructing = false;
+    public bool isConstructing = false;
 
     // 건물 정보 읽어오기용
 	public JSONNode structureJson;
@@ -49,7 +49,6 @@ public class StructureManager : MonoBehaviour
 		_instance = this;
 		LoadStructureData();
 		structures = new List<Structure>();
-		
 	}
 	
 	
@@ -188,7 +187,7 @@ public class StructureManager : MonoBehaviour
 		structure.EndMove();
 		ResetConstructingAreas();
 
-        // 인덱스 값 구하고 넣어줌.
+        // 인덱스 값 넣어줌.
         structure.structureIndex = structures.Count;
 
         // 리스트에 추가
@@ -437,71 +436,119 @@ public class StructureManager : MonoBehaviour
 		//순서는 종족, 부, 직업 고려
 	}
 
-    public void LoadStructureList(GameSavedata savedata)
+    public void LoadStructuresFromSave(GameSavedata savedata)
     {
-        List<StructureData> structureDatas = savedata.structureDatas;
-    }
-
-    private void ResetStructureList()
-    {
-    }
-
-    private void ConstructStructureFromLoad()
-    {
-        //Gold 소모
-
-        Structure structure = constructing.GetComponent<Structure>();
-
-        if (GameManager.Instance.GetPlayerGold() >= structure.expenses)
+        ClearStructureManager();
+        for(int i=0; i<savedata.structureDatas.Count; i++)
         {
-            GameManager.Instance.playerGold -= structure.expenses;
+            ConstructStructureFromData(savedata.structureDatas[i]);
         }
-        else
-            return;
-        Tile tile = structure.point;
-        int[,] extent = structure.GetExtent();
-        TileLayer tileLayer = tile.GetLayer();
+    }
 
-        Debug.Log("Constructed!!!!");
-        constructing.tag = "Structure";
-
-        structure.EndMove();
+    public void ClearStructureManager()
+    {
         ResetConstructingAreas();
 
-        // 인덱스 값 구하고 넣어줌.
+        if (constructing != null)
+            DestroyConstructing();
+
+        structures.Clear();
+        int childCount = rootStructureObject.transform.childCount;
+        for (int i = 0; i < childCount; i++)
+            Destroy(rootStructureObject.transform.GetChild(i).gameObject);
+
+        //structureJson 는 일단 손 안댐.
+    }
+
+    public void ConstructStructureFromData(StructureData input)
+    {
+        #region InstantiateStructure()
+        tempStructureCategory = input.structureCategory;
+        tempStructureNumber = input.structureNumber;
+
+        constructing = (GameObject)Instantiate(Resources.Load("Structure/StructurePrefabs/" + tempStructureCategory + "/" + tempStructureCategory + tempStructureNumber.ToString()));
+        constructing.transform.parent = rootStructureObject.transform;
+
+        //임시
+        Structure structure = constructing.GetComponent<Structure>();
+        structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
+        structure.type = structureJson[tempStructureCategory][tempStructureNumber]["type"];
+        structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
+        structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
+        structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
+
+        // 저장용.
+        structure.structureCategory = tempStructureCategory;
+        structure.structureNumber = tempStructureNumber;
+
+        //preference
+        structure.preference.SetPrefAdventurer(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["adventurer"].AsFloat);
+        structure.preference.SetPrefTourist(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["tourist"].AsFloat);
+        structure.preference.SetPrefHuman(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["human"].AsFloat);
+        structure.preference.SetPrefElf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["elf"].AsFloat);
+        structure.preference.SetPrefDwarf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["dwarf"].AsFloat);
+        structure.preference.SetPrefOrc(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["orc"].AsFloat);
+        structure.preference.SetPrefDog(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["cat"].AsFloat);
+        structure.preference.SetPrefUpperclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["upperclass"].AsFloat);
+        structure.preference.SetPrefMiddleclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["middleclass"].AsFloat);
+        structure.preference.SetPrefLowerclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["lowerclass"].AsFloat);
+        //desire
+
+        structure.genre = structureJson[tempStructureCategory][tempStructureNumber]["genre"];
+        structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
+
+        int x = structureJson[tempStructureCategory][tempStructureNumber]["sitewidth"].AsInt;
+        structure.extentWidth = x;
+
+        int y = structureJson[tempStructureCategory][tempStructureNumber]["sitelheight"].AsInt;
+        structure.extentHeight = y;
+
+        structure.extent = new int[x, y];
+        for (int i = 0; i < x * y; i++)
+        {
+            structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
+        }
+        #endregion
+
+        #region AllocateStructure()
+        // 건설할 건물의 position 설정
+        constructing.transform.position = new Vector3(input.position.x, input.position.y, input.position.z);
+
+        TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
+
+        SetStructurePoint(tileLayer.transform.GetChild(input.pointTile).GetComponent<Tile>());
+        #endregion
+
+        #region ConstructStructure()
+        Tile tile = structure.point;
+        int[,] extent = structure.GetExtent();
+
+        constructing.tag = "Structure";
+
+        ResetConstructingAreas();
+
+        // 인덱스 값 넣어줌.
         structure.structureIndex = structures.Count;
 
         // 리스트에 추가
         structures.Add(structure);
 
-
-        for (int i = 0; i < structure.extentHeight; i++)
-        {
-            for (int j = 0; j < structure.extentWidth; j++)
-            {
-                Tile thatTile = tileLayer.GetTileAsComponent(tile.GetX() + j, tile.GetY() + i);
-
-                if (extent[j, i] == 1)
-                {
-                    thatTile.SetBuildable(false);
-                    thatTile.SetStructed(true);
-                    thatTile.SetStructure(structure);
-                }
-                else if (extent[j, i] == 2)
-                {
-                    thatTile.SetStructed(true);
-                    if (thatTile.GetBuildable())
-                    {
-                        structure.addEntrance(thatTile);
-                    }
-                }
-            }
-        }
-
-        CheckEntrance();
+        for (int i = 0; i < input.entranceList.Count; i++)
+            structure.addEntrance(tileLayer.transform.GetChild(input.entranceList[i]).GetComponent<Tile>());
 
         constructing = null;
         isConstructing = false;
+        #endregion
+        
+        // 사용중 모험가, 대기중 모험가 큐에 넣어줌.
+        while (input.curUsingQueue.Count()>0)
+        {
+            structure.LoadEnterdTraveler(GameManager.Instance.travelers[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
+        }
 
+        while(input.curWaitingQueue.Count()>0)
+        {
+            structure.AddWaitTraveler(GameManager.Instance.travelers[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
+        }
     }
 }

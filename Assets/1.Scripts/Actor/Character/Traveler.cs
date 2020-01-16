@@ -185,7 +185,7 @@ public class Traveler : Actor {
 				yield return null;
 			} while (!destinationTile.GetPassable());
 			yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-            Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
+            //Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
 
             // 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
             //yield return StartCoroutine(MoveToDestination());

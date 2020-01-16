@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager _instance = null;
+    private static GameManager _instance = null;
 
     #region PlayerStats
     #region 세이브!
@@ -310,6 +310,10 @@ public class GameManager : MonoBehaviour
 
             LoadTileMap(savedata);
             LoadTravelerList(savedata);
+
+            LoadStructures(savedata);
+
+            SetTileStructure(savedata);
         }
         // 실패 메시지 출력
         else
@@ -382,9 +386,14 @@ public class GameManager : MonoBehaviour
         tileMap = tmg.GenerateMapFromSave("TileMap/" + sceneName, savedata);
     }
 
-    private void LoadStructureList(GameSavedata savedata)
+    private void SetTileStructure(GameSavedata savedata)
     {
-        
+        TileMapGenerator.Instance.SetTileStructure(savedata);
+    }
+
+    private void LoadStructures(GameSavedata savedata)
+    {
+        StructureManager.Instance.LoadStructuresFromSave(savedata);
     }
 
     public GameObject GetTileLayer()
