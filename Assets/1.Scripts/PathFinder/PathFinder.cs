@@ -142,15 +142,17 @@ public class PathFinder : MonoBehaviour
             closeList[i].ClearReference();
         }*/
         //delegate call
-        if (isNoPath)
-        {
-            isNoPath = false;
-            pathFindFail();
-        }
-        else
-        {
-            pathFindSuccess();
-        }
+
+        // 이 부분 때문에 코루틴 증식하는 거 같아서 일단 빼놓음. #CorutineDebug
+        //if (isNoPath)
+        //{
+        //    isNoPath = false;
+        //    pathFindFail();
+        //}
+        //else
+        //{
+        //    pathFindSuccess();
+        //}
     }
 
     public void Simulate(System.Object threadContext)
