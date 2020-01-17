@@ -29,13 +29,20 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
     string savedataPath;
+    GameSavedata savedata;
 
     private void Start()
     {
         if (_instance != null && _instance != this)
+        {
+            Debug.Log("이미 있음." + this.gameObject.GetInstanceID());
             Destroy(this.gameObject);
-
-        DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
     }
 
     // 현 상태 저장
@@ -57,7 +64,9 @@ public class SaveLoadManager : MonoBehaviour
 
     public void Load()
     {
-
+        LoadFromSave();
+        LoadScene(savedata.sceneName);
+        //InstantiateFromSave();
     }
 
     // 세이브 파일에서 로드
@@ -72,15 +81,53 @@ public class SaveLoadManager : MonoBehaviour
             BinaryFormatter bf = new BinaryFormatter();
             FileStream stream = new FileStream(savedataPath, FileMode.Open);
 
-            GameSavedata data = bf.Deserialize(stream) as GameSavedata;
+            savedata = bf.Deserialize(stream) as GameSavedata;
 
             stream.Close();
-            return data;
+            return savedata;
         }
         else
         {
             return null;
         }
+    }
+
+    public void InstantiateFromSave()
+    {
+        if (savedata == null)
+            return;
+
+        // 세이브에서 받아서 결과값 대입
+        if (savedata != null)
+        {
+            GameManager.Instance.LoadPlayerData(savedata);
+
+            GameManager.Instance.LoadTileMap(savedata);
+            GameManager.Instance.LoadTravelerList(savedata);
+
+            StructureManager.Instance.LoadStructuresFromSave(savedata);
+
+            TileMapGenerator.Instance.SetTileStructure(savedata);
+
+            Debug.Log("불러오기 성공");
+
+            savedata = null;
+        }
+        // 실패 메시지 출력
+        else
+        {
+            Debug.Log("불러오기 실패");
+        }
+    }
+
+    // Scene 로드
+    public void LoadScene(int sceneNum)
+    {
+        SceneManager.LoadScene(sceneNum);
+    }
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }
 

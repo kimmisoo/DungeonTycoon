@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
         _instance = this;
 
         // 로드용. Scene 바뀌어도 이 오브젝트 유지함.
-        DontDestroyOnLoad(this.gameObject);
+ //       DontDestroyOnLoad(this.gameObject);
 
         // Scene 이름 받기
         sceneName = SceneManager.GetActiveScene().name;
@@ -134,7 +134,7 @@ public class GameManager : MonoBehaviour
             go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             travelers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
             travelers[i].GetComponent<Traveler>().index = i;
-//            Debug.Log("character instantiate - " + i);
+            // Debug.Log("character instantiate - " + i);
         }
 
         StartCoroutine(TEnter());
@@ -144,6 +144,15 @@ public class GameManager : MonoBehaviour
         {
             popular.Add(0);
         }
+
+        StartCoroutine(LoadIfNeeded());
+    }
+
+    IEnumerator LoadIfNeeded()
+    {
+        yield return null;
+
+        SaveLoadManager.Instance.InstantiateFromSave();
     }
 
     // 모험가 입장 코루틴
@@ -228,8 +237,9 @@ public class GameManager : MonoBehaviour
         {
             x = aData["scene"][sceneNumber]["mapEntrance"][i]["x"].AsInt;
             y = aData["scene"][sceneNumber]["mapEntrance"][i]["y"].AsInt;
-
+#if DEBUG
             Debug.Log(x + "   " + y);
+#endif
             mapEntrance.Add(layer.GetTileForMove(x * 2, y * 2));
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, y * 2));
             mapEntrance.Add(layer.GetTileForMove(x * 2, (y * 2) + 1));
@@ -285,41 +295,21 @@ public class GameManager : MonoBehaviour
 
     #region Save Load
     // 현재 상황 Save
-    public void Save(int slot)
+    public void Save()
     {
         SaveLoadManager.Instance.Save();
+#if DEBUG
         Debug.Log("저장 성공");
+#endif
     }
 
     // 세이브 파일에서 Load
-    public void Load(int slot)
+    public void Load()
     {
-        // 세이브파일 읽기
-        GameSavedata savedata = SaveLoadManager.Instance.LoadFromSave();
-
-        // LoadScene(savedata.sceneName);
-        // 세이브에서 받아서 결과값 대입
-        if (savedata != null)
-        {
-            Debug.Log("불러오기 성공");
-
-            LoadPlayerData(savedata);
-
-            LoadTileMap(savedata);
-            LoadTravelerList(savedata);
-
-            LoadStructures(savedata);
-
-            SetTileStructure(savedata);
-        }
-        // 실패 메시지 출력
-        else
-        {
-            Debug.Log("불러오기 실패");
-        }
+        SaveLoadManager.Instance.Load();
     }
 
-    private void LoadPlayerData(GameSavedata savedata)
+    public void LoadPlayerData(GameSavedata savedata)
     {
         playerGold = savedata.playerGold;
         playerPopularity = savedata.playerPopularity;
@@ -329,7 +319,7 @@ public class GameManager : MonoBehaviour
     }
 
     // 일단 완성
-    private void LoadTravelerList(GameSavedata savedata)
+    public void LoadTravelerList(GameSavedata savedata)
     {
         GameObject newObject;
         TravelerData inputTravelerData;
@@ -359,7 +349,9 @@ public class GameManager : MonoBehaviour
             newTraveler = travelers[i].GetComponent<Traveler>();
 
             travelers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
+#if DEBUG
             Debug.Log("character instantiate - " + i);
+#endif
 
             // 세이브 데이터에서 대입.
             travelers[i].SetActive(inputTravelerData.isActive);
@@ -379,7 +371,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void LoadTileMap(GameSavedata savedata)
+    public void LoadTileMap(GameSavedata savedata)
     {
         // 일단 Layer 없이 구현.
         tmg.ClearTileMap();
@@ -391,7 +383,7 @@ public class GameManager : MonoBehaviour
         TileMapGenerator.Instance.SetTileStructure(savedata);
     }
 
-    private void LoadStructures(GameSavedata savedata)
+    public void LoadStructures(GameSavedata savedata)
     {
         StructureManager.Instance.LoadStructuresFromSave(savedata);
     }
