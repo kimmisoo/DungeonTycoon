@@ -316,6 +316,7 @@ public class GameManager : MonoBehaviour
 
         Camera.main.transform.position = new Vector3(savedata.cameraPosition.x, savedata.cameraPosition.y, savedata.cameraPosition.z);
         Camera.main.orthographicSize = savedata.cameraSize;
+        Camera.main.GetComponent<InputManager>().isLoading = true;
     }
 
     // 일단 완성

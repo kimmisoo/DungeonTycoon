@@ -1,0 +1,10 @@
+diff a/Assets/1.Scripts/Manager/GameManager.cs b/Assets/1.Scripts/Manager/GameManager.cs	(rejected hunks)
+@@ -92,7 +92,7 @@
+         _instance = this;
+ 
+         // 로드용. Scene 바뀌어도 이 오브젝트 유지함.
+-        DontDestroyOnLoad(this.gameObject);
++        //DontDestroyOnLoad(this.gameObject);
+ 
+         // Scene 이름 받기
+         sceneName = SceneManager.GetActiveScene().name;

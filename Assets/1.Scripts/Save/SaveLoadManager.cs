@@ -156,7 +156,6 @@ public class GameSavedata
 
         cameraPosition = new Vector3Data(Camera.main.transform.position);
         cameraSize = Camera.main.orthographicSize;
-        Camera.main.GetComponent<InputManager>().isLoading = true;
 
         travelerDatas = new List<TravelerData>();
 
