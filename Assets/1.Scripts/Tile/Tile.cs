@@ -233,5 +233,10 @@ public class Tile : MonoBehaviour
         return Direction.None;
         
     }
+
+	public string ToString()
+	{
+		return GetX() + " , " + GetY();
+	}
     
 }
