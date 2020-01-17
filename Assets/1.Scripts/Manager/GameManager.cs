@@ -236,7 +236,7 @@ public class GameManager : MonoBehaviour
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, (y * 2) + 1));
         }
 
-        //traveler_Max = 1;
+        traveler_Max = 1;
         //adventurer_Max = 1;
         //specialAdventurer_Max = 800;
 
@@ -287,24 +287,21 @@ public class GameManager : MonoBehaviour
     // 현재 상황 Save
     public void Save(int slot)
     {
-        string savedataPath;
-
-        SaveLoadManager.SaveCurState(out savedataPath);
-        Debug.Log(savedataPath + " - 저장 성공");
+        SaveLoadManager.Instance.Save();
+        Debug.Log("저장 성공");
     }
 
     // 세이브 파일에서 Load
     public void Load(int slot)
     {
-        string savedataPath;
         // 세이브파일 읽기
-        GameSavedata savedata = SaveLoadManager.LoadFromSave(out savedataPath);
+        GameSavedata savedata = SaveLoadManager.Instance.LoadFromSave();
 
         // LoadScene(savedata.sceneName);
         // 세이브에서 받아서 결과값 대입
         if (savedata != null)
         {
-            Debug.Log(savedataPath + " - 불러오기 성공");
+            Debug.Log("불러오기 성공");
 
             LoadPlayerData(savedata);
 
@@ -318,7 +315,7 @@ public class GameManager : MonoBehaviour
         // 실패 메시지 출력
         else
         {
-            Debug.Log(savedataPath + " - 불러오기 실패");
+            Debug.Log("불러오기 실패");
         }
     }
 

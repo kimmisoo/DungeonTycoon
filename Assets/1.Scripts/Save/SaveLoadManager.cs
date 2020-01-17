@@ -6,26 +6,62 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
 
-public static class SaveLoadManager
+public class SaveLoadManager : MonoBehaviour
 {
+    private static SaveLoadManager _instance;
+
+    public static SaveLoadManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<SaveLoadManager>();
+
+                if(_instance == null)
+                {
+                    GameObject container = new GameObject("SaveLoadManager");
+                    _instance = container.AddComponent<SaveLoadManager>();
+                }
+            }
+
+            return _instance;
+        }
+    }
+    string savedataPath;
+
+    private void Start()
+    {
+        if (_instance != null && _instance != this)
+            Destroy(this.gameObject);
+
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     // 현 상태 저장
-    public static void SaveCurState(out string savedataPath)
+    public void Save()
     {
         // 데이터 패스 설정
         savedataPath = Application.persistentDataPath + "/test.sav"; // 임시
+        string sceneName = SceneManager.GetActiveScene().name; 
 
         // 저장
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = new FileStream(savedataPath, FileMode.Create);
 
-        GameSavedata data = new GameSavedata();
+        GameSavedata data = new GameSavedata(sceneName);
 
         bf.Serialize(stream, data);
         stream.Close();
     }
 
+    public void Load()
+    {
+
+    }
+
     // 세이브 파일에서 로드
-    public static GameSavedata LoadFromSave(out string savedataPath)
+    public GameSavedata LoadFromSave()
     {
         // 데이터 패스 설정
         savedataPath = Application.persistentDataPath + "/test.sav"; // 임시
@@ -62,12 +98,12 @@ public class GameSavedata
     public List<TileData> tileDatas;
     public List<StructureData> structureDatas;
 
-    public GameSavedata()
+    public GameSavedata(string sceneNameInput)
     {
         GameManager gameManager = GameManager.Instance;
         StructureManager structureManager = StructureManager.Instance;
 
-        sceneName = SceneManager.GetActiveScene().name;
+        sceneName = sceneNameInput;
         playerGold = gameManager.playerGold;
         playerPopularity = gameManager.playerPopularity;
 
