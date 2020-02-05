@@ -50,6 +50,9 @@ public class InputManager : MonoBehaviour {
 	private Tile tileWhileMove;
 
 	public float sumMagnitude = 0.0f;
+
+    // 로드 후 카메라 Clamp되는 거 방지용.
+    public bool isLoading = false;
 	
 
     // Use this for initialization
@@ -281,7 +284,11 @@ public class InputManager : MonoBehaviour {
         Vector3 limitedCameraPosition = _camera.transform.position;
         limitedCameraPosition.x = Mathf.Clamp(limitedCameraPosition.x, minX, maxX);
         limitedCameraPosition.y = Mathf.Clamp(limitedCameraPosition.y, minY, maxY);
-        _camera.transform.position = limitedCameraPosition;
+        if (isLoading != true)
+        {
+            _camera.transform.position = limitedCameraPosition;
+            isLoading = false;
+        }
     }
 
     void OnDrawGizmos()

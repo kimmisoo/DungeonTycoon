@@ -81,10 +81,15 @@ public class Traveler : Actor {
 		tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
 
         // 기본은 Idle.
-		curState = State.Idle;
+		
         Debug.Log("OnEnable에서");
+		StartCoroutine(LateStart());
 	}
-
+	IEnumerator LateStart()
+	{
+		yield return null;
+		curState = State.Idle;
+	}
 	public void OnDisable()
 	{
 		StopAllCoroutines();
@@ -176,7 +181,7 @@ public class Traveler : Actor {
 
 	IEnumerator Wandering()
 	{
-		while (true)
+		while (wanderCount<10)
 		{
 			//랜덤 거리, 사방으로 이동
 			do
@@ -185,13 +190,18 @@ public class Traveler : Actor {
 				yield return null;
 			} while (!destinationTile.GetPassable());
 			yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-            //Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
+			//Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
 
-            // 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
-            //yield return StartCoroutine(MoveToDestination());
-            //yield return null;
-            if (pathFinder.isNoPath == false)
-                break;
+			// 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
+			//yield return StartCoroutine(MoveToDestination());
+			//yield return null;
+
+			wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+			animator.SetBool("MoveFlg", true); // animation 이동으로
+			yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
+
+
+			wanderCount++;
 		}
 
         curState = State.MovingToStructure;
@@ -270,7 +280,8 @@ public class Traveler : Actor {
 	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
 	{
 		pathFindCount = 0;
-		curState = State.MovingToStructure;
+		if(destinationStructure != null)
+			curState = State.MovingToStructure;
 	}
 	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
 	{
@@ -289,12 +300,15 @@ public class Traveler : Actor {
 
 	public override bool ValidateNextTile(Tile tile) // Pathfinder delegate
 	{
-        return tile.GetPassableTraveler();
+		//return tile.GetPassableTraveler();
+		//TileMapGenerator에서 PassableTraveler 설정해줘야함. 아직 안돼있음
+		return tile.GetPassable(); //임시조치
 	}
 
 	protected List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
     {
-        List<TileForMove> tileForMoveWay = new List<TileForMove>();
+		#region 기존 GetWay
+		/*List<TileForMove> tileForMoveWay = new List<TileForMove>();
 
 		#region 새 GetWay
 		TileForMove cur = GetCurTileForMove();
@@ -396,18 +410,38 @@ public class Traveler : Actor {
 					break;
 			}
         }
+		Debug.Log("CurTile = " + curTile.ToString() + " // Destination = " + destinationTile.ToString());
+		for (int i=0; i<tileForMoveWay.Count; i++)
+		{
+			Debug.Log("Path - " + path[i].X + " , " + path[i].Y);
+		}
+		return tileForMoveWay;*/
+
+		List<TileForMove> tileForMoveWay = new List<TileForMove>();
+		for(int i=0; i<path.Count; i++)
+		{
+			tileForMoveWay.Add(path[i].myTilePos.GetChild(0));
+		}
 		return tileForMoveWay;
-		*/
+
+		
 		#endregion
 
 
+	
+   
 	}
-    
+    // dX = 1 : UR
+    // dX = -1: DL
+    // dY = 1 : DR
+    // dY = -1: UL
+
 
 	IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
 	{
 		yield return null;
-		
+		#region 기존 MoveAnimation
+		/*
 		Direction dir;
 		Vector3 destPos, before, directionVec;
 		float distance, moveDistanceSum = 0.0f;
@@ -422,12 +456,21 @@ public class Traveler : Actor {
 			{
 				before = transform.position; // 이전 프레임 위치 기록
 				yield return null;
-				transform.Translate(directionVec * /*stat.GetCalculatedMovespeed()...Traveler는 모두 이동속도 1*/ 1.0f * Time.deltaTime); //TimeScale 말고
+				transform.Translate(directionVec * 1.0f * Time.deltaTime); //TimeScale 말고
 				moveDistanceSum += Vector3.Distance(before, transform.position); // 총 이동한 거리 합산.
 			}
 			transform.position = destPos;
 			SetCurTileForMove(tileForMoveWay[i]); // 현재 타일 기록.
 			SetCurTile(tileForMoveWay[i].GetParent());
+		}*/
+		#endregion
+		for(int i=0; i<tileForMoveWay.Count; i++)
+		{
+			yield return new WaitForSeconds(1.0f);
+			tileForMoveWay[i].SetRecentActor(this);
+			transform.position = tileForMoveWay[i].GetPosition();
+			SetCurTile(tileForMoveWay[i].GetParent());
+			SetCurTileForMove(tileForMoveWay[i]);
 		}
 	} // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
