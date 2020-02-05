@@ -43,10 +43,7 @@ public class GameManager : MonoBehaviour
     public int corporateNum = 1;
     public List<float> popular;
     #endregion
-
     public JSONNode items;
-    private object lockObject = new object();
-    private object lockObject2 = new object();
     #endregion
 
     #region SceneDatas
@@ -92,7 +89,7 @@ public class GameManager : MonoBehaviour
         _instance = this;
 
         // 로드용. Scene 바뀌어도 이 오브젝트 유지함.
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
 
         // Scene 이름 받기
         sceneName = SceneManager.GetActiveScene().name;

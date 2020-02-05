@@ -296,6 +296,35 @@ public class Traveler : Actor {
     {
         List<TileForMove> tileForMoveWay = new List<TileForMove>();
 
+		#region 새 GetWay
+		TileForMove cur = GetCurTileForMove();
+		TileForMove next;
+		int count = 0;
+		Vector2 dir = DirectionVector.GetDirectionVector(cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
+		while((!(cur.GetParent().Equals(destinationTile))) && (count < path.Count))
+		{
+			next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
+			tileForMoveWay.Add(next);
+			if(cur.GetParent().Equals(next.GetParent()))
+			{
+				cur = next;
+				next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
+				tileForMoveWay.Add(next);
+			}
+			if(Random.Range(0, 2) >= 1)
+			{
+				cur = next;
+				next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
+				tileForMoveWay.Add(next);
+			}
+			count++;
+			dir = DirectionVector.GetDirectionVector(next.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
+		}
+		return tileForMoveWay;
+
+		#endregion
+		#region 구 GetWay
+		/*
 		int childNum = GetCurTileForMove().GetChildNum();
 		tileForMoveWay.Add(GetCurTileForMove());
 		Direction dir;
@@ -368,11 +397,12 @@ public class Traveler : Actor {
 			}
         }
 		return tileForMoveWay;
-    }
-    // dX = 1 : UR
-    // dX = -1: DL
-    // dY = 1 : DR
-    // dY = -1: UL
+		*/
+		#endregion
+
+
+	}
+    
 
 	IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
 	{
