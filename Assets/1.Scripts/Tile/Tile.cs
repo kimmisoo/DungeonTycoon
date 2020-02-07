@@ -42,7 +42,7 @@ public class Tile : MonoBehaviour
     #endregion
 
     TileLayer layer;
-	TileForMove[] childs = new TileForMove[4];// up, right, left, down
+	public TileForMove[] childs = new TileForMove[4];// up, right, left, down
 
     public int prefabInfo;
 
@@ -202,35 +202,24 @@ public class Tile : MonoBehaviour
 
 	public Direction GetDirectionFromOtherTile(Tile t)
     {
-       
         int distanceX = this.GetX() - t.GetX();
         int distanceY = this.GetY() - t.GetY();
-        int abs = Mathf.Abs(distanceX) + Mathf.Abs(distanceY);
-        if (abs == 0 || abs >= 2)
-        {
-            return Direction.None;
-        }
-        // dX = 1 : UR
-        // dX = -1: DL
-        // dY = 1 : DR
-        // dY = -1: UL
-        if(distanceX > 1)
-        {
-            return Direction.UpRight;
-        }
-        else if(distanceX == 0)
-        {
-            if (distanceY > 0)
-                return Direction.DownRight;
-            else
-                return Direction.UpLeft;
-       
-        }
-        else if(distanceX < 0)
-        {
-            return Direction.DownLeft;
-        }
-        return Direction.None;
+		if (distanceX == 0 && distanceY == 0)
+			return Direction.None;
+		if(Mathf.Abs(distanceX) > Mathf.Abs(distanceY))
+		{
+			if(distanceX > 0)
+				return Direction.UpLeft;
+			else
+				return Direction.DownRight;
+		}
+		else
+		{
+			if (distanceY > 0)
+				return Direction.UpRight;
+			else
+				return Direction.DownLeft;
+		}
         
     }
 

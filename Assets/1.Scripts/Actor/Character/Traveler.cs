@@ -419,30 +419,45 @@ public class Traveler : Actor {
 		#endregion
 		List<TileForMove> tileForMoveWay = new List<TileForMove>();
 		TileForMove next, cur;
-		int count = 0;
+		int count = 1;
 		cur = GetCurTileForMove();
-		Direction dir = curTile.GetDirectionFromOtherTile(path[count + 1].myTilePos);
+		Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + "dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+		Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
 		Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
+		Debug.Log(dir.ToString());
+		for (int i = 0; i<path.Count; i++)
+		{
+			Debug.Log("path = " + path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY());
+		}
 		while (!(path[count].myTilePos.Equals(destinationTile)))
 		{
 			next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
+			Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
 			tileForMoveWay.Add(next);
-			if(cur.GetParent().Equals(next.GetParent()))
+			cur = next;
+			if(!cur.GetParent().Equals(next.GetParent()))
 			{
-				cur = next;
+				
 				next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
+				Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
 				tileForMoveWay.Add(next);
+				cur = next;
 			}
 			if(Random.Range(0, 2) >= 1)
 			{
-				cur = next;
+				
 				next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
+				Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
 				tileForMoveWay.Add(next);
+				cur = next;
 			}
 			count++;
 			dir = next.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
+			dirVector = DirectionVector.GetDirectionVector(dir);
+			Debug.Log(dir.ToString());
 		}
-		
+		Debug.Log("Done!!!!");
+		return tileForMoveWay;
 
 	
 		
