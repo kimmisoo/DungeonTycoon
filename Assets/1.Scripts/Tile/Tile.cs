@@ -206,16 +206,16 @@ public class Tile : MonoBehaviour
         int distanceY = this.GetY() - t.GetY();
 		if (distanceX == 0 && distanceY == 0)
 			return Direction.None;
-		if(Mathf.Abs(distanceX) > Mathf.Abs(distanceY))
+		if(Mathf.Abs(distanceX) > Mathf.Abs(distanceY)) //x축 이동
 		{
-			if(distanceX > 0)
+			if(distanceX > 0) //t가 작은 경우
 				return Direction.UpLeft;
-			else
+			else 
 				return Direction.DownRight;
 		}
-		else
+		else // y축 이동
 		{
-			if (distanceY > 0)
+			if (distanceY > 0) //t가 작은 경우
 				return Direction.UpRight;
 			else
 				return Direction.DownLeft;

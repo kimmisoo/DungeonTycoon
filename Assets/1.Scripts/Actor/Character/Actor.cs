@@ -34,7 +34,7 @@ public abstract class Actor : MonoBehaviour {
 	protected List<TileForMove> wayForMove;
 	protected Direction direction;
 	protected Animator animator;
-	protected SpriteRenderer spriteRenderer;
+	protected SpriteRenderer[] spriteRenderers;
 	
 
 
@@ -46,7 +46,7 @@ public abstract class Actor : MonoBehaviour {
 	protected void Awake()
 	{
 		animator = GetComponent<Animator>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
+		spriteRenderers = GetComponents<SpriteRenderer>();
 		pathFinder = GetComponent<PathFinder>();
 		wayForMove = new List<TileForMove>();
 		state = new State();
