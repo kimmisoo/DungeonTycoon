@@ -337,8 +337,8 @@ public class GameManager : MonoBehaviour
             newObject.SetActive(false);
 
             inputTravelerData = savedata.travelerDatas[i];
-            
-            
+
+
             // List에 추가
             travelers.Add(Instantiate(newObject));
 
@@ -356,9 +356,18 @@ public class GameManager : MonoBehaviour
             if (travelers[i].activeSelf)
             {
                 travelers[i].transform.position = new Vector3(inputTravelerData.position.x, inputTravelerData.position.y, inputTravelerData.position.z);
-                newTraveler.curState = inputTravelerData.state;
+                newTraveler.StopAllCoroutines(); // 일단 문제 해결.
+                if (inputTravelerData.state == State.MovingToDestination)
+                {
+                    newTraveler.curState = State.PathFinding;
+                }
+                else
+                {
+                    newTraveler.curState = inputTravelerData.state;
+                }
                 newTraveler.SetDestinationTileLoad(inputTravelerData.destinationTile);
                 newTraveler.SetCurTileLoad(inputTravelerData.curTile);
+                newTraveler.SetCurTileForMoveLoad(inputTravelerData.curTileForMove);
             }
 
             // TEnter 관련은 아직 저장안함

@@ -6,7 +6,7 @@ using UnityEngine;
 public enum State
 {
 	//Idle, Chasing, Moving, Battle, Indoor, Dead, Exit
-	None, Idle, Wandering, SearchingStructure, PathFinding, MovingToStructure, WaitingStructure, UsingStructure, SearhcingMonster, MovingToMonster, Battle, Dead, Exit
+	None, Idle, Wandering, SearchingStructure, PathFinding, MovingToDestination, WaitingStructure, UsingStructure, SearhcingMonster, MovingToMonster, Battle, Dead, Exit
 }
 /*
  * Animator Tirggers

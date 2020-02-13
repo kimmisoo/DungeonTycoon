@@ -213,6 +213,8 @@ public class TravelerData
     // 혹은 레이어 번호를 같이 받아야할 수 있음.
     public int destinationTile;
     public int curTile;
+    // 임시
+    public int curTileForMove;
 
     // inactive List가 있으니 거기 넣을건지 이야기해봐야함.
     public bool isActive;
@@ -232,6 +234,7 @@ public class TravelerData
         state = inputTraveler.curState;
         destinationTile = inputTraveler.GetDestinationTileSave();
         curTile = inputTraveler.GetCurTileSave();
+        curTileForMove = inputTraveler.GetCurTileForMove().GetChildNum();
         index = inputTraveler.index;
     }
 }
