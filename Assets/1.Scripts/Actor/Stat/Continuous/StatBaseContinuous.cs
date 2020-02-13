@@ -35,7 +35,7 @@ public class StatBaseContinuous {
 				valueMult += mod.modValue;
 			} // Mult 합
 		}
-		return (baseValue * valueMult) + valueFixed;
+		return (baseValue + valueFixed) * valueMult;
 	}
 	
 	public virtual void AddStatMod(StatModContinuous mod)
