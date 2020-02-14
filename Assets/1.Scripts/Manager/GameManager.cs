@@ -242,7 +242,7 @@ public class GameManager : MonoBehaviour
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, (y * 2) + 1));
         }
 
-        traveler_Max = 1;
+        traveler_Max = 100;
         //adventurer_Max = 1;
         //specialAdventurer_Max = 800;
 

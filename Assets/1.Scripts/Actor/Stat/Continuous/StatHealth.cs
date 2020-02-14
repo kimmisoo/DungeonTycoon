@@ -42,4 +42,5 @@ public class StatHealth : StatBaseContinuous
 	{
 		return ClampHealth;
 	}
+	
 }
