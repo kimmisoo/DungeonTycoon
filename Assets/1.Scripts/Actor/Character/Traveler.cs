@@ -82,7 +82,6 @@ public class Traveler : Actor {
 
         // 기본은 Idle.
 		
-        Debug.Log("OnEnable에서");
 		StartCoroutine(LateStart());
 	}
 	IEnumerator LateStart()
@@ -130,7 +129,7 @@ public class Traveler : Actor {
 				Debug.Log("PF");
 				curCoroutine = StartCoroutine(PathFinding());
 				break;
-			case State.MovingToStructure:
+			case State.MovingToDestination:
 				Debug.Log("MTS");
 				curCoroutine = StartCoroutine(MoveToDestination());
 				break;
@@ -162,11 +161,11 @@ public class Traveler : Actor {
 				break;
 			case State.Wandering:
 				break;
-			case State.SearchingStructure:
+			case State.SearchingStructure: 
 				break;
 			case State.PathFinding:
 				break;
-			case State.MovingToStructure:
+			case State.MovingToDestination:
 				break;
 			case State.WaitingStructure:
 				break;
@@ -179,7 +178,7 @@ public class Traveler : Actor {
 		}
 	}
 
-	IEnumerator Wandering()
+	protected IEnumerator Wandering()
 	{
 		while (wanderCount<10)
 		{
@@ -204,10 +203,10 @@ public class Traveler : Actor {
 			wanderCount++;
 		}
 
-        curState = State.MovingToStructure;
+        curState = State.MovingToDestination;
 		//이동 끝난 후 State = Idle.
 	}
-	IEnumerator StructureFinding()
+    protected IEnumerator StructureFinding()
 	{
 		if(pathFindCount <= 0 && structureListByPref == null) // Fail 기록 없을때
 			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
@@ -239,12 +238,12 @@ public class Traveler : Actor {
 		}
 	}
 
-	IEnumerator PathFinding()
+    protected IEnumerator PathFinding()
 	{
 		yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 	}
 
-	IEnumerator MoveToDestination()
+    protected IEnumerator MoveToDestination()
 	{
 		//길찾기 성공!
 		wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
@@ -281,7 +280,7 @@ public class Traveler : Actor {
 	{
 		pathFindCount = 0;
 		if(destinationStructure != null)
-			curState = State.MovingToStructure;
+			curState = State.MovingToDestination;
 	}
 	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
 	{
@@ -472,13 +471,13 @@ public class Traveler : Actor {
 	
 		
 	}
-	// dX = 1 : UR
-	// dX = -1: DL
-	// dY = 1 : DR
-	// dY = -1: UL
+    // dX = 1 : UR
+    // dX = -1: DL
+    // dY = 1 : DR
+    // dY = -1: UL
 
 
-	IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
+    protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
 	{
 		yield return null;
 		
@@ -607,6 +606,15 @@ public class Traveler : Actor {
             return false;
         else
             return true;
+    }
+
+    public bool SetCurTileForMoveLoad(int childNum)
+    {
+        if (childNum == -1)
+            return false;
+
+        SetCurTileForMove(curTile.GetChild(childNum));
+        return true;
     }
     #endregion
 }

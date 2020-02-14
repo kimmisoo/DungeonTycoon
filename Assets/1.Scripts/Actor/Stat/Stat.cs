@@ -123,8 +123,4 @@ public class Stat : MonoBehaviour{
 	{
 		return desireDict[desireType];
 	}
-
-	
-	
-
 }
