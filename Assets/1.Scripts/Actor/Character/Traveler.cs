@@ -480,108 +480,67 @@ public class Traveler : Actor {
     protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
 	{
 		yield return null;
-		#region 기존 MoveAnimation
-		/*
-		Direction dir;
-		Vector3 destPos, before, directionVec;
-		float distance, moveDistanceSum = 0.0f;
-		for(int i=1; i<tileForMoveWay.Count; i++)
-		{
-			tileForMoveWay[i].SetRecentActor(this); // tileForMove에 거쳐갔다고 기록.
-			destPos = tileForMoveWay[i].GetPosition(); // 다음 목적지 포지션
-			distance = Vector3.Distance(transform.position, destPos); // 1칸 이동 끝 검사를 위해 벡터 거리 계산해놓기
-			moveDistanceSum = 0.0f; // 총 이동한 거리 초기화
-			directionVec = Vector3.Normalize(destPos - transform.position); // 방향벡터 캐싱
-			while (moveDistanceSum >= distance)
-			{
-				before = transform.position; // 이전 프레임 위치 기록
-				yield return null;
-				transform.Translate(directionVec * 1.0f * Time.deltaTime); //TimeScale 말고
-				moveDistanceSum += Vector3.Distance(before, transform.position); // 총 이동한 거리 합산.
-			}
-			transform.position = destPos;
-			SetCurTileForMove(tileForMoveWay[i]); // 현재 타일 기록.
-			SetCurTile(tileForMoveWay[i].GetParent());
-		}*/
-		#endregion
+		
 		Direction dir = Direction.DownLeft;
-		for (int i = 0; i < tileForMoveWay.Count; i++)
+		//FlipX true == Left, false == Right
+		Vector3 dirVector;
+		float distance, sum = 0.0f;
+		for (int i = 0; i < tileForMoveWay.Count - 1; i++)
 		{
-			if (i < tileForMoveWay.Count - 1)
-			{
-				switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-				{
-					case Direction.DownRight:
-						animator.SetBool("DownToUpFlg", false);
-						animator.SetBool("UpToDownFlg", true);
-						foreach (SpriteRenderer sr in spriteRenderers)
-						{
-							sr.flipX = true;
-						}
-						break;
-					case Direction.UpRight:
-						animator.SetBool("UpToDownFlg", false);
-						animator.SetBool("DownToUpFlg", true);
-						foreach (SpriteRenderer sr in spriteRenderers)
-						{
-							sr.flipX = true;
-						}
-						break;
-					case Direction.DownLeft:
-						animator.SetTrigger("MDL");
-						foreach (SpriteRenderer sr in spriteRenderers)
-						{
-							sr.flipX = false;
-						}
-						break;
-					case Direction.UpLeft:
-						animator.SetTrigger("MUL");
-						foreach (SpriteRenderer sr in spriteRenderers)
-						{
-							sr.flipX = false;
-						}
-						break;
-					default:
-						break;
-				}
-			}
-			yield return new WaitForSeconds(1.0f);
 			tileForMoveWay[i].SetRecentActor(this);
-			transform.position = tileForMoveWay[i].GetPosition();
 			SetCurTile(tileForMoveWay[i].GetParent());
 			SetCurTileForMove(tileForMoveWay[i]);
-		}
-		switch (dir)
-		{
-			case Direction.DownRight:
-				animator.SetTrigger("IDL");
-				foreach (SpriteRenderer sr in spriteRenderers)
-				{
-					sr.flipX = true;
-				}
-				break;
-			case Direction.UpRight:
-				animator.SetTrigger("IUL");
-				foreach (SpriteRenderer sr in spriteRenderers)
-				{
-					sr.flipX = true;
-				}
-				break;
-			case Direction.DownLeft:
-				animator.SetTrigger("IDL");
-				foreach (SpriteRenderer sr in spriteRenderers)
-				{
-					sr.flipX = false;
-				}
-				break;
-			case Direction.UpLeft:
-				animator.SetTrigger("IUL");
-				foreach (SpriteRenderer sr in spriteRenderers)
-				{
-					sr.flipX = false;
-				}
-				break;
-		}
+
+			switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
+			{
+				case Direction.DownRight:
+					animator.SetTrigger("UpToDownFlg");
+					foreach (SpriteRenderer sr in spriteRenderers)
+					{
+						sr.flipX = true;
+					}
+					break;
+				case Direction.UpRight:
+
+					animator.SetTrigger("DownToUpFlg");
+					foreach (SpriteRenderer sr in spriteRenderers)
+					{
+						sr.flipX = true;
+					}
+					break;
+				case Direction.DownLeft:
+
+					animator.SetTrigger("UpToDownFlg");
+					foreach (SpriteRenderer sr in spriteRenderers)
+					{
+						sr.flipX = false;
+					}
+					break;
+				case Direction.UpLeft:
+
+					animator.SetTrigger("DownToUpFlg");
+					foreach (SpriteRenderer sr in spriteRenderers)
+					{
+						sr.flipX = false;
+					}
+					break;
+				default:
+					break;
+			}
+			//transform.position = tileForMoveWay[i].GetPosition();
+			dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
+			distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
+			while(Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
+			{
+				yield return null;
+				transform.Translate(dirVector * Time.deltaTime);
+
+			}
+			sum = 0.0f;
+			transform.position = tileForMoveWay[i + 1].GetPosition();
+			
+		}	
+		
 	} // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
 	public IEnumerator WaitForEnteringStructure()
