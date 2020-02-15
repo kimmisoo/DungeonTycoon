@@ -56,6 +56,21 @@ public class Adventurer : Traveler//, IDamagable {
                 Debug.Log("EXIT");
                 //Going to outside 
                 break;
+            // 모험가 전투관련
+            case State.FindingHuntingArea:
+                break;
+            case State.SearchingMonster:
+                break;
+            case State.ApproachingToEnemy:
+                break;
+            case State.AfterBattle:
+                break;
+            case State.ExitingHuntingArea:
+                break;
+            case State.PassedOut:
+                break;
+            case State.Evacuated:
+                break;
             case State.None:
                 curState = State.Idle;
                 break;
@@ -81,8 +96,27 @@ public class Adventurer : Traveler//, IDamagable {
                 break;
             case State.Exit:
                 break;
+            // 모험가 전투관련
+            case State.FindingHuntingArea:
+                break;
+            case State.SearchingMonster:
+                break;
+            case State.ApproachingToEnemy:
+                break;
+            case State.AfterBattle:
+                break;
+            case State.ExitingHuntingArea:
+                break;
+            case State.PassedOut:
+                break;
+            case State.Evacuated:
+                break;
             case State.None:
                 break;
         }
+    }
+    protected IEnumerator MonsterFinding()
+    {
+        yield break;
     }
 }
