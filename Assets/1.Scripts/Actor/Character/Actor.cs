@@ -41,7 +41,7 @@ public abstract class Actor : MonoBehaviour
 
 	protected Tile curTile;
 	protected TileForMove curTileForMove;
-	protected  TileLayer tileLayer;
+	protected TileLayer tileLayer;
 	
 	
 	protected void Awake()
@@ -196,8 +196,6 @@ public abstract class Actor : MonoBehaviour
 
 	public abstract bool ValidateNextTile(Tile tile);
 	public abstract void SetPathFindEvent();
->>>>>>> 6ed25f43d427c836b7485f3ba6c73d6c27ff3fb8
-
 }
 
 

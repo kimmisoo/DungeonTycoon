@@ -29,14 +29,23 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
 
+    #region Battle
+    BattleStat battleStat;
+    private ICombatant enemy;
+    private readonly float RecoveryTimer = 3.0f;
+    private readonly float RecoveryTick = 0.5f;
+    private readonly float DeadTimer = 3.0f;
+    #endregion
+
+    #region initialization
     protected void Awake()
     {
         base.Awake();
     }
     // Use this for initialization
 
-    // 수정해야 할듯?
-    public void InitMonster(Stat stat, BattleStat battleStat) //
+    #region 수정!
+    public void InitTraveler(Stat stat) //
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
@@ -62,16 +71,18 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         // 타일레이어 받기.
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
-
         // 기본은 Idle.
-
         StartCoroutine(LateStart());
     }
+    #endregion
+
     IEnumerator LateStart()
     {
         yield return null;
         curState = State.Idle;
     }
+    #endregion
+
     public void OnDisable()
     {
         StopAllCoroutines();
@@ -85,7 +96,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     }
     private Stat _stat;
 
-    //FSM Pattern...
+    #region StateMachine
     protected void EnterState(State nextState)
     {
         switch (nextState)
@@ -104,10 +115,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 Debug.Log("Wandering");
                 curCoroutine = StartCoroutine(Wandering());
                 break;
-            case State.SearchingStructure:
-                Debug.Log("SS");
-                curCoroutine = StartCoroutine(StructureFinding());
-                break;
             case State.PathFinding:
                 Debug.Log("PF");
                 curCoroutine = StartCoroutine(PathFinding());
@@ -116,9 +123,21 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 Debug.Log("MTS");
                 curCoroutine = StartCoroutine(MoveToDestination());
                 break;
-            case State.Exit:
-                Debug.Log("EXIT");
-                //Going to outside 
+            case State.ApproachingToEnemy:
+                Debug.Log("Approaching to the enemy.");
+                curCoroutine = StartCoroutine(ApproachingToEnemy());
+                break;
+            case State.Battle:
+                Debug.Log("Battle");
+                curCoroutine = StartCoroutine(Battle());
+                break;
+            case State.AfterBattle:
+                Debug.Log("After Battle");
+                curCoroutine = StartCoroutine(AfterBattle());
+                break;
+            case State.Dead:
+                Debug.Log("Dead");
+                curCoroutine = StartCoroutine(Dead());
                 break;
             case State.None:
                 curState = State.Idle;
@@ -137,13 +156,22 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 break;
             case State.MovingToDestination:
                 break;
-            case State.Exit:
+            case State.ApproachingToEnemy:
+                break;
+            case State.Battle:
+                break;
+            case State.AfterBattle:
+                break;
+            case State.Dead:
                 break;
             case State.None:
                 break;
         }
     }
+    #endregion
 
+    #region moving
+    // 사냥터 내에서만 움직이게 수정할 것.
     protected IEnumerator Wandering()
     {
         while (wanderCount < 10)
@@ -155,16 +183,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 yield return null;
             } while (!destinationTile.GetPassable());
             yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-            //Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
-
-            // 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
-            //yield return StartCoroutine(MoveToDestination());
-            //yield return null;
 
             wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
             animator.SetBool("MoveFlg", true); // animation 이동으로
             yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
-
 
             wanderCount++;
         }
@@ -185,24 +207,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 
-        //if (destinationStructure != null && destinationStructure.GetWaitSeconds() > 120.0f) // const? // 대기시간 2분 이상이면
-        //{
-        //    curState = State.Idle;
-        //    yield break;
-        //}
-        //else
-        //{
-        //    if (destinationStructure != null)
-        //    {
-        //        curState = State.WaitingStructure;
-        //        yield break;
-        //    }
-        //    else
-        //    {
-        //        curState = State.Idle;
-        //        //대기 or 다시 길찾기
-        //    }
-        //}
+        curState = State.Idle;
     }
 
 
@@ -214,8 +219,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
     {
         pathFindCount = 0;
-        //if (destinationStructure != null)
-        //    curState = State.MovingToDestination;
+        if (destinationStructure != null)
+            curState = State.MovingToDestination;
     }
     public void PathFindFail() // PathFinder 길찾기 실패 Delegate
     {
@@ -346,7 +351,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
 		Debug.Log("CurTile = " + curTile.ToString() + " // Destination = " + destinationTile.ToString());
 		for (int i=0; i<tileForMoveWay.Count; i++)
-		{
+		{X
 			Debug.Log("Path - " + path[i].X + " , " + path[i].Y);
 		}
 		return tileForMoveWay;*/
@@ -415,124 +420,226 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
     {
         yield return null;
-        #region 기존 MoveAnimation
-        /*
-		Direction dir;
-		Vector3 destPos, before, directionVec;
-		float distance, moveDistanceSum = 0.0f;
-		for(int i=1; i<tileForMoveWay.Count; i++)
-		{
-			tileForMoveWay[i].SetRecentActor(this); // tileForMove에 거쳐갔다고 기록.
-			destPos = tileForMoveWay[i].GetPosition(); // 다음 목적지 포지션
-			distance = Vector3.Distance(transform.position, destPos); // 1칸 이동 끝 검사를 위해 벡터 거리 계산해놓기
-			moveDistanceSum = 0.0f; // 총 이동한 거리 초기화
-			directionVec = Vector3.Normalize(destPos - transform.position); // 방향벡터 캐싱
-			while (moveDistanceSum >= distance)
-			{
-				before = transform.position; // 이전 프레임 위치 기록
-				yield return null;
-				transform.Translate(directionVec * 1.0f * Time.deltaTime); //TimeScale 말고
-				moveDistanceSum += Vector3.Distance(before, transform.position); // 총 이동한 거리 합산.
-			}
-			transform.position = destPos;
-			SetCurTileForMove(tileForMoveWay[i]); // 현재 타일 기록.
-			SetCurTile(tileForMoveWay[i].GetParent());
-		}*/
-        #endregion
+
         Direction dir = Direction.DownLeft;
-        for (int i = 0; i < tileForMoveWay.Count; i++)
+        //FlipX true == Left, false == Right
+        Vector3 dirVector;
+        float distance, sum = 0.0f;
+
+        // PathFinder에서 받은 경로대로 이동
+        for (int i = 0; i < tileForMoveWay.Count - 1; i++)
         {
-            if (i < tileForMoveWay.Count - 1)
-            {
-                switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-                {
-                    case Direction.DownRight:
-                        animator.SetBool("DownToUpFlg", false);
-                        animator.SetBool("UpToDownFlg", true);
-                        foreach (SpriteRenderer sr in spriteRenderers)
-                        {
-                            sr.flipX = true;
-                        }
-                        break;
-                    case Direction.UpRight:
-                        animator.SetBool("UpToDownFlg", false);
-                        animator.SetBool("DownToUpFlg", true);
-                        foreach (SpriteRenderer sr in spriteRenderers)
-                        {
-                            sr.flipX = true;
-                        }
-                        break;
-                    case Direction.DownLeft:
-                        animator.SetTrigger("MDL");
-                        foreach (SpriteRenderer sr in spriteRenderers)
-                        {
-                            sr.flipX = false;
-                        }
-                        break;
-                    case Direction.UpLeft:
-                        animator.SetTrigger("MUL");
-                        foreach (SpriteRenderer sr in spriteRenderers)
-                        {
-                            sr.flipX = false;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            yield return new WaitForSeconds(1.0f);
             tileForMoveWay[i].SetRecentActor(this);
-            transform.position = tileForMoveWay[i].GetPosition();
             SetCurTile(tileForMoveWay[i].GetParent());
             SetCurTileForMove(tileForMoveWay[i]);
-        }
-        switch (dir)
-        {
-            case Direction.DownRight:
-                animator.SetTrigger("IDL");
-                foreach (SpriteRenderer sr in spriteRenderers)
-                {
-                    sr.flipX = true;
-                }
-                break;
-            case Direction.UpRight:
-                animator.SetTrigger("IUL");
-                foreach (SpriteRenderer sr in spriteRenderers)
-                {
-                    sr.flipX = true;
-                }
-                break;
-            case Direction.DownLeft:
-                animator.SetTrigger("IDL");
-                foreach (SpriteRenderer sr in spriteRenderers)
-                {
-                    sr.flipX = false;
-                }
-                break;
-            case Direction.UpLeft:
-                animator.SetTrigger("IUL");
-                foreach (SpriteRenderer sr in spriteRenderers)
-                {
-                    sr.flipX = false;
-                }
-                break;
-        }
-    } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
-    public IEnumerator WaitForEnteringStructure()
-    {
-        while (true)
-        {
-            yield return null;
+            // 방향에 따른 애니메이션 설정.
+            switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
+            {
+                case Direction.DownRight:
+                    animator.SetTrigger("UpToDownFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = true;
+                    }
+                    break;
+                case Direction.UpRight:
+
+                    animator.SetTrigger("DownToUpFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = true;
+                    }
+                    break;
+                case Direction.DownLeft:
+
+                    animator.SetTrigger("UpToDownFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = false;
+                    }
+                    break;
+                case Direction.UpLeft:
+
+                    animator.SetTrigger("DownToUpFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            //transform.position = tileForMoveWay[i].GetPosition();
+            // 이동
+            dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
+            distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
+            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
+            {
+                yield return null;
+                transform.Translate(dirVector * Time.deltaTime);
+
+            }
+            sum = 0.0f;
+            transform.position = tileForMoveWay[i + 1].GetPosition();
+
         }
-    }
-    public IEnumerator WaitForUsingStrcuture()
+
+    } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
+    #endregion
+
+    #region Battle
+    protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
-        while (true)
+        yield return null;
+
+        Direction dir = Direction.DownLeft;
+        //FlipX true == Left, false == Right
+        Vector3 dirVector;
+        float distance, sum = 0.0f;
+
+        // PathFinder에서 받은 경로대로 이동
+        for (int i = 0; i < tileForMoveWay.Count - 1; i++)
         {
-            yield return null;
+            tileForMoveWay[i].SetRecentActor(this);
+            SetCurTile(tileForMoveWay[i].GetParent());
+            SetCurTileForMove(tileForMoveWay[i]);
+
+            // 모험가가 이미 누웠다면.
+            if (enemy.GetState() == State.PassedOut)
+            {
+                curState = State.AfterBattle;
+                yield break;
+            }
+
+            // 레인지 검사
+            if (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range)
+            {
+                curState = State.Battle;
+                yield break;
+            }
+
+            // 방향에 따른 애니메이션 설정.
+            switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
+            {
+                case Direction.DownRight:
+                    animator.SetTrigger("UpToDownFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = true;
+                    }
+                    break;
+                case Direction.UpRight:
+
+                    animator.SetTrigger("DownToUpFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = true;
+                    }
+                    break;
+                case Direction.DownLeft:
+
+                    animator.SetTrigger("UpToDownFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = false;
+                    }
+                    break;
+                case Direction.UpLeft:
+
+                    animator.SetTrigger("DownToUpFlg");
+                    foreach (SpriteRenderer sr in spriteRenderers)
+                    {
+                        sr.flipX = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            //transform.position = tileForMoveWay[i].GetPosition();
+            // 이동
+            dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
+            distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
+            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
+            {
+                yield return null;
+                transform.Translate(dirVector * Time.deltaTime);
+
+            }
+            sum = 0.0f;
+            transform.position = tileForMoveWay[i + 1].GetPosition();
         }
+
+        // 모험가가 이미 누웠다면.
+        if (enemy.GetState() == State.PassedOut)
+        {
+            curState = State.AfterBattle;
+            yield break;
+        }
+
+        // 레인지 검사
+        if (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range)
+        {
+            curState = State.Battle;
+            yield break;
+        }
+
+        // 목적지 도착했지만 공격 범위 안에 안 들어올 때.
+        curState = State.ApproachingToEnemy;
     }
+
+    protected IEnumerator ApproachingToEnemy()
+    {
+        destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
+        destinationTile = enemy.GetCurTile(); // TileForMove가 아니라도 문제없나?
+
+        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+        animator.SetBool("MoveFlg", true); // animation 이동으로
+        yield return curCoroutine = StartCoroutine(Charge(wayForMove));
+    }
+
+    protected IEnumerator Battle()
+    {
+        while (enemy.CurHealth() > 0)
+        {
+            yield return curCoroutine = StartCoroutine(Attack());
+        }
+
+        curState = State.AfterBattle;
+    }
+
+    protected IEnumerator Attack()
+    {
+        yield return curCoroutine = StartCoroutine(AttackAnimation());
+        enemy.TakeDamage(battleStat.CalDamage(), battleStat.PenetrationFixed, battleStat.PenetrationMult);
+    }
+
+    // 공격 애니메이션
+    protected IEnumerator AttackAnimation()
+    {
+        yield return null;
+    }
+
+    protected IEnumerator AfterBattle() // 전투 끝나고 체력회복. 가만히 서서 회복함. 기본적으로 3초.
+    {
+        while (battleStat.Health < battleStat.HealthMax)
+        {
+            battleStat.Health += battleStat.HealthMax * (RecoveryTick / RecoveryTimer);
+            yield return new WaitForSeconds(RecoveryTick);
+        }
+        curState = State.Idle;
+        yield break;
+    }
+
+    protected IEnumerator Dead()
+    {
+        // 여기 애니메이션 설정 넣으면 됨.
+        yield return new WaitForSeconds(DeadTimer);
+        gameObject.SetActive(false);
+    }
+    #endregion
 
     #region Save Load
     public int GetDestinationTileSave()
@@ -592,679 +699,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         SetCurTileForMove(curTile.GetChild(childNum));
         return true;
     }
+
+    protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
+    {
+        return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
+    }
     #endregion
-
-    /*
-	//Stat 관련 처리. 데미지 처리. 등 ...
-	//선공 인식 범위 십자 3칸
-	
-	
-	int monsterCode;
-	
-	public BattleStatus battleStatus
-	{
-		get
-		{
-			return _battleStatus;
-		}
-	}
-
-	private BattleStatus _battleStatus;
-	
-	Monster monster;
-	Adventurer target;
-	Coroutine currentCoroutine;
-	WaitForSeconds idleInterval;
-
-	//이동시 Monster Tile만 체크
-	public void Awake()
-	{
-		base.Awake();
-		SetBattleStatus(GetComponent<BattleStatus>());
-	}
-	public void Start()
-	{
-		idleInterval = new WaitForSeconds(1.0f);
-		tileLayer = GetCurTile().GetLayer();
-		direction = Direction.DownRight;
-		state = State.Idle;
-	}
-	private void OnEnable()
-	{
-		//moving = StartCoroutine(Moving());
-		//attacking = StartCoroutine(Attacking());
-		state = new State();
-		state = State.Idle;
-		StartCoroutine(Act());
-	}
-	private void OnDisable()
-	{	
-		//reset...
-	}
-	
-	public IEnumerator Act()
-	{
-		yield return null;
-		while (true)
-		{
-			yield return null;
-			switch (state)
-			{
-				case State.Idle:
-					yield return currentCoroutine = StartCoroutine(Idle());
-					break;
-				case State.Chasing:
-					yield return currentCoroutine = StartCoroutine(Chasing());
-					break;
-				case State.Battle:
-					yield return currentCoroutine = StartCoroutine(Battle());
-					break;
-				case State.Dead:
-					yield return currentCoroutine = StartCoroutine(Dead());
-					break;
-			}
-		}
-	}
-
-	IEnumerator Idle()
-	{
-		while (state == State.Idle)
-		{
-			yield return StartCoroutine(EnemySearch());
-			if (state != State.Chasing)
-				yield return StartCoroutine(Wander());
-		}
-	}
-
-	IEnumerator Chasing()
-	{
-		int chaseCount = 0;
-		if (target == null)
-		{
-			state = State.Idle;
-		}
-		else if (target != null && !(target.GetState() == State.Dead || state == State.Dead) || !target.GetCurTile().GetMonsterArea() || chaseCount > 7)
-		{
-			//chase once coroutine.
-			yield return StartCoroutine(MoveOnce(target.GetCurTileForMove()));
-			chaseCount++;
-			if (GetDistanceFromOtherActorForMove(target) <= battleStatus.GetCalculatedAttackRange())
-			{
-				state = State.Battle;
-				//adventurer.Startbattle trigger!
-			}
-		}
-		else
-		{
-			yield return new WaitForSeconds(1.0f);
-			state = State.Idle;
-		}
-
-		yield return null;
-	}
-	IEnumerator Battle()
-	{
-		yield return null;
-		StartBattle(target);
-		float originAttackSpeed = battleStatus.GetCalculatedAttackspeed();
-		float eps = 0.0001f;
-		WaitForSeconds interval = new WaitForSeconds(1.0f / originAttackSpeed);
-		while (target != null && !(state == State.Dead || target.GetState() == State.Dead))
-		{
-			if (Mathf.Abs(originAttackSpeed - battleStatus.GetCalculatedAttackspeed()) > eps)
-			{
-				originAttackSpeed = battleStatus.GetCalculatedAttackspeed();
-				interval = new WaitForSeconds(1.0f / originAttackSpeed);
-			}
-			Attack(target);
-			yield return interval;
-			//공격속도에 따라 한번씩 공격
-			//Callback 제대로 처리하기
-			
-		}
-		//target.StartBattle!
-		EndBattle(target);
-		if(state == State.Dead)
-		{
-			Die(target as IDamagable);
-		}
-		else
-		{
-			state = State.Idle;
-		}
-		//둘 중 하나가 죽을때까지 싸움
-	}
-	IEnumerator Dead()
-	{
-		yield return null;
-		yield return new WaitForSeconds(30.0f);
-		
-		state = State.Idle;
-		//respawn;
-		//N초 기다린 후 리스폰
-	}
-
-	
-	
-	
-	
-	public void SetMonsterCode(int code)
-	{
-		monsterCode = code;
-	}
-	public int GetMonsterCode()
-	{
-		return monsterCode;
-	}
-	public Adventurer GetCurrentTarget()
-	{
-		return target;
-	}
-
-	public IEnumerator EnemySearch() //trigger state
-	{
-		target = null;
-		yield return null;
-		foreach (Actor a in GetAdjacentActor(3))
-		{
-			if ((a is Adventurer || a is SpecialAdventurer) && a.GetState() != State.Dead)
-			{
-				if (target == null || GetDistanceFromOtherActorForMove(target) > GetDistanceFromOtherActorForMove(a))
-				{
-					target = a as Adventurer;
-					state = State.Chasing;
-				}
-			}
-		}
-	}
-	public IEnumerator Wander() // 1칸이동
-	{
-		TileForMove tempTileForMove;
-
-		int rand = 0;
-		//랜덤 돌려서 4방향중 1방향으로.(Monster Area, 체크해야함)
-		rand = Random.Range(0, 4);
-		switch (rand)
-		{
-			case 0:
-				tempTileForMove = GetCurTile().GetLayer().GetTileForMove(GetCurTileForMove().GetX() - 1, GetCurTileForMove().GetY());
-				break;
-			case 1:
-				tempTileForMove = GetCurTile().GetLayer().GetTileForMove(GetCurTileForMove().GetX() + 1, GetCurTileForMove().GetY());
-				break;
-			case 2:
-				tempTileForMove = GetCurTile().GetLayer().GetTileForMove(GetCurTileForMove().GetX(), GetCurTileForMove().GetY() - 1);
-				break;
-			case 3:
-				tempTileForMove = GetCurTile().GetLayer().GetTileForMove(GetCurTileForMove().GetX(), GetCurTileForMove().GetY() + 1);
-				break;
-			default:
-				tempTileForMove = GetCurTileForMove();
-				break;
-		}
-		if (!tempTileForMove.GetRecentActor().GetCurTileForMove().Equals(tempTileForMove))
-		{
-			yield return StartCoroutine(MoveOnce(tempTileForMove));
-		}
-	}
-
-	IEnumerator MoveOnce(TileForMove destination)
-	{
-		if (destination.GetParent().GetMonsterArea())
-		{
-			TileForMove origin = GetCurTileForMove();
-			direction = GetDirectionFromOtherTileForMove(destination);
-			SetCurTileForMove(destination);
-			SetCurTile(destination.GetParent());
-			SetAnimFlagFromDirection(direction);
-			animator.SetBool("MoveFlg", true);
-			yield return StartCoroutine(MoveAnim(origin.GetPosition(), destination.GetPosition()));
-			animator.SetBool("MoveFlg", false);
-		}
-	}
-	public override bool ValidateNextTile(Tile tile)
-	{
-		return tile.GetMonsterArea();
-	}
-	public void SetAnimFlagFromDirection(Direction direction)
-	{
-		switch (direction)
-		{
-			case Direction.DownRight:
-				spriteRenderer.flipX = true;
-				animator.SetTrigger("UpToDownFlg");
-				break;
-			case Direction.UpRight:
-				spriteRenderer.flipX = true;
-				animator.SetTrigger("DownToUpFlg");
-				break;
-			case Direction.DownLeft:
-				spriteRenderer.flipX = false;
-				animator.SetTrigger("UpToDownFlg");
-				break;
-			case Direction.UpLeft:
-				spriteRenderer.flipX = false;
-				animator.SetTrigger("DownToUpFlg");
-				break;
-			case Direction.None:
-				break;
-			default:
-				break;
-		}
-	}
-
-	public IEnumerator MoveAnim(Vector3 start, Vector3 end)
-	{
-		Vector3 d = end - start;
-		float mag = 0;
-
-		while (mag <= Vector3.Magnitude(d))
-		{
-			yield return null;
-			mag += Vector3.Magnitude(d * battleStatus.GetCalculatedMovespeed() * Time.deltaTime);
-			if (mag >= Vector3.Magnitude(d))
-			{
-				break;
-			}
-			transform.Translate(d * battleStatus.GetCalculatedMovespeed() * Time.deltaTime);
-		}
-	}
-
-
-	public List<TileForMove> GetPathForMove(List<PathVertex> pathList)
-	{
-		List<TileForMove> wayForMove = new List<TileForMove>();
-		wayForMove.Add(monster.GetCurTileForMove());
-		for (int i = 0; i < pathList.Count - 1; i++)
-		{
-			switch (wayForMove[wayForMove.Count - 1].GetChildNum())
-			{
-				case 0:
-					if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == 1) // move down right
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(1));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-						if (Random.Range(0, 2) == 0)
-						{
-							//3칸가기
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-						}
-					}
-					else if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == -1) // move up left
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-						if (Random.Range(0, 2) == 0)
-						{
-							//2칸가기
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-						}
-					}
-					else if (pathList[i + 1].myTilePos.GetY() - pathList[i].myTilePos.GetY() == 1) // move down left
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(2));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-							//3칸가기
-						}
-					}
-					else // move up right
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-							//2칸가기
-						}
-					}
-					break;
-				case 1:
-					if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == 1) // move down right
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-							//2칸가기
-						}
-
-					}
-					else if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == -1) // move up left
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(0));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-							//2칸가기
-						}
-					}
-					else if (pathList[i + 1].myTilePos.GetY() - pathList[i].myTilePos.GetY() == 1) // move down left
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(3));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-							//2칸가기
-						}
-
-					}
-					else // move up right
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-							//2칸가기
-						}
-
-
-					}
-					break;
-				case 2:
-					if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == 1) // move down right
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(3));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-							//3칸가기
-						}
-
-					}
-					else if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == -1) // move up left
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-							//2칸가기
-						}
-
-
-					}
-					else if (pathList[i + 1].myTilePos.GetY() - pathList[i].myTilePos.GetY() == 1) // move down left
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-							//2칸가기
-						}
-
-					}
-					else // move up right
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(0));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(0));
-							//3칸가기
-						}
-
-
-					}
-					break;
-				case 3:
-					if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == 1) // move down right
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-							//2칸가기
-						}
-
-					}
-					else if (pathList[i + 1].myTilePos.GetX() - pathList[i].myTilePos.GetX() == -1) // move up left
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(2));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(2));
-							//3칸가기
-						}
-					}
-					else if (pathList[i + 1].myTilePos.GetY() - pathList[i].myTilePos.GetY() == 1) // move down left
-					{
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-							//2칸가기
-						}
-
-					}
-					else // move up right
-					{
-						wayForMove.Add(pathList[i].curTile.GetChild(1));
-						wayForMove.Add(pathList[i + 1].curTile.GetChild(3));
-						if (Random.Range(0, 2) == 0)
-						{
-							wayForMove.Add(pathList[i + 1].curTile.GetChild(1));
-							//2칸가기
-						}
-
-
-					}
-					break;
-				default:
-					break;
-			}
-		}
-		return wayForMove;
-	}
-
-	public void SetAnimFlgByDirection(Direction dir)
-	{
-		switch (dir)
-		{
-			case Direction.DownRight:
-				spriteRenderer.flipX = true;
-				animator.SetTrigger("UpToDownFlg");
-				break;
-			case Direction.UpRight:
-				spriteRenderer.flipX = true;
-				animator.SetTrigger("DownToUpFlg");
-				break;
-			case Direction.DownLeft:
-				spriteRenderer.flipX = false;
-				animator.SetTrigger("UpToDownFlg");
-				break;
-			case Direction.UpLeft:
-				spriteRenderer.flipX = false;
-				animator.SetTrigger("DownToUpFlg");
-				break;
-			case Direction.None:
-				break;
-		}
-	}
-	public IEnumerator MoveAnim(Vector3 dest)
-	{
-		yield return null;
-		animator.SetBool("MoveFlg", true);
-		Vector3 d = dest - monster.transform.position;
-		float mag = 0;
-
-		while (mag <= Vector3.Magnitude(d))
-		{
-			yield return null;
-			mag += Vector3.Magnitude(d * battleStatus.GetCalculatedMovespeed() * Time.deltaTime);
-			if (mag >= Vector3.Magnitude(d))
-			{
-				break;
-			}
-			transform.Translate(d * battleStatus.GetCalculatedMovespeed() * Time.deltaTime);
-		}
-	}
-	
-	
-
-	
-	void Die(IDamagable Opponent)
-	{
-		//object 비활성화 및 respawn 준비
-		foreach(Enchantment e in enchantmentList)
-		{
-			e.OnDead(this, Opponent as Actor, GetAdjacentActor(2));
-		}
-		state = State.Dead;
-	}
-	#region IDamagable
-	public void SetBattleStatus(BattleStatus bs)
-	{
-		_battleStatus = bs;
-	}
-
-	public bool Attack(IDamagable enemy)
-	{
-		if (enemy != null && (enemy as Adventurer).state != State.Dead)
-		{
-			float dealtDamage = 0.0f;
-			bool isCritical = false;
-			bool isHit = false;
-			bool isDead = false;
-			isCritical = battleStatus.GetIsCriticalAttack();
-
-			enemy.Attacked(this, isCritical, out isHit);
-			foreach (Enchantment e in enchantmentList)
-			{
-				e.OnAttack(this, enemy as Actor, GetAdjacentActor(battleStatus.GetCalculatedAttackRange()), isCritical);
-			}
-			if (isHit == true)
-			{
-				enemy.TakeDamage(this, isCritical, out isDead, out dealtDamage);
-				foreach (Enchantment e in enchantmentList)
-				{
-					e.OnDamage(this, enemy as Actor, GetAdjacentActor(2), dealtDamage, isCritical);
-				}
-			}
-			if (isDead)
-			{
-				EndBattle(enemy);
-				state = State.Idle;
-			}
-			return isHit;
-		}
-		return false;
-	}
-
-	public void Attacked(IDamagable from, bool isCritical, out bool isHit)
-	{
-		if (Random.Range(0.0f, 1.0f) < battleStatus.GetCalculatedAvoidMult())
-			isHit = false;
-		else
-			isHit = true;
-		foreach (Enchantment e in enchantmentList)
-		{
-			e.OnAttacked(this, from as Actor, GetAdjacentActor(2), isCritical);
-		}
-		return;
-	}
-
-	public void AttackedFromEnchantment(IDamagable from, Enchantment enchantment, bool isCritical, out bool isHit)
-	{
-		if (Random.Range(0.0f, 1.0f) < battleStatus.GetCalculatedAvoidMult())
-			isHit = false;
-		else
-			isHit = true;
-		return;
-	}
-
-	public void TakeDamage(IDamagable from, bool isCritical, out bool isDead, out float damage)
-	{
-		float calculatedDamage = battleStatus.GetCalculatedDamage(from.battleStatus, isCritical);
-		damage = calculatedDamage;
-		isDead = battleStatus.TakeDamageProcess(calculatedDamage);
-		foreach (Enchantment e in enchantmentList)
-		{
-			e.OnDamaged(this, from as Actor, GetAdjacentActor(2), damage, isCritical);
-		}
-		if (isDead)
-		{
-			EndBattle(from);
-			Die(from);
-			state = State.Dead;
-			foreach (Enchantment e in enchantmentList)
-			{
-				e.OnEndBattle(this, from as Actor, GetAdjacentActor(2));
-				e.OnDead(this, from as Actor, GetAdjacentActor(2));
-			}
-		}
-
-	}
-
-	public void TakeDamageFromEnchantment(float damage, IDamagable from, Enchantment enchantment, bool isCritical, out bool isDead)
-	{
-		isDead = battleStatus.TakeDamageProcess(damage);
-		if (isDead)
-		{
-			EndBattle(from);
-
-		}
-	}
-
-	public void TakeHeal(float heal, IDamagable from)
-	{
-
-	}
-	public void TakeHealFromEnchantment(float heal, IDamagable from, Enchantment enchantment)
-	{
-
-	}
-
-	public void StartBattle(IDamagable Opponent)
-	{
-		foreach (Enchantment e in enchantmentList)
-		{
-			e.OnStartBattle(this, Opponent as Actor, GetAdjacentActor(2));
-		}
-
-	}
-
-	public void EndBattle(IDamagable Opponent)
-	{
-		foreach (Enchantment e in enchantmentList)
-		{
-			e.OnEndBattle(this, Opponent as Actor, GetAdjacentActor(2));
-		}
-
-	}
-
-	public void AddEnchantment(Enchantment enchantment)
-	{
-		enchantmentList.Add(enchantment);
-	}
-
-	public void RemoveEnchantmnet(Enchantment enchantment)
-	{
-		enchantmentList.Remove(enchantment);
-	}
-
-	public void TakeStunned(IDamagable from, Enchantment enchantment, float during)
-	{
-
-	}
-
-	public bool IsAttackable(IDamagable enemy)
-	{
-		if (!(enemy is Adventurer))
-			return false;
-		if (enemy != null && (enemy as Adventurer).GetCurTile().GetMonsterArea() && GetDistanceFromOtherActorForMove(enemy as Adventurer) <= battleStatus.GetCalculatedAttackRange())
-			return true;
-		return false;
-	}
-
-	public IEnumerator Stun(float duration)
-	{
-		yield return null;
-	}
-
-	#endregion
-	*/
 }
