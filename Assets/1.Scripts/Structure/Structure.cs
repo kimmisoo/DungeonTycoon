@@ -3,12 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Structure : MonoBehaviour
+public class Structure : Place
 {
-	public Tile point //extent 기준 0,0의 타일
-	{
-		get; set;
-	}
     public int entCount = 0;
 	private bool isConstructable = true; //건설 가능한 위치에 배치 되어있는가 아닌가
     public int sitInCount = 0;
@@ -19,14 +15,6 @@ public class Structure : MonoBehaviour
     public int structureIndex;
     //
 
-	public bool isEnterable
-	{
-		get; set;
-	}
-	public string names
-	{
-		get; set;
-	}
 	public string path
 	{
 		get; set;
@@ -39,10 +27,6 @@ public class Structure : MonoBehaviour
 	{
 		get; set;
 	}
-	public int capacity
-	{
-		get; set;
-	}
 	public int duration
 	{
 		get; set;
@@ -52,13 +36,9 @@ public class Structure : MonoBehaviour
 		get; set;
 	}
 
-    
 	public float resolveAmount = 0.0f;
     public Preference preference = new Preference();
 	
-    
-
-    public List<Tile> entrance = new List<Tile>();
 	Queue<Traveler> curUsingQueue = new Queue<Traveler>();
     Queue<float> EnteredTimeQueue = new Queue<float>();
 	Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
@@ -76,25 +56,6 @@ public class Structure : MonoBehaviour
         return curWaitingQueue.ToArray();
     }
 
-
-    public void addEntrance(Tile t)
-    {
-        entrance.Add(t);
-    } // 활성화된 입구만 담겨있음
-	public Tile GetEntrance()
-	{
-		int randNum = Random.Range(0, entrance.Count);
-		return entrance[randNum];
-	}
-	public int extentWidth
-	{
-		get; set;
-	}
-	public int extentHeight
-	{
-		get; set;
-	}
-	public int[,] extent;
 	public string genre
 	{
 		get; set;
@@ -146,10 +107,6 @@ public class Structure : MonoBehaviour
 	{
 		return isMovable;
 	}
-	public int[,] GetExtent()
-	{
-		return extent;
-	}
 	
 	public bool GetisConstructable()
 	{
@@ -176,7 +133,13 @@ public class Structure : MonoBehaviour
         // 이거 수 제대로 계산되는지 볼 필요 있음.
         Invoke("ExitTraveler", (float)duration - elapsedTime);
     }
-	public void AddWaitTraveler(Traveler t) // 첫번째로 호출.
+
+    public override void Visit(Actor visitor)
+    {
+        AddWaitTraveler(visitor as Traveler);
+    }
+
+    public void AddWaitTraveler(Traveler t) // 첫번째로 호출.
 	{
 		curWaitingQueue.Enqueue(t);
 		t.curState = State.WaitingStructure;

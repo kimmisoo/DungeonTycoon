@@ -8,6 +8,7 @@ public class DesireBase {
 	public const float desireMin = 0.0f;
 	public const float tickMax = 100.0f;
 	public const float tickMin = 0.001f;
+    public const float DesireHighestPriority = 200.0f;
 	
 	protected WaitForSeconds tickBetweenWait;
 	public float desireValue
@@ -22,6 +23,10 @@ public class DesireBase {
 				_desireValue = value;
 		}
 	}
+    public void SetHighestPriority()
+    {
+        _desireValue = DesireHighestPriority;
+    }
 	public float tickAmount
 	{
 		get

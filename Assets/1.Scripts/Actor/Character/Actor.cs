@@ -7,7 +7,7 @@ public enum State
 {
     //Idle, Chasing, Moving, Battle, Indoor, Dead, Exit
     None, Idle, Wandering, SearchingStructure, PathFinding, MovingToDestination, WaitingStructure, UsingStructure, Battle, Dead, Exit,
-    FindingHuntingArea, SearchingMonster, ApproachingToEnemy, AfterBattle, ExitingHuntingArea, PassedOut, Evacuated
+    SearchingHuntingArea, SearchingMonster, ApproachingToEnemy, AfterBattle, ExitingHuntingArea, PassedOut, Rescued, SearchingShrine
 }
 /*
  * Animator Tirggers
@@ -197,5 +197,3 @@ public abstract class Actor : MonoBehaviour
 	public abstract bool ValidateNextTile(Tile tile);
 	public abstract void SetPathFindEvent();
 }
-
-

@@ -8,5 +8,7 @@ public interface ICombatant
     TileForMove GetCurTileForMove();
     State GetState();
     void TakeDamage(float damage, float penFixed, float penMult);
+    int RewardGold();
+    int RewardExp();
     float CurHealth();
 }

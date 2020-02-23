@@ -18,258 +18,264 @@ using UnityEngine;
  * ResurrectingFlg
  */
 
-	// Disable, Enable시 변경가능한 속성
-	//이름, 종족, 성별, 선호도, 캐릭터 스프라이트와 애니메이션, 
+// Disable, Enable시 변경가능한 속성
+//이름, 종족, 성별, 선호도, 캐릭터 스프라이트와 애니메이션, 
 
 public class Traveler : Actor {
     //acting 구성
     //useStructure ~ 구현
-	public State curState
-	{
-		get
-		{
-			return state;
-		}
-		set
-		{
-			ExitState();
-			state = value;
-			EnterState(state);
-		}
-	}
-	protected int pathFindCount = 0;
-	protected int wanderCount = 0;
-	protected Coroutine curCoroutine;
-	protected Tile destinationTile;
-	protected Structure destinationStructure;
-	protected Structure[] structureListByPref;
+    public State curState
+    {
+        get
+        {
+            return state;
+        }
+        set
+        {
+            ExitState();
+            state = value;
+            EnterState(state);
+        }
+    }
+    protected int pathFindCount = 0;
+    protected int wanderCount = 0;
+    protected Coroutine curCoroutine;
+    protected Tile destinationTile;
+    protected Place destinationPlace;
+    protected Structure[] structureListByPref;
 
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
 
-	protected void Awake()
-	{
-		base.Awake();
-	}
-	// Use this for initialization
-	
-	public void InitTraveler(Stat stat) //
-	{ 
-        // 이동가능한 타일인지 확인할 delegate 설정.
-		pathFinder.SetValidateTile(ValidateNextTile);
-		SetPathFindEvent();
-		//stat 초기화
-		//pathfinder 초기화 // delegate 그대로
-	}
+    protected void Awake()
+    {
+        base.Awake();
+    }
+    // Use this for initialization
 
-	public void OnEnable()
-	{
-		// 입구 타일 랜덤으로 받아오기.
-		SetCurTile(GameManager.Instance.GetRandomEntrance());
+    public void InitTraveler(Stat stat) //
+    {
+        // 이동가능한 타일인지 확인할 delegate 설정.
+        pathFinder.SetValidateTile(ValidateNextTile);
+        SetPathFindEvent();
+        //stat 초기화
+        //pathfinder 초기화 // delegate 그대로
+    }
+
+    public void OnEnable()
+    {
+        // 입구 타일 랜덤으로 받아오기.
+        SetCurTile(GameManager.Instance.GetRandomEntrance());
         SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
 
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         // PathFind 성공/실패에 따라 호출할 delegate 설정.
-		SetPathFindEvent();
+        SetPathFindEvent();
         // 아마 실패 횟수인 듯.
-		pathFindCount = 0;
-		curCoroutine = null;
-		structureListByPref = null;
+        pathFindCount = 0;
+        curCoroutine = null;
+        structureListByPref = null;
 
         // 타일레이어 받기.
-		tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
+        tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
 
         // 기본은 Idle.
-		
-		StartCoroutine(LateStart());
-	}
-	IEnumerator LateStart()
-	{
-		yield return null;
-		curState = State.Idle;
-	}
-	public void OnDisable()
-	{
-		StopAllCoroutines();
-		//골드, 능력치 초기화...  // current , origin 따로둬야할까?
-	}
-	
-	public Stat stat
-	{
-		get;
-		set;
-	}
-	private Stat _stat;
 
-	//FSM Pattern...
-	protected void EnterState(State nextState)
-	{
-		switch(nextState)
-		{
-			case State.Idle:
-				Debug.Log("Idle");
-				if(structureListByPref == null)
-				{
-					//Do something at first move...
-				}
-				curState = State.SearchingStructure;
-				//Traveler이므로 무조건 SearchingStructure 부터
-				//이외에 체크할거 있으면 여기서
-				break;
-			case State.Wandering:
-				Debug.Log("Wandering");
-				curCoroutine = StartCoroutine(Wandering());
-				break;
-			case State.SearchingStructure:
-				Debug.Log("SS");
-				curCoroutine = StartCoroutine(StructureFinding());
-				break;
-			case State.PathFinding:
-				Debug.Log("PF");
-				curCoroutine = StartCoroutine(PathFinding());
-				break;
-			case State.MovingToDestination:
-				Debug.Log("MTS");
-				curCoroutine = StartCoroutine(MoveToDestination());
-				break;
-			case State.WaitingStructure:
-				Debug.Log("WS");
-				destinationStructure.AddWaitTraveler(this);
-				break;
-			case State.UsingStructure:
-				Debug.Log("US");
-				//욕구 감소
-				//소지 골드 감소
-				stat.gold -= destinationStructure.charge; 
-				stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // ??
-				break;
-			case State.Exit:
-				Debug.Log("EXIT");
-				//Going to outside 
-				break;
-			case State.None:
-				curState = State.Idle;
-				break;
-		}
-	}
-	protected void ExitState()
-	{
-		switch(curState)
-		{
-			case State.Idle:
-				break;
-			case State.Wandering:
-				break;
-			case State.SearchingStructure: 
-				break;
-			case State.PathFinding:
-				break;
-			case State.MovingToDestination:
-				break;
-			case State.WaitingStructure:
-				break;
-			case State.UsingStructure:
-				break;
-			case State.Exit:
-				break;
-			case State.None:
-				break;
-		}
-	}
+        StartCoroutine(LateStart());
+    }
+    IEnumerator LateStart()
+    {
+        yield return null;
+        curState = State.Idle;
+    }
+    public void OnDisable()
+    {
+        StopAllCoroutines();
+        //골드, 능력치 초기화...  // current , origin 따로둬야할까?
+    }
 
-	protected IEnumerator Wandering()
-	{
-		while (wanderCount<10)
-		{
-			//랜덤 거리, 사방으로 이동
-			do
-			{
-				destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
-				yield return null;
-			} while (!destinationTile.GetPassable());
-			yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-			//Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
+    public Stat stat
+    {
+        get;
+        set;
+    }
+    private Stat _stat;
 
-			// 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
-			//yield return StartCoroutine(MoveToDestination());
-			//yield return null;
+    //FSM Pattern...
+    protected virtual void EnterState(State nextState)
+    {
+        switch (nextState)
+        {
+            case State.Idle:
+                Debug.Log("Idle");
+                if (structureListByPref == null)
+                {
+                    //Do something at first move...
+                }
+                curState = State.SearchingStructure;
+                //Traveler이므로 무조건 SearchingStructure 부터
+                //이외에 체크할거 있으면 여기서
+                break;
+            case State.Wandering:
+                Debug.Log("Wandering");
+                curCoroutine = StartCoroutine(Wandering());
+                break;
+            case State.SearchingStructure:
+                Debug.Log("SS");
+                curCoroutine = StartCoroutine(SearchingStructure());
+                break;
+            case State.PathFinding:
+                Debug.Log("PF");
+                curCoroutine = StartCoroutine(PathFinding());
+                break;
+            case State.MovingToDestination:
+                Debug.Log("MTS");
+                curCoroutine = StartCoroutine(MoveToDestination());
+                break;
+            case State.WaitingStructure:
+                Debug.Log("WS");
+                destinationPlace.Visit(this);
+                break;
+            case State.UsingStructure:
+                Debug.Log("US");
+                //욕구 감소
+                //소지 골드 감소
+                UsingStructure();
+                break;
+            case State.Exit:
+                Debug.Log("EXIT");
+                //Going to outside 
+                break;
+            case State.None:
+                curState = State.Idle;
+                break;
+        }
+    }
+    protected virtual void ExitState()
+    {
+        switch (curState)
+        {
+            case State.Idle:
+                break;
+            case State.Wandering:
+                break;
+            case State.SearchingStructure:
+                break;
+            case State.PathFinding:
+                break;
+            case State.MovingToDestination:
+                break;
+            case State.WaitingStructure:
+                break;
+            case State.UsingStructure:
+                break;
+            case State.Exit:
+                break;
+            case State.None:
+                break;
+        }
+    }
 
-			wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
-			animator.SetBool("MoveFlg", true); // animation 이동으로
-			yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
+    protected IEnumerator Wandering()
+    {
+        while (wanderCount < 10)
+        {
+            //랜덤 거리, 사방으로 이동
+            do
+            {
+                destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
+                yield return null;
+            } while (!destinationTile.GetPassable());
+            yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+            //Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
+
+            // 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
+            //yield return StartCoroutine(MoveToDestination());
+            //yield return null;
+
+            wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+            animator.SetBool("MoveFlg", true); // animation 이동으로
+            yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
 
 
-			wanderCount++;
-		}
+            wanderCount++;
+        }
 
         curState = State.MovingToDestination;
-		//이동 끝난 후 State = Idle.
-	}
-    protected IEnumerator StructureFinding()
-	{
-		if(pathFindCount <= 0 && structureListByPref == null) // Fail 기록 없을때
-			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
-		while (curState == State.SearchingStructure)
-			{
-			//temporary
-			if (structureListByPref == null || structureListByPref.Length == 0)
-			{
-				curState = State.Wandering;
-				yield break;
-			}
-			//temporary
-				yield return null;
-			if (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount] != null) // 길찾기 횟수가 선호건물 수 보다 적다면
-			{
-				destinationTile = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
-				destinationStructure = structureListByPref[pathFindCount];
-				curState = State.PathFinding;
-			}
-			
-			else
-			{
-				pathFindCount = 0;
-				curState = State.Exit;
-				break;
-			}
-			//길찾기 시작
-			//pathfind success, fail delegate call
-		}
-	}
+        //이동 끝난 후 State = Idle.
+    }
+    protected IEnumerator SearchingStructure()
+    {
+        if (pathFindCount <= 0 && structureListByPref == null) // Fail 기록 없을때
+                                                               //structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
+            while (curState == State.SearchingStructure)
+            {
+                //temporary
+                if (structureListByPref == null || structureListByPref.Length == 0)
+                {
+                    curState = State.Wandering;
+                    yield break;
+                }
+                //temporary
+                yield return null;
+                if (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount] != null) // 길찾기 횟수가 선호건물 수 보다 적다면
+                {
+                    destinationTile = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
+                    destinationPlace = structureListByPref[pathFindCount];
+                    curState = State.PathFinding;
+                }
+                else
+                {
+                    pathFindCount = 0;
+                    curState = State.Exit;
+                    break;
+                }
+                //길찾기 시작
+                //pathfind success, fail delegate call
+            }
+    }
 
     protected IEnumerator PathFinding()
-	{
-		yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-	}
+    {
+        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+    }
 
-    protected IEnumerator MoveToDestination()
-	{
-		//길찾기 성공!
-		wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
-		animator.SetBool("MoveFlg", true); // animation 이동으로
-		yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
-		
-		if (destinationStructure != null && destinationStructure.GetWaitSeconds() > 120.0f) // const? // 대기시간 2분 이상이면
-		{
-			curState = State.Idle;
-			yield break;
-		}
-		else
-		{
-			if (destinationStructure != null)
-			{
-				curState = State.WaitingStructure;
-				yield break;
-			}
-			else
-			{
-				curState = State.Idle;
-				//대기 or 다시 길찾기
-			}
-		}
-	}
+    protected virtual IEnumerator MoveToDestination()
+    {
+        //길찾기 성공!
+        wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+        animator.SetBool("MoveFlg", true); // animation 이동으로
+        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
+
+        if (destinationPlace == null)
+            curState = State.Idle;
+        else
+            VisitStructure();
+    }
+
+    protected void VisitStructure()
+    {
+        Structure destinationStructure = destinationPlace as Structure;
+        if (destinationStructure.GetWaitSeconds() > 120.0f) // const? // 대기시간 2분 이상이면
+        {
+            curState = State.Idle;
+        }
+        else
+        {
+            curState = State.WaitingStructure;
+        }
+    }
 	
+    protected void UsingStructure()
+    {
+        Structure destinationStructure = destinationPlace as Structure;
+        stat.gold -= destinationStructure.charge;
+        stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // ??
+
+        // 사용 후에는 비워주기.
+        destinationPlace = null;
+    }
 	
 	public override void SetPathFindEvent() // Pathfinder Delegate 설정
     {
@@ -279,7 +285,7 @@ public class Traveler : Actor {
 	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
 	{
 		pathFindCount = 0;
-		if(destinationStructure != null)
+		if(destinationPlace != null)
 			curState = State.MovingToDestination;
 	}
 	public void PathFindFail() // PathFinder 길찾기 실패 Delegate

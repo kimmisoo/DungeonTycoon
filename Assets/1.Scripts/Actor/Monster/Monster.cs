@@ -31,6 +31,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     #region Battle
     BattleStat battleStat;
+    RewardStat rewardStat;
     private ICombatant enemy;
     private readonly float RecoveryTimer = 3.0f;
     private readonly float RecoveryTick = 0.5f;
@@ -38,14 +39,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #endregion
 
     #region initialization
-    protected void Awake()
-    {
-        base.Awake();
-    }
     // Use this for initialization
 
     #region 수정!
-    public void InitTraveler(Stat stat) //
+    public void InitMonster(Stat stat) //
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
@@ -612,19 +609,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator Attack()
     {
-        yield return curCoroutine = StartCoroutine(AttackAnimation());
+        yield return null; // 애니메이션 관련 넣을 것.
         enemy.TakeDamage(battleStat.CalDamage(), battleStat.PenetrationFixed, battleStat.PenetrationMult);
-    }
-
-    // 공격 애니메이션
-    protected IEnumerator AttackAnimation()
-    {
-        yield return null;
     }
 
     protected IEnumerator AfterBattle() // 전투 끝나고 체력회복. 가만히 서서 회복함. 기본적으로 3초.
     {
-        while (battleStat.Health < battleStat.HealthMax)
+        while (battleStat.Health < battleStat.HealthMax) // float 비교연산인데 문제 안 생기는지. 수정요망.
         {
             battleStat.Health += battleStat.HealthMax * (RecoveryTick / RecoveryTimer);
             yield return new WaitForSeconds(RecoveryTick);
@@ -704,5 +695,35 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
     }
+
+    public bool isFighting()
+    {
+        if (curState == State.Battle || curState == State.ApproachingToEnemy)
+            return true;
+        else
+            return false;
+    }
+    #region ICombatant
+    public void TakeDamage(float damage, float penFixed, float penMult)
+    {
+        battleStat.TakeDamage(damage, penFixed, penMult);
+    }
+    public int RewardGold()
+    {
+        return rewardStat.Gold;
+    }
+    public int RewardExp()
+    {
+        return rewardStat.Exp;
+    }
+    public float CurHealth()
+    {
+        return battleStat.Health;
+    }
+    Tile GetCurTile()
+    {
+        return curTile;
+    }
+    #endregion
     #endregion
 }

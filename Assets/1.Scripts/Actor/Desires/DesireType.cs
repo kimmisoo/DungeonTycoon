@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum DesireType
 {
-	Base, Thirsty, Hungry, Sleep, Tour, Fun, Convenience, Equipment, Health
+	Base, Thirsty, Hungry, Sleep, Tour, Fun, Convenience, Equipment, Health, Rescue
 }

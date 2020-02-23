@@ -6,6 +6,10 @@ public class BattleStat {
 
 	Dictionary<StatType, StatBaseContinuous> battleStatContinuous = new Dictionary<StatType, StatBaseContinuous>();
 	Dictionary<StatType, StatBaseDiscrete> battleStatDiscrete = new Dictionary<StatType, StatBaseDiscrete>();
+
+    int curExp;
+    int nextExp;
+    int level;
 	
     public int Range
     {
@@ -48,6 +52,53 @@ public class BattleStat {
         get
         {
             return battleStatContinuous[StatType.PenetrationMult].GetCalculatedValue();
+        }
+    }
+
+    public int CurExp
+    {
+        get
+        {
+            return curExp;
+        }
+        set
+        {
+            Debug.Assert(curExp >= 0);
+
+            curExp = value;
+            if (CurExp >= NextExp)
+            {
+                CurExp -= NextExp;
+                LevelUp();
+            }
+        }
+    }
+
+    public int NextExp
+    {
+        get
+        {
+            return nextExp;
+        }
+        set
+        {
+            Debug.Assert(nextExp > 0);
+            nextExp = value;
+        }
+    }
+
+    public int Level
+    {
+        get
+        {
+            return level;
+        }
+        set
+        {
+            Debug.Assert(value <= 0);
+            Debug.Assert(value > 100);
+
+            level = value;
         }
     }
 
@@ -117,11 +168,18 @@ public class BattleStat {
 		}*/
 	}
 
-    private bool EvasionAttempt()
+    protected bool EvasionAttempt()
     {
         float randNum = Random.Range(0.0f, 1.0f);
         float avoidChance = battleStatContinuous[StatType.Avoid].GetCalculatedValue();
 
         return randNum <= avoidChance;
+    }
+
+    protected void LevelUp()
+    {
+        Level++;
+        // 다음 레벨 테이블 불러와서 배틀스탯에 저장.
+        // 애니메이션 트리거.
     }
 }

@@ -41,6 +41,7 @@ public class StructureManager : MonoBehaviour
 
     #region 세이브!
     public List<Structure> structures;
+    public List<HuntingArea> huntingAreas;
     #endregion
 
     // Use this for initialization
@@ -435,6 +436,39 @@ public class StructureManager : MonoBehaviour
 		//욕구 타입과 대기 시간 고려
 		//순서는 종족, 부, 직업 고려
 	}
+
+    public Structure[] FindRescue(Traveler t)
+    {
+        return(from s in structures where s.resolveType == DesireType.Rescue && s.GetWaitSeconds() < 15.0f && t.stat.gold > s.charge orderby s.preference.GetPrefSum(t.stat.race, t.stat.wealth, t.stat.job) descending select s).ToArray();
+    }
+
+    // 사냥터 찾기. 캐릭터 레벨에 맞는 사냥터를 찾아줌.
+    public HuntingArea FindHuntingArea(int level)
+    {
+        HuntingArea searchResult = null;
+
+        for(int i = 0; i < huntingAreas.Count; i++)
+        {
+            if (level <= huntingAreas[i].LevelMax)
+            {
+                if (searchResult == null)
+                    searchResult = huntingAreas[i];
+                else if (searchResult.LevelMax >= huntingAreas[i].LevelMax)
+                    searchResult = huntingAreas[i];
+            }
+        }
+
+        return searchResult;
+    }
+
+    public Structure FindRescueTeam()
+    {
+        Structure temp = null;
+
+        
+
+        return temp;
+    }
 
     public void LoadStructuresFromSave(GameSavedata savedata)
     {

@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
         sceneData = JSON.Parse(sceneTxt.ToString());
         setSceneData(sceneData);
 
-        // Scene 정보 세팅 
+        // Scene 정보 세팅
         travelers = new List<GameObject>();
         adventurers = new List<GameObject>();
         specialAdventurers = new List<GameObject>();
