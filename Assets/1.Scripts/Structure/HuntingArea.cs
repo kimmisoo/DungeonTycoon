@@ -24,12 +24,23 @@ public class HuntingArea : Place
     GameObject monsterSample1;
     GameObject monsterSample2;
 
-    public void InitHuntingArea(int lvMax, int mobMax = 42, int mobPerRegen = 7, float mobRegenRate = 5.5f)
+    #region Save
+    public string stageNum;
+    public int huntingAreaNum;
+    public int huntingAreaIndex;
+    #endregion
+
+    public void InitHuntingArea(int lvMax, int mobMax/* = 42*/, int mobPerRegen/* = 7*/, float mobRegenRate/* = 5.5f*/,
+        GameObject mobSample1, GameObject mobSample2)
     { 
         levelMax = lvMax;
         monsterMax = mobMax;
         monsterPerRegen = mobPerRegen;
         monsterRegenRate = mobRegenRate;
+
+        // 이부분 복사 제대로 되는지 봐야. 수정요망
+        monsterSample1 = mobSample1;
+        monsterSample2 = mobSample2;
     }
 
     // 현재 살아있는 몬스터 리스트 Get

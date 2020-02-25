@@ -3,6 +3,7 @@ using System.Collections;
 using SimpleJSON;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class StructureManager : MonoBehaviour
 {
@@ -39,6 +40,9 @@ public class StructureManager : MonoBehaviour
 	string tempStructureCategory;
 	int tempStructureNumber;
 
+    // 사냥터 정보 읽어오기용
+    public JSONNode huntingAreaJson;
+
     #region 세이브!
     public List<Structure> structures;
     public List<HuntingArea> huntingAreas;
@@ -59,6 +63,13 @@ public class StructureManager : MonoBehaviour
 		structureJson = JSON.Parse(structureText.text);
 		Debug.Log(structureText.text);
 	}
+
+    void LoadHuntingAreaData()
+    {
+        TextAsset huntingAreaText = Resources.Load<TextAsset>("HuntingArea/huntingareas");
+        huntingAreaJson = JSON.Parse(huntingAreaText.text);
+        Debug.Log(huntingAreaText.text);
+    }
 
 	//setStructureCategory -> setStructureNumber -> instantiateStructure // onClick 이벤트 정적 설정이 파라미터가 한개인 함수만 설정 가능하기 때문에 .. 번거롭더라도~~
 	public void setStructureCategory(string structureCategory)
@@ -586,95 +597,102 @@ public class StructureManager : MonoBehaviour
         }
     }
 
-    public void ConstructHuntingArea(StructureData input)
+    // 사냥터 건설
+    public void ConstructHuntingArea(int areaNum, Vector3 pos, GameObject pointTile)
     {
         #region InstantiateStructure()
-        tempStructureCategory = input.structureCategory;
-        tempStructureNumber = input.structureNumber;
+        string stageNum = SceneManager.GetActiveScene().name;
+        int huntingAreaNum = areaNum;
 
-        constructing = (GameObject)Instantiate(Resources.Load("Structure/StructurePrefabs/" + tempStructureCategory + "/" + tempStructureCategory + tempStructureNumber.ToString()));
+        constructing = (GameObject)Instantiate(Resources.Load("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + tempStructureNumber.ToString()));
+        //수정요망 부모 오브젝트를 뭘로 둘지?
         constructing.transform.parent = rootStructureObject.transform;
 
         //임시
-        Structure structure = constructing.GetComponent<Structure>();
-        structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
-        structure.type = structureJson[tempStructureCategory][tempStructureNumber]["type"];
-        structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
-        structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
-        structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
+        HuntingArea huntingArea = constructing.GetComponent<HuntingArea>();
+        huntingArea.name = huntingAreaJson[stageNum][huntingAreaNum]["name"];
+        int levelMax = huntingAreaJson[stageNum][huntingAreaNum]["levelMax"].AsInt;
+        int monsterMax = huntingAreaJson[stageNum][huntingAreaNum]["monsterMax"].AsInt;
+        int monsterPerRegen = huntingAreaJson[stageNum][huntingAreaNum]["monsterPerRegen"].AsInt;
+        int monsterRegenRate = huntingAreaJson[stageNum][huntingAreaNum]["monsterRegenRate"].AsInt;
+
+        // 몬스터 프로토타입 넣기. 우선 이름부터.
+        //string monsterSample1Name = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample"]["monsterSample1Name"];
+        //string monsterSample2Name = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample"]["monsterSample2Name"];
+        
+        // 임시. 수정요망.
+        GameObject monsterSample1 = (GameObject)Resources.Load("CharacterPrefabs/Monster_test"); ;
+        GameObject monsterSample2 = (GameObject)Resources.Load("CharacterPrefabs/Monster_test");
+
+        huntingArea.InitHuntingArea(levelMax, monsterMax, monsterPerRegen, monsterRegenRate, monsterSample1, monsterSample2);
+
 
         // 저장용.
-        structure.structureCategory = tempStructureCategory;
-        structure.structureNumber = tempStructureNumber;
+        huntingArea.stageNum = stageNum;
+        huntingArea.huntingAreaNum = huntingAreaNum;
 
-        //preference
-        structure.preference.SetPrefAdventurer(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["adventurer"].AsFloat);
-        structure.preference.SetPrefTourist(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["tourist"].AsFloat);
-        structure.preference.SetPrefHuman(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["human"].AsFloat);
-        structure.preference.SetPrefElf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["elf"].AsFloat);
-        structure.preference.SetPrefDwarf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["dwarf"].AsFloat);
-        structure.preference.SetPrefOrc(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["orc"].AsFloat);
-        structure.preference.SetPrefDog(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["cat"].AsFloat);
-        structure.preference.SetPrefUpperclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["upperclass"].AsFloat);
-        structure.preference.SetPrefMiddleclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["middleclass"].AsFloat);
-        structure.preference.SetPrefLowerclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["lowerclass"].AsFloat);
-        //desire
+        //관광 수치 저장해야할 수도 있음. 수정요망.
 
-        structure.genre = structureJson[tempStructureCategory][tempStructureNumber]["genre"];
-        structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
+        //건설공간 지정
+        int x = huntingAreaJson[stageNum][huntingAreaNum]["sitewidth"].AsInt;
+        huntingArea.extentWidth = x;
 
-        int x = structureJson[tempStructureCategory][tempStructureNumber]["sitewidth"].AsInt;
-        structure.extentWidth = x;
+        int y = huntingAreaJson[stageNum][huntingAreaNum]["sitelheight"].AsInt;
+        huntingArea.extentHeight = y;
 
-        int y = structureJson[tempStructureCategory][tempStructureNumber]["sitelheight"].AsInt;
-        structure.extentHeight = y;
-
-        structure.extent = new int[x, y];
+        huntingArea.extent = new int[x, y];
         for (int i = 0; i < x * y; i++)
         {
-            structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
+            huntingArea.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
         }
         #endregion
 
         #region AllocateStructure()
         // 건설할 건물의 position 설정
-        constructing.transform.position = new Vector3(input.position.x, input.position.y, input.position.z);
+        constructing.transform.position = pos; // 문제 생길지도 모름. 수정요망
 
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
-        SetStructurePoint(tileLayer.transform.GetChild(input.pointTile).GetComponent<Tile>());
+        SetStructurePoint(pointTile.GetComponent<Tile>());
         #endregion
 
         #region ConstructStructure()
-        Tile tile = structure.point;
-        int[,] extent = structure.GetExtent();
+        Tile tile = huntingArea.point;
+        int[,] extent = huntingArea.GetExtent();
 
-        constructing.tag = "Structure";
-
-        ResetConstructingAreas();
+        constructing.tag = "HuntingArea";
 
         // 인덱스 값 넣어줌.
-        structure.structureIndex = structures.Count;
+        huntingArea.huntingAreaIndex = huntingAreas.Count;
 
         // 리스트에 추가
-        structures.Add(structure);
+        huntingAreas.Add(huntingArea);
 
-        for (int i = 0; i < input.entranceList.Count; i++)
-            structure.addEntrance(tileLayer.transform.GetChild(input.entranceList[i]).GetComponent<Tile>());
+        for (int i = 0; i < huntingArea.extentHeight; i++)
+        {
+            for (int j = 0; j < huntingArea.extentWidth; j++)
+            {
+                Tile thatTile = tileLayer.GetTileAsComponent(tile.GetX() + j, tile.GetY() + i);
+
+                if (extent[j, i] == 1)
+                {
+                    thatTile.SetBuildable(false);
+                    thatTile.SetStructed(true);
+                    thatTile.SetHuntingArea(true);
+                    //thatTile.SetStructure(structure); // 일단 쓰는 곳 없어서 안넣고 둠.
+                }
+                else if (extent[j, i] == 2)
+                {
+                    thatTile.SetStructed(true);
+                    if (thatTile.GetBuildable())
+                    {
+                        huntingArea.addEntrance(thatTile);
+                    }
+                }
+            }
+        }
 
         constructing = null;
-        isConstructing = false;
         #endregion
-
-        // 사용중 모험가, 대기중 모험가 큐에 넣어줌.
-        while (input.curUsingQueue.Count() > 0)
-        {
-            structure.LoadEnterdTraveler(GameManager.Instance.travelers[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
-        }
-
-        while (input.curWaitingQueue.Count() > 0)
-        {
-            structure.AddWaitTraveler(GameManager.Instance.travelers[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
-        }
     }
 }
