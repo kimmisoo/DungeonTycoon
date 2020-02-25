@@ -486,6 +486,24 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #endregion
 
     #region Battle
+    protected List<TileForMove> GetWayToActor(List<PathVertex> path) // Actor에게 접근하는 메서드(TileForMove 기반)
+    {
+        List<TileForMove> tileForMoveWay = GetWay(path);
+        TileLayer tileLayer = GameManager.Instance.GetTileLayer().GetComponent<TileLayer>();
+        TileForMove destTileForMove = enemy.GetCurTileForMove();
+
+        // 적의 TileForMove에 맞춰서 접근
+        if (tileForMoveWay[tileForMoveWay.Count - 1].GetX() != destTileForMove.GetX())
+        {
+            tileForMoveWay.Add(tileLayer.GetTileForMove(destTileForMove.GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
+        }
+        if (tileForMoveWay[tileForMoveWay.Count - 1].GetY() != destTileForMove.GetY())
+        {
+            tileForMoveWay.Add(tileLayer.GetTileForMove(tileForMoveWay[tileForMoveWay.Count - 1].GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
+        }
+
+        return tileForMoveWay;
+    }
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         yield return null;
@@ -592,7 +610,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
-        wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+        wayForMove = GetWayToActor(pathFinder.GetPath()); // TileForMove로 변환
         animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(Charge(wayForMove));
     }

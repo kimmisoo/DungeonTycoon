@@ -23,7 +23,7 @@ public class StructureManager : MonoBehaviour
 	}
 
     // 건설 대상 지역 표시
-	public GameObject[] ConstructingAreas;
+	public GameObject[] constructingAreas;
 
     // 건설할 건물
 	public GameObject constructing; 
@@ -242,7 +242,7 @@ public class StructureManager : MonoBehaviour
 	}
 	public void ResetConstructingAreas()
 	{
-		foreach(GameObject go in ConstructingAreas)
+		foreach(GameObject go in constructingAreas)
 		{
 			go.transform.position = new Vector3(1000, 1000, -50);
 			go.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.6f);
@@ -300,27 +300,27 @@ public class StructureManager : MonoBehaviour
 					{
 						if (t.GetBuildable() == true && extent[j, i] == 1)
 						{
-							StructureManager.Instance.ConstructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.ConstructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
+							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
 						else if (t.GetBuildable() == true && extent[j, i] == 2)
 						{
-							StructureManager.Instance.ConstructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.ConstructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
+							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
 						else if (t.GetBuildable() == false && extent[j, i] == 1)
 						{
-							StructureManager.Instance.ConstructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.ConstructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f);
+							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f);
 							conStructure.SetisConstructable(false);
 
 						}
 						else if (t.GetBuildable() == false && extent[j, i] == 2)
 						{
-							StructureManager.Instance.ConstructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.ConstructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 0.0f);
+							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 0.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
 						else
@@ -581,6 +581,98 @@ public class StructureManager : MonoBehaviour
         }
 
         while(input.curWaitingQueue.Count()>0)
+        {
+            structure.AddWaitTraveler(GameManager.Instance.travelers[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
+        }
+    }
+
+    public void ConstructHuntingArea(StructureData input)
+    {
+        #region InstantiateStructure()
+        tempStructureCategory = input.structureCategory;
+        tempStructureNumber = input.structureNumber;
+
+        constructing = (GameObject)Instantiate(Resources.Load("Structure/StructurePrefabs/" + tempStructureCategory + "/" + tempStructureCategory + tempStructureNumber.ToString()));
+        constructing.transform.parent = rootStructureObject.transform;
+
+        //임시
+        Structure structure = constructing.GetComponent<Structure>();
+        structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
+        structure.type = structureJson[tempStructureCategory][tempStructureNumber]["type"];
+        structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
+        structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
+        structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
+
+        // 저장용.
+        structure.structureCategory = tempStructureCategory;
+        structure.structureNumber = tempStructureNumber;
+
+        //preference
+        structure.preference.SetPrefAdventurer(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["adventurer"].AsFloat);
+        structure.preference.SetPrefTourist(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["tourist"].AsFloat);
+        structure.preference.SetPrefHuman(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["human"].AsFloat);
+        structure.preference.SetPrefElf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["elf"].AsFloat);
+        structure.preference.SetPrefDwarf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["dwarf"].AsFloat);
+        structure.preference.SetPrefOrc(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["orc"].AsFloat);
+        structure.preference.SetPrefDog(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["cat"].AsFloat);
+        structure.preference.SetPrefUpperclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["upperclass"].AsFloat);
+        structure.preference.SetPrefMiddleclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["middleclass"].AsFloat);
+        structure.preference.SetPrefLowerclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["lowerclass"].AsFloat);
+        //desire
+
+        structure.genre = structureJson[tempStructureCategory][tempStructureNumber]["genre"];
+        structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
+
+        int x = structureJson[tempStructureCategory][tempStructureNumber]["sitewidth"].AsInt;
+        structure.extentWidth = x;
+
+        int y = structureJson[tempStructureCategory][tempStructureNumber]["sitelheight"].AsInt;
+        structure.extentHeight = y;
+
+        structure.extent = new int[x, y];
+        for (int i = 0; i < x * y; i++)
+        {
+            structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
+        }
+        #endregion
+
+        #region AllocateStructure()
+        // 건설할 건물의 position 설정
+        constructing.transform.position = new Vector3(input.position.x, input.position.y, input.position.z);
+
+        TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
+
+        SetStructurePoint(tileLayer.transform.GetChild(input.pointTile).GetComponent<Tile>());
+        #endregion
+
+        #region ConstructStructure()
+        Tile tile = structure.point;
+        int[,] extent = structure.GetExtent();
+
+        constructing.tag = "Structure";
+
+        ResetConstructingAreas();
+
+        // 인덱스 값 넣어줌.
+        structure.structureIndex = structures.Count;
+
+        // 리스트에 추가
+        structures.Add(structure);
+
+        for (int i = 0; i < input.entranceList.Count; i++)
+            structure.addEntrance(tileLayer.transform.GetChild(input.entranceList[i]).GetComponent<Tile>());
+
+        constructing = null;
+        isConstructing = false;
+        #endregion
+
+        // 사용중 모험가, 대기중 모험가 큐에 넣어줌.
+        while (input.curUsingQueue.Count() > 0)
+        {
+            structure.LoadEnterdTraveler(GameManager.Instance.travelers[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
+        }
+
+        while (input.curWaitingQueue.Count() > 0)
         {
             structure.AddWaitTraveler(GameManager.Instance.travelers[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
         }

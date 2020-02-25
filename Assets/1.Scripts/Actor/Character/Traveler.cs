@@ -427,11 +427,15 @@ public class Traveler : Actor {
 		int count = 1;
 		cur = curTileForMove;
 		Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + "dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+        // 다음 타일로의 방향
 		Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
 		Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
+
+        //현재 타일 추가
 		tileForMoveWay.Add(curTileForMove);
 		Debug.Log(dir.ToString());
 		string pathString = "";
+
 		for (int i = 0; i<path.Count; i++)
 		{
 			pathString += path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY() + "\n";
@@ -439,6 +443,7 @@ public class Traveler : Actor {
 		}
 		Debug.Log(pathString);
 		Debug.Log("progress : " + cur.GetX() + "(" + cur.GetParent().GetX() + ")" + " , " + cur.GetY() + "(" + cur.GetParent().GetY() + ")"); //19 49
+
 		while (!(path[count].myTilePos.Equals(destinationTile)))
 		{
 			next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
@@ -473,15 +478,7 @@ public class Traveler : Actor {
 		}
 		Debug.Log("Done!!!!");
 		return tileForMoveWay;
-
-	
-		
 	}
-    // dX = 1 : UR
-    // dX = -1: DL
-    // dY = 1 : DR
-    // dY = -1: UL
-
 
     protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
 	{
