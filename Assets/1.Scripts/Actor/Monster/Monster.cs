@@ -178,7 +178,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             {
                 destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
                 yield return null;
-            } while (!destinationTile.GetPassable());
+            } while ((!destinationTile.GetPassable()) || !(destinationTile.GetHuntingArea())); // destinationTile이 Passable && HuntingArea일 때까지.
             yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
             wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
@@ -404,9 +404,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
         Debug.Log("Done!!!!");
         return tileForMoveWay;
-
-
-
     }
     // dX = 1 : UR
     // dX = -1: DL
@@ -520,8 +517,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             SetCurTile(tileForMoveWay[i].GetParent());
             SetCurTileForMove(tileForMoveWay[i]);
 
-            // 모험가가 이미 누웠다면.
-            if (enemy.GetState() == State.PassedOut)
+            // 모험가가 이미 누웠거나, 사냥터에서 나갔다면
+            if (enemy.GetState() == State.PassedOut || enemy.GetCurTile().GetHuntingArea() == false)
             {
                 curState = State.AfterBattle;
                 yield break;
@@ -625,11 +622,16 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         curState = State.AfterBattle;
     }
 
-    protected IEnumerator Attack()
+    protected IEnumerator Attack() // 공격
     {
         yield return null; // 애니메이션 관련 넣을 것.
-        enemy.TakeDamage(battleStat.CalDamage(), battleStat.PenetrationFixed, battleStat.PenetrationMult);
+        bool isCrit;
+        float calculatedDamage;
+        battleStat.CalDamage(out calculatedDamage, out isCrit);
+
+        enemy.TakeDamage(calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
     }
+
 
     protected IEnumerator AfterBattle() // 전투 끝나고 체력회복. 가만히 서서 회복함. 기본적으로 3초.
     {
@@ -721,10 +723,26 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         else
             return false;
     }
+    
     #region ICombatant
-    public void TakeDamage(float damage, float penFixed, float penMult)
+    public void TakeDamage(float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
-        battleStat.TakeDamage(damage, penFixed, penMult);
+        StopAllCoroutines();
+        float actualDamage;
+        bool isEvaded;
+        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded);
+        StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
+
+        if (curState != State.Battle)
+        {
+            StopCoroutine(curCoroutine);
+            curState = State.Battle;
+        }
+    }
+    public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
+    {
+        // 수정요망. 데미지랑 크리 혹은 회피에 따라서 다른 문구가 위에 뜨도록.
+        yield return null;
     }
     public int RewardGold()
     {
@@ -737,10 +755,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public float CurHealth()
     {
         return battleStat.Health;
-    }
-    Tile GetCurTile()
-    {
-        return curTile;
     }
     #endregion
     #endregion

@@ -362,7 +362,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator Attack()
     {
         yield return null; // 애니메이션 관련 넣을 것.
-        enemy.TakeDamage(battleStat.CalDamage(), battleStat.PenetrationFixed, battleStat.PenetrationMult);
+        bool isCrit;
+        float calculatedDamage;
+        battleStat.CalDamage(out calculatedDamage, out isCrit);
+        enemy.TakeDamage(calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
     }
 
     protected void AfterBattle() // 몬스터 죽인 경험치, 골드 획득.
@@ -436,10 +439,27 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
 
     #region ICombatant
-    public void TakeDamage(float damage, float penFixed, float penMult)
+    public void TakeDamage(float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
-        battleStat.TakeDamage(damage, penFixed, penMult);
+        StopAllCoroutines();
+        float actualDamage;
+        bool isEvaded;
+        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded);
+        StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
+
+        if (curState != State.Battle)
+        {
+            StopCoroutine(curCoroutine);
+            curState = State.Battle;
+        }
     }
+
+    public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
+    {
+        // 수정요망. 데미지랑 크리 혹은 회피에 따라서 다른 문구가 위에 뜨도록.
+        yield return null;
+    }
+
     public int RewardGold()
     {
         //return rewardStat.Gold;

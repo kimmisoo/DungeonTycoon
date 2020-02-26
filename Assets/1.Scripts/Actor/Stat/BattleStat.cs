@@ -104,31 +104,37 @@ public class BattleStat {
 
 
     // 데미지 계산식. 방어력 적용안된 순수 공격력.
-    public float CalDamage()
+    public void CalDamage(out float calculatedDamage, out bool isCrit)
     {
         float damage = battleStatContinuous[StatType.Attack].GetCalculatedValue();
         float randNum = Random.Range(0.0f, 1.0f);
         float critChance = battleStatContinuous[StatType.CriticalChance].GetCalculatedValue();
         float critDmg;
 
+        isCrit = false;
         if (randNum<= critChance)
         {
+            isCrit = true;
             critDmg = battleStatContinuous[StatType.CriticalDamage].GetCalculatedValue(); ;
             damage *= critDmg;
         }
 
-        return damage;
+        calculatedDamage = damage;
     }
 
 
-	public void TakeDamage(float damage, float penFixed, float penMult) //계산된 데미지로 피해 처리
+	public void TakeDamage(float damage, float penFixed, float penMult,
+        out float actualDamage, out bool isEvaded) //계산된 데미지로 피해 처리
 	{
         if(EvasionAttempt())
         {
             // 회피 애니메이션이나 이펙트 관련 여기 넣을 것.
-            damage = 0;
+            // 회피 이펙트만 Monster쪽에서 처리.
+            actualDamage = 0;
+            isEvaded = true;
             return;
         }
+        isEvaded = false;
 
         float def = battleStatContinuous[StatType.Defence].GetCalculatedValue();
         def = (def - penFixed);
@@ -138,7 +144,8 @@ public class BattleStat {
         }
 
         // 피격 애니메이션 및 이펙트 관련 여기 넣을 것.
-        Health -= (damage / (1 + def/100));
+        actualDamage = (damage / (1 + def / 100));
+        Health -= actualDamage;
 
 		return;
 		//returns true if Dead
