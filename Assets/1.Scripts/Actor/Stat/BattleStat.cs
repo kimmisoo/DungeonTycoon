@@ -10,6 +10,22 @@ public class BattleStat {
     int curExp;
     int nextExp;
     int level;
+
+    public BattleStat()
+    {
+        battleStatContinuous.Add(StatType.HealthMax, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Defence, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Attack, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.AttackSpeed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalChance, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalDamage, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.PenetrationFixed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
+        battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
+        curExp = 0;
+        NextExp = 100;
+        level = 1;
+    }
 	
     public int Range
     {
@@ -75,7 +91,7 @@ public class BattleStat {
         }
         set
         {
-            Debug.Assert(curExp >= 0);
+            Debug.Assert(value >= 0);
 
             curExp = value;
             if (CurExp >= NextExp)
@@ -94,7 +110,7 @@ public class BattleStat {
         }
         set
         {
-            Debug.Assert(nextExp > 0);
+            Debug.Assert(value > 0);
             nextExp = value;
         }
     }
@@ -107,8 +123,7 @@ public class BattleStat {
         }
         set
         {
-            Debug.Assert(value <= 0);
-            Debug.Assert(value > 100);
+            Debug.Assert(value > 0 && value <= 100);
 
             level = value;
         }

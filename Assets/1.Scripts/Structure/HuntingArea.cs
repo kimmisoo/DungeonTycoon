@@ -13,16 +13,16 @@ public class HuntingArea : Place
         }
     }
 
-    private int monsterMax; // 최대 몬스터 수
-    private int monsterPerRegen; // 주기마다 리젠되는 최대 양
-    private float monsterRegenRate; // 리젠 주기
-    private List<GameObject> monstersEnabled;
-    private List<GameObject> monstersDisabled; // 초기화는 MonstersMax + MonsterPerRegen
+    public int monsterMax; // 최대 몬스터 수
+    public int monsterPerRegen; // 주기마다 리젠되는 최대 양
+    public float monsterRegenRate; // 리젠 주기
+    public List<GameObject> monstersEnabled;
+    public List<GameObject> monstersDisabled; // 초기화는 MonstersMax + MonsterPerRegen
 
     int index;
 
-    GameObject monsterSample1;
-    GameObject monsterSample2;
+    public GameObject monsterSample1;
+    public GameObject monsterSample2;
 
     #region Save
     public string stageNum;
@@ -92,8 +92,6 @@ public class HuntingArea : Place
         // 몬스터 초기화
         for (int i = 0; i < monsterMax + monsterPerRegen; i++)
         {
-            monsterSample1 = (GameObject)Resources.Load("CharacterPrefabs/Traveler_test"); //수정요망.
-
             // 생성만 해놓고 비활성화
             monsterSample1.SetActive(false);
 

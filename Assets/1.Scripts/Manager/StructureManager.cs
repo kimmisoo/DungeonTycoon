@@ -58,6 +58,7 @@ public class StructureManager : MonoBehaviour
 		TextAsset structureText = Resources.Load<TextAsset>("Structure/structures");
 		structureJson = JSON.Parse(structureText.text);
 		Debug.Log(structureText.text);
+        Debug.Log(structureJson);
 	}
 
 	//setStructureCategory -> setStructureNumber -> instantiateStructure // onClick 이벤트 정적 설정이 파라미터가 한개인 함수만 설정 가능하기 때문에 .. 번거롭더라도~~

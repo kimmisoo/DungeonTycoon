@@ -51,13 +51,16 @@ public class HuntingAreaManager : MonoBehaviour
     {
         TextAsset huntingAreaText = Resources.Load<TextAsset>("HuntingArea/huntingareas");
         huntingAreaJson = JSON.Parse(huntingAreaText.text);
-        Debug.Log(huntingAreaText.text);
+        Debug.Log("hunting Area1: " + huntingAreaText.text);
+        Debug.Log("hunting Area2: " + huntingAreaJson);
+        Debug.Log("hunting Area3: " + huntingAreaJson["stage1"][0]["name"]);
     }
     void LoadMonsterData()
     {
-        TextAsset monsterText = Resources.Load<TextAsset>("Monsters/monsters");
+        TextAsset monsterText = Resources.Load<TextAsset>("Monsters/Monsters");
         monsterJson = JSON.Parse(monsterText.text);
-        Debug.Log(monsterText.text);
+        Debug.Log("monster1 : " + monsterText.text);
+        Debug.Log("monster2 : " + monsterJson["Standard"][0]["level"]);
     }
 
     public List<HuntingArea> GetHuntingAreas()
@@ -114,35 +117,43 @@ public class HuntingAreaManager : MonoBehaviour
     public void ConstructHuntingArea(int areaNum, Vector3 pos, GameObject pointTile)
     {
         #region InstantiateStructure()
-        string stageNum = SceneManager.GetActiveScene().name;
+        string stageNum = "stage" + SceneManager.GetActiveScene().name;
         int huntingAreaNum = areaNum;
-
+        Debug.Log("stageNum : " + stageNum + " areaNum : " + huntingAreaNum);
+        Debug.Log("디버그2: " + huntingAreaJson[stageNum][huntingAreaNum]["name"]);
+        Debug.Log("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum);
         constructing = (GameObject)Instantiate(Resources.Load("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum.ToString()));
         //수정요망 부모 오브젝트를 뭘로 둘지?
         constructing.transform.parent = rootStructureObject.transform;
+
+       
 
         //임시
         HuntingArea huntingArea = constructing.GetComponent<HuntingArea>();
         huntingArea.name = huntingAreaJson[stageNum][huntingAreaNum]["name"];
         int levelMax = huntingAreaJson[stageNum][huntingAreaNum]["levelMax"].AsInt;
+        Debug.Log("레벨" + levelMax);
         int monsterMax = huntingAreaJson[stageNum][huntingAreaNum]["monsterMax"].AsInt;
         int monsterPerRegen = huntingAreaJson[stageNum][huntingAreaNum]["monsterPerRegen"].AsInt;
         int monsterRegenRate = huntingAreaJson[stageNum][huntingAreaNum]["monsterRegenRate"].AsInt;
 
-        // 몬스터 프로토타입 넣기. 우선 이름부터.
+        // 몬스터 프로토타입 넣기. 우선 번호부터.
         string monsterSet = huntingAreaJson[stageNum][huntingAreaNum]["monsterSet"];
-        string monsterSample1Name = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample1Name"];
-        string monsterSample2Name = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample2Name"];
+        Debug.Log(monsterSet);
+        int monsterSample1Num = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample1Num"].AsInt;
+        Debug.Log(monsterSample1Num);
+        int monsterSample2Num = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample2Num"].AsInt;
+        Debug.Log(monsterSample2Num);
 
         // 몬스터 샘플 instantiate
         GameObject monsterSample1, monsterSample2;
-        LoadMonsterSamples(monsterSet, monsterSample1Name, monsterSample2Name, out monsterSample1, out monsterSample2);
+        LoadMonsterSamples(monsterSet, monsterSample1Num, monsterSample2Num, out monsterSample1, out monsterSample2);
 
         huntingArea.InitHuntingArea(levelMax, monsterMax, monsterPerRegen, monsterRegenRate, monsterSample1, monsterSample2);
 
         // 저장용.
         huntingArea.stageNum = stageNum;
-        huntingArea.huntingAreaNum = huntingAreaNum;
+        huntingArea.huntingAreaNum = areaNum;
 
         //관광 수치 저장해야할 수도 있음. 수정요망.
 
@@ -210,55 +221,58 @@ public class HuntingAreaManager : MonoBehaviour
     }
 
     // 몬스터 샘플 로드해서 instantiate해주는 함수.
-    void LoadMonsterSamples(string monsterSet, string sample1Name, string sample2Name, out GameObject monsterSample1, out GameObject monsterSample2)
+    void LoadMonsterSamples(string monsterSet, int sample1Num, int sample2Num, out GameObject monsterSample1, out GameObject monsterSample2)
     {
         // 몬스터 샘플 1 할당
-        monsterSample1 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample1Name));
-
+        Debug.Log("MonsterPrefabs/" + monsterSet + "/" + sample1Num);
+        monsterSample1 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample1Num));
+        monsterSample1.SetActive(false);
         // 스탯 설정
         BattleStat tempBattleStat = new BattleStat();
 
-        tempBattleStat.Level = monsterJson[monsterSet][sample1Name]["level"].AsInt;
-        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample1Name]["hp"].AsFloat ;
-        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample1Name]["def"].AsFloat;
-        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample1Name]["atk"].AsFloat;
-        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample1Name]["atkspeed"].AsFloat;
-        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample1Name]["critical"].AsFloat;
-        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample1Name]["atkcritical"].AsFloat;
-        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample1Name]["penetration"].AsFloat;
-        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample1Name]["movespeed"].AsFloat;
-        tempBattleStat.BaseRange = monsterJson[monsterSet][sample1Name]["range"].AsInt;
+        Debug.Log("num : " + sample1Num + ", " + sample2Num);
+        Debug.Log("level : " + monsterJson[monsterSet][sample1Num]["level"]);
+        tempBattleStat.Level = monsterJson[monsterSet][sample1Num]["level"].AsInt;
+        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample1Num]["hp"].AsFloat ;
+        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample1Num]["def"].AsFloat;
+        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample1Num]["atk"].AsFloat;
+        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample1Num]["atkspeed"].AsFloat;
+        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample1Num]["critical"].AsFloat;
+        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample1Num]["atkcritical"].AsFloat;
+        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample1Num]["penetration"].AsFloat;
+        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample1Num]["movespeed"].AsFloat;
+        tempBattleStat.BaseRange = monsterJson[monsterSet][sample1Num]["range"].AsInt;
 
         RewardStat tempRewardStat = new RewardStat();
-        tempRewardStat.Exp = monsterJson[monsterSet][sample1Name]["exp"].AsInt;
-        tempRewardStat.Gold = monsterJson[monsterSet][sample1Name]["gold"].AsInt;
+        tempRewardStat.Exp = monsterJson[monsterSet][sample1Num]["exp"].AsInt;
+        tempRewardStat.Gold = monsterJson[monsterSet][sample1Num]["gold"].AsInt;
 
         Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
-        tempMonsterComp.InitMonster(sample1Name, tempBattleStat, tempRewardStat);
+        tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
 
         // 몬스터 샘플 2 할당
-        monsterSample2 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample2Name));
+        monsterSample2 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample2Num));
 
         // 스탯 설정
         tempBattleStat = new BattleStat();
 
-        tempBattleStat.Level = monsterJson[monsterSet][sample2Name]["level"].AsInt;
-        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample2Name]["hp"].AsFloat;
-        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample2Name]["def"].AsFloat;
-        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample2Name]["atk"].AsFloat;
-        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample2Name]["atkspeed"].AsFloat;
-        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample2Name]["critical"].AsFloat;
-        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample2Name]["atkcritical"].AsFloat;
-        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample2Name]["penetration"].AsFloat;
-        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample2Name]["movespeed"].AsFloat;
-        tempBattleStat.BaseRange = monsterJson[monsterSet][sample2Name]["range"].AsInt;
+        tempBattleStat.Level = monsterJson[monsterSet][sample2Num]["level"].AsInt;
+        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample2Num]["hp"].AsFloat;
+        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample2Num]["def"].AsFloat;
+        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample2Num]["atk"].AsFloat;
+        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample2Num]["atkspeed"].AsFloat;
+        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample2Num]["critical"].AsFloat;
+        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample2Num]["atkcritical"].AsFloat;
+        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample2Num]["penetration"].AsFloat;
+        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample2Num]["movespeed"].AsFloat;
+        tempBattleStat.BaseRange = monsterJson[monsterSet][sample2Num]["range"].AsInt;
 
         tempRewardStat = new RewardStat();
-        tempRewardStat.Exp = monsterJson[monsterSet][sample2Name]["exp"].AsInt;
-        tempRewardStat.Gold = monsterJson[monsterSet][sample2Name]["gold"].AsInt;
+        tempRewardStat.Exp = monsterJson[monsterSet][sample2Num]["exp"].AsInt;
+        tempRewardStat.Gold = monsterJson[monsterSet][sample2Num]["gold"].AsInt;
 
         tempMonsterComp = monsterSample1.GetComponent<Monster>();
-        tempMonsterComp.InitMonster(sample1Name, tempBattleStat, tempRewardStat);
+        tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
 
         return;
     }

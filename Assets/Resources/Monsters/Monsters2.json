@@ -1,0 +1,36 @@
+{
+  "Standard": [
+    {
+      "level": 3,
+      "exp": 30,
+      "hp": 130,
+      "def": 3,
+      "atk": 6,
+      "atkspeed": 0.6,
+      "critical": 0.05,
+      "atkcritical": 2,
+      "penetration": 0,
+      "movespeed": 1,
+      "range": 1,
+      "gold": 21,
+      "enchantment": [],
+      "explanation": "none"
+    },
+    {
+      "level": 8,
+      "exp": 80,
+      "hp": 185,
+      "def": 8,
+      "atk": 13,
+      "atkspeed": 0.615,
+      "critical": 0.0575,
+      "atkcritical": 2,
+      "penetration": 0,
+      "movespeed": 1,
+      "range": 1,
+      "gold": 25,
+      "enchantment": [],
+      "explanation": "none"
+    }
+  ]
+}

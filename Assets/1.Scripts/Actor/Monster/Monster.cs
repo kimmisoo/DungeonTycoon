@@ -26,12 +26,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected Structure destinationStructure;
     protected Structure[] structureListByPref;
 
-    // 몬스터 이름.(단일 개체명이 아닌 종류)
-    private string monsterName;
-    public string MonsterName
-    { get; }
+
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
+    public int monsterNum;
 
     #region Battle
     BattleStat battleStat;
@@ -47,13 +45,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     #region 수정!
     // 몬스터 초기화
-    public void InitMonster(string monsterName, BattleStat battleStat, RewardStat rewardStat) 
+    public void InitMonster(int monsterNum, BattleStat battleStat, RewardStat rewardStat) 
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         SetPathFindEvent();
 
-        this.monsterName = monsterName;
+        this.monsterNum = monsterNum;
         this.battleStat = battleStat;
         this.rewardStat = rewardStat;
         //stat 초기화
@@ -62,9 +60,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public void OnEnable()
     {
-        // 입구 타일 랜덤으로 받아오기.
+        // 몬스터는 타일을 HuntingArea에서 정해줘야할듯.
+        /*
         SetCurTile(GameManager.Instance.GetRandomEntrance());
         SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
+        */
 
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
