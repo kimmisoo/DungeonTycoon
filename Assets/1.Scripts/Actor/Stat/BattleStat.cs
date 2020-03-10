@@ -27,6 +27,14 @@ public class BattleStat {
         }
     }
 
+    public float Defence
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Defence].GetCalculatedValue();
+        }
+    }
+
     public float Health
     {
         get
@@ -44,6 +52,10 @@ public class BattleStat {
         get
         {
             return battleStatContinuous[StatType.PenetrationFixed].GetCalculatedValue();
+        }
+        set // 수정해야할 수도 있음.
+        {
+            battleStatContinuous[StatType.PenetrationFixed].baseValue = value;
         }
     }
 
@@ -136,7 +148,7 @@ public class BattleStat {
         }
         isEvaded = false;
 
-        float def = battleStatContinuous[StatType.Defence].GetCalculatedValue();
+        float def = Defence;
         def = (def - penFixed);
         if(def>0)
         {
@@ -189,4 +201,114 @@ public class BattleStat {
         // 다음 레벨 테이블 불러와서 배틀스탯에 저장.
         // 애니메이션 트리거.
     }
+
+    #region SetBaseStats
+    public float BaseHealthMax
+    {
+        get
+        {
+            return battleStatContinuous[StatType.HealthMax].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.HealthMax].baseValue = value;
+        }
+    }
+
+    public float BaseDefence
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Defence].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.Defence].baseValue = value;
+        }
+    }
+
+    public float BaseAttack
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Attack].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.Attack].baseValue = value;
+        }
+    }
+
+    public float BaseAttackSpeed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.AttackSpeed].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.AttackSpeed].baseValue = value;
+        }
+    }
+
+    public float BaseCriticalChance
+    {
+        get
+        {
+            return battleStatContinuous[StatType.CriticalChance].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.CriticalChance].baseValue = value;
+        }
+    }
+
+    public float BaseCriticalDamage
+    {
+        get
+        {
+           return  battleStatContinuous[StatType.CriticalDamage].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.CriticalDamage].baseValue = value;
+        }
+    }
+
+    public float BasePenetrationFixed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.PenetrationFixed].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.PenetrationFixed].baseValue = value;
+        }
+    }
+
+    public float BaseMoveSpeed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.MoveSpeed].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.MoveSpeed].baseValue = value;
+        }
+    }
+
+    public int BaseRange
+    {
+        get
+        {
+            return battleStatDiscrete[StatType.AttackRange].baseValue;
+        }
+        set
+        {
+            battleStatDiscrete[StatType.AttackRange].baseValue = value;
+        }
+    }
+    #endregion
 }

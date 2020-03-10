@@ -26,6 +26,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected Structure destinationStructure;
     protected Structure[] structureListByPref;
 
+    // 몬스터 이름.(단일 개체명이 아닌 종류)
+    private string monsterName;
+    public string MonsterName
+    { get; }
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
 
@@ -42,11 +46,16 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     // Use this for initialization
 
     #region 수정!
-    public void InitMonster(Stat stat) //
+    // 몬스터 초기화
+    public void InitMonster(string monsterName, BattleStat battleStat, RewardStat rewardStat) 
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         SetPathFindEvent();
+
+        this.monsterName = monsterName;
+        this.battleStat = battleStat;
+        this.rewardStat = rewardStat;
         //stat 초기화
         //pathfinder 초기화 // delegate 그대로
     }
@@ -85,13 +94,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         StopAllCoroutines();
         //골드, 능력치 초기화...  // current , origin 따로둬야할까?
     }
-
-    public Stat stat
-    {
-        get;
-        set;
-    }
-    private Stat _stat;
 
     #region StateMachine
     protected void EnterState(State nextState)

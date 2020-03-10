@@ -182,7 +182,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator SearchingHuntingArea()
     {
         // 이거 어떻게 담지?
-        destinationPlace = StructureManager.Instance.FindHuntingArea(battleStat.Level);
+        destinationPlace = HuntingAreaManager.Instance.FindHuntingArea(battleStat.Level);
         if (destinationPlace == null)
         {
             curState = State.Exit;

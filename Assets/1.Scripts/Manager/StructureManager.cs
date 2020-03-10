@@ -40,12 +40,8 @@ public class StructureManager : MonoBehaviour
 	string tempStructureCategory;
 	int tempStructureNumber;
 
-    // 사냥터 정보 읽어오기용
-    public JSONNode huntingAreaJson;
-
     #region 세이브!
     public List<Structure> structures;
-    public List<HuntingArea> huntingAreas;
     #endregion
 
     // Use this for initialization
@@ -63,13 +59,6 @@ public class StructureManager : MonoBehaviour
 		structureJson = JSON.Parse(structureText.text);
 		Debug.Log(structureText.text);
 	}
-
-    void LoadHuntingAreaData()
-    {
-        TextAsset huntingAreaText = Resources.Load<TextAsset>("HuntingArea/huntingareas");
-        huntingAreaJson = JSON.Parse(huntingAreaText.text);
-        Debug.Log(huntingAreaText.text);
-    }
 
 	//setStructureCategory -> setStructureNumber -> instantiateStructure // onClick 이벤트 정적 설정이 파라미터가 한개인 함수만 설정 가능하기 때문에 .. 번거롭더라도~~
 	public void setStructureCategory(string structureCategory)
@@ -453,26 +442,7 @@ public class StructureManager : MonoBehaviour
         return(from s in structures where s.resolveType == DesireType.Rescue && s.GetWaitSeconds() < 15.0f && t.stat.gold > s.charge orderby s.preference.GetPrefSum(t.stat.race, t.stat.wealth, t.stat.job) descending select s).ToArray();
     }
 
-    // 사냥터 찾기. 캐릭터 레벨에 맞는 사냥터를 찾아줌.
-    public HuntingArea FindHuntingArea(int level)
-    {
-        HuntingArea searchResult = null;
-
-        for(int i = 0; i < huntingAreas.Count; i++)
-        {
-            if (level <= huntingAreas[i].LevelMax)
-            {
-                if (searchResult == null)
-                    searchResult = huntingAreas[i];
-                else if (searchResult.LevelMax >= huntingAreas[i].LevelMax)
-                    searchResult = huntingAreas[i];
-            }
-        }
-
-        return searchResult;
-    }
-
-    public Structure FindRescueTeam()
+    public Structure FindRescueTeam() //다음구현!
     {
         Structure temp = null;
 
@@ -595,104 +565,5 @@ public class StructureManager : MonoBehaviour
         {
             structure.AddWaitTraveler(GameManager.Instance.travelers[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
         }
-    }
-
-    // 사냥터 건설
-    public void ConstructHuntingArea(int areaNum, Vector3 pos, GameObject pointTile)
-    {
-        #region InstantiateStructure()
-        string stageNum = SceneManager.GetActiveScene().name;
-        int huntingAreaNum = areaNum;
-
-        constructing = (GameObject)Instantiate(Resources.Load("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + tempStructureNumber.ToString()));
-        //수정요망 부모 오브젝트를 뭘로 둘지?
-        constructing.transform.parent = rootStructureObject.transform;
-
-        //임시
-        HuntingArea huntingArea = constructing.GetComponent<HuntingArea>();
-        huntingArea.name = huntingAreaJson[stageNum][huntingAreaNum]["name"];
-        int levelMax = huntingAreaJson[stageNum][huntingAreaNum]["levelMax"].AsInt;
-        int monsterMax = huntingAreaJson[stageNum][huntingAreaNum]["monsterMax"].AsInt;
-        int monsterPerRegen = huntingAreaJson[stageNum][huntingAreaNum]["monsterPerRegen"].AsInt;
-        int monsterRegenRate = huntingAreaJson[stageNum][huntingAreaNum]["monsterRegenRate"].AsInt;
-
-        // 몬스터 프로토타입 넣기. 우선 이름부터.
-        //string monsterSample1Name = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample"]["monsterSample1Name"];
-        //string monsterSample2Name = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample"]["monsterSample2Name"];
-        
-        // 임시. 수정요망.
-        GameObject monsterSample1 = (GameObject)Resources.Load("CharacterPrefabs/Monster_test"); ;
-        GameObject monsterSample2 = (GameObject)Resources.Load("CharacterPrefabs/Monster_test");
-
-        huntingArea.InitHuntingArea(levelMax, monsterMax, monsterPerRegen, monsterRegenRate, monsterSample1, monsterSample2);
-
-
-        // 저장용.
-        huntingArea.stageNum = stageNum;
-        huntingArea.huntingAreaNum = huntingAreaNum;
-
-        //관광 수치 저장해야할 수도 있음. 수정요망.
-
-        //건설공간 지정
-        int x = huntingAreaJson[stageNum][huntingAreaNum]["sitewidth"].AsInt;
-        huntingArea.extentWidth = x;
-
-        int y = huntingAreaJson[stageNum][huntingAreaNum]["sitelheight"].AsInt;
-        huntingArea.extentHeight = y;
-
-        huntingArea.extent = new int[x, y];
-        for (int i = 0; i < x * y; i++)
-        {
-            huntingArea.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
-        }
-        #endregion
-
-        #region AllocateStructure()
-        // 건설할 건물의 position 설정
-        constructing.transform.position = pos; // 문제 생길지도 모름. 수정요망
-
-        TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
-
-        SetStructurePoint(pointTile.GetComponent<Tile>());
-        #endregion
-
-        #region ConstructStructure()
-        Tile tile = huntingArea.point;
-        int[,] extent = huntingArea.GetExtent();
-
-        constructing.tag = "HuntingArea";
-
-        // 인덱스 값 넣어줌.
-        huntingArea.huntingAreaIndex = huntingAreas.Count;
-
-        // 리스트에 추가
-        huntingAreas.Add(huntingArea);
-
-        for (int i = 0; i < huntingArea.extentHeight; i++)
-        {
-            for (int j = 0; j < huntingArea.extentWidth; j++)
-            {
-                Tile thatTile = tileLayer.GetTileAsComponent(tile.GetX() + j, tile.GetY() + i);
-
-                if (extent[j, i] == 1)
-                {
-                    thatTile.SetBuildable(false);
-                    thatTile.SetStructed(true);
-                    thatTile.SetHuntingArea(true);
-                    //thatTile.SetStructure(structure); // 일단 쓰는 곳 없어서 안넣고 둠.
-                }
-                else if (extent[j, i] == 2)
-                {
-                    thatTile.SetStructed(true);
-                    if (thatTile.GetBuildable())
-                    {
-                        huntingArea.addEntrance(thatTile);
-                    }
-                }
-            }
-        }
-
-        constructing = null;
-        #endregion
     }
 }
