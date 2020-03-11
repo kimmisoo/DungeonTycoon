@@ -135,7 +135,8 @@ public class HuntingAreaManager : MonoBehaviour
         Debug.Log("레벨" + levelMax);
         int monsterMax = huntingAreaJson[stageNum][huntingAreaNum]["monsterMax"].AsInt;
         int monsterPerRegen = huntingAreaJson[stageNum][huntingAreaNum]["monsterPerRegen"].AsInt;
-        int monsterRegenRate = huntingAreaJson[stageNum][huntingAreaNum]["monsterRegenRate"].AsInt;
+        float monsterRegenRate = huntingAreaJson[stageNum][huntingAreaNum]["monsterRegenRate"].AsFloat;
+        float monsterRatio = huntingAreaJson[stageNum][huntingAreaNum]["monsterRatio"].AsFloat;
 
         // 몬스터 프로토타입 넣기. 우선 번호부터.
         string monsterSet = huntingAreaJson[stageNum][huntingAreaNum]["monsterSet"];
@@ -149,7 +150,7 @@ public class HuntingAreaManager : MonoBehaviour
         GameObject monsterSample1, monsterSample2;
         LoadMonsterSamples(monsterSet, monsterSample1Num, monsterSample2Num, out monsterSample1, out monsterSample2);
 
-        huntingArea.InitHuntingArea(levelMax, monsterMax, monsterPerRegen, monsterRegenRate, monsterSample1, monsterSample2);
+        huntingArea.InitHuntingArea(levelMax, monsterMax, monsterPerRegen, monsterRegenRate, monsterRatio, monsterSample1, monsterSample2);
 
         // 저장용.
         huntingArea.stageNum = stageNum;
@@ -224,14 +225,16 @@ public class HuntingAreaManager : MonoBehaviour
     void LoadMonsterSamples(string monsterSet, int sample1Num, int sample2Num, out GameObject monsterSample1, out GameObject monsterSample2)
     {
         // 몬스터 샘플 1 할당
-        Debug.Log("MonsterPrefabs/" + monsterSet + "/" + sample1Num);
+        //Debug.Log("MonsterPrefabs/" + monsterSet + "/" + sample1Num);
         monsterSample1 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample1Num));
         monsterSample1.SetActive(false);
+        monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
+
         // 스탯 설정
         BattleStat tempBattleStat = new BattleStat();
 
-        Debug.Log("num : " + sample1Num + ", " + sample2Num);
-        Debug.Log("level : " + monsterJson[monsterSet][sample1Num]["level"]);
+        //Debug.Log("num : " + sample1Num + ", " + sample2Num);
+        //Debug.Log("level : " + monsterJson[monsterSet][sample1Num]["level"]);
         tempBattleStat.Level = monsterJson[monsterSet][sample1Num]["level"].AsInt;
         tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample1Num]["hp"].AsFloat ;
         tempBattleStat.BaseDefence = monsterJson[monsterSet][sample1Num]["def"].AsFloat;
@@ -250,8 +253,11 @@ public class HuntingAreaManager : MonoBehaviour
         Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
 
+
         // 몬스터 샘플 2 할당
         monsterSample2 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample2Num));
+        monsterSample2.SetActive(false);
+        monsterSample2.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
 
         // 스탯 설정
         tempBattleStat = new BattleStat();

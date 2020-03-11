@@ -13,16 +13,17 @@ public class HuntingArea : Place
         }
     }
 
-    public int monsterMax; // 최대 몬스터 수
-    public int monsterPerRegen; // 주기마다 리젠되는 최대 양
-    public float monsterRegenRate; // 리젠 주기
+    private int monsterMax; // 최대 몬스터 수
+    private int monsterPerRegen; // 주기마다 리젠되는 최대 양
+    private float monsterRegenRate; // 리젠 주기
+    private float monsterRatio; // 몬스터 샘플1의 비율(1-monsterRatio는 샘플2의 비율)
     public List<GameObject> monstersEnabled;
     public List<GameObject> monstersDisabled; // 초기화는 MonstersMax + MonsterPerRegen
 
-    int index;
+    private int index;
 
-    public GameObject monsterSample1;
-    public GameObject monsterSample2;
+    private GameObject monsterSample1;
+    private GameObject monsterSample2;
 
     #region Save
     public string stageNum;
@@ -30,15 +31,16 @@ public class HuntingArea : Place
     public int huntingAreaIndex;
     #endregion
 
-    public void InitHuntingArea(int lvMax, int mobMax/* = 42*/, int mobPerRegen/* = 7*/, float mobRegenRate/* = 5.5f*/,
+    public void InitHuntingArea(int lvMax, int mobMax/* = 42*/, int mobPerRegen/* = 7*/, float mobRegenRate/* = 5.5f*/, float mobRatio,
         GameObject mobSample1, GameObject mobSample2)
     { 
         levelMax = lvMax;
         monsterMax = mobMax;
         monsterPerRegen = mobPerRegen;
         monsterRegenRate = mobRegenRate;
+        monsterRatio = mobRatio;
 
-        // 이부분 복사 제대로 되는지 봐야. 수정요망
+        // 이부분 복사 제대로 되는지 봐야. 수정요망. 아마 될듯, 복사가 아니라 참조로.
         monsterSample1 = mobSample1;
         monsterSample2 = mobSample2;
     }
@@ -72,13 +74,13 @@ public class HuntingArea : Place
         {
 
             //monstersDisabled[index]에 monsterSample1 의 정보 대입
-            //monstersDisabled[index] = monsterSample1;
+            monstersDisabled[index] = monsterSample1;
 
         }
         else
         {
             //monstersDisabled[index]에 monsterSample2 의 정보 대입
-            //monstersDisabled[index] = monsterSample2;
+            monstersDisabled[index] = monsterSample2;
         }
         monstersDisabled[index].SetActive(true);
         monstersEnabled.Add(monstersDisabled[index]);
@@ -96,8 +98,12 @@ public class HuntingArea : Place
             monsterSample1.SetActive(false);
 
             // List에 추가
-            monstersDisabled.Add(Instantiate(monsterSample1));
-            monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
+            if(Random.Range(0.0f, 1.0f) < monsterRatio)
+                monstersDisabled.Add(Instantiate(monsterSample1));
+            else
+                monstersDisabled.Add(Instantiate(monsterSample2));
+
+            //monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             monstersDisabled[i].transform.parent = GameObject.FindGameObjectWithTag("HuntingArea").transform;
             monstersDisabled[i].GetComponent<Monster>().index = i;
             // Debug.Log("character instantiate - " + i);
