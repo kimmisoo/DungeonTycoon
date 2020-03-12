@@ -221,6 +221,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         yield break;
     }
 
+
     protected List<TileForMove> GetWayToActor(List<PathVertex> path) // Actor에게 접근하는 메서드(TileForMove 기반)
     {
         List<TileForMove> tileForMoveWay = GetWay(path);

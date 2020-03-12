@@ -26,6 +26,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected Structure destinationStructure;
     protected Structure[] structureListByPref;
 
+    public HuntingArea habitat;
+
 
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
@@ -52,10 +54,20 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         SetPathFindEvent();
 
         this.monsterNum = monsterNum;
-        this.battleStat = battleStat;
-        this.rewardStat = rewardStat;
+        this.battleStat = new BattleStat(battleStat);
+        this.rewardStat = new RewardStat(rewardStat);
         //stat 초기화
         //pathfinder 초기화 // delegate 그대로
+    }
+
+    // 몬스터에서 받아서 초기화.
+    public void InitMonster(Monster sample)
+    {
+        monsterNum = sample.monsterNum;
+
+        battleStat = new BattleStat(sample.battleStat);
+        Debug.Log("Monster" + monsterNum + " BattleStat : " + battleStat.BaseHealthMax);
+        rewardStat = new RewardStat(sample.rewardStat);
     }
 
     public void OnEnable()
@@ -73,7 +85,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 아마 실패 횟수인 듯.
         pathFindCount = 0;
         curCoroutine = null;
-        structureListByPref = null;
+        structureListByPref = null; 
 
         // 타일레이어 받기.
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
@@ -81,6 +93,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         StartCoroutine(LateStart());
     }
     #endregion
+
+    public void SetHabitat(HuntingArea input)
+    {
+        habitat = input;
+    }
 
     IEnumerator LateStart()
     {
@@ -102,11 +119,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         {
             case State.Idle:
                 Debug.Log("Idle");
-                if (structureListByPref == null)
-                {
-                    //Do something at first move...
-                }
-                curState = State.SearchingStructure;
+                curState = State.Wandering;
                 //Traveler이므로 무조건 SearchingStructure 부터
                 //이외에 체크할거 있으면 여기서
                 break;
@@ -173,21 +186,26 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     // 사냥터 내에서만 움직이게 수정할 것.
     protected IEnumerator Wandering()
     {
-        while (wanderCount < 10)
+        while (true)
         {
             //랜덤 거리, 사방으로 이동
-            do
-            {
-                destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
-                yield return null;
-            } while ((!destinationTile.GetPassable()) || !(destinationTile.GetHuntingArea())); // destinationTile이 Passable && HuntingArea일 때까지.
+            //do
+            //{
+            //    destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
+            //    yield return null;
+            //} while ((!destinationTile.GetPassable()) || !(destinationTile.GetHuntingArea())); // destinationTile이 Passable && HuntingArea일 때까지.
+            //yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+            // 이거 몬스터가 겹칠 수 있음.
+            TileForMove destTileForMove = habitat.FindBlanks(1)[0];
+            Debug.Log("destTFM : [" + destTileForMove.GetX() + ", " + destTileForMove.GetY() +"]");
+            destinationTile = destTileForMove.GetParent();
+            Debug.Log("destTile : [" + destinationTile.GetX() + ", " + destinationTile.GetY() + "]");
+
             yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
-            wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+            wayForMove = GetWayTileForMove(pathFinder.GetPath(), destTileForMove); // TileForMove로 변환
             animator.SetBool("MoveFlg", true); // animation 이동으로
             yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
-
-            wanderCount++;
         }
 
         curState = State.MovingToDestination;
@@ -238,9 +256,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public override bool ValidateNextTile(Tile tile) // Pathfinder delegate
     {
-        //return tile.GetPassableTraveler();
-        //TileMapGenerator에서 PassableTraveler 설정해줘야함. 아직 안돼있음
-        return tile.GetPassable(); //임시조치
+        return tile.GetPassableMonster();
     }
 
     protected List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
@@ -359,7 +375,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         TileForMove next, cur;
         int count = 1;
         cur = curTileForMove;
-        Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + "dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+        Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + ", dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
         Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
         Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
         tileForMoveWay.Add(curTileForMove);
@@ -411,7 +427,23 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     // dX = -1: DL
     // dY = 1 : DR
     // dY = -1: UL
+    protected List<TileForMove> GetWayTileForMove(List<PathVertex> path, TileForMove destTileForMove)
+    {
+        List<TileForMove> tileForMoveWay = GetWay(path);
+        TileLayer tileLayer = GameManager.Instance.GetTileLayer().GetComponent<TileLayer>();
 
+        // 적의 TileForMove에 맞춰서 접근
+        if (tileForMoveWay[tileForMoveWay.Count - 1].GetX() != destTileForMove.GetX())
+        {
+            tileForMoveWay.Add(tileLayer.GetTileForMove(destTileForMove.GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
+        }
+        if (tileForMoveWay[tileForMoveWay.Count - 1].GetY() != destTileForMove.GetY())
+        {
+            tileForMoveWay.Add(tileLayer.GetTileForMove(tileForMoveWay[tileForMoveWay.Count - 1].GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
+        }
+
+        return tileForMoveWay;
+    }
 
     protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
     {
@@ -487,22 +519,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #region Battle
     protected List<TileForMove> GetWayToActor(List<PathVertex> path) // Actor에게 접근하는 메서드(TileForMove 기반)
     {
-        List<TileForMove> tileForMoveWay = GetWay(path);
-        TileLayer tileLayer = GameManager.Instance.GetTileLayer().GetComponent<TileLayer>();
-        TileForMove destTileForMove = enemy.GetCurTileForMove();
-
-        // 적의 TileForMove에 맞춰서 접근
-        if (tileForMoveWay[tileForMoveWay.Count - 1].GetX() != destTileForMove.GetX())
-        {
-            tileForMoveWay.Add(tileLayer.GetTileForMove(destTileForMove.GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
-        }
-        if (tileForMoveWay[tileForMoveWay.Count - 1].GetY() != destTileForMove.GetY())
-        {
-            tileForMoveWay.Add(tileLayer.GetTileForMove(tileForMoveWay[tileForMoveWay.Count - 1].GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
-        }
-
-        return tileForMoveWay;
+        return GetWayTileForMove(path, enemy.GetCurTileForMove());
     }
+
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         yield return null;
@@ -757,6 +776,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public float CurHealth()
     {
         return battleStat.Health;
+    }
+    
+    public void ResetBattleStat() // 전투 관련 멤버변수 리셋
+    {
+        battleStat.ResetBattleStat();
     }
     #endregion
     #endregion

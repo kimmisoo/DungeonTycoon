@@ -31,13 +31,11 @@ public abstract class Actor : MonoBehaviour
     /*public string actorName { get; set; }
 	public string explanation { get; set; }
 	public int gold { get; set; }*/
-	protected PathFinder pathFinder;
+	public PathFinder pathFinder;
 	protected List<TileForMove> wayForMove;
 	protected Direction direction;
 	protected Animator animator;
 	protected SpriteRenderer[] spriteRenderers;
-	
-
 
 	protected Tile curTile;
 	protected TileForMove curTileForMove;
@@ -83,6 +81,8 @@ public abstract class Actor : MonoBehaviour
 	public void SetCurTile(Tile _tile)
 	{
 		curTile = _tile;
+        if (curTile == null)
+            Debug.Log("NULL!");
 		pathFinder.SetCurTile(_tile);
 	}
 	public Tile GetCurTile()

@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class HuntingAreaManager : MonoBehaviour
 {
     static HuntingAreaManager _instance;
+    
 
     public static HuntingAreaManager Instance
     {
@@ -27,7 +28,7 @@ public class HuntingAreaManager : MonoBehaviour
     public GameObject constructing;
 
     // 사냥터들의 부모가 될 오브젝트
-    public GameObject rootStructureObject;
+    public GameObject rootHuntingAreaObject;
 
     // 사냥터 정보 읽어오기용
     public JSONNode huntingAreaJson;
@@ -106,15 +107,15 @@ public class HuntingAreaManager : MonoBehaviour
             DestroyConstructing();
 
         huntingAreas.Clear();
-        int childCount = rootStructureObject.transform.childCount;
+        int childCount = rootHuntingAreaObject.transform.childCount;
         for (int i = 0; i < childCount; i++)
-            Destroy(rootStructureObject.transform.GetChild(i).gameObject);
+            Destroy(rootHuntingAreaObject.transform.GetChild(i).gameObject);
 
         //structureJson 는 일단 손 안댐.
     }
 
     // 사냥터 건설
-    public void ConstructHuntingArea(int areaNum, Vector3 pos, GameObject pointTile)
+    public void ConstructHuntingArea(int areaNum, int areaIndex, GameObject pointTile)
     {
         #region InstantiateStructure()
         string stageNum = "stage" + SceneManager.GetActiveScene().name;
@@ -123,10 +124,8 @@ public class HuntingAreaManager : MonoBehaviour
         Debug.Log("디버그2: " + huntingAreaJson[stageNum][huntingAreaNum]["name"]);
         Debug.Log("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum);
         constructing = (GameObject)Instantiate(Resources.Load("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum.ToString()));
-        //수정요망 부모 오브젝트를 뭘로 둘지?
-        constructing.transform.parent = rootStructureObject.transform;
 
-       
+        constructing.transform.parent = rootHuntingAreaObject.transform;
 
         //임시
         HuntingArea huntingArea = constructing.GetComponent<HuntingArea>();
@@ -155,6 +154,7 @@ public class HuntingAreaManager : MonoBehaviour
         // 저장용.
         huntingArea.stageNum = stageNum;
         huntingArea.huntingAreaNum = areaNum;
+        huntingArea.huntingAreaIndex = areaIndex;
 
         //관광 수치 저장해야할 수도 있음. 수정요망.
 
@@ -162,8 +162,10 @@ public class HuntingAreaManager : MonoBehaviour
         int x = huntingAreaJson[stageNum][huntingAreaNum]["sitewidth"].AsInt;
         huntingArea.extentWidth = x;
 
-        int y = huntingAreaJson[stageNum][huntingAreaNum]["sitelheight"].AsInt;
+        int y = huntingAreaJson[stageNum][huntingAreaNum]["siteheight"].AsInt;
         huntingArea.extentHeight = y;
+
+        //Debug.Log("siteWidth = " + x + ", siteHeight = " + y + ", Extent[0][0] = " + huntingAreaJson[stageNum][huntingAreaNum]["site"][0]);
 
         huntingArea.extent = new int[x, y];
         for (int i = 0; i < x * y; i++)
@@ -174,7 +176,7 @@ public class HuntingAreaManager : MonoBehaviour
 
         #region AllocateStructure()
         // 건설할 건물의 position 설정
-        constructing.transform.position = pos; // 문제 생길지도 모름. 수정요망
+        constructing.transform.position = pointTile.transform.position; // 문제 생길지도 모름. 수정요망
 
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
@@ -202,8 +204,21 @@ public class HuntingAreaManager : MonoBehaviour
                 if (extent[j, i] == 1)
                 {
                     thatTile.SetBuildable(false);
-                    thatTile.SetStructed(true);
+                    thatTile.SetStructed(false);
                     thatTile.SetHuntingArea(true);
+                    Debug.Log(thatTile);
+                    // 여기서 딕셔너리에 TileForMove 영역을 추가해주자.
+                    //foreach(TileForMove child in thatTile.childs)
+                    //{
+                    //    huntingArea.AddTerritory(child);
+                    //}
+                    // 디버깅용임시
+                    // thatTile.SetPassable(true);
+                    for(int k = 0; k<4; k++)
+                    {
+                        huntingArea.AddTerritory(thatTile.childs[k]);
+                    }
+
                     //thatTile.SetStructure(structure); // 일단 쓰는 곳 없어서 안넣고 둠.
                 }
                 else if (extent[j, i] == 2)
@@ -230,7 +245,7 @@ public class HuntingAreaManager : MonoBehaviour
         monsterSample1.SetActive(false);
         monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
 
-        // 스탯 설정
+        #region 스탯로드
         BattleStat tempBattleStat = new BattleStat();
 
         //Debug.Log("num : " + sample1Num + ", " + sample2Num);
@@ -249,6 +264,7 @@ public class HuntingAreaManager : MonoBehaviour
         RewardStat tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample1Num]["exp"].AsInt;
         tempRewardStat.Gold = monsterJson[monsterSet][sample1Num]["gold"].AsInt;
+        #endregion
 
         Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
@@ -259,7 +275,7 @@ public class HuntingAreaManager : MonoBehaviour
         monsterSample2.SetActive(false);
         monsterSample2.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
 
-        // 스탯 설정
+        #region 스탯 로드
         tempBattleStat = new BattleStat();
 
         tempBattleStat.Level = monsterJson[monsterSet][sample2Num]["level"].AsInt;
@@ -276,8 +292,9 @@ public class HuntingAreaManager : MonoBehaviour
         tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample2Num]["exp"].AsInt;
         tempRewardStat.Gold = monsterJson[monsterSet][sample2Num]["gold"].AsInt;
+        #endregion
 
-        tempMonsterComp = monsterSample1.GetComponent<Monster>();
+        tempMonsterComp = monsterSample2.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
 
         return;

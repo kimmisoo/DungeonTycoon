@@ -44,7 +44,17 @@ public class StatBaseDiscrete
 
 		return (baseValue * valueMult) + valueFixed;
 	}
-	
 
-
+    public virtual void AddStatMod(StatModDiscrete mod)
+    {
+        modList.Add(mod);
+    }
+    public virtual void RemoveStatMod(StatModDiscrete mod)
+    {
+        modList.Remove(mod);
+    }
+    public void ClearStatModList()
+    {
+        modList.Clear();
+    }
 }

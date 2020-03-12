@@ -22,11 +22,63 @@ public class BattleStat {
         battleStatContinuous.Add(StatType.PenetrationFixed, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
         battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
+
+        battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
+
+        // 수정요망
         curExp = 0;
-        NextExp = 100;
+        NextExp = 150;
+        level = 1;  
+    }
+
+    public BattleStat(BattleStat input)
+    {
+        battleStatContinuous.Add(StatType.HealthMax, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Defence, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Attack, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.AttackSpeed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalChance, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalDamage, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.PenetrationFixed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
+        battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
+
+        battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
+
+        Debug.Log("input: "+input.BaseRange);
+
+        BaseHealthMax = input.BaseHealthMax;
+        BaseDefence = input.BaseDefence;
+        BaseAttack = input.BaseAttack;
+        BaseAttackSpeed = input.BaseAttackSpeed;
+        BaseCriticalChance = input.BaseCriticalChance;
+        BaseCriticalDamage = input.BaseCriticalDamage;
+        BasePenetrationFixed = input.BasePenetrationFixed;
+        BaseMoveSpeed = input.BaseMoveSpeed;
+        BaseRange = input.BaseRange;
+
+        // 수정요망
+        curExp = 0;
+        NextExp = 150;
         level = 1;
     }
-	
+
+    public void ResetBattleStat()
+    {
+        battleStatContinuous[StatType.HealthMax].ClearStatModList();
+        battleStatContinuous[StatType.Defence].ClearStatModList();
+        battleStatContinuous[StatType.Attack].ClearStatModList();
+        battleStatContinuous[StatType.AttackSpeed].ClearStatModList();
+        battleStatContinuous[StatType.CriticalChance].ClearStatModList();
+        battleStatContinuous[StatType.CriticalDamage].ClearStatModList();
+        battleStatContinuous[StatType.PenetrationFixed].ClearStatModList();
+        battleStatContinuous[StatType.MoveSpeed].ClearStatModList();
+        battleStatDiscrete[StatType.AttackRange].ClearStatModList();
+
+        // 현재 체력은 어떻게? 시작하고 버프같은 거 걸릴 수도 있는데?
+        battleStatContinuous[StatType.Health].baseValue = HealthMax;
+    }
+
     public int Range
     {
         get
