@@ -3,19 +3,21 @@
 		{
 			"name": "1~10",
 			"levelMax": 10,
-			"monsterMax": 5,
-			"monsterPerRegen": 3,
+			"monsterMax": 1,
+			"monsterPerRegen": 1,
 			"monsterRegenRate": 5.5,
 			"monsterSet": "Standard",
 			"monsterSample1Num": 0,
 			"monsterSample2Num": 1,
 			"monsterRatio":0.5,
-			"sitewidth": 4,
-			"siteheight": 4,
-			"site": [1, 1, 1, 1, 
-					 1, 1, 1, 1, 
-					 1, 1, 1, 1,
-					 0, 0, 2, 2
+			"sitewidth": 5,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1, 1, 
+					 1, 1, 1, 1, 1,
+					 1, 1, 1, 1, 1,
+					 1, 1, 1, 1, 1,
+					 1, 1, 1, 1, 1,
+					 0, 2, 0, 2, 0
 			]
 		},
 	

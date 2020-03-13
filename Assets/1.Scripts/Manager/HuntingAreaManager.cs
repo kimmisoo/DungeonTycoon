@@ -206,6 +206,10 @@ public class HuntingAreaManager : MonoBehaviour
                     thatTile.SetBuildable(false);
                     thatTile.SetStructed(false);
                     thatTile.SetHuntingArea(true);
+
+                    //디버깅용임시
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(180, 110, 0);
+                    //
                     Debug.Log(thatTile);
                     // 여기서 딕셔너리에 TileForMove 영역을 추가해주자.
                     //foreach(TileForMove child in thatTile.childs)
@@ -224,6 +228,7 @@ public class HuntingAreaManager : MonoBehaviour
                 else if (extent[j, i] == 2)
                 {
                     thatTile.SetStructed(true);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
                     if (thatTile.GetBuildable())
                     {
                         huntingArea.addEntrance(thatTile);

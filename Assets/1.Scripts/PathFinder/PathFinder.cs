@@ -121,6 +121,11 @@ public class PathFinder : MonoBehaviour
             yield return wait;
         }
 
+        // 도착지 추가
+        //tempVertex = new PathVertex(latest, destination, destination);
+        //latest = tempVertex;
+        //
+        
         PathVertex trace = latest;
         while (trace != null)
         {
@@ -129,6 +134,9 @@ public class PathFinder : MonoBehaviour
             yield return null;
         }
         path.Reverse();
+
+        // 도착지 추가.
+        //path.Add(new PathVertex(path[path.Count - 1], destination, destination));
 
         closeList.Clear();
         //     for (int i = 0; i < openList.Count; i++)
@@ -170,8 +178,9 @@ public class PathFinder : MonoBehaviour
             // 주위 4칸 확인.
             for (int i = 0; i < 4; i++)
             {
-                // 타일이 있고 Passable일 때
-                if ((next = tileLayer.GetTileAsComponent((int)(latest_simulate.myTilePos.GetX() + DirectionVectors[i].x), (int)(latest_simulate.myTilePos.GetY() + DirectionVectors[i].y))) != null && next.GetPassable())
+                // 타일이 있고 이동가능할 때
+                // next 는 다음 타일 오픈리스트에서 하나 가져와서 주위 타일 검사.
+                if ((next = tileLayer.GetTileAsComponent((int)(latest_simulate.myTilePos.GetX() + DirectionVectors[i].x), (int)(latest_simulate.myTilePos.GetY() + DirectionVectors[i].y))) != null && validateTile(next))
                 {
                     // Closed가 아닐 때
                     if (visited[next.GetY(), next.GetX()].isClosed == false)
@@ -208,12 +217,13 @@ public class PathFinder : MonoBehaviour
                         else // visited 있는경우 - 최적의 값 비교.
                         {
                             // openList안에서 찾는것이 우선 . . .  F (F = G + H / 현재까지 온 거리 +남은 거리 최소값) 기준으로 정렬됨.
-
+                            // 새 F값이 기존 F값보다 작을 때
                             if (visited[next.GetY(), next.GetX()].F > (latest_simulate.G + 1 + (Mathf.Abs(destination.GetX() - next.GetX()) + Mathf.Abs(destination.GetY() - next.GetY()))))
                             {
                                 bool find = false;
                                 for (int u = 0; u < openList.useCount; u++)
                                 {
+                                    // 이전에 오픈리스트에 넣었던 걸 빼줌
                                     if (openList[u].X == next.GetX() && openList[u].Y == next.GetY())
                                     {
                                         find = true;
@@ -222,6 +232,7 @@ public class PathFinder : MonoBehaviour
                                     }
                                 }
 
+                                // 새로 계산한 F값, 새로 배정한 부모를 가진 PathVertex를 오픈리스트에 넣어줌.
                                 if (find == true)
                                 {
                                     openList.RemoveAt(index);

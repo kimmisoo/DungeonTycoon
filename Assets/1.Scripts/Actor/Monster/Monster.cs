@@ -26,7 +26,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected Structure destinationStructure;
     protected Structure[] structureListByPref;
 
-    public HuntingArea habitat;
+    private HuntingArea habitat;
 
 
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
@@ -206,9 +206,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             wayForMove = GetWayTileForMove(pathFinder.GetPath(), destTileForMove); // TileForMove로 변환
             animator.SetBool("MoveFlg", true); // animation 이동으로
             yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
-        }
 
-        curState = State.MovingToDestination;
+            animator.SetBool("MoveFlg", false);
+            yield return new WaitForSeconds(2.0f);
+        }
         //이동 끝난 후 State = Idle.
     }
 
@@ -261,126 +262,33 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
     {
-        #region 기존 GetWay
-        /*List<TileForMove> tileForMoveWay = new List<TileForMove>();
-
-		#region 새 GetWay
-		TileForMove cur = GetCurTileForMove();
-		TileForMove next;
-		int count = 0;
-		Vector2 dir = DirectionVector.GetDirectionVector(cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
-		while((!(cur.GetParent().Equals(destinationTile))) && (count < path.Count))
-		{
-			next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
-			tileForMoveWay.Add(next);
-			if(cur.GetParent().Equals(next.GetParent()))
-			{
-				cur = next;
-				next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
-				tileForMoveWay.Add(next);
-			}
-			if(Random.Range(0, 2) >= 1)
-			{
-				cur = next;
-				next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
-				tileForMoveWay.Add(next);
-			}
-			count++;
-			dir = DirectionVector.GetDirectionVector(next.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
-		}
-		return tileForMoveWay;
-
-		#endregion
-		#region 구 GetWay
-		/*
-		int childNum = GetCurTileForMove().GetChildNum();
-		tileForMoveWay.Add(GetCurTileForMove());
-		Direction dir;
-        for(int i= 1; i<path.Count - 1; i++)
+        Debug.Log("path.Count : " + path.Count);
+        // 같은 칸 내에서의 이동
+        if (path.Count == 1)
         {
-			dir = GetCurTile().GetDirectionFromOtherTile(path[i].myTilePos);
-			switch(dir)
-			{
-				case Direction.UpRight: // 2
-					if(childNum >= 2) //이동할 다음 이동타일이 현재 타일의 Child인지?
-					{
-						childNum -= 2;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum)); // tile내부에서 1칸 이동
-					}
-					//다음 타일
-					childNum += 2;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					//한칸 더 갈지 말지?
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum -= 2;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-				case Direction.UpLeft: //  1
-
-					if (childNum % 2 == 1)
-					{
-						childNum -= 1;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum)); // tile내부에서 1칸 이동
-					}
-					childNum += 1;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum -= 1;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-				case Direction.DownRight: // 1
-
-					if (childNum % 2 == 0)
-					{
-						childNum += 1;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum));
-					}
-					childNum -= 1;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum += 1;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-				case Direction.DownLeft: // + 2
-
-					if (childNum <= 1)
-					{
-						childNum += 2;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum));
-					}
-					childNum -= 2;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum += 2;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-			}
+            List<TileForMove> result = new List<TileForMove>();
+            result.Add(curTileForMove);
+            return result;
         }
-		Debug.Log("CurTile = " + curTile.ToString() + " // Destination = " + destinationTile.ToString());
-		for (int i=0; i<tileForMoveWay.Count; i++)
-		{X
-			Debug.Log("Path - " + path[i].X + " , " + path[i].Y);
-		}
-		return tileForMoveWay;*/
-        #endregion
-        List<TileForMove> tileForMoveWay = new List<TileForMove>();
+
+        List <TileForMove> tileForMoveWay = new List<TileForMove>();
+        
+        // 현재 TileForMove, 다음 TileForMove 선언
         TileForMove next, cur;
         int count = 1;
         cur = curTileForMove;
         Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + ", dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+
+        // 다음 타일로의 방향 벡터
         Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
         Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
+
         tileForMoveWay.Add(curTileForMove);
+
+        // 디버깅용?
         Debug.Log(dir.ToString());
         string pathString = "";
+
         for (int i = 0; i < path.Count; i++)
         {
             pathString += path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY() + "\n";
@@ -388,39 +296,67 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
         Debug.Log(pathString);
         Debug.Log("progress : " + cur.GetX() + "(" + cur.GetParent().GetX() + ")" + " , " + cur.GetY() + "(" + cur.GetParent().GetY() + ")"); //19 49
+
+
         while (!(path[count].myTilePos.Equals(destinationTile)))
         {
             next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
-            Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+            //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
             tileForMoveWay.Add(next);
             if (cur.GetParent().Equals(next.GetParent())) //한칸 진행했는데도 같은 타일일때
             {
-                Debug.Log("SameTile..");
+                //Debug.Log("SameTile..");
                 next = tileLayer.GetTileForMove(next.GetX() + (int)dirVector.x, next.GetY() + (int)dirVector.y);
-                Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+                //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
                 tileForMoveWay.Add(next);
-                cur = next;
             }
-            else
-            {
-                cur = next;
-            }
+            cur = next;
+
             if (Random.Range(0, 2) >= 1)
             {
 
                 next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
                 if (next == null)
                     continue;
-                Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+                //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
                 tileForMoveWay.Add(next);
                 cur = next;
             }
             count++;
             dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
             dirVector = DirectionVector.GetDirectionVector(dir);
-            Debug.Log(dir.ToString());
+            //Debug.Log(dir.ToString());
         }
-        Debug.Log("Done!!!!");
+        //while (count < path.Count-1)
+        //{
+        //    next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
+        //    //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+        //    tileForMoveWay.Add(next);
+        //    if (cur.GetParent().Equals(next.GetParent())) //한칸 진행했는데도 같은 타일일때
+        //    {
+        //        //Debug.Log("SameTile..");
+        //        next = tileLayer.GetTileForMove(next.GetX() + (int)dirVector.x, next.GetY() + (int)dirVector.y);
+        //        //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+        //        tileForMoveWay.Add(next);
+        //    }
+        //    cur = next;
+
+        //    if (Random.Range(0, 2) >= 1 && cur.GetParent() != destinationTile)
+        //    {
+
+        //        next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
+        //        if (next == null)
+        //            continue;
+        //        //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+        //        tileForMoveWay.Add(next);
+        //        cur = next;
+        //    }
+        //    count++;
+        //    dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
+        //    dirVector = DirectionVector.GetDirectionVector(dir);
+        //    //Debug.Log(dir.ToString());
+        //}
+        //Debug.Log("Done!!!!");
         return tileForMoveWay;
     }
     // dX = 1 : UR
@@ -429,21 +365,73 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     // dY = -1: UL
     protected List<TileForMove> GetWayTileForMove(List<PathVertex> path, TileForMove destTileForMove)
     {
-        List<TileForMove> tileForMoveWay = GetWay(path);
+        List<TileForMove> moveWayTFM = GetWay(path);
         TileLayer tileLayer = GameManager.Instance.GetTileLayer().GetComponent<TileLayer>();
 
-        // 적의 TileForMove에 맞춰서 접근
-        if (tileForMoveWay[tileForMoveWay.Count - 1].GetX() != destTileForMove.GetX())
+        TileForMove lastTFM = moveWayTFM[moveWayTFM.Count - 1];
+
+        int xDiff = destTileForMove.GetX() - lastTFM.GetX();
+        int yDiff = destTileForMove.GetY() - lastTFM.GetY();
+        int xSeq, ySeq;
+
+        if (xDiff > 0)
+            xSeq = 1;
+        else if (xDiff < 0)
+            xSeq = -1;
+        else
+            xSeq = 0;
+
+        if (yDiff > 0)
+            ySeq = 1;
+        else if (yDiff < 0)
+            ySeq = -1;
+        else
+            ySeq = 0;
+
+        Debug.Log("xDiff : " + xDiff + ", xSeq : " + xSeq);
+        Debug.Log("xDiff : " + yDiff + ", xSeq : " + ySeq);
+
+        for (int i = 0; i != xDiff; i += xSeq)
         {
-            tileForMoveWay.Add(tileLayer.GetTileForMove(destTileForMove.GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
-        }
-        if (tileForMoveWay[tileForMoveWay.Count - 1].GetY() != destTileForMove.GetY())
-        {
-            tileForMoveWay.Add(tileLayer.GetTileForMove(tileForMoveWay[tileForMoveWay.Count - 1].GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
+            moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX() + xSeq + i, lastTFM.GetY()));
         }
 
-        return tileForMoveWay;
+        lastTFM = moveWayTFM[moveWayTFM.Count - 1];
+
+        for (int i = 0; i != yDiff; i += ySeq)
+        {
+            moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX(), lastTFM.GetY() + ySeq + i));
+        }
+
+        //Debug.Log("끝 타일1 : " + moveWayTFM[moveWayTFM.Count - 1].GetParent().GetX() + ", " + moveWayTFM[moveWayTFM.Count - 1].GetParent().GetY());
+        //Debug.Log("끝 TFM1 : " + moveWayTFM[moveWayTFM.Count - 1].GetX() + ", " + moveWayTFM[moveWayTFM.Count - 1].GetY());
+        Debug.Log("시작지 TFM : " + curTileForMove.GetX() + ", " + curTileForMove.GetY());
+
+        //// 문제 생기는 이유?
+        //if (moveWayTFM[moveWayTFM.Count - 1].GetX() != destTileForMove.GetX())
+        //{
+        //    moveWayTFM.Add(tileLayer.GetTileForMove(destTileForMove.GetX(), moveWayTFM[moveWayTFM.Count - 1].GetY()));
+        //}
+        //if (moveWayTFM[moveWayTFM.Count - 1].GetY() != destTileForMove.GetY())
+        //{
+        //    moveWayTFM.Add(tileLayer.GetTileForMove(destTileForMove.GetX(), destTileForMove.GetY()));
+        //}
+        ////moveWayTFM.Add(destTileForMove);
+
+        for (int i = 0; i < moveWayTFM.Count; i++)
+        {
+            if (i == 0)
+                Debug.Log("출발");
+            Debug.Log("[" + moveWayTFM[i].GetX() + ", " + moveWayTFM[i].GetY());
+            if (i == moveWayTFM.Count - 1)
+                Debug.Log("끝");
+        }
+
+        Debug.Log("끝 타일2 : " + destTileForMove.GetParent().GetX() + ", " + destTileForMove.GetParent().GetY());
+        Debug.Log("끝 TFM2 : " + destTileForMove.GetX() + ", " + destTileForMove.GetY());
+        return moveWayTFM;
     }
+
 
     protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
     {
@@ -455,7 +443,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         float distance, sum = 0.0f;
 
         // PathFinder에서 받은 경로대로 이동
-        for (int i = 0; i < tileForMoveWay.Count - 1; i++)
+        for (int i = 0; i < tileForMoveWay.Count-1; i++)
         {
             tileForMoveWay[i].SetRecentActor(this);
             SetCurTile(tileForMoveWay[i].GetParent());
