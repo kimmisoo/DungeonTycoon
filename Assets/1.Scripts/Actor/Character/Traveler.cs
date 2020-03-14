@@ -272,13 +272,15 @@ public class Traveler : Actor {
 	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
 	{
 		pathFindCount = 0;
+		Debug.Log("Success!!");
 		if(destinationPlace != null)
 			curState = State.MovingToDestination;
 	}
 	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
 	{
 		pathFindCount++;
-		if(curState == State.Exit)
+		Debug.Log("Failed!!");
+		if (curState == State.Exit)
 		{
 			//타일맵 입구가 막혔을때!
 			//즉시 탈출
