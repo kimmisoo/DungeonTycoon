@@ -6,6 +6,15 @@ public class RewardStat
 {
     int rewardGold;
     int rewardExp;
+
+    public RewardStat() { }
+
+    public RewardStat(RewardStat input)
+    {
+        Gold = input.Gold;
+        Exp = input.Exp;
+    }
+
     public int Gold
     {
         get

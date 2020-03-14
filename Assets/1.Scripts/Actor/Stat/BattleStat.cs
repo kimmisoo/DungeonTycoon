@@ -10,7 +10,75 @@ public class BattleStat {
     int curExp;
     int nextExp;
     int level;
-	
+
+    public BattleStat()
+    {
+        battleStatContinuous.Add(StatType.HealthMax, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Defence, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Attack, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.AttackSpeed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalChance, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalDamage, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.PenetrationFixed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
+        battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
+
+        battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
+
+        // 수정요망
+        curExp = 0;
+        NextExp = 150;
+        level = 1;  
+    }
+
+    public BattleStat(BattleStat input)
+    {
+        battleStatContinuous.Add(StatType.HealthMax, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Defence, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Attack, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.AttackSpeed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalChance, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.CriticalDamage, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.PenetrationFixed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
+        battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
+
+        battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
+
+        Debug.Log("input: "+input.BaseRange);
+
+        BaseHealthMax = input.BaseHealthMax;
+        BaseDefence = input.BaseDefence;
+        BaseAttack = input.BaseAttack;
+        BaseAttackSpeed = input.BaseAttackSpeed;
+        BaseCriticalChance = input.BaseCriticalChance;
+        BaseCriticalDamage = input.BaseCriticalDamage;
+        BasePenetrationFixed = input.BasePenetrationFixed;
+        BaseMoveSpeed = input.BaseMoveSpeed;
+        BaseRange = input.BaseRange;
+
+        // 수정요망
+        curExp = 0;
+        NextExp = 150;
+        level = 1;
+    }
+
+    public void ResetBattleStat()
+    {
+        battleStatContinuous[StatType.HealthMax].ClearStatModList();
+        battleStatContinuous[StatType.Defence].ClearStatModList();
+        battleStatContinuous[StatType.Attack].ClearStatModList();
+        battleStatContinuous[StatType.AttackSpeed].ClearStatModList();
+        battleStatContinuous[StatType.CriticalChance].ClearStatModList();
+        battleStatContinuous[StatType.CriticalDamage].ClearStatModList();
+        battleStatContinuous[StatType.PenetrationFixed].ClearStatModList();
+        battleStatContinuous[StatType.MoveSpeed].ClearStatModList();
+        battleStatDiscrete[StatType.AttackRange].ClearStatModList();
+
+        // 현재 체력은 어떻게? 시작하고 버프같은 거 걸릴 수도 있는데?
+        battleStatContinuous[StatType.Health].baseValue = HealthMax;
+    }
+
     public int Range
     {
         get
@@ -24,6 +92,14 @@ public class BattleStat {
         get
         {
             return battleStatContinuous[StatType.HealthMax].GetCalculatedValue();
+        }
+    }
+
+    public float Defence
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Defence].GetCalculatedValue();
         }
     }
 
@@ -45,6 +121,10 @@ public class BattleStat {
         {
             return battleStatContinuous[StatType.PenetrationFixed].GetCalculatedValue();
         }
+        set // 수정해야할 수도 있음.
+        {
+            battleStatContinuous[StatType.PenetrationFixed].baseValue = value;
+        }
     }
 
     public float PenetrationMult
@@ -63,7 +143,7 @@ public class BattleStat {
         }
         set
         {
-            Debug.Assert(curExp >= 0);
+            Debug.Assert(value >= 0);
 
             curExp = value;
             if (CurExp >= NextExp)
@@ -82,7 +162,7 @@ public class BattleStat {
         }
         set
         {
-            Debug.Assert(nextExp > 0);
+            Debug.Assert(value > 0);
             nextExp = value;
         }
     }
@@ -95,8 +175,7 @@ public class BattleStat {
         }
         set
         {
-            Debug.Assert(value <= 0);
-            Debug.Assert(value > 100);
+            Debug.Assert(value > 0 && value <= 100);
 
             level = value;
         }
@@ -104,33 +183,39 @@ public class BattleStat {
 
 
     // 데미지 계산식. 방어력 적용안된 순수 공격력.
-    public float CalDamage()
+    public void CalDamage(out float calculatedDamage, out bool isCrit)
     {
         float damage = battleStatContinuous[StatType.Attack].GetCalculatedValue();
         float randNum = Random.Range(0.0f, 1.0f);
         float critChance = battleStatContinuous[StatType.CriticalChance].GetCalculatedValue();
         float critDmg;
 
+        isCrit = false;
         if (randNum<= critChance)
         {
+            isCrit = true;
             critDmg = battleStatContinuous[StatType.CriticalDamage].GetCalculatedValue(); ;
             damage *= critDmg;
         }
 
-        return damage;
+        calculatedDamage = damage;
     }
 
 
-	public void TakeDamage(float damage, float penFixed, float penMult) //계산된 데미지로 피해 처리
+	public void TakeDamage(float damage, float penFixed, float penMult,
+        out float actualDamage, out bool isEvaded) //계산된 데미지로 피해 처리
 	{
         if(EvasionAttempt())
         {
             // 회피 애니메이션이나 이펙트 관련 여기 넣을 것.
-            damage = 0;
+            // 회피 이펙트만 Monster쪽에서 처리.
+            actualDamage = 0;
+            isEvaded = true;
             return;
         }
+        isEvaded = false;
 
-        float def = battleStatContinuous[StatType.Defence].GetCalculatedValue();
+        float def = Defence;
         def = (def - penFixed);
         if(def>0)
         {
@@ -138,7 +223,8 @@ public class BattleStat {
         }
 
         // 피격 애니메이션 및 이펙트 관련 여기 넣을 것.
-        Health -= (damage / (1 + def/100));
+        actualDamage = (damage / (1 + def / 100));
+        Health -= actualDamage;
 
 		return;
 		//returns true if Dead
@@ -182,4 +268,114 @@ public class BattleStat {
         // 다음 레벨 테이블 불러와서 배틀스탯에 저장.
         // 애니메이션 트리거.
     }
+
+    #region SetBaseStats
+    public float BaseHealthMax
+    {
+        get
+        {
+            return battleStatContinuous[StatType.HealthMax].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.HealthMax].baseValue = value;
+        }
+    }
+
+    public float BaseDefence
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Defence].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.Defence].baseValue = value;
+        }
+    }
+
+    public float BaseAttack
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Attack].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.Attack].baseValue = value;
+        }
+    }
+
+    public float BaseAttackSpeed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.AttackSpeed].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.AttackSpeed].baseValue = value;
+        }
+    }
+
+    public float BaseCriticalChance
+    {
+        get
+        {
+            return battleStatContinuous[StatType.CriticalChance].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.CriticalChance].baseValue = value;
+        }
+    }
+
+    public float BaseCriticalDamage
+    {
+        get
+        {
+           return  battleStatContinuous[StatType.CriticalDamage].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.CriticalDamage].baseValue = value;
+        }
+    }
+
+    public float BasePenetrationFixed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.PenetrationFixed].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.PenetrationFixed].baseValue = value;
+        }
+    }
+
+    public float BaseMoveSpeed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.MoveSpeed].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.MoveSpeed].baseValue = value;
+        }
+    }
+
+    public int BaseRange
+    {
+        get
+        {
+            return battleStatDiscrete[StatType.AttackRange].baseValue;
+        }
+        set
+        {
+            battleStatDiscrete[StatType.AttackRange].baseValue = value;
+        }
+    }
+    #endregion
 }

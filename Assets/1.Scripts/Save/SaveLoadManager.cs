@@ -252,7 +252,7 @@ public class TileData
     public bool isStructed;
     public bool isNonTile;
     public bool isBuildable;
-    public bool isMonsterArea;
+    public bool isHuntingArea;
 
     public int structureIndex;
 
@@ -270,7 +270,7 @@ public class TileData
         isStructed = inputTile.GetStructed();
         isNonTile = inputTile.GetNonTile();
         isBuildable = inputTile.GetBuildable();
-        isMonsterArea = inputTile.GetMonsterArea();
+        isHuntingArea = inputTile.GetHuntingArea();
 
         Structure tileStructure = inputTile.GetStructure();
         if (tileStructure != null)

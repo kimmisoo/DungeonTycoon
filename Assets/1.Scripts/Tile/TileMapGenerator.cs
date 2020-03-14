@@ -141,21 +141,21 @@ public class TileMapGenerator : MonoBehaviour
                         {
                             tile.SetPassable(true);
                             tile.SetBuildable(false);
-                            tile.SetMonsterArea(false);
+                            tile.SetHuntingArea(false);
                             tile.SetNonTile(false);
                         }
                         else if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 239) // 몬스터
                         {
                             tile.SetPassable(true);
                             tile.SetBuildable(false);
-                            tile.SetMonsterArea(true);
+                            tile.SetHuntingArea(true);
                             tile.SetNonTile(false);
                         }
                         else // 건설
                         {
                             tile.SetPassable(false);
                             tile.SetBuildable(true);
-                            tile.SetMonsterArea(false);
+                            tile.SetHuntingArea(false);
                             tile.SetNonTile(false);
                         }
                         tile.SetX(x);
@@ -467,7 +467,7 @@ public class TileMapGenerator : MonoBehaviour
                 tile.SetStructed(tileDatas[i].isStructed);
                 tile.SetNonTile(tileDatas[i].isNonTile);
                 tile.SetBuildable(tileDatas[i].isBuildable);
-                tile.SetMonsterArea(tileDatas[i].isMonsterArea);
+                tile.SetHuntingArea(tileDatas[i].isHuntingArea);
 
                 // structure는 structure 로드 후에 따로 해줘야.
 

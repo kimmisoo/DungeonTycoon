@@ -398,4 +398,12 @@ public class GameManager : MonoBehaviour
         return tileMap.transform.GetChild(0).gameObject;
     }
     #endregion
+
+    #region BattleImpl
+    // 디버깅용 사냥터 생성 코드
+    public void DebugHuntingArea()
+    {
+        HuntingAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1185).gameObject);
+    }
+    #endregion
 }

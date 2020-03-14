@@ -21,13 +21,15 @@ public class Tile : MonoBehaviour
 	int layer_Num = -1;
 	int tile_Type = -1;
 
-    bool isPassable = false;
     bool isStructed = false;
     bool isNonTile = false;
-	bool isBuildable = false;
-	bool isMonsterArea = false;
+    //수정요망. 임시로 퍼블릭으로 해놓음
+    public bool isPassable = false;
+    public bool isBuildable = false;
+	public bool isHuntingArea = false;
 
     [SerializeField]
+    // 수정요망 이거 Place로 고치고 관련 코드 고쳐야 함. 일단 보류 쓰는 곳 없음.
     Structure structure;
     #endregion
 
@@ -59,7 +61,7 @@ public class Tile : MonoBehaviour
     // 길찾기 디버깅용인듯
 	IEnumerator CheckColor()
 	{
-		while(isPassable || isMonsterArea)
+		while(isPassable || isHuntingArea)
 		{
 			yield return new WaitForSeconds(0.1f);
 			if(isOpen == true)
@@ -118,7 +120,11 @@ public class Tile : MonoBehaviour
     }
     public bool GetPassableAdventurer()
     {
-        return isPassable || isMonsterArea;
+        return isPassable || isHuntingArea;
+    }
+    public bool GetPassableMonster()
+    {
+        return isHuntingArea;
     }
 	public void SetPassable(bool _isPassable)
 	{
@@ -132,13 +138,13 @@ public class Tile : MonoBehaviour
 	{
 		isBuildable = _isBuildable;
 	}
-	public void SetMonsterArea(bool _monsterArea)
+	public void SetHuntingArea(bool _huntingArea)
 	{
-		isMonsterArea = _monsterArea;
+        isHuntingArea = _huntingArea;
 	}
-	public bool GetMonsterArea()
+	public bool GetHuntingArea()
 	{
-		return isMonsterArea;
+		return isHuntingArea;
 	}
 	public void SetX(int _x)
 	{

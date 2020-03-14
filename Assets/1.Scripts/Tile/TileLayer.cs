@@ -26,7 +26,6 @@ public class TileLayer : MonoBehaviour  {
 	public void SetLayerNum(int _layer_Num)
 	{
 		layer_Num = _layer_Num;
-		
 	}
 	public void SetLayerWidth(int _layer_Width)
 	{
@@ -144,7 +143,7 @@ public class TileLayer : MonoBehaviour  {
 			return tilesforMove[x, y];
 		else
 		{
-			Debug.Log("GetTIleForMove Returns Null!! // " + x + " , " + y);
+			Debug.Log("GetTileForMove Returns Null!! // " + x + " , " + y);
 			return null;			
 		}
 	}

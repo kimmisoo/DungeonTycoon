@@ -46,7 +46,11 @@ public class StatBaseContinuous {
 	{
 		modList.Remove(mod);
 	}
-	
-	
+
+	public virtual void ClearStatModList()
+    {
+        modList.Clear();
+    }
+
 
 }
