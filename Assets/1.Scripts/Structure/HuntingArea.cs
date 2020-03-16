@@ -20,8 +20,8 @@ public class HuntingArea : Place
     private float monsterRatio; // 몬스터 샘플1의 비율(1-monsterRatio는 샘플2의 비율)
     
     // 사냥터 안의 몬스터, 모험가들
-    public List<GameObject> monstersEnabled;
-    public List<GameObject> monstersDisabled; // 초기화는 MonstersMax + MonsterPerRegen
+    public Dictionary<int, GameObject> monstersEnabled;
+    public Dictionary<int, GameObject> monstersDisabled; // 초기화는 MonstersMax + MonsterPerRegen
     public List<GameObject> adventurersInside; // 입장한 모험가들
 
     // 빈칸. 리젠용.
@@ -42,8 +42,8 @@ public class HuntingArea : Place
 
     public HuntingArea()
     {
-        monstersEnabled = new List<GameObject>();
-        monstersDisabled = new List<GameObject>();
+        monstersEnabled = new Dictionary<int, GameObject>();
+        monstersDisabled = new Dictionary<int, GameObject>();
         territory = new Dictionary<string, TileForMove>();
         occupiedTerritory = new Dictionary<string, bool>();
         blanks = new List<TileForMove>();
@@ -66,7 +66,7 @@ public class HuntingArea : Place
     }
 
     // 현재 살아있는 몬스터 리스트 Get
-    public List<GameObject> GetMonstersEnabled()
+    public Dictionary<int, GameObject> GetMonstersEnabled()
     {
         return monstersEnabled;
     }
@@ -104,9 +104,9 @@ public class HuntingArea : Place
     // 몬스터 1개를 인자로 받은 타일 위에 생성하는 함수.
     private void MonsterRegen(Tile curTile, TileForMove curTileForMove)
     {
-        int index = monstersDisabled.Count - 1;
+        int lastKey = monstersDisabled.Keys.ToArray<int>()[monstersDisabled.Count - 1];
 
-        Monster tempMonsterComp = monstersDisabled[index].GetComponent<Monster>();
+        Monster tempMonsterComp = monstersDisabled[lastKey].GetComponent<Monster>();
 
         // 스탯 초기화
         tempMonsterComp.ResetBattleStat();
@@ -114,117 +114,11 @@ public class HuntingArea : Place
         tempMonsterComp.SetCurTileForMove(curTileForMove);
         
         // 객체 풀 관리. 비활성화 리스트에서 활성화 리스트로.
-        monstersDisabled[index].SetActive(true);
-        monstersEnabled.Add(monstersDisabled[index]);
-        monstersDisabled.RemoveAt(index);
+        monstersDisabled[lastKey].SetActive(true);
+        monstersEnabled.Add(lastKey, monstersDisabled[lastKey]);
+        monstersDisabled.Remove(lastKey);
     }
 
-    // 사냥터에 속한 지역 중 빈 TileForMove의 리스트를 반환하는 함수.
-    //private List<TileForMove> FindBlanks(int needed)
-    //{
-    //    List<TileForMove> result = new List<TileForMove>();
-    //    TileForMove tileBeneathActor;
-    //    string keyXY;
-
-    //    // occupiedTerritory 초기화.
-    //    foreach (string key in occupiedTerritory.Keys.ToList())
-    //        occupiedTerritory[key] = false;
-
-    //    // 몬스터가 들어가 있는 자리 확인
-    //    for(int i = 0; i < monstersEnabled.Count -1; i++)
-    //    {
-    //        tileBeneathActor = monstersEnabled[i].GetComponent<Monster>().GetCurTileForMove();
-    //        keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
-
-    //        if (territory.ContainsKey(keyXY))
-    //            occupiedTerritory[keyXY] = true;
-    //    }
-
-    //    // 모험가가 들어가 있는 자리 확인
-    //    for (int i = 0; i < adventurersInside.Count - 1; i++)
-    //    {
-    //        tileBeneathActor = adventurersInside[i].GetComponent<Adventurer>().GetCurTileForMove();
-    //        keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
-
-    //        if (territory.ContainsKey(keyXY))
-    //            occupiedTerritory[keyXY] = true;
-    //    }
-
-    //    // 랜덤으로 needed(몬스터 리젠할 칸 수)만큼 빈 칸을 result 에 추가. 
-    //    int insertionCnt = 0;
-    //    int randomNum;
-    //    while(insertionCnt < needed)
-    //    {
-    //        while(true)
-    //        {
-    //            randomNum = Random.Range(0, territory.Count);
-    //            keyXY = occupiedTerritory.Keys.ToList<string>()[randomNum];
-
-    //            // result에 추가되지 않았고, 빈 칸일 때.
-    //            if (!result.Contains(territory[keyXY]) && occupiedTerritory[keyXY] == false)
-    //            {
-    //                result.Add(territory[keyXY]);
-    //                break;
-    //            }
-    //        }
-    //        insertionCnt++;
-    //    }
-
-    //    return result;
-    //}
-    //public void FindBlanks(int needed)
-    //{
-    //    blanks.Clear();
-    //    TileForMove tileBeneathActor;
-    //    string keyXY;
-
-    //    // occupiedTerritory 초기화.
-    //    foreach (string key in occupiedTerritory.Keys.ToList())
-    //        occupiedTerritory[key] = false;
-
-    //    Debug.Log("monster count : " + monstersEnabled.Count);
-    //    // 몬스터가 들어가 있는 자리 확인
-    //    for (int i = 0; i < monstersEnabled.Count; i++)
-    //    {
-    //        tileBeneathActor = monstersEnabled[i].GetComponent<Monster>().GetCurTileForMove();
-    //        keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
-
-    //        if (territory.ContainsKey(keyXY))
-    //            occupiedTerritory[keyXY] = true;
-    //    }
-
-    //    // 모험가가 들어가 있는 자리 확인
-    //    for (int i = 0; i < adventurersInside.Count; i++)
-    //    {
-    //        tileBeneathActor = adventurersInside[i].GetComponent<Adventurer>().GetCurTileForMove();
-    //        keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
-
-    //        if (territory.ContainsKey(keyXY))
-    //            occupiedTerritory[keyXY] = true;
-    //    }
-
-    //    // 랜덤으로 needed(몬스터 리젠할 칸 수)만큼 빈 칸을 result 에 추가. 
-    //    int insertionCnt = 0;
-    //    int randomNum;
-    //    while (insertionCnt < needed)
-    //    {
-    //        while (true)
-    //        {
-    //            randomNum = Random.Range(0, territory.Count);
-    //            Debug.Log("randomNum : " + randomNum + ", ocupiedCnt : " + occupiedTerritory.Count);
-    //            keyXY = occupiedTerritory.Keys.ToList<string>()[randomNum];
-
-    //            // result에 추가되지 않았고, 빈 칸일 때.
-    //            if (!blanks.Contains(territory[keyXY]) && occupiedTerritory[keyXY] == false)
-    //            {
-    //                blanks.Add(territory[keyXY]);
-    //                break;
-    //            }
-    //        }
-    //        insertionCnt++;
-    //    }
-    //    Debug.Log("계산 끝. 리턴한 빈 칸 수 : " + blanks.Count);
-    //}
     public List<TileForMove> FindBlanks(int needed)
     {
         List<TileForMove> result = new List<TileForMove>();
@@ -239,7 +133,7 @@ public class HuntingArea : Place
         // 몬스터가 들어가 있는 자리 확인
         for (int i = 0; i < monstersEnabled.Count; i++)
         {
-            tileBeneathActor = monstersEnabled[i].GetComponent<Monster>().GetCurTileForMove();
+            tileBeneathActor = monstersEnabled.Values.ToArray<GameObject>()[i].GetComponent<Monster>().GetCurTileForMove();
             keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
 
             if (territory.ContainsKey(keyXY))
@@ -313,6 +207,13 @@ public class HuntingArea : Place
         adventurersInside.Remove(adventurer);
     }
 
+    public void OnMonsterCorpseDecay(int index)
+    {
+        monstersEnabled[index].SetActive(false);
+        monstersDisabled.Add(index, monstersEnabled[index]);
+        monstersEnabled.Remove(index);
+    }
+
     // Use this for initialization
     #region 수정!
     void Start()
@@ -329,20 +230,25 @@ public class HuntingArea : Place
             if (Random.Range(0.0f, 1.0f) < monsterRatio)
             {
                 tempMonster = Instantiate(monsterSample1);
-                tempMonster.GetComponent<Monster>().InitMonster(monsterSample1.GetComponent<Monster>());
-                monstersDisabled.Add(tempMonster);
+                tempMonster.GetComponent<Monster>().InitMonster(monsterSample1.GetComponent<Monster>());      
             }
             else
             {
                 tempMonster = Instantiate(monsterSample2);
                 tempMonster.GetComponent<Monster>().InitMonster(monsterSample2.GetComponent<Monster>());
-                monstersDisabled.Add(tempMonster);
             }
+            tempMonster.GetComponent<Monster>().index = i;
+            tempMonster.GetComponent<Monster>().SetHabitat(this);
+            tempMonster.GetComponent<Monster>().corpseDecayEvent += OnMonsterCorpseDecay;
+            tempMonster.transform.parent = this.gameObject.transform;
+
+            monstersDisabled.Add(i, tempMonster);
 
             //monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
-            monstersDisabled[i].transform.parent = this.gameObject.transform;
-            monstersDisabled[i].GetComponent<Monster>().SetHabitat(this);
-            monstersDisabled[i].GetComponent<Monster>().index = i;
+            //monstersDisabled[i].transform.parent = this.gameObject.transform;
+            //monstersDisabled[i].GetComponent<Monster>().SetHabitat(this);
+            //monstersDisabled[i].GetComponent<Monster>().index = i;
+           
             // Debug.Log("character instantiate - " + i);
         }
     }

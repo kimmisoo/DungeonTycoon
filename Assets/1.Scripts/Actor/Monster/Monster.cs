@@ -7,8 +7,6 @@ using System.Collections.Generic;
 
 public class Monster : Actor, ICombatant//:Actor, IDamagable {
 {
-    //acting 구성
-    //useStructure ~ 구현
     public State curState
     {
         get
@@ -31,9 +29,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected Structure[] structureListByPref;
 
     private HuntingArea habitat;
+    public delegate void CorpseDecayEventHandler(int index);
+    public event CorpseDecayEventHandler corpseDecayEvent;
 
 
-    // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
+    // 저장 및 로드를 위한 인덱스. huntingArea에서 몇번째인지 저장.
     public int index;
     public int monsterNum;
 
@@ -43,7 +43,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     private ICombatant enemy;
     private readonly float RecoveryTimer = 3.0f;
     private readonly float RecoveryTick = 0.5f;
-    private readonly float DeadTimer = 3.0f;
+    private readonly float DecayTimer = 3.0f;
+
+    public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     #endregion
 
     #region initialization
@@ -197,27 +199,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #endregion
 
     #region moving
-    // 사냥터 내에서만 움직이게 수정할 것.
-    //protected IEnumerator Wandering()
-    //{
-    //    while (true)
-    //    {
-    //        TileForMove destTileForMove = habitat.FindBlanks(1)[0];
-    //        //Debug.Log("destTFM : [" + destTileForMove.GetX() + ", " + destTileForMove.GetY() +"]");
-    //        destinationTile = destTileForMove.GetParent();
-    //        //Debug.Log("destTile : [" + destinationTile.GetX() + ", " + destinationTile.GetY() + "]");
-
-    //        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-
-    //        wayForMove = GetWayTileForMove(pathFinder.GetPath(), destTileForMove); // TileForMove로 변환
-    //        animator.SetBool("MoveFlg", true); // animation 이동으로
-    //        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
-
-    //        animator.SetBool("MoveFlg", false);
-    //        yield return new WaitForSeconds(Random.Range(1.0f, 3.0f));
-    //    }
-    //    //이동 끝난 후 State = Idle.
-    //}
     protected IEnumerator Wandering()
     {
         yield return new WaitForSeconds(Random.Range(1.0f, 3.0f));
@@ -372,19 +353,15 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         int yDiff = destTileForMove.GetY() - lastTFM.GetY();
         int xSeq, ySeq;
 
-        if (xDiff > 0)
-            xSeq = 1;
-        else if (xDiff < 0)
-            xSeq = -1;
-        else
+        if (xDiff == 0)
             xSeq = 0;
-
-        if (yDiff > 0)
-            ySeq = 1;
-        else if (yDiff < 0)
-            ySeq = -1;
         else
+            xSeq = xDiff / Mathf.Abs(xDiff);
+
+        if (yDiff == 0)
             ySeq = 0;
+        else
+            ySeq = yDiff / Mathf.Abs(yDiff);
 
         Debug.Log("원래 끝 TFM : [" + lastTFM.GetX() + ", " + lastTFM.GetY());
         Debug.Log("xDiff : " + xDiff + ", xSeq : " + xSeq);
@@ -499,11 +476,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #endregion
 
     #region Battle
-    protected List<TileForMove> GetWayToActor(List<PathVertex> path) // Actor에게 접근하는 메서드(TileForMove 기반)
-    {
-        return GetWayTileForMove(path, enemy.GetCurTileForMove());
-    }
-
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         yield return null;
@@ -521,14 +493,14 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             SetCurTileForMove(tileForMoveWay[i]);
 
             // 모험가가 이미 누웠거나, 사냥터에서 나갔다면
-            if (enemy.GetState() == State.PassedOut || enemy.GetCurTile().GetHuntingArea() == false)
+            if (!ValidatingEnemy())
             {
                 curState = State.AfterBattle;
                 yield break;
             }
 
-            // 레인지 검사
-            if (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range)
+            // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
+            if (CheckInRange())
             {
                 curState = State.Battle;
                 yield break;
@@ -586,62 +558,99 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
 
         // 모험가가 이미 누웠다면.
-        if (enemy.GetState() == State.PassedOut)
+        if (!ValidatingEnemy())
         {
             curState = State.AfterBattle;
             yield break;
         }
 
         // 레인지 검사
-        if (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range)
+        if (CheckInRange())
         {
             curState = State.Battle;
             yield break;
         }
+        else // 목적지 도착했지만 공격 범위 안에 안 들어올 때.
+            curState = State.PathFinding;
+    }
 
-        // 목적지 도착했지만 공격 범위 안에 안 들어올 때.
-        curState = State.ApproachingToEnemy;
+    protected bool ValidatingEnemy()
+    {
+        SuperState enemySuperState = enemy.GetSuperState();
+        // 적이 사냥터 내에 있으며 살아 있을 때.
+        if (enemySuperState == SuperState.Battle || enemySuperState == SuperState.SearchingMonster
+            || enemySuperState == SuperState.AfterBattle || enemySuperState == SuperState.ExitingHuntingArea)
+            return true;
+        else
+            return false;
     }
 
     protected IEnumerator ApproachingToEnemy()
     {
-        destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
-        destinationTile = enemy.GetCurTile(); // TileForMove가 아니라도 문제없나?
-
-        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-
-        wayForMove = GetWayToActor(pathFinder.GetPath()); // TileForMove로 변환
         animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(Charge(wayForMove));
+        animator.SetBool("MoveFlg", false);
     }
 
     // 전투 시작
     protected void InitiatingBattle()
     {
-        StopAllCoroutines();
-        curState = State.Battle;
+        StopCoroutine(curCoroutine);
+
+        destinationTile = enemy.GetCurTile();
+        destTileForMove = enemy.GetCurTileForMove();
+
+        // 적이 공격 범위 안에 있다면 바로 전투.
+        if (CheckInRange())
+            curState = State.Battle;
+        else
+            curState = State.PathFinding;
     }
 
     protected IEnumerator Battle()
     {
+        enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
+
         while (enemy.CurHealth() > 0)
         {
             yield return curCoroutine = StartCoroutine(Attack());
         }
 
-        curState = State.AfterBattle;
+        curState = State.AfterBattle; // 이 대신 이벤트로 처리해줘야 함.
     }
 
     protected IEnumerator Attack() // 공격
     {
+        if (!ValidatingEnemy())
+        {
+            yield break;
+        }
+
         yield return null; // 애니메이션 관련 넣을 것.
         bool isCrit;
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
 
-        enemy.TakeDamage(calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
+        enemy.TakeDamage(index, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
     }
 
+    protected void OnEnemyHealthBelowZero(int victimIndex, int attackerIndex)
+    {
+        StopCoroutine(curCoroutine);
+
+        if(attackerIndex == index)
+        {
+            GetBattleReward();// 보상 받기. 몬스터는 없음   
+        }
+        enemy = null;
+
+        curState = State.AfterBattle;
+    }
+
+    protected void GetBattleReward()
+    {
+
+    }
 
     protected IEnumerator AfterBattle() // 전투 끝나고 체력회복. 가만히 서서 회복함. 기본적으로 3초.
     {
@@ -651,14 +660,19 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             yield return new WaitForSeconds(RecoveryTick);
         }
         curState = State.Idle;
-        yield break;
     }
 
     protected IEnumerator Dead()
     {
         // 여기 애니메이션 설정 넣으면 됨.
-        yield return new WaitForSeconds(DeadTimer);
-        gameObject.SetActive(false);
+        yield return new WaitForSeconds(DecayTimer);
+        corpseDecayEvent?.Invoke(index);
+    }
+
+    // 죽을 때 호출. 이 몬스터를 공격대상으로 하고있는 모험가들에게 알려줌.
+    public void HealthBelowZeroNotify(int victimIndex, int attackerIndex)
+    {
+        healthBelowZeroEvent?.Invoke(victimIndex, attackerIndex);
     }
     #endregion
 
@@ -726,6 +740,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
     }
 
+    protected bool CheckInRange()
+    {
+        return (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range);
+    }
+
     public bool isFighting()
     {
         if (curState == State.Battle || curState == State.ApproachingToEnemy)
@@ -735,7 +754,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     }
 
     #region ICombatant
-    public void TakeDamage(float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    public void TakeDamage(int attackerIndex, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
         float actualDamage;
         bool isEvaded;
@@ -743,9 +762,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
 
         // 조건?
-        if (superState != SuperState.Battle)
+        if (battleStat.Health <= 0)
+        {
+            HealthBelowZeroNotify(index, attackerIndex);
+            curState = State.Dead;
+        }
+        else if (superState != SuperState.Battle)
             curState = State.InitiatingBattle;
-
     }
     public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
     {

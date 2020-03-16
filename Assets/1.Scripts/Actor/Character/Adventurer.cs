@@ -20,6 +20,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     private readonly int MonsterSearchMax = 5;
 
     HuntingArea curHuntingArea;
+
+    public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     #endregion
 
     public void InitAdventurer(Stat stat, BattleStat battleStat) //
@@ -192,13 +194,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
     protected IEnumerator SearchingMonster()
     {
-        List<GameObject> monsterDict = curHuntingArea.GetMonstersEnabled();
+        Dictionary<int, GameObject> monsterDict = curHuntingArea.GetMonstersEnabled();
         Monster target = null;
         Monster tempMonster;
 
-        foreach (GameObject item in monsterDict) //최단거리 몬스터 찾기
+        foreach (KeyValuePair<int, GameObject> item in monsterDict) //최단거리 몬스터 찾기
         {
-            tempMonster = item.GetComponent<Monster>();
+            tempMonster = item.Value.GetComponent<Monster>();
             if (target == null && !tempMonster.isFighting())
                 target = tempMonster;
             else if (DistanceBetween(curTileForMove, target.GetCurTileForMove()) > DistanceBetween(curTileForMove, tempMonster.GetCurTileForMove()))
@@ -366,7 +368,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         bool isCrit;
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
-        enemy.TakeDamage(calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
+        enemy.TakeDamage(index, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
     }
 
     protected void AfterBattle() // 몬스터 죽인 경험치, 골드 획득.
@@ -474,6 +476,16 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public float CurHealth()
     {
         return battleStat.Health;
+    }
+
+    public void TakeDamage(int attackerIndex, float damage, float penFixed, float penMult, bool isCrit)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void HealthBelowZeroNotify(int victimIndex, int attackerIndex)
+    {
+        throw new System.NotImplementedException();
     }
     #endregion
     #endregion

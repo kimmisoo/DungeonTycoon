@@ -195,6 +195,10 @@ public abstract class Actor : MonoBehaviour
     {
         return state;
     }
+    public SuperState GetSuperState()
+    {
+        return superState;
+    }
     public void SetDirection(Direction dir)
     {
         direction = dir;
