@@ -175,6 +175,35 @@ public class HuntingArea : Place
         return result;
     }
 
+    public Monster FindNearestMonster(Adventurer adv) // 인자로 받은 모험가와 가장 가까운 몬스터 찾아서 반환.
+    {
+        if (monstersEnabled.Count == 0)
+            return null; //몬스터가 아예 없다면 null 반환.
+
+        TileForMove advTFM = adv.GetCurTileForMove();
+        Monster nearest = monstersEnabled.Values.ToArray<GameObject>()[0].GetComponent<Monster>();
+        TileForMove monsterTFM = nearest.GetCurTileForMove();
+        int shortestDist = DistanceBetween(advTFM, monsterTFM);
+        
+        
+        foreach(KeyValuePair<int, GameObject> item in monstersEnabled)
+        {
+            monsterTFM = item.Value.GetComponent<Monster>().GetCurTileForMove();
+            if (DistanceBetween(advTFM, monsterTFM) < shortestDist)
+            {
+                shortestDist = DistanceBetween(advTFM, monsterTFM);
+                nearest = item.Value.GetComponent<Monster>(); // 일단 애드 나고 안나고 떠나서 가까운 거 먼저 치게 돼있음.
+            }
+        }
+
+        return nearest;
+    }
+
+    protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
+    {
+        return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
+    }
+
     int BlanksCount()
     {
         int result = 0;

@@ -23,8 +23,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
     protected Coroutine curCoroutine;
-    protected Tile destinationTile;
-    protected TileForMove destTileForMove;
+    
     protected Structure destinationStructure;
     protected Structure[] structureListByPref;
 
@@ -186,6 +185,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 break;
             case State.ApproachingToEnemy:
                 break;
+            case State.InitiatingBattle:
+                break;
             case State.Battle:
                 break;
             case State.AfterBattle:
@@ -230,7 +231,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         //길찾기 성공!
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destTileForMove); // TileForMove로 변환
         animator.SetBool("MoveFlg", true); // animation 이동으로
-        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
+        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
 
         animator.SetBool("MoveFlg", false);
 
@@ -269,210 +270,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         return tile.GetPassableMonster();
     }
 
-    protected List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
-    {
-        //Debug.Log("path.Count : " + path.Count);
-        // 같은 칸 내에서의 이동
-        if (path.Count == 1)
-        {
-            List<TileForMove> result = new List<TileForMove>();
-            result.Add(curTileForMove);
-            return result;
-        }
-
-        List<TileForMove> tileForMoveWay = new List<TileForMove>();
-
-        // 현재 TileForMove, 다음 TileForMove 선언
-        TileForMove next, cur;
-        int count = 1;
-        cur = curTileForMove;
-        //Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + ", dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
-
-        // 다음 타일로의 방향 벡터
-        Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
-        Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
-
-        tileForMoveWay.Add(curTileForMove);
-
-        // 디버깅용?
-        Debug.Log(dir.ToString());
-        string pathString = "";
-
-        for (int i = 0; i < path.Count; i++)
-        {
-            pathString += path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY() + "\n";
-            //Debug.Log("path = " + path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY());
-        }
-        Debug.Log(pathString);
-        Debug.Log("progress : " + cur.GetX() + "(" + cur.GetParent().GetX() + ")" + " , " + cur.GetY() + "(" + cur.GetParent().GetY() + ")"); //19 49
-
-
-        while (!(path[count].myTilePos.Equals(destinationTile)))
-        {
-            next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
-            //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-            tileForMoveWay.Add(next);
-            if (cur.GetParent().Equals(next.GetParent())) //한칸 진행했는데도 같은 타일일때
-            {
-                //Debug.Log("SameTile..");
-                next = tileLayer.GetTileForMove(next.GetX() + (int)dirVector.x, next.GetY() + (int)dirVector.y);
-                //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-                tileForMoveWay.Add(next);
-            }
-            cur = next;
-
-            if (Random.Range(0, 2) >= 1 && destTileForMove != cur)
-            {
-
-                next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
-                if (next == null)
-                    continue;
-                //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-                tileForMoveWay.Add(next);
-                cur = next;
-            }
-            count++;
-            dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
-            dirVector = DirectionVector.GetDirectionVector(dir);
-            //Debug.Log(dir.ToString());
-        }
-        return tileForMoveWay;
-    }
-    // dX = 1 : UR
-    // dX = -1: DL
-    // dY = 1 : DR
-    // dY = -1: UL
-    protected List<TileForMove> GetWayTileForMove(List<PathVertex> path, TileForMove destTileForMove)
-    {
-        List<TileForMove> moveWayTFM = GetWay(path);
-        TileLayer tileLayer = GameManager.Instance.GetTileLayer().GetComponent<TileLayer>();
-
-        TileForMove lastTFM = moveWayTFM[moveWayTFM.Count - 1];
-
-        int xDiff = destTileForMove.GetX() - lastTFM.GetX();
-        int yDiff = destTileForMove.GetY() - lastTFM.GetY();
-        int xSeq, ySeq;
-
-        if (xDiff == 0)
-            xSeq = 0;
-        else
-            xSeq = xDiff / Mathf.Abs(xDiff);
-
-        if (yDiff == 0)
-            ySeq = 0;
-        else
-            ySeq = yDiff / Mathf.Abs(yDiff);
-
-        Debug.Log("원래 끝 TFM : [" + lastTFM.GetX() + ", " + lastTFM.GetY());
-        Debug.Log("xDiff : " + xDiff + ", xSeq : " + xSeq);
-        Debug.Log("xDiff : " + yDiff + ", xSeq : " + ySeq);
-
-        for (int i = 0; i != xDiff; i += xSeq)
-        {
-            moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX() + xSeq + i, lastTFM.GetY()));
-        }
-
-        lastTFM = moveWayTFM[moveWayTFM.Count - 1];
-
-        for (int i = 0; i != yDiff; i += ySeq)
-        {
-            moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX(), lastTFM.GetY() + ySeq + i));
-        }
-
-#if DEBUG_GETWAY
-        Debug.Log("끝 타일1 : " + moveWayTFM[moveWayTFM.Count - 1].GetParent().GetX() + ", " + moveWayTFM[moveWayTFM.Count - 1].GetParent().GetY());
-        Debug.Log("끝 TFM1 : " + moveWayTFM[moveWayTFM.Count - 1].GetX() + ", " + moveWayTFM[moveWayTFM.Count - 1].GetY());
-        Debug.Log("시작지 TFM : " + curTileForMove.GetX() + ", " + curTileForMove.GetY());
-
-        for (int i = 0; i < moveWayTFM.Count; i++)
-        {
-            if (i == 0)
-                Debug.Log("출발");
-            Debug.Log("[" + moveWayTFM[i].GetX() + ", " + moveWayTFM[i].GetY());
-            if (i == moveWayTFM.Count - 1)
-                Debug.Log("끝");
-        }
-
-        Debug.Log("끝 타일2 : " + destTileForMove.GetParent().GetX() + ", " + destTileForMove.GetParent().GetY());
-        Debug.Log("끝 TFM2 : " + destTileForMove.GetX() + ", " + destTileForMove.GetY());
-#endif
-        return moveWayTFM;
-    }
-
-
-    protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
-    {
-        yield return null;
-
-        Direction dir = Direction.DownLeft;
-        //FlipX true == Left, false == Right
-        Vector3 dirVector;
-        float distance, sum = 0.0f;
-
-        // GewWay에서 받은 경로대로 이동
-        for (int i = 0; i < tileForMoveWay.Count - 1; i++)
-        {
-            tileForMoveWay[i].SetRecentActor(this);
-            SetCurTile(tileForMoveWay[i].GetParent());
-            SetCurTileForMove(tileForMoveWay[i]);
-            Debug.Log("curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
-
-            // 방향에 따른 애니메이션 설정.
-            switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-            {
-                case Direction.DownRight:
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.UpRight:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.DownLeft:
-
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                case Direction.UpLeft:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                default:
-                    break;
-            }
-            //transform.position = tileForMoveWay[i].GetPosition();
-            // 이동
-            dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
-            distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
-            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
-            {
-                yield return null;
-                transform.Translate(dirVector * Time.deltaTime);
-
-            }
-            sum = 0.0f;
-            transform.position = tileForMoveWay[i + 1].GetPosition();
-        }
-
-        SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
-        SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
-        Debug.Log("last curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
-        // 한칸 덜감
-    } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
+    
     #endregion
 
     #region Battle
@@ -611,7 +409,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
 
-        while (enemy.CurHealth() > 0)
+        while (ValidatingEnemy())
         {
             yield return curCoroutine = StartCoroutine(Attack());
         }
@@ -621,12 +419,14 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator Attack() // 공격
     {
+        yield return null; // 애니메이션 관련 넣을 것.
+
+        // 어차피 이벤트로 나가는데 필요한지?
         if (!ValidatingEnemy())
         {
             yield break;
         }
 
-        yield return null; // 애니메이션 관련 넣을 것.
         bool isCrit;
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
@@ -638,11 +438,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         StopCoroutine(curCoroutine);
 
-        if(attackerIndex == index)
-        {
-            GetBattleReward();// 보상 받기. 몬스터는 없음   
-        }
-        enemy = null;
+        //if (attackerIndex == index)
+        //{
+        //    GetBattleReward();// 보상 받기. 몬스터는 없음   
+        //}
+        //enemy = null;
 
         curState = State.AfterBattle;
     }
@@ -656,9 +456,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         while (battleStat.Health < battleStat.HealthMax) // float 비교연산인데 문제 안 생기는지. 수정요망.
         {
-            battleStat.Health += battleStat.HealthMax * (RecoveryTick / RecoveryTimer);
             yield return new WaitForSeconds(RecoveryTick);
+            battleStat.Health += battleStat.HealthMax * (RecoveryTick / RecoveryTimer);
+            // 체력 회복 이펙트도 필요.
         }
+
+        battleStat.Health = battleStat.HealthMax; // 체력을 최대체력으로 맞춰줌.
+
         curState = State.Idle;
     }
 
@@ -674,71 +478,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         healthBelowZeroEvent?.Invoke(victimIndex, attackerIndex);
     }
-    #endregion
-
-    #region Save Load
-    public int GetDestinationTileSave()
-    {
-        if (destinationTile != null)
-            return int.Parse(destinationTile.name);
-        else
-            return -1;
-    }
-
-    public bool SetDestinationTileLoad(int tileNum)
-    {
-        if (tileNum == -1)
-            return false;
-
-        GameObject tileLayer = GameManager.Instance.GetTileLayer();
-        destinationTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
-
-        if (destinationTile == null)
-            return false;
-        else
-            return true;
-    }
-
-    public int GetCurTileSave()
-    {
-        if (curTile != null)
-            return int.Parse(curTile.name);
-        else
-            return -1;
-    }
-
-    public bool SetCurTileLoad(int tileNum)
-    {
-        if (tileNum == -1)
-            return false;
-
-        GameObject tileLayer = GameManager.Instance.GetTileLayer();
-        if (tileLayer == null)
-            Debug.Log("타일 레이어 없음");
-        else
-            Debug.Log("타일레이어 존재!");
-        Debug.Log("Child 수 : " + tileLayer.transform.childCount);
-        curTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
-
-        if (curTile == null)
-            return false;
-        else
-            return true;
-    }
-
-    public bool SetCurTileForMoveLoad(int childNum)
-    {
-        if (childNum == -1)
-            return false;
-
-        SetCurTileForMove(curTile.GetChild(childNum));
-        return true;
-    }
-
-    protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
-    {
-        return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
-    }
 
     protected bool CheckInRange()
     {
@@ -747,11 +486,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public bool isFighting()
     {
-        if (curState == State.Battle || curState == State.ApproachingToEnemy)
-            return true;
-        else
-            return false;
+        return superState == SuperState.Battle;
     }
+    #endregion
 
     #region ICombatant
     public void TakeDamage(int attackerIndex, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
@@ -765,7 +502,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         if (battleStat.Health <= 0)
         {
             HealthBelowZeroNotify(index, attackerIndex);
-            curState = State.Dead;
+            curState = State.PassedOut;
         }
         else if (superState != SuperState.Battle)
             curState = State.InitiatingBattle;
@@ -792,6 +529,5 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         battleStat.ResetBattleStat();
     }
-    #endregion
     #endregion
 }

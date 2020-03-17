@@ -40,7 +40,7 @@ public class Traveler : Actor {
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
     protected Coroutine curCoroutine;
-    protected Tile destinationTile;
+    //protected Tile destinationTile;
     protected Place destinationPlace;
     protected Structure[] structureListByPref;
 
@@ -113,16 +113,19 @@ public class Traveler : Actor {
                 {
                     //Do something at first move...
                 }
+                superState = SuperState.Idle;
                 curState = State.SearchingStructure;
                 //Traveler이므로 무조건 SearchingStructure 부터
                 //이외에 체크할거 있으면 여기서
                 break;
-            case State.Wandering:
-                Debug.Log("Wandering");
-                curCoroutine = StartCoroutine(Wandering());
+            case State.SolvingDesire_Wandering:
+                Debug.Log("SolvingDesire_Wandering");
+                superState = SuperState.SolvingDesire_Wandering;
+                curCoroutine = StartCoroutine(SolvingDesire_Wandering());
                 break;
             case State.SearchingStructure:
                 Debug.Log("SS");
+                superState = SuperState.SolvingDesire;
                 curCoroutine = StartCoroutine(SearchingStructure());
                 break;
             case State.PathFinding:
@@ -143,9 +146,13 @@ public class Traveler : Actor {
                 //소지 골드 감소
                 UsingStructure();
                 break;
+            case State.SearchingExit:
+                Debug.Log("SE");
+                superState = SuperState.ExitingDungeon;
+                //Going to outside 
+                break;
             case State.Exit:
                 Debug.Log("EXIT");
-                //Going to outside 
                 break;
             case State.None:
                 curState = State.Idle;
@@ -158,7 +165,7 @@ public class Traveler : Actor {
         {
             case State.Idle:
                 break;
-            case State.Wandering:
+            case State.SolvingDesire_Wandering:
                 break;
             case State.SearchingStructure:
                 break;
@@ -170,6 +177,8 @@ public class Traveler : Actor {
                 break;
             case State.UsingStructure:
                 break;
+            case State.SearchingExit:
+                break;
             case State.Exit:
                 break;
             case State.None:
@@ -177,34 +186,54 @@ public class Traveler : Actor {
         }
     }
 
-    protected IEnumerator Wandering()
+    //protected IEnumerator Wandering()
+    //{
+    //    while (wanderCount < 10)
+    //    {
+    //        //랜덤 거리, 사방으로 이동
+    //        do
+    //        {
+    //            destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
+    //            yield return null;
+    //        } while (!destinationTile.GetPassable());
+    //        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+    //        //Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
+
+    //        // 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
+    //        //yield return StartCoroutine(MoveToDestination());
+    //        //yield return null;
+
+    //        wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+    //        animator.SetBool("MoveFlg", true); // animation 이동으로
+    //        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
+
+
+    //        wanderCount++;
+    //    }
+
+    //    curState = State.MovingToDestination;
+    //    //이동 끝난 후 State = Idle.
+    //}
+
+    protected IEnumerator SolvingDesire_Wandering()
     {
-        while (wanderCount < 10)
+        if (wanderCount < 10)
         {
             //랜덤 거리, 사방으로 이동
             do
             {
                 destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
                 yield return null;
-            } while (!destinationTile.GetPassable());
-            yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-            //Debug.Log("길찾기 완료 : " + gameObject.GetInstanceID()+" isNoPath : " +pathFinder.isNoPath);
+            } while (!ValidateNextTile(destinationTile));
 
-            // 코루틴 증식 이거 때문인 거 같아서 뺌. #CorutineErr
-            //yield return StartCoroutine(MoveToDestination());
-            //yield return null;
-
-            wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
-            animator.SetBool("MoveFlg", true); // animation 이동으로
-            yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
-
-
-            wanderCount++;
+            curState = State.PathFinding;
         }
-
-        curState = State.MovingToDestination;
-        //이동 끝난 후 State = Idle.
+        else
+        {
+            //curState = State.SearchingExit;
+        }
     }
+
     protected IEnumerator SearchingStructure()
     {
         if (pathFindCount <= 0 && structureListByPref == null) // Fail 기록 없을때
@@ -214,7 +243,7 @@ public class Traveler : Actor {
                 //temporary
                 if (structureListByPref == null || structureListByPref.Length == 0)
                 {
-                    curState = State.Wandering;
+                    curState = State.SolvingDesire_Wandering;
                     yield break;
                 }
                 //temporary
@@ -236,9 +265,11 @@ public class Traveler : Actor {
             }
     }
 
-    protected IEnumerator PathFinding()
+    protected virtual IEnumerator PathFinding()
     {
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        curState = State.MovingToDestination;
     }
 
     protected virtual IEnumerator MoveToDestination()
@@ -248,10 +279,16 @@ public class Traveler : Actor {
         animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 
-        if (destinationPlace == null)
-            curState = State.Idle;
-        else
-            VisitStructure();
+        switch(superState)
+        {
+            case SuperState.SolvingDesire:
+                VisitStructure();
+                break;
+            case SuperState.SolvingDesire_Wandering:
+                wanderCount++;
+                curState = State.SearchingStructure; // 수정요망
+                break;
+        }
     }
 
     protected void VisitStructure()
@@ -259,6 +296,7 @@ public class Traveler : Actor {
         Structure destinationStructure = destinationPlace as Structure;
         if (destinationStructure.GetWaitSeconds() > 120.0f) // const? // 대기시간 2분 이상이면
         {
+            // 리스트에서 이 건물을 빼주든 해야할 듯. 수정요망.
             curState = State.Idle;
         }
         else
@@ -272,6 +310,8 @@ public class Traveler : Actor {
         Structure destinationStructure = destinationPlace as Structure;
         stat.gold -= destinationStructure.charge;
         stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // ??
+
+        // 건물 사용에 대한 것 아직 구현 덜 됨. 수정요망.
 
         // 사용 후에는 비워주기.
         destinationPlace = null;
@@ -310,242 +350,6 @@ public class Traveler : Actor {
 		return tile.GetPassable(); //임시조치
 	}
 
-	protected List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
-    {
-		#region 기존 GetWay
-		/*List<TileForMove> tileForMoveWay = new List<TileForMove>();
-
-		#region 새 GetWay
-		TileForMove cur = GetCurTileForMove();
-		TileForMove next;
-		int count = 0;
-		Vector2 dir = DirectionVector.GetDirectionVector(cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
-		while((!(cur.GetParent().Equals(destinationTile))) && (count < path.Count))
-		{
-			next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
-			tileForMoveWay.Add(next);
-			if(cur.GetParent().Equals(next.GetParent()))
-			{
-				cur = next;
-				next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
-				tileForMoveWay.Add(next);
-			}
-			if(Random.Range(0, 2) >= 1)
-			{
-				cur = next;
-				next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
-				tileForMoveWay.Add(next);
-			}
-			count++;
-			dir = DirectionVector.GetDirectionVector(next.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
-		}
-		return tileForMoveWay;
-
-		#endregion
-		#region 구 GetWay
-		/*
-		int childNum = GetCurTileForMove().GetChildNum();
-		tileForMoveWay.Add(GetCurTileForMove());
-		Direction dir;
-        for(int i= 1; i<path.Count - 1; i++)
-        {
-			dir = GetCurTile().GetDirectionFromOtherTile(path[i].myTilePos);
-			switch(dir)
-			{
-				case Direction.UpRight: // 2
-					if(childNum >= 2) //이동할 다음 이동타일이 현재 타일의 Child인지?
-					{
-						childNum -= 2;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum)); // tile내부에서 1칸 이동
-					}
-					//다음 타일
-					childNum += 2;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					//한칸 더 갈지 말지?
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum -= 2;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-				case Direction.UpLeft: //  1
-
-					if (childNum % 2 == 1)
-					{
-						childNum -= 1;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum)); // tile내부에서 1칸 이동
-					}
-					childNum += 1;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum -= 1;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-				case Direction.DownRight: // 1
-
-					if (childNum % 2 == 0)
-					{
-						childNum += 1;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum));
-					}
-					childNum -= 1;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum += 1;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-				case Direction.DownLeft: // + 2
-
-					if (childNum <= 1)
-					{
-						childNum += 2;
-						tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum));
-					}
-					childNum -= 2;
-					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					if (Random.Range(0, 2) < 1)
-					{
-						childNum += 2;
-						tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
-					}
-					break;
-			}
-        }
-		Debug.Log("CurTile = " + curTile.ToString() + " // Destination = " + destinationTile.ToString());
-		for (int i=0; i<tileForMoveWay.Count; i++)
-		{
-			Debug.Log("Path - " + path[i].X + " , " + path[i].Y);
-		}
-		return tileForMoveWay;*/
-		#endregion
-		List<TileForMove> tileForMoveWay = new List<TileForMove>();
-		TileForMove next, cur;
-		int count = 1;
-		cur = curTileForMove;
-		//Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + "dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
-        // 다음 타일로의 방향
-		Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
-		Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
-
-        //현재 타일 추가
-		tileForMoveWay.Add(curTileForMove);
-		//Debug.Log(dir.ToString());
-		string pathString = "";
-
-		for (int i = 0; i<path.Count; i++)
-		{
-			pathString += path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY() + "\n";
-			//Debug.Log("path = " + path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY());
-		}
-		//Debug.Log(pathString);
-		//Debug.Log("progress : " + cur.GetX() + "(" + cur.GetParent().GetX() + ")" + " , " + cur.GetY() + "(" + cur.GetParent().GetY() + ")"); //19 49
-
-		while (!(path[count].myTilePos.Equals(destinationTile)))
-		{
-			next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
-			//Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-			tileForMoveWay.Add(next);
-			if(cur.GetParent().Equals(next.GetParent() )) //한칸 진행했는데도 같은 타일일때
-			{
-				//Debug.Log("SameTile..");
-				next = tileLayer.GetTileForMove(next.GetX() + (int)dirVector.x, next.GetY() + (int)dirVector.y);
-				//Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-				tileForMoveWay.Add(next);
-				cur = next;
-			}
-			else
-			{
-				cur = next;
-			}
-			if(Random.Range(0, 2) >= 1)
-			{
-				
-				next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
-				if (next == null)
-					continue;
-				//Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-				tileForMoveWay.Add(next);
-				cur = next;
-			}
-			count++;
-			dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
-			dirVector = DirectionVector.GetDirectionVector(dir);
-			//Debug.Log(dir.ToString());
-		}
-		//Debug.Log("Done!!!!");
-		return tileForMoveWay;
-	}
-
-    protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
-	{
-		yield return null;
-		
-		Direction dir = Direction.DownLeft;
-		//FlipX true == Left, false == Right
-		Vector3 dirVector;
-		float distance, sum = 0.0f;
-		for (int i = 0; i < tileForMoveWay.Count - 1; i++)
-		{
-			tileForMoveWay[i].SetRecentActor(this);
-			SetCurTile(tileForMoveWay[i].GetParent());
-			SetCurTileForMove(tileForMoveWay[i]);
-
-			switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-			{
-				case Direction.DownRight:
-					animator.SetTrigger("UpToDownFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = true;
-					}
-					break;
-				case Direction.UpRight:
-
-					animator.SetTrigger("DownToUpFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = true;
-					}
-					break;
-				case Direction.DownLeft:
-
-					animator.SetTrigger("UpToDownFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = false;
-					}
-					break;
-				case Direction.UpLeft:
-
-					animator.SetTrigger("DownToUpFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = false;
-					}
-					break;
-				default:
-					break;
-			}
-			//transform.position = tileForMoveWay[i].GetPosition();
-			dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
-			distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
-			while(Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
-			{
-				yield return null;
-				transform.Translate(dirVector * Time.deltaTime);
-
-			}
-			sum = 0.0f;
-			transform.position = tileForMoveWay[i + 1].GetPosition();
-			
-		}	
-		
-	} // Adventurer에서 이동 중 피격 구현해야함. // Notify?
-
 	public IEnumerator WaitForEnteringStructure()
 	{
 		while(true)
@@ -561,63 +365,241 @@ public class Traveler : Actor {
 		}
 	}
 
-    #region Save Load
-    public int GetDestinationTileSave()
-    {
-        if (destinationTile != null)
-            return int.Parse(destinationTile.name);
-        else
-            return -1;
-    }
 
-    public bool SetDestinationTileLoad(int tileNum)
-    {
-        if (tileNum == -1)
-            return false;
+    //protected override List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
+    //{
+    //    #region 기존 GetWay
+    //    /*List<TileForMove> tileForMoveWay = new List<TileForMove>();
 
-        GameObject tileLayer = GameManager.Instance.GetTileLayer();
-        destinationTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
+    //	#region 새 GetWay
+    //	TileForMove cur = GetCurTileForMove();
+    //	TileForMove next;
+    //	int count = 0;
+    //	Vector2 dir = DirectionVector.GetDirectionVector(cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
+    //	while((!(cur.GetParent().Equals(destinationTile))) && (count < path.Count))
+    //	{
+    //		next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
+    //		tileForMoveWay.Add(next);
+    //		if(cur.GetParent().Equals(next.GetParent()))
+    //		{
+    //			cur = next;
+    //			next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
+    //			tileForMoveWay.Add(next);
+    //		}
+    //		if(Random.Range(0, 2) >= 1)
+    //		{
+    //			cur = next;
+    //			next = tileLayer.GetTileForMove(cur.GetX() + (int)dir.x, cur.GetY() + (int)dir.y);
+    //			tileForMoveWay.Add(next);
+    //		}
+    //		count++;
+    //		dir = DirectionVector.GetDirectionVector(next.GetParent().GetDirectionFromOtherTile(path[count].myTilePos));
+    //	}
+    //	return tileForMoveWay;
 
-        if (destinationTile == null)
-            return false;
-        else
-            return true;
-    }
+    //	#endregion
+    //	#region 구 GetWay
+    //	/*
+    //	int childNum = GetCurTileForMove().GetChildNum();
+    //	tileForMoveWay.Add(GetCurTileForMove());
+    //	Direction dir;
+    //       for(int i= 1; i<path.Count - 1; i++)
+    //       {
+    //		dir = GetCurTile().GetDirectionFromOtherTile(path[i].myTilePos);
+    //		switch(dir)
+    //		{
+    //			case Direction.UpRight: // 2
+    //				if(childNum >= 2) //이동할 다음 이동타일이 현재 타일의 Child인지?
+    //				{
+    //					childNum -= 2;
+    //					tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum)); // tile내부에서 1칸 이동
+    //				}
+    //				//다음 타일
+    //				childNum += 2;
+    //				tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				//한칸 더 갈지 말지?
+    //				if (Random.Range(0, 2) < 1)
+    //				{
+    //					childNum -= 2;
+    //					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				}
+    //				break;
+    //			case Direction.UpLeft: //  1
 
-    public int GetCurTileSave()
-    {
-        if (curTile != null)
-            return int.Parse(curTile.name);
-        else
-            return -1;
-    }
+    //				if (childNum % 2 == 1)
+    //				{
+    //					childNum -= 1;
+    //					tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum)); // tile내부에서 1칸 이동
+    //				}
+    //				childNum += 1;
+    //				tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				if (Random.Range(0, 2) < 1)
+    //				{
+    //					childNum -= 1;
+    //					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				}
+    //				break;
+    //			case Direction.DownRight: // 1
 
-    public bool SetCurTileLoad(int tileNum)
-    {
-        if (tileNum == -1)
-            return false; 
+    //				if (childNum % 2 == 0)
+    //				{
+    //					childNum += 1;
+    //					tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum));
+    //				}
+    //				childNum -= 1;
+    //				tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				if (Random.Range(0, 2) < 1)
+    //				{
+    //					childNum += 1;
+    //					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				}
+    //				break;
+    //			case Direction.DownLeft: // + 2
 
-        GameObject tileLayer = GameManager.Instance.GetTileLayer();
-        if (tileLayer == null)
-            Debug.Log("타일 레이어 없음");
-        else
-            Debug.Log("타일레이어 존재!");
-        Debug.Log("Child 수 : " + tileLayer.transform.childCount);
-        curTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
+    //				if (childNum <= 1)
+    //				{
+    //					childNum += 2;
+    //					tileForMoveWay.Add(path[i].myTilePos.GetChild(childNum));
+    //				}
+    //				childNum -= 2;
+    //				tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				if (Random.Range(0, 2) < 1)
+    //				{
+    //					childNum += 2;
+    //					tileForMoveWay.Add(path[i + 1].myTilePos.GetChild(childNum));
+    //				}
+    //				break;
+    //		}
+    //       }
+    //	Debug.Log("CurTile = " + curTile.ToString() + " // Destination = " + destinationTile.ToString());
+    //	for (int i=0; i<tileForMoveWay.Count; i++)
+    //	{
+    //		Debug.Log("Path - " + path[i].X + " , " + path[i].Y);
+    //	}
+    //	return tileForMoveWay;*/
+    //    #endregion
+    //    List<TileForMove> tileForMoveWay = new List<TileForMove>();
 
-        if (curTile == null)
-            return false;
-        else
-            return true;
-    }
+    //    TileForMove next, cur;
+    //    int count = 1;
+    //    cur = curTileForMove;
+    //    //Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + "dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+    //    // 다음 타일로의 방향
+    //    Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
+    //    Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
 
-    public bool SetCurTileForMoveLoad(int childNum)
-    {
-        if (childNum == -1)
-            return false;
+    //    //현재 타일 추가
+    //    tileForMoveWay.Add(curTileForMove);
+    //    //Debug.Log(dir.ToString());
+    //    string pathString = "";
 
-        SetCurTileForMove(curTile.GetChild(childNum));
-        return true;
-    }
-    #endregion
+    //    for (int i = 0; i < path.Count; i++)
+    //    {
+    //        pathString += path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY() + "\n";
+    //        //Debug.Log("path = " + path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY());
+    //    }
+    //    //Debug.Log(pathString);
+    //    //Debug.Log("progress : " + cur.GetX() + "(" + cur.GetParent().GetX() + ")" + " , " + cur.GetY() + "(" + cur.GetParent().GetY() + ")"); //19 49
+
+    //    while (!(path[count].myTilePos.Equals(destinationTile)))
+    //    {
+    //        next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
+    //        //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+    //        tileForMoveWay.Add(next);
+    //        if (cur.GetParent().Equals(next.GetParent())) //한칸 진행했는데도 같은 타일일때
+    //        {
+    //            //Debug.Log("SameTile..");
+    //            next = tileLayer.GetTileForMove(next.GetX() + (int)dirVector.x, next.GetY() + (int)dirVector.y);
+    //            //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+    //            tileForMoveWay.Add(next);
+    //            cur = next;
+    //        }
+    //        else
+    //        {
+    //            cur = next;
+    //        }
+    //        if (Random.Range(0, 2) >= 1)
+    //        {
+
+    //            next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
+    //            if (next == null)
+    //                continue;
+    //            //Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
+    //            tileForMoveWay.Add(next);
+    //            cur = next;
+    //        }
+    //        count++;
+    //        dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
+    //        dirVector = DirectionVector.GetDirectionVector(dir);
+    //        //Debug.Log(dir.ToString());
+    //    }
+    //    //Debug.Log("Done!!!!");
+    //    return tileForMoveWay;
+    //}
+
+    //   protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
+    //{
+    //	yield return null;
+
+    //	Direction dir = Direction.DownLeft;
+    //	//FlipX true == Left, false == Right
+    //	Vector3 dirVector;
+    //	float distance, sum = 0.0f;
+    //	for (int i = 0; i < tileForMoveWay.Count - 1; i++)
+    //	{
+    //		tileForMoveWay[i].SetRecentActor(this);
+    //		SetCurTile(tileForMoveWay[i].GetParent());
+    //		SetCurTileForMove(tileForMoveWay[i]);
+
+    //		switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
+    //		{
+    //			case Direction.DownRight:
+    //				animator.SetTrigger("UpToDownFlg");
+    //				foreach (SpriteRenderer sr in spriteRenderers)
+    //				{
+    //					sr.flipX = true;
+    //				}
+    //				break;
+    //			case Direction.UpRight:
+
+    //				animator.SetTrigger("DownToUpFlg");
+    //				foreach (SpriteRenderer sr in spriteRenderers)
+    //				{
+    //					sr.flipX = true;
+    //				}
+    //				break;
+    //			case Direction.DownLeft:
+
+    //				animator.SetTrigger("UpToDownFlg");
+    //				foreach (SpriteRenderer sr in spriteRenderers)
+    //				{
+    //					sr.flipX = false;
+    //				}
+    //				break;
+    //			case Direction.UpLeft:
+
+    //				animator.SetTrigger("DownToUpFlg");
+    //				foreach (SpriteRenderer sr in spriteRenderers)
+    //				{
+    //					sr.flipX = false;
+    //				}
+    //				break;
+    //			default:
+    //				break;
+    //		}
+    //		//transform.position = tileForMoveWay[i].GetPosition();
+    //		dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
+    //		distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
+    //		while(Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
+    //		{
+    //			yield return null;
+    //			transform.Translate(dirVector * Time.deltaTime);
+
+    //		}
+    //		sum = 0.0f;
+    //		transform.position = tileForMoveWay[i + 1].GetPosition();
+
+    //	}	
+
+    //} // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 }
