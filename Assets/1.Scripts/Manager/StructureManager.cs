@@ -438,18 +438,9 @@ public class StructureManager : MonoBehaviour
 		//순서는 종족, 부, 직업 고려
 	}
 
-    public Structure[] FindRescue(Traveler t)
+    public Structure[] FindRescue(Traveler t) // 수정필요할듯?
     {
         return(from s in structures where s.resolveType == DesireType.Rescue && s.GetWaitSeconds() < 15.0f && t.stat.gold > s.charge orderby s.preference.GetPrefSum(t.stat.race, t.stat.wealth, t.stat.job) descending select s).ToArray();
-    }
-
-    public Structure FindRescueTeam() //다음구현!
-    {
-        Structure temp = null;
-
-        
-
-        return temp;
     }
 
     public void LoadStructuresFromSave(GameSavedata savedata)

@@ -65,7 +65,7 @@ public class Traveler : Actor {
     public void OnEnable()
     {
         // 입구 타일 랜덤으로 받아오기.
-        SetCurTile(GameManager.Instance.GetRandomEntrance());
+        SetCurTile(GameManager.Instance.GetRandomEntrance()); // 여기서 가끔 터짐. 수정요망. nullpointer 뜸
         SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
 
         // 이동가능한 타일인지 확인할 delegate 설정.
@@ -78,7 +78,7 @@ public class Traveler : Actor {
         structureListByPref = null;
 
         // 타일레이어 받기.
-        tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
+        tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>(); // 이거도 마찬가지 가끔 멈췄다가 세우면 터짐.
 
         // 기본은 Idle.
 

@@ -126,7 +126,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 break;
             case State.PassedOut:
                 superState = SuperState.PassedOut;
-                curCoroutine = StartCoroutine(PassedOut());
+                PassedOut();
+                break;
+            case State.SpontaneousRecovery:
+                curCoroutine = StartCoroutine(SpontaneousRecovery());
                 break;
             case State.Rescued:
                 curCoroutine = StartCoroutine(Rescued());
@@ -177,6 +180,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 break;
             case State.PassedOut:
                 break;
+            case State.SpontaneousRecovery:
+                break;
             case State.Rescued:
                 break;
             case State.None:
@@ -208,7 +213,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         //길찾기 성공!
         wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
-        animator.SetBool("MoveFlg", true); // animation 이동으로
+
         yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 
         switch(superState)
@@ -240,7 +245,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected void VisitHuntingGround()
     {
         curHuntingArea = destinationPlace as HuntingArea;
-        curHuntingArea.AdventurerEnter(this.gameObject);
+        curHuntingArea.EnterAdventurer(this.gameObject);
 
         destinationPlace = null; // 사용 후에는 비워주기.
         curState = State.SearchingMonster;
@@ -250,6 +255,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator SearchingHuntingArea()
     {
         yield return null;
+        // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
+        curHuntingArea = HuntingAreaManager.Instance.FindHuntingArea(battleStat.Level);
+
+        if (curHuntingArea == null)
+            curState = State.SearchingExit;
+        else
+            curState = State.PathFinding;
     }
 
     protected IEnumerator SearchingMonster()
@@ -283,15 +295,52 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected IEnumerator ExitingHuntingArea()
     {
+        destinationTile = curHuntingArea.GetEntrance();
+        curHuntingArea.ExitAdventurer(this.gameObject);
+
+        curHuntingArea = null;
+
+        curState = State.PathFinding;
         yield return null;
     }
 
-    protected virtual IEnumerator PassedOut()
+    protected virtual void PassedOut()
     {
-        yield return null;
+        animator.SetBool("isDead", true);
+        Structure[] tempArr = StructureManager.Instance.FindRescue(this);
+
+        if (tempArr.Length == 0)
+        {
+            curState = State.SpontaneousRecovery;
+        }
+        else
+        {
+            destinationPlace = tempArr[0];
+            curState = State.PathFinding;
+        }
     }
 
     protected IEnumerator Rescued()
+    {
+        List<TileForMove> temp = GetWay(pathFinder.GetPath());
+
+        yield return null; // 구조대 관련 애니메이션 추가해야 함. 수정요망
+    }
+
+    protected IEnumerator SpontaneousRecovery()
+    {
+        for(int i = 0; i < RecoveryTimes; i++)
+        {
+            battleStat.Health += battleStat.HealthMax * RecoveryMult;
+            StartCoroutine(RecoveryEffect(battleStat.HealthMax * RecoveryMult));
+
+            yield return new WaitForSeconds(RecoveryTick);
+        }
+
+        curState = State.ExitingHuntingArea;
+    }
+
+    protected IEnumerator RecoveryEffect(float healingAmount) // 체력 회복 이펙트
     {
         yield return null;
     }
@@ -305,6 +354,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //FlipX true == Left, false == Right
         Vector3 dirVector;
         float distance, sum = 0.0f;
+
+        animator.SetBool("MoveFlg", true);
 
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
@@ -376,6 +427,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             }
             sum = 0.0f;
             transform.position = tileForMoveWay[i + 1].GetPosition();
+            animator.SetBool("MoveFlg", false);
         }
 
         // 모험가가 이미 누웠다면.
@@ -407,9 +459,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected IEnumerator ApproachingToEnemy()
     {
-        animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(Charge(wayForMove));
-        animator.SetBool("MoveFlg", false); // 이거 Charge나 MoveAnimation쪽으로 빼주는게 나을듯.
     }
 
     // 전투 시작

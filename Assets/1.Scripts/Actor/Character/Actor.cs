@@ -18,7 +18,7 @@ public enum State
     Wandering, SolvingDesire_Wandering, InitiatingBattle, SearchingStructure, SearchingExit, SearchingHuntingArea, SearchingMonster, ExitingHuntingArea, PassedOut, SearchingMonster_Wandering,
     // 그 외. 공용 State 포함.
     PathFinding, MovingToDestination, WaitingStructure, UsingStructure, Battle, Exit,
-    ApproachingToEnemy, Rescued, SearchingShrine
+    ApproachingToEnemy, SearchRescueTeam, Rescued, SpontaneousRecovery
 }
 /*
  * Animator Tirggers
@@ -350,6 +350,7 @@ public abstract class Actor : MonoBehaviour
         Vector3 dirVector;
         float distance, sum = 0.0f;
 
+        animator.SetBool("MoveFlg", true);
         // GewWay에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
         {
@@ -413,6 +414,7 @@ public abstract class Actor : MonoBehaviour
         SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
         Debug.Log("last curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
         // 한칸 덜감
+        animator.SetBool("MoveFlg", false);
     } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
     public abstract bool ValidateNextTile(Tile tile);

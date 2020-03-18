@@ -225,13 +225,13 @@ public class HuntingArea : Place
     }
 
     // 모험가 입장시 해당 모험가를 리스트에 등록
-    public void AdventurerEnter(GameObject adventurer)
+    public void EnterAdventurer(GameObject adventurer)
     {
         adventurersInside.Add(adventurer);
     }
 
     // 모험가 퇴장시 리스트에서 제거
-    public void AdventurerQuit(GameObject adventurer)
+    public void ExitAdventurer(GameObject adventurer)
     {
         adventurersInside.Remove(adventurer);
     }

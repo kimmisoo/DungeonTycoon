@@ -69,12 +69,12 @@ public class HuntingAreaManager : MonoBehaviour
         return huntingAreas;
     }
 
-
     // 사냥터 찾기. 캐릭터 레벨에 맞는 사냥터를 찾아줌.
     public HuntingArea FindHuntingArea(int level)
     {
         HuntingArea searchResult = null;
 
+        // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
         for (int i = 0; i < huntingAreas.Count; i++)
         {
             if (level <= huntingAreas[i].LevelMax)
