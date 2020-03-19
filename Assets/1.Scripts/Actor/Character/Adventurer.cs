@@ -20,6 +20,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     private readonly int MonsterSearchMax = 5;
 
     HuntingArea curHuntingArea;
+
+    public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     #endregion
 
     public void InitAdventurer(Stat stat, BattleStat battleStat) //
@@ -48,16 +50,24 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 {
                     //Do something at first move...
                 }
+                superState = SuperState.Idle;
                 curState = State.SearchingStructure;
                 //Traveler이므로 무조건 SearchingStructure 부터
                 //이외에 체크할거 있으면 여기서
                 break;
-            case State.Wandering:
+            case State.SolvingDesire_Wandering:
                 Debug.Log("Wandering");
-                curCoroutine = StartCoroutine(Wandering());
+                superState = SuperState.SolvingDesire_Wandering;
+                curCoroutine = StartCoroutine(SolvingDesire_Wandering());
+                break;
+            case State.SearchingMonster_Wandering:
+                Debug.Log("Wandering");
+                superState = SuperState.SearchingMonster_Wandering;
+                curCoroutine = StartCoroutine(SearchingMonster_Wandering());
                 break;
             case State.SearchingStructure:
                 Debug.Log("SS");
+                superState = SuperState.SolvingDesire;
                 curCoroutine = StartCoroutine(SearchingStructure());
                 break;
             case State.PathFinding:
@@ -78,31 +88,48 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 //소지 골드 감소
                 UsingStructure();
                 break;
+            case State.SearchingExit:
+                superState = SuperState.ExitingDungeon;
+                //Traveler에서 구현
+                //curCoroutine = StartCoroutine(SearchingExit()); 
+                break;
             case State.Exit:
-                Debug.Log("EXIT");
-                //Going to outside 
+                //Treaveler에서 구현
+                //Exit();
                 break;
             // 모험가 전투관련
             case State.SearchingHuntingArea:
+                superState = SuperState.EnteringHuntingArea;
                 curCoroutine = StartCoroutine(SearchingHuntingArea());
                 break;
             case State.SearchingMonster:
+                superState = SuperState.SearchingMonster;
                 curCoroutine = StartCoroutine(SearchingMonster());
                 break;
             case State.ApproachingToEnemy:
                 curCoroutine = StartCoroutine(ApproachingToEnemy());
                 break;
+            case State.InitiatingBattle:
+                superState = SuperState.Battle;
+                InitiatingBattle();
+                break;
+            case State.Battle:
+                curCoroutine = StartCoroutine(Battle());
+                break;
             case State.AfterBattle:
-                AfterBattle();
+                superState = SuperState.AfterBattle;
+                curCoroutine = StartCoroutine(AfterBattle());
                 break;
             case State.ExitingHuntingArea:
+                superState = SuperState.ExitingHuntingArea;
                 curCoroutine = StartCoroutine(ExitingHuntingArea());
                 break;
-            case State.SearchingShrine:
-                SearchingShrine();
-                break;
             case State.PassedOut:
-                curCoroutine = StartCoroutine(PassedOut());
+                superState = SuperState.PassedOut;
+                PassedOut();
+                break;
+            case State.SpontaneousRecovery:
+                curCoroutine = StartCoroutine(SpontaneousRecovery());
                 break;
             case State.Rescued:
                 curCoroutine = StartCoroutine(Rescued());
@@ -118,7 +145,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         {
             case State.Idle:
                 break;
-            case State.Wandering:
+            case State.SolvingDesire_Wandering:
+                break;
+            case State.SearchingMonster_Wandering:
                 break;
             case State.SearchingStructure:
                 break;
@@ -130,6 +159,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 break;
             case State.UsingStructure:
                 break;
+            case State.SearchingExit:
+                break;
             case State.Exit:
                 break;
             // 모험가 전투관련
@@ -139,13 +170,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 break;
             case State.ApproachingToEnemy:
                 break;
+            case State.InitiatingBattle:
+                break;
+            case State.Battle:
+                break;
             case State.AfterBattle:
                 break;
             case State.ExitingHuntingArea:
                 break;
-            case State.SearchingShrine:
-                break;
             case State.PassedOut:
+                break;
+            case State.SpontaneousRecovery:
                 break;
             case State.Rescued:
                 break;
@@ -155,91 +190,162 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
     #endregion
 
+    protected override IEnumerator PathFinding()
+    {
+        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        switch(superState)
+        {
+            case SuperState.SearchingMonster:
+                curState = State.ApproachingToEnemy;
+                break;
+            case SuperState.PassedOut:
+                curState = State.Rescued;
+                break;
+            default: //EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
+                curState = State.MovingToDestination;
+                break;
+        }
+    }
+
+    // 수정요망
     protected override IEnumerator MoveToDestination()
     {
         //길찾기 성공!
         wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
-        animator.SetBool("MoveFlg", true); // animation 이동으로
+
         yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 
-        if (destinationPlace == null)
-            curState = State.Idle;
-        else if (destinationPlace is Structure)
-            VisitStructure();
-        else if (destinationPlace is HuntingArea)
-            VisitHuntingGround();
+        switch(superState)
+        {
+            case SuperState.SolvingDesire:
+                VisitStructure();
+                break;
+            case SuperState.SolvingDesire_Wandering:
+                wanderCount++;
+                curState = State.SearchingStructure;
+                break;
+            case SuperState.ExitingHuntingArea:
+                curState = State.SearchingStructure;
+                break;
+            case SuperState.EnteringHuntingArea:
+                VisitHuntingGround();
+                break;
+            case SuperState.ExitingDungeon:
+                curState = State.SearchingExit;
+                break;
+            case SuperState.SearchingMonster_Wandering:
+                curState = State.SearchingMonster;
+                break;
+        }
     }
+
+    
 
     protected void VisitHuntingGround()
     {
         curHuntingArea = destinationPlace as HuntingArea;
-        curState = State.SearchingMonster;
+        curHuntingArea.EnterAdventurer(this.gameObject);
 
         destinationPlace = null; // 사용 후에는 비워주기.
+        curState = State.SearchingMonster;
     }
 
-    #region Battle
+    // 수정요망
     protected IEnumerator SearchingHuntingArea()
     {
-        // 이거 어떻게 담지?
-        destinationPlace = HuntingAreaManager.Instance.FindHuntingArea(battleStat.Level);
-        if (destinationPlace == null)
-        {
-            curState = State.Exit;
-            yield break;
-        }
-        curState = State.MovingToDestination;
+        yield return null;
+        // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
+        curHuntingArea = HuntingAreaManager.Instance.FindHuntingArea(battleStat.Level);
+
+        if (curHuntingArea == null)
+            curState = State.SearchingExit;
+        else
+            curState = State.PathFinding;
     }
+
     protected IEnumerator SearchingMonster()
     {
-        List<GameObject> monsterDict = curHuntingArea.GetMonstersEnabled();
-        Monster target = null;
-        Monster tempMonster;
+        yield return null;
 
-        foreach (GameObject item in monsterDict) //최단거리 몬스터 찾기
-        {
-            tempMonster = item.GetComponent<Monster>();
-            if (target == null && !tempMonster.isFighting())
-                target = tempMonster;
-            else if (DistanceBetween(curTileForMove, target.GetCurTileForMove()) > DistanceBetween(curTileForMove, tempMonster.GetCurTileForMove()))
-            {
-                target = tempMonster;
-            }
-        }
+        enemy = curHuntingArea.FindNearestMonster(this); // 가장 가까운 몬스터 찾기.
 
-        if (target == null)
+        if(enemy == null)
         {
-            if (monsterSearchCnt++ >= MonsterSearchMax)
-                curState = State.ExitingHuntingArea;
-            curState = State.Wandering;
+            // 수정요망. WanderCount 관련해서 설정해줘야.
+            curState = State.SearchingMonster_Wandering;
         }
         else
         {
-            monsterSearchCnt = 0;
-            curState = State.ApproachingToEnemy;
+            curState = State.PathFinding;
         }
-        yield break;
     }
 
-
-    protected List<TileForMove> GetWayToActor(List<PathVertex> path) // Actor에게 접근하는 메서드(TileForMove 기반)
+    //수정요망
+    protected IEnumerator SearchingMonster_Wandering()
     {
-        List<TileForMove> tileForMoveWay = GetWay(path);
-        TileLayer tileLayer = GameManager.Instance.GetTileLayer().GetComponent<TileLayer>();
-        TileForMove destTileForMove = enemy.GetCurTileForMove();
+        // 빈 칸이 없으면?? 수정요망 이걸 막기위해서 사냥터도 출입인원 제한해야 함. 나머진 기다리고.
+        destTileForMove = curHuntingArea.FindBlanks(1)[0];
+        destinationTile = destTileForMove.GetParent();
 
-        // 적의 TileForMove에 맞춰서 접근
-        if (tileForMoveWay[tileForMoveWay.Count-1].GetX() != destTileForMove.GetX())
-        {
-            tileForMoveWay.Add(tileLayer.GetTileForMove(destTileForMove.GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
-        }
-        if(tileForMoveWay[tileForMoveWay.Count - 1].GetY() != destTileForMove.GetY())
-        {
-            tileForMoveWay.Add(tileLayer.GetTileForMove(tileForMoveWay[tileForMoveWay.Count - 1].GetX(), tileForMoveWay[tileForMoveWay.Count - 1].GetY()));
-        }
+        yield return null; // 있든 없든 별 상관 X
 
-        return tileForMoveWay;
+        curState = State.PathFinding;
     }
+
+    protected IEnumerator ExitingHuntingArea()
+    {
+        destinationTile = curHuntingArea.GetEntrance();
+        curHuntingArea.ExitAdventurer(this.gameObject);
+
+        curHuntingArea = null;
+
+        curState = State.PathFinding;
+        yield return null;
+    }
+
+    protected virtual void PassedOut()
+    {
+        animator.SetBool("isDead", true);
+        Structure[] tempArr = StructureManager.Instance.FindRescue(this);
+
+        if (tempArr.Length == 0)
+        {
+            curState = State.SpontaneousRecovery;
+        }
+        else
+        {
+            destinationPlace = tempArr[0];
+            curState = State.PathFinding;
+        }
+    }
+
+    protected IEnumerator Rescued()
+    {
+        List<TileForMove> temp = GetWay(pathFinder.GetPath());
+
+        yield return null; // 구조대 관련 애니메이션 추가해야 함. 수정요망
+    }
+
+    protected IEnumerator SpontaneousRecovery()
+    {
+        for(int i = 0; i < RecoveryTimes; i++)
+        {
+            battleStat.Health += battleStat.HealthMax * RecoveryMult;
+            StartCoroutine(RecoveryEffect(battleStat.HealthMax * RecoveryMult));
+
+            yield return new WaitForSeconds(RecoveryTick);
+        }
+
+        curState = State.ExitingHuntingArea;
+    }
+
+    protected IEnumerator RecoveryEffect(float healingAmount) // 체력 회복 이펙트
+    {
+        yield return null;
+    }
+
+    #region Battle
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         yield return null;
@@ -249,6 +355,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         Vector3 dirVector;
         float distance, sum = 0.0f;
 
+        animator.SetBool("MoveFlg", true);
+
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
         {
@@ -256,15 +364,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             SetCurTile(tileForMoveWay[i].GetParent());
             SetCurTileForMove(tileForMoveWay[i]);
 
-            // 몬스터가 이미 죽었다면
-            if (enemy.GetState() == State.Dead)
+            // 모험가가 이미 누웠거나, 사냥터에서 나갔다면
+            if (!ValidatingEnemy())
             {
-                curState = State.SearchingMonster;
+                curState = State.AfterBattle;
                 yield break;
             }
 
-            // 레인지 검사, 레인지 안이면 공격
-            if (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range)
+            // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
+            if (CheckInRange())
             {
                 curState = State.Battle;
                 yield break;
@@ -319,162 +427,173 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             }
             sum = 0.0f;
             transform.position = tileForMoveWay[i + 1].GetPosition();
+            animator.SetBool("MoveFlg", false);
         }
 
-        // 몬스터가 이미 누웠다면.
-        if (enemy.GetState() == State.Dead)
+        // 모험가가 이미 누웠다면.
+        if (!ValidatingEnemy())
         {
-            curState = State.SearchingMonster;
+            curState = State.AfterBattle;
             yield break;
         }
 
-        // 레인지 검사, 레인지 안이면 공격
-        if (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range)
+        // 레인지 검사
+        if (CheckInRange())
         {
             curState = State.Battle;
             yield break;
         }
+        else // 목적지 도착했지만 공격 범위 안에 안 들어올 때.
+            curState = State.PathFinding;
+    }
 
-        // 목적지 도착했지만 공격 범위 안에 안 들어올 때.
-        curState = State.ApproachingToEnemy;
+    protected bool ValidatingEnemy()
+    {
+        SuperState enemySuperState = enemy.GetSuperState();
+        // 적이 살아 있을 때.
+        if (enemySuperState != SuperState.Dead)
+            return true;
+        else
+            return false;
     }
 
     protected IEnumerator ApproachingToEnemy()
     {
-        destinationTile = enemy.GetCurTile(); // TileForMove가 아니라도 문제없나?
-
-        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-
-        wayForMove = GetWayToActor(pathFinder.GetPath()); // TileForMove로 변환
-        animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(Charge(wayForMove));
+    }
+
+    // 전투 시작
+    protected void InitiatingBattle()
+    {
+        StopCoroutine(curCoroutine);
+
+        destinationTile = enemy.GetCurTile();
+        destTileForMove = enemy.GetCurTileForMove();
+
+        // 적이 공격 범위 안에 있다면 바로 전투.
+        if (CheckInRange())
+            curState = State.Battle;
+        else
+            curState = State.PathFinding;
     }
 
     protected IEnumerator Battle()
     {
-        while (enemy.CurHealth() > 0)
+        enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
+
+        while (ValidatingEnemy())
         {
             yield return curCoroutine = StartCoroutine(Attack());
         }
 
-        curState = State.AfterBattle;
+        curState = State.AfterBattle; // 이 대신 이벤트로 처리해줘야 함.
     }
 
-    protected IEnumerator Attack()
+    protected IEnumerator Attack() // 공격
     {
         yield return null; // 애니메이션 관련 넣을 것.
+
+        // 어차피 이벤트로 나가는데 필요한지?
+        if (!ValidatingEnemy())
+        {
+            yield break;
+        }
+
         bool isCrit;
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
-        enemy.TakeDamage(calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
+
+        enemy.TakeDamage(index, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
     }
 
-    protected void AfterBattle() // 몬스터 죽인 경험치, 골드 획득.
+    protected void OnEnemyHealthBelowZero(int victimIndex, int attackerIndex)
     {
-        stat.gold += enemy.RewardGold();
-        battleStat.CurExp += enemy.RewardExp();
-        // 포션 음용 넣을까? 넣으면 몇%회복? 몇회?
-        curState = State.Idle;
-    }
+        StopCoroutine(curCoroutine);
 
-    // 사냥터에서 퇴장
-    protected IEnumerator ExitingHuntingArea()
-    {
-        destinationTile = curHuntingArea.GetEntrance();
-
-        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-
-        wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
-        animator.SetBool("MoveFlg", true); // animation 이동으로
-        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove));
-
-        curHuntingArea = null;
-        curState = State.Idle;
-    }
-
-    // 체력회복할 성소 검색. 욕구만 설정해주고 SearchingStructure로 넘김.
-    protected void SearchingShrine()
-    {
-        stat.GetSpecificDesire(DesireType.Health).SetHighestPriority();
-        curState = State.SearchingStructure;
-    }
-
-    protected bool SearchRescueTeam()
-    {
-        //SearchStructure 마저 완성되면 하는걸로.
-        //Rescue 건물을 찾음. 그 뒤에는 Rescued()호출
-        return true;
-    }
-
-    protected IEnumerator PassedOut() //1분동안 10%회복 즉 6초에 1%회복. 회복후에 사냥터에서 퇴장.
-    {
-        if(SearchRescueTeam())
+        if (attackerIndex == index) // 내가 죽였다면.
         {
-            curState = State.Rescued;
-            yield break;
+            GetBattleReward(victimIndex);// 보상 받기.
         }
-        // 이 앞에 구조대 정원 있는지 찾아봐야함 우선.
-        int recoveryCnt = 0;
-        animator.SetBool("DeadFlg", true);
-        while (recoveryCnt < RecoveryTimes)
-        {
-            battleStat.Health += battleStat.HealthMax * RecoveryMult;
-            recoveryCnt++;
+        enemy = null;
 
-            yield return new WaitForSeconds(RecoveryTick);
-        }
-        animator.SetBool("DeadFlg", false);
-
-        curState = State.ExitingHuntingArea;
+        curState = State.AfterBattle;
     }
 
-    protected IEnumerator Rescued()
+    // 죽인 몬스터로부터 보상 획득.
+    protected void GetBattleReward(int victimIndex)
     {
-        //구조대 와서 실어가는 코루틴.
-        yield break;
+        Monster killedMonster = curHuntingArea.GetMonstersEnabled()[victimIndex].GetComponent<Monster>();
+        battleStat.CurExp += killedMonster.RewardExp();
+        stat.gold += killedMonster.RewardGold();
     }
 
-    protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
+    // 수정요망
+    protected IEnumerator AfterBattle()
     {
-        return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
+        // 포션 음용 넣어야한다면 여기에.
+        yield return null;
+        if (battleStat.Health < battleStat.HealthMax / 4) //체력이 25%미만이면 
+            curState = State.ExitingHuntingArea;
+        else
+            curState = State.SearchingMonster;
     }
+
+    // 죽을 때 호출. 이 모험가를 공격대상으로 하고있는 몬스터들에게 알려줌.
+    // 몬스터들은 누굴 죽였는지 알 필요 X. 단 전투는 중단.
+    public void HealthBelowZeroNotify(int victimIndex, int attackerIndex)
+    {
+        healthBelowZeroEvent?.Invoke(victimIndex, attackerIndex);
+    }
+
+    protected bool CheckInRange()
+    {
+        return (DistanceBetween(curTileForMove, enemy.GetCurTileForMove()) <= battleStat.Range);
+    }
+
+    public bool isFighting()
+    {
+        return superState == SuperState.Battle;
+    }
+    #endregion
 
     #region ICombatant
-    public void TakeDamage(float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    public void TakeDamage(int attackerIndex, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
-        StopAllCoroutines();
         float actualDamage;
         bool isEvaded;
         battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded);
         StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
 
-        if (curState != State.Battle)
+        // 조건?
+        if (battleStat.Health <= 0)
         {
-            StopCoroutine(curCoroutine);
-            curState = State.Battle;
+            HealthBelowZeroNotify(index, attackerIndex);
+            curState = State.Dead;
         }
+        else if (superState != SuperState.Battle)
+            curState = State.InitiatingBattle;
     }
-
     public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
     {
         // 수정요망. 데미지랑 크리 혹은 회피에 따라서 다른 문구가 위에 뜨도록.
         yield return null;
     }
-
     public int RewardGold()
     {
-        //return rewardStat.Gold;
-        return 0;
+        return rewardStat.Gold; // 이거 평소엔 별 필요없지만 일선모험가 vs 일선모험가 시에는 필요.
     }
     public int RewardExp()
     {
-        //return rewardStat.Exp;
-        return 0;
+        return rewardStat.Exp;
     }
     public float CurHealth()
     {
         return battleStat.Health;
     }
-    #endregion
+
+    public void ResetBattleStat() // 전투 관련 멤버변수 리셋
+    {
+        battleStat.ResetBattleStat();
+    }
     #endregion
 }
