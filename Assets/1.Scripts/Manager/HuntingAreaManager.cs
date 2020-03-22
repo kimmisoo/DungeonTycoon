@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#define DEBUG_ADV
+
+using UnityEngine;
 using System.Collections;
 using SimpleJSON;
 using System.Collections.Generic;
@@ -7,16 +9,15 @@ using UnityEngine.SceneManagement;
 
 public class HuntingAreaManager : MonoBehaviour
 {
+    // 싱글톤
     static HuntingAreaManager _instance;
-    
-
     public static HuntingAreaManager Instance
     {
         get
         {
             if (_instance == null)
             {
-                Debug.Log("StructureManager is null");
+                Debug.Log("HuntingAreaManager is null");
                 return null;
             }
             else
@@ -29,6 +30,28 @@ public class HuntingAreaManager : MonoBehaviour
 
     // 사냥터들의 부모가 될 오브젝트
     public GameObject rootHuntingAreaObject;
+
+    // 사냥터 몇번까지 활성화됐는지.
+    public int ActiveIndex { get; private set; }
+
+
+    // 맵 내에서 maxLevel이 가장 높은 사냥터의 maxLevel
+    public int LevelUpperBound
+    {
+        get
+        {
+            return huntingAreas[ActiveIndex].LevelMax;
+        }
+    }
+
+    // maxLevel이 가장 낮은 사냥터의 maxLevel
+    public int LevelLowerBound
+    {
+        get
+        {
+            return huntingAreas[0].LevelMax - 9;
+        }
+    }
 
     // 사냥터 정보 읽어오기용
     public JSONNode huntingAreaJson;
@@ -46,22 +69,27 @@ public class HuntingAreaManager : MonoBehaviour
         LoadHuntingAreaData();
         LoadMonsterData();
         huntingAreas = new List<HuntingArea>();
+        ActiveIndex = -1;
     }
 
     void LoadHuntingAreaData()
     {
         TextAsset huntingAreaText = Resources.Load<TextAsset>("HuntingArea/huntingareas");
         huntingAreaJson = JSON.Parse(huntingAreaText.text);
+#if DEBUG_CREATE_HA
         Debug.Log("hunting Area1: " + huntingAreaText.text);
         Debug.Log("hunting Area2: " + huntingAreaJson);
         Debug.Log("hunting Area3: " + huntingAreaJson["stage1"][0]["name"]);
+#endif
     }
     void LoadMonsterData()
     {
         TextAsset monsterText = Resources.Load<TextAsset>("Monsters/Monsters");
         monsterJson = JSON.Parse(monsterText.text);
+#if DEBUG_CREATE_HA
         Debug.Log("monster1 : " + monsterText.text);
         Debug.Log("monster2 : " + monsterJson["Standard"][0]["level"]);
+#endif
     }
 
     public List<HuntingArea> GetHuntingAreas()
@@ -117,7 +145,7 @@ public class HuntingAreaManager : MonoBehaviour
     // 사냥터 건설
     public void ConstructHuntingArea(int areaNum, int areaIndex, GameObject pointTile)
     {
-        #region InstantiateStructure()
+#region InstantiateStructure()
         string stageNum = "stage" + SceneManager.GetActiveScene().name;
         int huntingAreaNum = areaNum;
         Debug.Log("stageNum : " + stageNum + " areaNum : " + huntingAreaNum);
@@ -131,7 +159,6 @@ public class HuntingAreaManager : MonoBehaviour
         HuntingArea huntingArea = constructing.GetComponent<HuntingArea>();
         huntingArea.name = huntingAreaJson[stageNum][huntingAreaNum]["name"];
         int levelMax = huntingAreaJson[stageNum][huntingAreaNum]["levelMax"].AsInt;
-        Debug.Log("레벨" + levelMax);
         int monsterMax = huntingAreaJson[stageNum][huntingAreaNum]["monsterMax"].AsInt;
         int monsterPerRegen = huntingAreaJson[stageNum][huntingAreaNum]["monsterPerRegen"].AsInt;
         float monsterRegenRate = huntingAreaJson[stageNum][huntingAreaNum]["monsterRegenRate"].AsFloat;
@@ -165,25 +192,27 @@ public class HuntingAreaManager : MonoBehaviour
         int y = huntingAreaJson[stageNum][huntingAreaNum]["siteheight"].AsInt;
         huntingArea.extentHeight = y;
 
-        //Debug.Log("siteWidth = " + x + ", siteHeight = " + y + ", Extent[0][0] = " + huntingAreaJson[stageNum][huntingAreaNum]["site"][0]);
+#if DEBUG_CREATE_HA
+        Debug.Log("siteWidth = " + x + ", siteHeight = " + y + ", Extent[0][0] = " + huntingAreaJson[stageNum][huntingAreaNum]["site"][0]);
+#endif
 
         huntingArea.extent = new int[x, y];
         for (int i = 0; i < x * y; i++)
         {
             huntingArea.extent[i % x, i / x] = huntingAreaJson[stageNum][huntingAreaNum]["site"][i].AsInt;
         }
-        #endregion
+#endregion
 
-        #region AllocateStructure()
+#region AllocateStructure()
         // 건설할 건물의 position 설정
         constructing.transform.position = pointTile.transform.position; // 문제 생길지도 모름. 수정요망
 
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
         SetHuntingAreaPoint(pointTile.GetComponent<Tile>());
-        #endregion
+#endregion
 
-        #region ConstructStructure()
+#region ConstructStructure()
         Tile tile = huntingArea.point;
         int[,] extent = huntingArea.GetExtent();
 
@@ -238,7 +267,11 @@ public class HuntingAreaManager : MonoBehaviour
         }
 
         constructing = null;
-        #endregion
+#endregion
+
+#if DEBUG_ADV
+        ActivateHuntingArea();
+#endif
     }
 
     // 몬스터 샘플 로드해서 instantiate해주는 함수.
@@ -250,7 +283,7 @@ public class HuntingAreaManager : MonoBehaviour
         monsterSample1.SetActive(false);
         monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
 
-        #region 스탯로드
+#region 스탯로드
         BattleStat tempBattleStat = new BattleStat();
 
         //Debug.Log("num : " + sample1Num + ", " + sample2Num);
@@ -258,6 +291,7 @@ public class HuntingAreaManager : MonoBehaviour
         tempBattleStat.Level = monsterJson[monsterSet][sample1Num]["level"].AsInt;
         tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample1Num]["hp"].AsFloat ;
         tempBattleStat.BaseDefence = monsterJson[monsterSet][sample1Num]["def"].AsFloat;
+        tempBattleStat.BaseAvoid = monsterJson[monsterSet][sample1Num]["avoid"].AsFloat;
         tempBattleStat.BaseAttack = monsterJson[monsterSet][sample1Num]["atk"].AsFloat;
         tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample1Num]["atkspeed"].AsFloat;
         tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample1Num]["critical"].AsFloat;
@@ -269,7 +303,7 @@ public class HuntingAreaManager : MonoBehaviour
         RewardStat tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample1Num]["exp"].AsInt;
         tempRewardStat.Gold = monsterJson[monsterSet][sample1Num]["gold"].AsInt;
-        #endregion
+#endregion
 
         Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
@@ -280,12 +314,13 @@ public class HuntingAreaManager : MonoBehaviour
         monsterSample2.SetActive(false);
         monsterSample2.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
 
-        #region 스탯 로드
+#region 스탯 로드
         tempBattleStat = new BattleStat();
 
         tempBattleStat.Level = monsterJson[monsterSet][sample2Num]["level"].AsInt;
         tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample2Num]["hp"].AsFloat;
         tempBattleStat.BaseDefence = monsterJson[monsterSet][sample2Num]["def"].AsFloat;
+        tempBattleStat.BaseAvoid = monsterJson[monsterSet][sample2Num]["avoid"].AsFloat;
         tempBattleStat.BaseAttack = monsterJson[monsterSet][sample2Num]["atk"].AsFloat;
         tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample2Num]["atkspeed"].AsFloat;
         tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample2Num]["critical"].AsFloat;
@@ -297,11 +332,18 @@ public class HuntingAreaManager : MonoBehaviour
         tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample2Num]["exp"].AsInt;
         tempRewardStat.Gold = monsterJson[monsterSet][sample2Num]["gold"].AsInt;
-        #endregion
+#endregion
 
         tempMonsterComp = monsterSample2.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
 
         return;
+    }
+
+    public void ActivateHuntingArea()
+    {
+        ActiveIndex++;
+        
+        // 활성화 관련된 거 더 구현할 것.
     }
 }

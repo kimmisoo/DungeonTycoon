@@ -102,6 +102,8 @@ public class PathFinder : MonoBehaviour
     {
         yield return null;
         myCurPos = pcurPos;
+
+        Debug.Log("pcurPos : [" + pcurPos.GetX() + ", " + pcurPos.GetY() + "]");
         destination = pdestination;
 
         // 리스트 및 큐들 초기화

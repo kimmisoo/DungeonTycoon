@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define DEBUG_SAVELOAD
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -201,6 +203,10 @@ public abstract class Actor : MonoBehaviour
     public SuperState GetSuperState()
     {
         return superState;
+    }
+    public void SetSuperState(SuperState input)
+    {
+        superState = input;
     }
     public void SetDirection(Direction dir)
     {
@@ -436,6 +442,9 @@ public abstract class Actor : MonoBehaviour
 
         GameObject tileLayer = GameManager.Instance.GetTileLayer();
         destinationTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
+#if DEBUG_SAVELOAD
+        Debug.Log("[Actor.SetDestinationTileLoad] : [" + destinationTile.GetX() + ", " + destinationTile.GetY() + "]");
+#endif
 
         if (destinationTile == null)
             return false;
@@ -465,9 +474,15 @@ public abstract class Actor : MonoBehaviour
         curTile = tileLayer.transform.GetChild(tileNum).gameObject.GetComponent<Tile>();
 
         if (curTile == null)
+        {
+            Debug.Log("curTile = NULL");
             return false;
+        }
         else
+        {
+            Debug.Log("curTile 제대로 들어감");
             return true;
+        }
     }
 
     public bool SetCurTileForMoveLoad(int childNum)
@@ -478,7 +493,7 @@ public abstract class Actor : MonoBehaviour
         SetCurTileForMove(curTile.GetChild(childNum));
         return true;
     }
-    #endregion
+#endregion
 
     protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
     {

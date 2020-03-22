@@ -119,6 +119,7 @@ public class Stat : MonoBehaviour{
 		}
 		return max;
 	}
+
 	public DesireBase GetSpecificDesire(DesireType desireType)
 	{
 		return desireDict[desireType];

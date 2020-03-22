@@ -204,6 +204,7 @@ public class Vector3Data
 [Serializable]
 public class TravelerData
 {
+    public SuperState superState;
     public State state;
     public Vector3Data position;
 //    public Vector3Data rotation;
@@ -229,8 +230,9 @@ public class TravelerData
         Traveler inputTraveler = input.GetComponent<Traveler>();
         isActive = input.activeSelf;
         position = new Vector3Data(input.transform.position);
-//        rotation = new Vector3Data(input.transform.rotation.eulerAngles);
+        //        rotation = new Vector3Data(input.transform.rotation.eulerAngles);
         //destinationStructure = destinationStructure;
+        superState = inputTraveler.GetSuperState();
         state = inputTraveler.curState;
         destinationTile = inputTraveler.GetDestinationTileSave();
         curTile = inputTraveler.GetCurTileSave();

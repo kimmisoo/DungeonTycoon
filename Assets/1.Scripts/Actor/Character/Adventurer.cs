@@ -22,13 +22,22 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     HuntingArea curHuntingArea;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
+
+    public int Level
+    {
+        get { return battleStat.Level; }
+    }    
     #endregion
 
-    public void InitAdventurer(Stat stat, BattleStat battleStat) //
+    public void InitAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat) //
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         SetPathFindEvent();
+
+        //this.monsterNum = monsterNum; //JSON에서 불러오기용 정보 지금은 ㅇ벗음.
+        this.battleStat = new BattleStat(battleStat);
+        this.rewardStat = new RewardStat(rewardStat);
         //stat 초기화
         //pathfinder 초기화 // delegate 그대로
     }
@@ -46,12 +55,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         {
             case State.Idle:
                 Debug.Log("Idle");
-                if (structureListByPref == null)
-                {
-                    //Do something at first move...
-                }
                 superState = SuperState.Idle;
-                curState = State.SearchingStructure;
+                Idle();
                 //Traveler이므로 무조건 SearchingStructure 부터
                 //이외에 체크할거 있으면 여기서
                 break;
@@ -240,6 +245,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
     }
 
+    public void Idle()
+    {
+        //if (stat.GetSpecificDesire(stat.GetHighestDesire()).desireValue < 50.0f)
+            curState = State.SearchingHuntingArea;
+        //else
+        //    curState = State.SearchingStructure;
+    }
+
     
 
     protected void VisitHuntingGround()
@@ -272,11 +285,20 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         if(enemy == null)
         {
-            // 수정요망. WanderCount 관련해서 설정해줘야.
-            curState = State.SearchingMonster_Wandering;
+            if (monsterSearchCnt >= MonsterSearchMax)
+            {
+                monsterSearchCnt = 0;
+                curState = State.ExitingHuntingArea;
+            }
+            else
+            {
+                monsterSearchCnt++;
+                curState = State.SearchingMonster_Wandering;
+            }
         }
         else
         {
+            monsterSearchCnt = 0;
             curState = State.PathFinding;
         }
     }

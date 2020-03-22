@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#define DEBUG_SAVELOAD
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -35,10 +37,12 @@ public class GameManager : MonoBehaviour
     #region Characters
     #region 세이브!
     public List<GameObject> travelers;
-    public List<GameObject> adventurers;
+    public List<GameObject> adventurersEnabled;
     public List<GameObject> specialAdventurers;
     public List<GameObject> inactiveTravelers;
-    public List<GameObject> inactiveAdventurers;
+    public List<GameObject> adventurersDisabled;
+
+    public Queue<GameObject> advEnterQ;
 
     public int corporateNum = 1;
     public List<float> popular;
@@ -64,6 +68,28 @@ public class GameManager : MonoBehaviour
     int rescue_Max = 0;
     int complete_Popularity = 0;
 
+    // 사냥터 정보
+    int huntingAreaCount = 0;
+    // 사냥터 개방에 따라 필요해질 데이터 저장
+    List<ProgressInformation> progressInformations;
+
+    JSONNode advStatData;
+
+    private int CurAdvMaxPerHuntingArea
+    {
+        get
+        {
+            int total = 0;
+            for (int i = 0; i <= HuntingAreaManager.Instance.ActiveIndex; i++)
+            {
+                total += progressInformations[i].guestCapacity;
+            }
+
+            return total / ((HuntingAreaManager.Instance.ActiveIndex + 1) / 2); // Int연산인데 버려지는 건? 버려지면 나머지는 traveler에서 보충해도 되긴함.
+        }
+    }
+
+
     int mapEntranceCount = 0;
     public int vertexCount = 0;
     WaitForSeconds wait;
@@ -72,6 +98,7 @@ public class GameManager : MonoBehaviour
     WaitForSeconds countLogWait;
     #endregion
 
+    #region Initialization
     public static GameManager Instance
     {
         // 싱글톤 사용
@@ -97,6 +124,10 @@ public class GameManager : MonoBehaviour
         TextAsset itemText = Resources.Load<TextAsset>("Items/items");
         items = JSON.Parse(itemText.ToString());
 
+        // Adventurer 데이터 로드(레벨에 따른 스탯 등)
+        TextAsset advStatTxt = Resources.Load<TextAsset>("Characters/adventurerstat");
+        advStatData = JSON.Parse(advStatTxt.ToString());
+
         wait = new WaitForSeconds(0.11f);
         countLogWait = new WaitForSeconds(3.0f);
     }
@@ -110,12 +141,19 @@ public class GameManager : MonoBehaviour
         sceneData = JSON.Parse(sceneTxt.ToString());
         setSceneData(sceneData);
 
+        
+        
+
         // Scene 정보 세팅
         travelers = new List<GameObject>();
-        adventurers = new List<GameObject>();
+        adventurersEnabled = new List<GameObject>();
         specialAdventurers = new List<GameObject>();
         inactiveTravelers = new List<GameObject>();
-        inactiveAdventurers = new List<GameObject>();
+        adventurersDisabled = new List<GameObject>();
+
+        advEnterQ = new Queue<GameObject>();
+
+        progressInformations = new List<ProgressInformation>();
 
         // Scene별로 미리 정의된 관광객의 최대 수에 따라 생성
         for (int i = 0; i < traveler_Max; i++)
@@ -135,6 +173,22 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(TEnter());
 
+        for (int i = 0; i < adventurer_Max; i++)
+        {
+            GameObject go = (GameObject)Resources.Load("CharacterPrefabs/Adventurer_test");
+
+            // 생성만 해놓고 비활성화
+            go.SetActive(false);
+
+            // List에 추가
+            adventurersDisabled.Add(Instantiate(go));
+            go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
+            adventurersDisabled[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
+            adventurersDisabled[i].GetComponent<Adventurer>().index = i;
+            // Debug.Log("character instantiate - " + i);
+        }
+        StartCoroutine(AdvEnter());
+
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
         {
@@ -150,6 +204,7 @@ public class GameManager : MonoBehaviour
 
         SaveLoadManager.Instance.InstantiateFromSave();
     }
+    #endregion
 
     // 모험가 입장 코루틴
     // 이거에 i 값을 던져주면 활성화 문제는 해결됨.
@@ -162,6 +217,105 @@ public class GameManager : MonoBehaviour
             travelers[i].SetActive(true);
         }
     }
+
+    IEnumerator AdvEnter()
+    {
+        GameObject temp;
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(0.5f, 10.0f)); // 임시 수치
+            if (advEnterQ.Count > 0)
+            {
+                temp = advEnterQ.Dequeue();
+                // 어떻게 disabled에서 찾나? 역시 Dict?
+            }
+        }
+        
+    }
+
+    private void GenAndEnqueueSingleAdventurer(int minLevel, int maxLevel)
+    {
+        GameObject temp = adventurersDisabled[adventurersDisabled.Count - 1];
+        Adventurer tempAdventurer = temp.GetComponent<Adventurer>();
+        adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1);
+
+        int advLevel = Random.Range(minLevel, maxLevel+1);
+
+        BattleStat tempBattleStat = new BattleStat();
+
+        tempBattleStat.Level = advLevel;
+        tempBattleStat.BaseHealthMax = advStatData[advLevel-1]["health"].AsFloat;
+        tempBattleStat.BaseDefence = advStatData[advLevel - 1]["defense"].AsFloat;
+        tempBattleStat.BaseAvoid = advStatData[advLevel - 1]["avoid"].AsFloat;
+        tempBattleStat.BaseAttack = advStatData[advLevel - 1]["attack"].AsFloat;
+        tempBattleStat.BaseAttackSpeed = advStatData[advLevel - 1]["attackspeeds"].AsFloat;
+        tempBattleStat.BaseCriticalChance = advStatData[advLevel - 1]["criticalchance"].AsFloat;
+        tempBattleStat.BaseCriticalDamage = advStatData[advLevel - 1]["criticalattack"].AsFloat;
+        tempBattleStat.BasePenetrationFixed = advStatData[advLevel - 1]["penetration"].AsFloat;
+        tempBattleStat.BaseMoveSpeed = advStatData[advLevel - 1]["movespeed"].AsFloat;
+        tempBattleStat.BaseRange = advStatData[advLevel - 1]["attackrange"].AsInt;
+
+        advEnterQ.Enqueue(temp);
+    }
+
+    private void ResetAdvStatistics()
+    {
+        for (int i = 0; i <= HuntingAreaManager.Instance.ActiveIndex; i++)
+        {
+            progressInformations[i].curAdvNum = 0;
+        }
+    }
+
+    // 레벨대 별 모험가 수 통계를 새로 냄.
+    private void CompileAdvStatistics()
+    {
+        ResetAdvStatistics();
+
+        for (int i = 0; i < adventurersEnabled.Count; i++)
+        {
+            for (int j = 0; j < progressInformations.Count; j++)
+            {
+                if (adventurersEnabled[i].GetComponent<Adventurer>().Level <= progressInformations[j].maxLevel
+                    && adventurersEnabled[i].GetComponent<Adventurer>().Level >= progressInformations[j].minLevel)
+                    progressInformations[j].curAdvNum++;
+            }
+        }
+    }
+
+    private void GenerateAdventurers(int needed)
+    {
+        //List<ProgressInformation> tempList = progressInformations.CopyTo()
+        CompileAdvStatistics();
+
+        List<ProgressInformation> tempArr = new List<ProgressInformation>(progressInformations);
+
+        tempArr.Sort(CompareByCurHuntingAreaAsc);
+        int totalAdv = CurAdvMaxPerHuntingArea * (HuntingAreaManager.Instance.ActiveIndex + 1);
+        tempArr.Add(new ProgressInformation(totalAdv));
+
+        int generated = 0;
+
+        for(int i = 0; i < tempArr.Count-1; i++)
+        {
+            while ( tempArr[i].curAdvNum < tempArr[i + 1].curAdvNum )
+            {
+                for (int j = 0; j <= i; j++)
+                {
+                    GenAndEnqueueSingleAdventurer(tempArr[j].minLevel, tempArr[j].maxLevel);
+                    generated++;
+
+                    if (generated >= needed)
+                        return;
+                }
+            }
+        }
+    }
+
+    private int CompareByCurHuntingAreaAsc(ProgressInformation info1, ProgressInformation info2)
+    {
+        return info1.curAdvNum - info2.curAdvNum;
+    }
+
 
     // 인기도 추가
     public void AddPop(int who, float amount)
@@ -242,8 +396,19 @@ public class GameManager : MonoBehaviour
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, (y * 2) + 1));
         }
 
+        // 사냥터 관련 정보 저장
+        huntingAreaCount = aData["scene"][sceneNumber]["huntingAreaCount"].AsInt;
+        for (int i = 0; i < huntingAreaCount; i++)
+        {
+            progressInformations.Add(new ProgressInformation());
+            progressInformations[i].huntingAreaIndex = aData["scene"][sceneNumber]["progressInformation"]["huntingAreaIndex"].AsInt; // 이거 지워도 될듯.
+            progressInformations[i].guestCapacity = aData["scene"][sceneNumber]["progressInformation"]["guestCapacity"].AsInt;
+            progressInformations[i].minLevel = aData["scene"][sceneNumber]["progressInformation"]["minLevel"].AsInt;
+            progressInformations[i].maxLevel = aData["scene"][sceneNumber]["progressInformation"]["maxLevel"].AsInt;
+        }
+
         traveler_Max = 1;
-        //adventurer_Max = 1;
+        adventurer_Max = 0;
         //specialAdventurer_Max = 800;
 
     }
@@ -341,22 +506,31 @@ public class GameManager : MonoBehaviour
 
             // List에 추가
             travelers.Add(Instantiate(newObject));
+            travelers[i].SetActive(false);
 
             newTraveler = travelers[i].GetComponent<Traveler>();
 
             travelers[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
-#if DEBUG
+#if DEBUG_SAVELOAD
             Debug.Log("character instantiate - " + i);
 #endif
 
             // 세이브 데이터에서 대입.
-            travelers[i].SetActive(inputTravelerData.isActive);
+
             newTraveler.index = inputTravelerData.index;
 
-            if (travelers[i].activeSelf)
+            if (inputTravelerData.isActive)
             {
+                newTraveler.SetDestinationTileLoad(inputTravelerData.destinationTile);
+                newTraveler.SetCurTileLoad(inputTravelerData.curTile);
+                newTraveler.SetCurTileForMoveLoad(inputTravelerData.curTileForMove);
+
                 travelers[i].transform.position = new Vector3(inputTravelerData.position.x, inputTravelerData.position.y, inputTravelerData.position.z);
                 newTraveler.StopAllCoroutines(); // 일단 문제 해결.
+
+                travelers[i].SetActive(true);
+
+                newTraveler.SetSuperState(inputTravelerData.superState);
                 if (inputTravelerData.state == State.MovingToDestination)
                 {
                     newTraveler.curState = State.PathFinding;
@@ -365,9 +539,9 @@ public class GameManager : MonoBehaviour
                 {
                     newTraveler.curState = inputTravelerData.state;
                 }
-                newTraveler.SetDestinationTileLoad(inputTravelerData.destinationTile);
-                newTraveler.SetCurTileLoad(inputTravelerData.curTile);
-                newTraveler.SetCurTileForMoveLoad(inputTravelerData.curTileForMove);
+#if DEBUG_SAVELOAD
+                Debug.Log("DestTile:" + inputTravelerData.destinationTile);
+#endif
             }
 
             // TEnter 관련은 아직 저장안함

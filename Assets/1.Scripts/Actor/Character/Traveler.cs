@@ -267,6 +267,7 @@ public class Traveler : Actor {
 
     protected virtual IEnumerator PathFinding()
     {
+        //yield return null;
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
         curState = State.MovingToDestination;
@@ -315,6 +316,7 @@ public class Traveler : Actor {
 
         // 사용 후에는 비워주기.
         destinationPlace = null;
+        wanderCount = 0;
     }
 	
 	public override void SetPathFindEvent() // Pathfinder Delegate 설정

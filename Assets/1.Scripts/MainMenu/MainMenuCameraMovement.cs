@@ -42,7 +42,8 @@ public class MainMenuCameraMovement : MonoBehaviour
         while (true)
         {
             yield return null;
-            if (GameManager.Instance != null && GameManager.Instance.travelers != null && GameManager.Instance.adventurers != null)
+            // 수정요망. null이 아니라 Count를 체크해야하지 않나?
+            if (GameManager.Instance != null && GameManager.Instance.travelers != null && GameManager.Instance.adventurersEnabled != null)
             {
                 int t = 0;
                 if (GameManager.Instance.travelers[t = UnityEngine.Random.Range(0, GameManager.Instance.travelers.Count)] != null)

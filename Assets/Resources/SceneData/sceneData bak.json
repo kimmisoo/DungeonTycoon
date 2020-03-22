@@ -1,0 +1,345 @@
+{
+  scene : [
+            {
+              num : 0,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+              mapEntranceCount : 12,
+              mapEntrance : [
+                              {x : 42, 
+                               y : 78
+                              },
+                              {x : 42, 
+                               y : 79
+                              },
+                              {x : 43, 
+                               y : 78
+                              },
+                              {x : 43, 
+                               y : 79
+                              },
+                              {x : 44, 
+                               y : 78
+                              },
+                              {x : 44, 
+                               y : 79
+                              },
+                              {x : 45, 
+                               y : 78
+                              },
+                              {x : 45, 
+                               y : 79
+                              }
+                            ]
+              
+            },
+            {
+              num : 1,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+	    mapEntranceCount : 3,
+              mapEntrance : [
+                              {x : 19, 
+                               y : 49
+                              },
+                              {x : 20, 
+                               y : 49
+                              },
+		      {x : 21, 
+                               y : 49
+                              }
+                            ]
+              
+            },
+            {
+              num : 2,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+              mapEntrance : [
+                              {x : 42, 
+                               y : 78
+                              },
+                              {x : 42, 
+                               y : 79
+                              },
+                              {x : 43, 
+                               y : 78
+                              },
+                              {x : 43, 
+                               y : 79
+                              },
+                              {x : 44, 
+                               y : 78
+                              },
+                              {x : 44, 
+                               y : 79
+                              },
+                              {x : 45, 
+                               y : 78
+                              },
+                              {x : 45, 
+                               y : 79
+                              }
+                            ]
+              
+            },
+            {
+              num : 3,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+              mapEntrance : [
+                              {x : 42, 
+                               y : 78
+                              },
+                              {x : 42, 
+                               y : 79
+                              },
+                              {x : 43, 
+                               y : 78
+                              },
+                              {x : 43, 
+                               y : 79
+                              },
+                              {x : 44, 
+                               y : 78
+                              },
+                              {x : 44, 
+                               y : 79
+                              },
+                              {x : 45, 
+                               y : 78
+                              },
+                              {x : 45, 
+                               y : 79
+                              }
+                            ]
+              
+            },
+            {
+              num : 4,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+              mapEntrance : [
+                              {x : 42, 
+                               y : 78
+                              },
+                              {x : 42, 
+                               y : 79
+                              },
+                              {x : 43, 
+                               y : 78
+                              },
+                              {x : 43, 
+                               y : 79
+                              },
+                              {x : 44, 
+                               y : 78
+                              },
+                              {x : 44, 
+                               y : 79
+                              },
+                              {x : 45, 
+                               y : 78
+                              },
+                              {x : 45, 
+                               y : 79
+                              }
+                            ]
+              
+            },
+            {
+              num : 5,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+              mapEntrance : [
+                              {x : 42, 
+                               y : 78
+                              },
+                              {x : 42, 
+                               y : 79
+                              },
+                              {x : 43, 
+                               y : 78
+                              },
+                              {x : 43, 
+                               y : 79
+                              },
+                              {x : 44, 
+                               y : 78
+                              },
+                              {x : 44, 
+                               y : 79
+                              },
+                              {x : 45, 
+                               y : 78
+                              },
+                              {x : 45, 
+                               y : 79
+                              }
+                            ]
+              
+            },
+            {
+              num : 6,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+              mapEntrance : [
+                              {x : 42, 
+                               y : 78
+                              },
+                              {x : 42, 
+                               y : 79
+                              },
+                              {x : 43, 
+                               y : 78
+                              },
+                              {x : 43, 
+                               y : 79
+                              },
+                              {x : 44, 
+                               y : 78
+                              },
+                              {x : 44, 
+                               y : 79
+                              },
+                              {x : 45, 
+                               y : 78
+                              },
+                              {x : 45, 
+                               y : 79
+                              }
+                            ]
+              
+            },
+            {
+              num : 7,
+              traveler_Max : 50,
+              adventurer_Max : 50,
+              complete_Popularity : 10000,
+              buildable : {
+                            drink : 2,
+                            food : 3,
+                            lodge : 3,
+                            equipment : 2,
+                            tour : 2,
+                            convenience : 2,
+                            fun : 3,
+                            santuary : 1,
+                            rescue : 1
+                          },
+              mapEntrance : [
+                              {x : 42, 
+                               y : 78
+                              },
+                              {x : 42, 
+                               y : 79
+                              },
+                              {x : 43, 
+                               y : 78
+                              },
+                              {x : 43, 
+                               y : 79
+                              },
+                              {x : 44, 
+                               y : 78
+                              },
+                              {x : 44, 
+                               y : 79
+                              },
+                              {x : 45, 
+                               y : 78
+                              },
+                              {x : 45, 
+                               y : 79
+                              }
+                            ]
+              
+            }
+            
+            
+          ]
+}
