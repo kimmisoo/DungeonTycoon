@@ -407,8 +407,8 @@ public class GameManager : MonoBehaviour
             progressInformations[i].maxLevel = aData["scene"][sceneNumber]["progressInformation"]["maxLevel"].AsInt;
         }
 
-        traveler_Max = 1;
-        adventurer_Max = 0;
+        traveler_Max = 0;
+        adventurer_Max = 1;
         //specialAdventurer_Max = 800;
 
     }
