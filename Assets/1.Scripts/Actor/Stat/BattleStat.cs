@@ -15,11 +15,13 @@ public class BattleStat {
     {
         battleStatContinuous.Add(StatType.HealthMax, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.Defence, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Avoid, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.Attack, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.AttackSpeed, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.CriticalChance, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.CriticalDamage, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.PenetrationFixed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.PenetrationMult, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
         battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
 
@@ -35,11 +37,13 @@ public class BattleStat {
     {
         battleStatContinuous.Add(StatType.HealthMax, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.Defence, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.Avoid, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.Attack, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.AttackSpeed, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.CriticalChance, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.CriticalDamage, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.PenetrationFixed, new StatBaseContinuous());
+        battleStatContinuous.Add(StatType.PenetrationMult, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
         battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
 
@@ -49,6 +53,7 @@ public class BattleStat {
 
         BaseHealthMax = input.BaseHealthMax;
         BaseDefence = input.BaseDefence;
+        BaseAvoid = input.BaseAvoid;
         BaseAttack = input.BaseAttack;
         BaseAttackSpeed = input.BaseAttackSpeed;
         BaseCriticalChance = input.BaseCriticalChance;
@@ -67,6 +72,7 @@ public class BattleStat {
     {
         battleStatContinuous[StatType.HealthMax].ClearStatModList();
         battleStatContinuous[StatType.Defence].ClearStatModList();
+        battleStatContinuous[StatType.Avoid].ClearStatModList();
         battleStatContinuous[StatType.Attack].ClearStatModList();
         battleStatContinuous[StatType.AttackSpeed].ClearStatModList();
         battleStatContinuous[StatType.CriticalChance].ClearStatModList();
@@ -291,6 +297,18 @@ public class BattleStat {
         set
         {
             battleStatContinuous[StatType.Defence].baseValue = value;
+        }
+    }
+
+    public float BaseAvoid
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Avoid].baseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.Avoid].baseValue = value;
         }
     }
 
