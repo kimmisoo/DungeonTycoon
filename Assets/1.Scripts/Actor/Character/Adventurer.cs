@@ -35,10 +35,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         pathFinder.SetValidateTile(ValidateNextTile);
         SetPathFindEvent();
 
-        //this.monsterNum = monsterNum; //JSON에서 불러오기용 정보 지금은 ㅇ벗음.
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
         //stat 초기화
+        stat = new Stat(stat, this);
         //pathfinder 초기화 // delegate 그대로
     }
 

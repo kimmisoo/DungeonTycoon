@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
+public enum Gender { Male, Female }
 
 public class Stat : MonoBehaviour{
 	
@@ -31,7 +33,7 @@ public class Stat : MonoBehaviour{
 	{
 		get; set;
 	}
-	public int gender
+	public Gender gender
 	{
 		get; set;
 	}// 0 - male, 1 - female;
@@ -44,7 +46,31 @@ public class Stat : MonoBehaviour{
 	Dictionary<DesireType, DesireBase> desireDict;
 	Traveler owner;
 
-	public void Init(int _id, RaceType _race, WealthType _wealth, string _name, string _explanation, int _gender, int _gold, Dictionary<DesireType, DesireBase> _desireDict, Traveler _owner)
+    public Stat()
+    {
+        desireDict = new Dictionary<DesireType, DesireBase>();
+    }
+
+    public Stat(Stat inputStat, Traveler owner)
+    {
+        id = inputStat.id;
+        race = inputStat.race;
+        wealth = inputStat.wealth;
+        name = inputStat.name;
+        explanation = inputStat.explanation;
+        gender = inputStat.gender;
+        gold = inputStat.gold;
+        desireDict = new Dictionary<DesireType, DesireBase>(inputStat.GetDesireDict());
+        
+        this.owner = owner;
+        for (int i = 0; i < desireDict.Count; i++)
+        {
+            desireDict[desireDict.Keys.ToArray()[i]].SetOwner(owner);
+        }
+        //StartDesireTick();
+    }
+
+	public void Init(int _id, RaceType _race, WealthType _wealth, string _name, string _explanation, Gender _gender, int _gold, Dictionary<DesireType, DesireBase> _desireDict, Traveler _owner)
 	{
 		id = _id;
 		race = _race;
@@ -57,8 +83,9 @@ public class Stat : MonoBehaviour{
 		owner = _owner;
 		StartDesireTick();
 	}
-	#region Desire Tick메소드
-	public void StartDesireTick()
+
+    #region Desire Tick메소드
+    public void StartDesireTick()
 	{
 		foreach(KeyValuePair<DesireType, DesireBase> kvp in desireDict)
 		{
@@ -124,4 +151,14 @@ public class Stat : MonoBehaviour{
 	{
 		return desireDict[desireType];
 	}
+
+    public Dictionary<DesireType, DesireBase> GetDesireDict()
+    {
+        return desireDict;
+    }
+
+    public void AddDesire(DesireBase input)
+    {
+        desireDict.Add(input.desireName, new DesireBase(input));
+    }
 }

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum WealthType
 {
-	Upper, Middle, Lower
+	Lower, Middle, Upper
 }

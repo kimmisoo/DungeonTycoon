@@ -59,6 +59,7 @@ public class Traveler : Actor {
         pathFinder.SetValidateTile(ValidateNextTile);
         SetPathFindEvent();
         //stat 초기화
+        stat = new Stat(stat, this);
         //pathfinder 초기화 // delegate 그대로
     }
 
@@ -81,6 +82,9 @@ public class Traveler : Actor {
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>(); // 이거도 마찬가지 가끔 멈췄다가 세우면 터짐.
 
         // 기본은 Idle.
+
+        // 욕구 리젠 시작
+        //stat.StartDesireTick();
 
         StartCoroutine(LateStart());
     }

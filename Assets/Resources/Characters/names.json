@@ -1,7 +1,6 @@
 {
-  "names" : {
-                  "malename" : ["철수", "민수"],
-                  "femalename" : ["영희", "나래"],
-                  "lastname" : ["김", "나", "박", "이", "최"]
-            }
+	"names": {
+		"malename": ["철수", "민수"],
+		"femalename": ["영희", "나래"]
+	}
 }

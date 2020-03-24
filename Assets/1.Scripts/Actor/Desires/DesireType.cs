@@ -4,5 +4,6 @@ using UnityEngine;
 
 public enum DesireType
 {
-	Base, Thirsty, Hungry, Sleep, Tour, Fun, Convenience, Equipment, Health, Rescue
+    // 이 인덱스와 desiredata에서 항목별 인덱스가 같음.
+	Thirsty, Hungry, Sleep, Tour, Convenience, Fun, Equipment, Health, Rescue, Base
 }

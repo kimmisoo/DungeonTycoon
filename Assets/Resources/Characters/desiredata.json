@@ -1,145 +1,143 @@
 [
-  {
-    "adventurer": {
-      "initialValue": {
-        "drink": {
-          "min": 0,
-          "max": 40
-        },
-        "food": {
-          "min": 0,
-          "max": 40
-        },
-        "lodge": {
-          "min": 0,
-          "max": 20
-        },
-        "tour": {
-          "min": 0,
-          "max": 10
-        },
-        "convenience": {
-          "min": 0,
-          "max": 20
-        },
-        "fun": {
-          "min": 0,
-          "max": 20
-        },
-        "equipment": {
-          "min": 0,
-          "max": 30
-        },
-        "santuary": {
-          "min": 0,
-          "max": 0
-        }
+	{
+    "guestType": "traveler",
+    "initialValue": {
+      "thirsty": {
+        "min": 10,
+        "max": 40
       },
-      "regenValue": {
-        "drink": {
-          "min": 0.5,
-          "max": 1.1
-        },
-        "food": {
-          "min": 0.5,
-          "max": 1.1
-        },
-        "lodge": {
-          "min": 0.3,
-          "max": 0.9
-        },
-        "tour": {
-          "min": 0,
-          "max": 0.3
-        },
-        "convenience": {
-          "min": 0.3,
-          "max": 0.9
-        },
-        "fun": {
-          "min": 0.3,
-          "max": 0.9
-        },
-        "equipment": {
-          "min": 0.7,
-          "max": 0.7
-        },
-        "santuary": {
-          "min": 100,
-          "max": 100
-        }
+      "hungry": {
+        "min": 10,
+        "max": 40
+      },
+      "sleep": {
+        "min": 15,
+        "max": 30
+      },
+      "tour": {
+        "min": 50,
+        "max": 70
+      },
+      "convenience": {
+        "min": 0,
+        "max": 30
+      },
+      "fun": {
+        "min": 20,
+        "max": 40
+      },
+      "equipment": {
+        "min": 0,
+        "max": 0
+      },
+      "health": {
+        "min": 0,
+        "max": 0
+      }
+    },
+    "regenValue": {
+      "thirsty": {
+        "min": 0.5,
+        "max": 1.1
+      },
+      "hungry": {
+        "min": 0.5,
+        "max": 1.1
+      },
+      "sleep": {
+        "min": 0.3,
+        "max": 0.9
+      },
+      "tour": {
+        "min": 0.5,
+        "max": 1.1
+      },
+      "convenience": {
+        "min": 0.3,
+        "max": 0.9
+      },
+      "fun": {
+        "min": 0.3,
+        "max": 0.9
+      },
+      "equipment": {
+        "min": 0,
+        "max": 0
+      },
+      "health": {
+        "min": 0,
+        "max": 0
       }
     }
   },
   {
-    "traveler": {
-      "initialValue": {
-        "drink": {
-          "min": 10,
-          "max": 40
-        },
-        "food": {
-          "min": 10,
-          "max": 40
-        },
-        "lodge": {
-          "min": 15,
-          "max": 30
-        },
-        "tour": {
-          "min": 50,
-          "max": 70
-        },
-        "convenience": {
-          "min": 0,
-          "max": 30
-        },
-        "fun": {
-          "min": 20,
-          "max": 40
-        },
-        "equipment": {
-          "min": 0,
-          "max": 0
-        },
-        "santuary": {
-          "min": 0,
-          "max": 0
-        }
+    "guestType": "adventurer",
+    "initialValue": {
+      "thirsty": {
+        "min": 0,
+        "max": 40
       },
-      "regenValue": {
-        "drink": {
-          "min": 0.5,
-          "max": 1.1
-        },
-        "food": {
-          "min": 0.5,
-          "max": 1.1
-        },
-        "lodge": {
-          "min": 0.3,
-          "max": 0.9
-        },
-        "tour": {
-          "min": 0.5,
-          "max": 1.1
-        },
-        "convenience": {
-          "min": 0.3,
-          "max": 0.9
-        },
-        "fun": {
-          "min": 0.3,
-          "max": 0.9
-        },
-        "equipment": {
-          "min": 0,
-          "max": 0
-        },
-        "santuary": {
-          "min": 0,
-          "max": 0
-        }
+      "hungry": {
+        "min": 0,
+        "max": 40
+      },
+      "sleep": {
+        "min": 0,
+        "max": 20
+      },
+      "tour": {
+        "min": 0,
+        "max": 10
+      },
+      "convenience": {
+        "min": 0,
+        "max": 20
+      },
+      "fun": {
+        "min": 0,
+        "max": 20
+      },
+      "equipment": {
+        "min": 0,
+        "max": 30
+      },
+      "health": {
+        "min": 0,
+        "max": 0
+      }
+    },
+    "regenValue": {
+      "thirsty": {
+        "min": 0.5,
+        "max": 1.1
+      },
+      "hungry": {
+        "min": 0.5,
+        "max": 1.1
+      },
+      "sleep": {
+        "min": 0.3,
+        "max": 0.9
+      },
+      "tour": {
+        "min": 0,
+        "max": 0.3
+      },
+      "convenience": {
+        "min": 0.3,
+        "max": 0.9
+      },
+      "fun": {
+        "min": 0.3,
+        "max": 0.9
+      },
+      "equipment": {
+        "min": 0,
+        "max": 0
+      },
+      "health": {
+        "min": 0,
+        "max": 0
       }
     }
   }
