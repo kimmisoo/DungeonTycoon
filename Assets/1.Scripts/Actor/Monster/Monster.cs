@@ -46,6 +46,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     private readonly float DecayTimer = 3.0f;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
+
+    protected Coroutine atkCoroutine;
     #endregion
 
     #region initialization
@@ -117,7 +119,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         //골드, 능력치 초기화...  // current , origin 따로둬야할까?
     }
 
-    #region StateMachine
+#region StateMachine
     protected void EnterState(State nextState)
     {
         switch (nextState)
@@ -201,6 +203,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             case State.PathFinding:
                 break;
             case State.MovingToDestination:
+                animator.SetBool("MoveFlg", false);
                 break;
             case State.ApproachingToEnemy:
                 break;
@@ -251,8 +254,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
         animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
-
-        animator.SetBool("MoveFlg", false);
 
         curState = State.Idle;
     }
@@ -432,10 +433,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         while (ValidatingEnemy())
         {
-            yield return curCoroutine = StartCoroutine(Attack());
+            yield return atkCoroutine = StartCoroutine(Attack());
         }
-
-        curState = State.AfterBattle; // 이 대신 이벤트로 처리해줘야 함.
     }
 
     protected IEnumerator Attack() // 공격
@@ -457,15 +456,23 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
     {
-        StopCoroutine(curCoroutine);
-
+        EndBattle();
         //if (attackerIndex == index)
         //{
         //    GetBattleReward();// 보상 받기. 몬스터는 없음   
         //}
         //enemy = null;
+        atkCoroutine = null;
 
         curState = State.AfterBattle;
+    }
+
+    protected void EndBattle()
+    {
+        if (atkCoroutine != null)
+            StopCoroutine(atkCoroutine);
+        StopCoroutine(curCoroutine);
+        atkCoroutine = null;
     }
 
     protected void GetBattleReward()
@@ -489,6 +496,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator Dead()
     {
+        EndBattle();
         // 여기 애니메이션 설정 넣으면 됨.
         yield return new WaitForSeconds(DecayTimer);
         corpseDecayEvent?.Invoke(index);
@@ -534,7 +542,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         if (battleStat.Health <= 0)
         {
             HealthBelowZeroNotify(this, attacker);
-            curState = State.PassedOut;
+            curState = State.Dead;
         }
         else if (superState != SuperState.Battle)
         {

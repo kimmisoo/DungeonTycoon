@@ -1,6 +1,7 @@
-﻿#define DEBUG_ADV
-#define DEBUG_ADV_STATE
+﻿//#define DEBUG_ADV
+//#define DEBUG_ADV_STATE
 #define DEBUG_ADV_BATTLE
+#define DEBUG_CHARGE
 
 using System.Collections;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     HuntingArea curHuntingArea;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
+    Coroutine atkCoroutine;
 
     public int Level
     {
@@ -405,7 +407,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected virtual void PassedOut()
     {
-        
+        EndBattle();
+
         Structure[] tempArr = StructureManager.Instance.FindRescue(this);
 
         if (tempArr.Length == 0)
@@ -460,6 +463,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //FlipX true == Left, false == Right
         Vector3 dirVector;
         float distance, sum = 0.0f;
+
+#if DEBUG_CHARGE
+        Debug.Log("적: " + enemy + ", 목적지: " + destinationTile);
+#endif
 
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
@@ -590,10 +597,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         while (ValidatingEnemy())
         {
-            yield return curCoroutine = StartCoroutine(Attack());
+            yield return atkCoroutine = StartCoroutine(Attack());
         }
-
-        curState = State.AfterBattle; // 이 대신 이벤트로 처리해줘야 함.
     }
 
     protected IEnumerator Attack() // 공격
@@ -616,8 +621,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     // 적이 죽었을 때 호출되는 메서드
     protected void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
     {
-        StopCoroutine(Attack());
-        StopCoroutine(Battle());
+        EndBattle();
 
         if (attacker == this) // 내가 죽였다면.
         {
@@ -636,6 +640,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         curState = State.AfterBattle;
     }
+
+    protected void EndBattle()
+    {
+        if (atkCoroutine != null)
+            StopCoroutine(atkCoroutine);
+        StopCoroutine(curCoroutine);
+        atkCoroutine = null;
+    }
+
 
     // 죽인 몬스터로부터 보상 획득.
     protected void GetBattleReward(ICombatant attacker)
@@ -696,7 +709,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (battleStat.Health <= 0)
         {
             HealthBelowZeroNotify(this, attacker);
-            curState = State.Dead;
+            curState = State.PassedOut;
         }
         else if (superState != SuperState.Battle)
         {
