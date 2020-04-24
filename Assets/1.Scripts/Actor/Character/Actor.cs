@@ -1,4 +1,5 @@
-﻿#define DEBUG_SAVELOAD
+﻿//#define DEBUG_SAVELOAD
+//#define DEBUG_GETWAY
 
 using System.Collections;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ public abstract class Actor : MonoBehaviour
     public TileForMove curTileForMove;
     protected TileLayer tileLayer;
     protected Tile destinationTile;
-    protected TileForMove destTileForMove;
+    protected TileForMove destinationTileForMove;
 
 
     protected void Awake()
@@ -98,8 +99,10 @@ public abstract class Actor : MonoBehaviour
     public void SetCurTile(Tile _tile)
     {
         curTile = _tile;
+#if DEBUG_GETWAY
         if (curTile == null)
             Debug.Log("NULL!");
+#endif
         pathFinder.SetCurTile(_tile);
     }
     public Tile GetCurTile()
@@ -241,9 +244,10 @@ public abstract class Actor : MonoBehaviour
         Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
 
         tileForMoveWay.Add(curTileForMove);
-
+#if DEBUG_GETWAY
         // 디버깅용?
         Debug.Log(dir.ToString());
+#endif
         string pathString = "";
 
         for (int i = 0; i < path.Count; i++)
@@ -251,8 +255,10 @@ public abstract class Actor : MonoBehaviour
             pathString += path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY() + "\n";
             //Debug.Log("path = " + path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY());
         }
+#if DEBUG_GETWAY
         Debug.Log(pathString);
         Debug.Log("progress : " + cur.GetX() + "(" + cur.GetParent().GetX() + ")" + " , " + cur.GetY() + "(" + cur.GetParent().GetY() + ")"); //19 49
+#endif
 
 
         while (!(path[count].myTilePos.Equals(destinationTile)))
@@ -269,7 +275,7 @@ public abstract class Actor : MonoBehaviour
             }
             cur = next;
 
-            if (Random.Range(0, 2) >= 1 && destTileForMove != cur)
+            if (Random.Range(0, 2) >= 1 && destinationTileForMove != cur)
             {
 
                 next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
@@ -311,9 +317,11 @@ public abstract class Actor : MonoBehaviour
         else
             ySeq = yDiff / Mathf.Abs(yDiff);
 
+#if DEBUG_GETWAY
         Debug.Log("원래 끝 TFM : [" + lastTFM.GetX() + ", " + lastTFM.GetY());
         Debug.Log("xDiff : " + xDiff + ", xSeq : " + xSeq);
         Debug.Log("xDiff : " + yDiff + ", xSeq : " + ySeq);
+#endif
 
         for (int i = 0; i != xDiff; i += xSeq)
         {
@@ -363,7 +371,9 @@ public abstract class Actor : MonoBehaviour
             tileForMoveWay[i].SetRecentActor(this);
             SetCurTile(tileForMoveWay[i].GetParent());
             SetCurTileForMove(tileForMoveWay[i]);
+#if DEBUG_GETWAY
             Debug.Log("curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
+#endif
 
             // 방향에 따른 애니메이션 설정.
             switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
@@ -418,7 +428,9 @@ public abstract class Actor : MonoBehaviour
 
         SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
         SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
+#if DEBUG_GETWAY
         Debug.Log("last curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
+#endif
         // 한칸 덜감
         animator.SetBool("MoveFlg", false);
     } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
@@ -426,7 +438,7 @@ public abstract class Actor : MonoBehaviour
     public abstract bool ValidateNextTile(Tile tile);
     public abstract void SetPathFindEvent();
 
-    #region Save Load
+#region Save Load
     public int GetDestinationTileSave()
     {
         if (destinationTile != null)

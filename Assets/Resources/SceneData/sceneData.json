@@ -1,430 +1,455 @@
 {
-  "scene": [
-    {
-      "num": 0,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "compositionOfPopulation": {
-        "race":{
-          "human": 0.9,
-          "elf": 0.02,
-          "dwarf": 0.02,
-          "orc": 0.02,
-          "dog": 0.02,
-          "cat": 0.02
-        },
-        "wealth":{
-          "lower": 0.8,
-          "middle": 0.15,
-          "upper": 0.05
-        }
-      },
-      "mapEntranceCount": 12,
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ],
-      "huntingAreaCount": 3,
-      "progressInformation": [
-        {
-          "huntingAreaIndex": 0,
-          "guestCapacity": 150,
-          "minLevel": 1,
-          "maxLevel": 10
-        },
-        {
-          "huntingAreaIndex": 1,
-          "guestCapacity": 50,
-          "minLevel": 11,
-          "maxLevel": 20
-        },
-        {
-          "huntingAreaIndex": 2,
-          "guestCapacity": 30,
-          "minLevel": 21,
-          "maxLevel": 25
-        }
-      ]
-    },
-    {
-      "num": 1,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntranceCount": 3,
-      "mapEntrance": [
-        {
-          "x": 19,
-          "y": 49
-        },
-        {
-          "x": 20,
-          "y": 49
-        },
-        {
-          "x": 21,
-          "y": 49
-        }
-      ]
-    },
-    {
-      "num": 2,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 3,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 4,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 5,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 6,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 7,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "complete_Popularity": 10000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    }
-  ]
+	"scene": [{
+			"num": 0,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"compositionOfPopulation": {
+				"race": {
+					"human": 0.9,
+					"elf": 0.02,
+					"dwarf": 0.02,
+					"orc": 0.02,
+					"dog": 0.02,
+					"cat": 0.02
+				},
+				"wealth": {
+					"lower": 0.8,
+					"middle": 0.15,
+					"upper": 0.05
+				}
+			},
+			"mapEntranceCount": 12,
+			"mapEntrance": [{
+					"x": 42,
+					"y": 78
+				},
+				{
+					"x": 42,
+					"y": 79
+				},
+				{
+					"x": 43,
+					"y": 78
+				},
+				{
+					"x": 43,
+					"y": 79
+				},
+				{
+					"x": 44,
+					"y": 78
+				},
+				{
+					"x": 44,
+					"y": 79
+				},
+				{
+					"x": 45,
+					"y": 78
+				},
+				{
+					"x": 45,
+					"y": 79
+				}
+			],
+			"huntingAreaCount": 3,
+			"progressInformation": [{
+					"huntingAreaIndex": 0,
+					"guestCapacity": 150,
+					"minLevel": 1,
+					"maxLevel": 10
+				},
+				{
+					"huntingAreaIndex": 1,
+					"guestCapacity": 50,
+					"minLevel": 11,
+					"maxLevel": 20
+				},
+				{
+					"huntingAreaIndex": 2,
+					"guestCapacity": 30,
+					"minLevel": 21,
+					"maxLevel": 25
+				}
+			]
+		},
+		{
+			"num": 1,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"compositionOfPopulation": {
+				"race": {
+					"human": 0.9,
+					"elf": 0.02,
+					"dwarf": 0.02,
+					"orc": 0.02,
+					"dog": 0.02,
+					"cat": 0.02
+				},
+				"wealth": {
+					"lower": 0.8,
+					"middle": 0.15,
+					"upper": 0.05
+				}
+			},
+			"mapEntranceCount": 3,
+			"mapEntrance": [{
+					"x": 19,
+					"y": 49
+				},
+				{
+					"x": 20,
+					"y": 49
+				},
+				{
+					"x": 21,
+					"y": 49
+				}
+			],
+			"huntingAreaCount": 3,
+			"progressInformation": [{
+					"huntingAreaIndex": 0,
+					"guestCapacity": 150,
+					"minLevel": 1,
+					"maxLevel": 10
+				},
+				{
+					"huntingAreaIndex": 1,
+					"guestCapacity": 50,
+					"minLevel": 11,
+					"maxLevel": 20
+				},
+				{
+					"huntingAreaIndex": 2,
+					"guestCapacity": 30,
+					"minLevel": 21,
+					"maxLevel": 25
+				}
+			]
+		},
+		{
+			"num": 2,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"mapEntrance": [{
+					"x": 42,
+					"y": 78
+				},
+				{
+					"x": 42,
+					"y": 79
+				},
+				{
+					"x": 43,
+					"y": 78
+				},
+				{
+					"x": 43,
+					"y": 79
+				},
+				{
+					"x": 44,
+					"y": 78
+				},
+				{
+					"x": 44,
+					"y": 79
+				},
+				{
+					"x": 45,
+					"y": 78
+				},
+				{
+					"x": 45,
+					"y": 79
+				}
+			]
+		},
+		{
+			"num": 3,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"mapEntrance": [{
+					"x": 42,
+					"y": 78
+				},
+				{
+					"x": 42,
+					"y": 79
+				},
+				{
+					"x": 43,
+					"y": 78
+				},
+				{
+					"x": 43,
+					"y": 79
+				},
+				{
+					"x": 44,
+					"y": 78
+				},
+				{
+					"x": 44,
+					"y": 79
+				},
+				{
+					"x": 45,
+					"y": 78
+				},
+				{
+					"x": 45,
+					"y": 79
+				}
+			]
+		},
+		{
+			"num": 4,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"mapEntrance": [{
+					"x": 42,
+					"y": 78
+				},
+				{
+					"x": 42,
+					"y": 79
+				},
+				{
+					"x": 43,
+					"y": 78
+				},
+				{
+					"x": 43,
+					"y": 79
+				},
+				{
+					"x": 44,
+					"y": 78
+				},
+				{
+					"x": 44,
+					"y": 79
+				},
+				{
+					"x": 45,
+					"y": 78
+				},
+				{
+					"x": 45,
+					"y": 79
+				}
+			]
+		},
+		{
+			"num": 5,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"mapEntrance": [{
+					"x": 42,
+					"y": 78
+				},
+				{
+					"x": 42,
+					"y": 79
+				},
+				{
+					"x": 43,
+					"y": 78
+				},
+				{
+					"x": 43,
+					"y": 79
+				},
+				{
+					"x": 44,
+					"y": 78
+				},
+				{
+					"x": 44,
+					"y": 79
+				},
+				{
+					"x": 45,
+					"y": 78
+				},
+				{
+					"x": 45,
+					"y": 79
+				}
+			]
+		},
+		{
+			"num": 6,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"mapEntrance": [{
+					"x": 42,
+					"y": 78
+				},
+				{
+					"x": 42,
+					"y": 79
+				},
+				{
+					"x": 43,
+					"y": 78
+				},
+				{
+					"x": 43,
+					"y": 79
+				},
+				{
+					"x": 44,
+					"y": 78
+				},
+				{
+					"x": 44,
+					"y": 79
+				},
+				{
+					"x": 45,
+					"y": 78
+				},
+				{
+					"x": 45,
+					"y": 79
+				}
+			]
+		},
+		{
+			"num": 7,
+			"traveler_Max": 50,
+			"adventurer_Max": 50,
+			"complete_Popularity": 10000,
+			"buildable": {
+				"drink": 2,
+				"food": 3,
+				"lodge": 3,
+				"equipment": 2,
+				"tour": 2,
+				"convenience": 2,
+				"fun": 3,
+				"santuary": 1,
+				"rescue": 1
+			},
+			"mapEntrance": [{
+					"x": 42,
+					"y": 78
+				},
+				{
+					"x": 42,
+					"y": 79
+				},
+				{
+					"x": 43,
+					"y": 78
+				},
+				{
+					"x": 43,
+					"y": 79
+				},
+				{
+					"x": 44,
+					"y": 78
+				},
+				{
+					"x": 44,
+					"y": 79
+				},
+				{
+					"x": 45,
+					"y": 78
+				},
+				{
+					"x": 45,
+					"y": 79
+				}
+			]
+		}
+	]
 }

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 /*
  * Animator Tirggers
  * MoveFlg
@@ -80,6 +78,7 @@ public class Traveler : Actor {
 
         // 타일레이어 받기.
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>(); // 이거도 마찬가지 가끔 멈췄다가 세우면 터짐.
+
 
         // 기본은 Idle.
 
@@ -227,6 +226,7 @@ public class Traveler : Actor {
             do
             {
                 destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
+                // TODO: destinationTileForMove 넣도록 고치기
                 yield return null;
             } while (!ValidateNextTile(destinationTile));
 
@@ -255,6 +255,7 @@ public class Traveler : Actor {
                 if (pathFindCount < structureListByPref.Length && structureListByPref[pathFindCount] != null) // 길찾기 횟수가 선호건물 수 보다 적다면
                 {
                     destinationTile = structureListByPref[pathFindCount].GetEntrance(); // 목적지 설정
+                    //TODO: destinationTileForMove 넣게 고치기
                     destinationPlace = structureListByPref[pathFindCount];
                     curState = State.PathFinding;
                 }
@@ -281,6 +282,7 @@ public class Traveler : Actor {
     {
         //길찾기 성공!
         wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+        // TODO: GetWayForMove로 고치기
         animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 

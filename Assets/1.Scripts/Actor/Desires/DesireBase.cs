@@ -68,10 +68,10 @@ public class DesireBase {
 	}
 	public DesireType desireName
 	{
-		get
-		{
-			return desireName;
-		}
+        get
+        {
+            return _desireName;
+        }
 	}
 	protected float _desireValue;
 	protected float _tickAmount;

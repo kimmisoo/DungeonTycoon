@@ -8,7 +8,7 @@ public class StatCriticalChance : StatBaseContinuous
 	private readonly float statMin;
     private readonly float OverallMax;
 	public const StatType type = StatType.CriticalChance;
-	public override float baseValue
+	public override float BaseValue
 	{
 		get
 		{
@@ -42,6 +42,6 @@ public class StatCriticalChance : StatBaseContinuous
                 valueMult += mod.modValue;
             } // Mult 합
         }
-        return Mathf.Clamp((baseValue + valueFixed) * valueMult, 0, OverallMax);
+        return Mathf.Clamp((BaseValue + valueFixed) * valueMult, 0, OverallMax);
     }
 }

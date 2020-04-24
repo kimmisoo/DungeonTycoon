@@ -1,4 +1,5 @@
-﻿#define DEBUG_SAVELOAD
+﻿#define DEBUG_ADV
+//#define DEBUG_GEN_ADV
 
 using UnityEngine;
 using System.Collections;
@@ -175,8 +176,6 @@ public class GameManager : MonoBehaviour
 
         advEnterQ = new Queue<GameObject>();
 
-        progressInformations = new List<ProgressInformation>();
-
         // Scene별로 미리 정의된 관광객의 최대 수에 따라 생성
         for (int i = 0; i < traveler_Max; i++)
         {
@@ -211,19 +210,24 @@ public class GameManager : MonoBehaviour
         }
         StartCoroutine(AdvEnter());
 
+#if DEBUG_ADV
+        GenAndEnqueueSingleAdventurer(1, 10);
+#endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
         {
             popular.Add(0);
         }
 
-        StartCoroutine(LoadIfNeeded());
+        StartCoroutine(LateStart());
     }
 
-    IEnumerator LoadIfNeeded()
+    IEnumerator LateStart()
     {
         yield return null;
-
+#if DEBUG_ADV
+        DebugHuntingArea();
+#endif
         SaveLoadManager.Instance.InstantiateFromSave();
     }
 
@@ -257,9 +261,9 @@ public class GameManager : MonoBehaviour
         TextAsset itemText = Resources.Load<TextAsset>("Items/items");
         items = JSON.Parse(itemText.ToString());  
     }
-    #endregion
+#endregion
 
-    #region Generate Characters
+#region Generate Characters
     // 모험가 입장 코루틴
     // 이거에 i 값을 던져주면 활성화 문제는 해결됨.
     IEnumerator TEnter()
@@ -272,7 +276,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private Stat GenStat()
+    private Stat GenStat() // 관광객용
     {
         Stat tempStat = new Stat();
         if (Random.Range(0, 2) == 0)
@@ -292,6 +296,8 @@ public class GameManager : MonoBehaviour
         tempStat.race = GetRandomRace();
         tempStat.wealth = GetRandomWealth();
         tempStat.gold = GetRandomInitialGold(tempStat.wealth);
+
+        SetDesires(ref tempStat, JobType.Traveler);
 
         return tempStat;
     }
@@ -317,8 +323,13 @@ public class GameManager : MonoBehaviour
         tempStat.wealth = GetRandomWealth(level);
         tempStat.gold = advStatData[level - 1]["gold"].AsInt;
 
+        SetDesires(ref tempStat, JobType.Adventurer);
+
         return tempStat;
+
     }
+
+
 
 
     private RaceType GetRandomRace()
@@ -327,12 +338,24 @@ public class GameManager : MonoBehaviour
         int i;
         float total = 0.0f;
 
-        for(i = 0; i<raceRatios.Count; i++)
+#if DEBUG_GEN_ADV
+        Debug.Log("[GetRandomRace] num: " + num);
+#endif
+
+        for (i = 0; i<raceRatios.Count; i++)
         {
+#if DEBUG_GEN_ADV
+            Debug.Log("[GetRandomRace] raceRatio.Key: " + raceRatios[i].Key);
+            Debug.Log("[GetRandomRace] raceRatio.Value: " + raceRatios[i].Value);
+           
+#endif
             total += raceRatios[i].Value;
             if (num <= total)
                 break;
         }
+#if DEBUG_GEN_ADV
+        Debug.Log("[GetRandomRace] i: " + i);
+#endif
 
         switch (raceRatios[i].Key)
         {
@@ -387,7 +410,7 @@ public class GameManager : MonoBehaviour
         // 레벨에 맞는 계층비율 찾기.
         for (i = 0; i < advWealthRatios.Count; i++)
         {
-            if (level > advWealthRatios[i].levelMin && level < advWealthRatios[i].levelMax)
+            if (level >= advWealthRatios[i].levelMin && level <= advWealthRatios[i].levelMax)
             {
                 break;
             }
@@ -449,6 +472,9 @@ public class GameManager : MonoBehaviour
     // 욕구 1개 추가. 수치는 JSON에 저장된 min/max 기반으로 랜덤돌림.
     private void AddDesire(ref Stat inputStat, DesireType desireType, JobType jobType)
     {
+#if DEBUG_GEN_ADV
+        Debug.Log("AddDesire() : " + desireType);
+#endif
         const float desireTickBetween = 1.0f;
         const float desireTickMult = 1.0f;
 
@@ -501,6 +527,7 @@ public class GameManager : MonoBehaviour
             if (advEnterQ.Count > 0)
             {
                 temp = advEnterQ.Dequeue();
+                temp.GetComponent<Adventurer>().ResetBattleStat();
                 temp.SetActive(true);
                 adventurersEnabled.Add(temp);
             }
@@ -538,7 +565,7 @@ public class GameManager : MonoBehaviour
         tempBattleStat.BaseCriticalDamage = advStatData[level - 1]["criticalattack"].AsFloat;
         tempBattleStat.BasePenetrationFixed = advStatData[level - 1]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = advStatData[level - 1]["movespeed"].AsFloat;
-        tempBattleStat.BaseRange = advStatData[level - 1]["attackrange"].AsInt;
+        tempBattleStat.BaseAttackRange = advStatData[level - 1]["attackrange"].AsInt;
 
         return tempBattleStat;
     }
@@ -610,7 +637,7 @@ public class GameManager : MonoBehaviour
     {
         return info1.curAdvNum - info2.curAdvNum;
     }
-    #endregion
+#endregion
 
     // 인기도 추가
     public void AddPop(int who, float amount)
@@ -660,11 +687,12 @@ public class GameManager : MonoBehaviour
         Debug.Log(aData["scene"][sceneNumber]);
         Debug.Log(aData["scene"][sceneNumber]["traveler_Max"].AsInt);
 #endif
-        // 이거도 디버깅용. 다 구현되면 필요없음.
+
+#if DEBUG
         traveler_Max = aData["scene"][sceneNumber]["traveler_Max"].AsInt;
         adventurer_Max = aData["scene"][sceneNumber]["adventurer_Max"].AsInt;
         complete_Popularity = aData["scene"][sceneNumber]["complete_Popularity"].AsInt;
-        //
+#endif
 
         // 지을 수 있는 건물에 대한 정보(몇번째 건물까지 지을 수 있는지. 스테이지에 따라 다름) 로드.
         SetSceneStructureDatas(aData, sceneNumber);
@@ -678,11 +706,11 @@ public class GameManager : MonoBehaviour
         // 사냥터 개방될 때마다 전체 수용인원이 몇명 늘어나는지와 각 사냥터의 레벨대를 로드.
         SetSceneProgressInfos(aData, sceneNumber);
 
-        // 디버깅용 임시
-        traveler_Max = 1;
-        adventurer_Max = 0;
+#if DEBUG
+        traveler_Max = 0;
+        adventurer_Max = 1;
         //specialAdventurer_Max = 800;
-
+#endif
     }
 
     
@@ -728,7 +756,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    #region Save Load
+#region Save Load
     // 현재 상황 Save
     public void Save()
     {
@@ -845,17 +873,17 @@ public class GameManager : MonoBehaviour
     {
         return tileMap.transform.GetChild(0).gameObject;
     }
-    #endregion
+#endregion
 
-    #region BattleImpl
+#region BattleImpl
     // 디버깅용 사냥터 생성 코드
     public void DebugHuntingArea()
     {
-        HuntingAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1185).gameObject);
+        HuntingAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
     }
-    #endregion
+#endregion
 
-    #region JSON 처리(Scene 정보 설정)
+#region JSON 처리(Scene 정보 설정)
     private void SetSceneStructureDatas(JSONNode aData, int sceneNumber)
     {
         drink_Max = aData["scene"][sceneNumber]["buildable"]["drink"].AsInt;
@@ -872,6 +900,10 @@ public class GameManager : MonoBehaviour
     private void SetSceneRatioDatas(JSONNode aData, int sceneNumber)
     {
         raceRatios = new List<KeyValuePair<string, float>>();
+
+#if DEBUG_GEN_ADV
+        Debug.Log("sceneNumber: " + sceneNumber);
+#endif
 
         raceRatios.Add(new KeyValuePair<string, float>("human", aData["scene"][sceneNumber]["compositionOfPopulation"]["race"]["human"].AsFloat));
         raceRatios.Add(new KeyValuePair<string, float>("elf", aData["scene"][sceneNumber]["compositionOfPopulation"]["race"]["elf"].AsFloat));
@@ -923,6 +955,7 @@ public class GameManager : MonoBehaviour
 
     private void SetSceneProgressInfos(JSONNode aData, int sceneNumber)
     {
+        progressInformations = new List<ProgressInformation>();
         // 사냥터 관련 정보 저장
         huntingAreaCount = aData["scene"][sceneNumber]["huntingAreaCount"].AsInt;
         for (int i = 0; i < huntingAreaCount; i++)
@@ -934,5 +967,5 @@ public class GameManager : MonoBehaviour
             progressInformations[i].maxLevel = aData["scene"][sceneNumber]["progressInformation"]["maxLevel"].AsInt;
         }
     }
-    #endregion
+#endregion
 }

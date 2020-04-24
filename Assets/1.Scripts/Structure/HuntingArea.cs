@@ -83,15 +83,18 @@ public class HuntingArea : Place
                 needed = monsterMax - monstersEnabled.Count;
             else
                 needed = monsterPerRegen;
-
+#if DEBUG_HA_REGEN
             Debug.Log("monsterMax, monsterEnabledCnt, monsterPerRegen : " + monsterMax + ", " + monstersEnabled.Count + ", " + monsterPerRegen);
             Debug.Log("needed : " + needed);
+#endif
 
             if (needed > 0)
             {
                 blanks = FindBlanks(needed);
+#if DEBUG_HA_REGEN
                 Debug.Log("리젠! 몬스터 수 : " + needed + ", 계산된 빈 칸 수 : " + blanks.Count);
                 Debug.Log("전체 칸 수 : " + territory.Count + ", 전체 빈 칸 수 : " + BlanksCount());
+#endif
                 for (int i = 0; i < blanks.Count; i++)
                 {
                     MonsterRegen(blanks[i].GetParent(), blanks[i]);
@@ -129,7 +132,9 @@ public class HuntingArea : Place
         foreach (string key in occupiedTerritory.Keys.ToList())
             occupiedTerritory[key] = false;
 
+#if DEBUG_HA_REGEN
         Debug.Log("monster count : " + monstersEnabled.Count);
+#endif
         // 몬스터가 들어가 있는 자리 확인
         for (int i = 0; i < monstersEnabled.Count; i++)
         {
@@ -158,7 +163,9 @@ public class HuntingArea : Place
             while (true)
             {
                 randomNum = Random.Range(0, territory.Count);
+#if DEBUG_HA_REGEN
                 Debug.Log("randomNum : " + randomNum + ", ocupiedCnt : " + occupiedTerritory.Count);
+#endif
                 keyXY = occupiedTerritory.Keys.ToList<string>()[randomNum];
 
                 // result에 추가되지 않았고, 빈 칸일 때.
@@ -170,7 +177,9 @@ public class HuntingArea : Place
             }
             insertionCnt++;
         }
+#if DEBUG_HA_REGEN
         Debug.Log("계산 끝. 리턴한 빈 칸 수 : " + result.Count);
+#endif
 
         return result;
     }
@@ -244,7 +253,7 @@ public class HuntingArea : Place
     }
 
     // Use this for initialization
-    #region 수정!
+#region 수정!
     void Start()
     {
         GameObject tempMonster;
@@ -259,12 +268,14 @@ public class HuntingArea : Place
             if (Random.Range(0.0f, 1.0f) < monsterRatio)
             {
                 tempMonster = Instantiate(monsterSample1);
-                tempMonster.GetComponent<Monster>().InitMonster(monsterSample1.GetComponent<Monster>());      
+                tempMonster.GetComponent<Monster>().InitMonster(monsterSample1.GetComponent<Monster>());
+                tempMonster.name = i + "_Sample1";
             }
             else
             {
                 tempMonster = Instantiate(monsterSample2);
                 tempMonster.GetComponent<Monster>().InitMonster(monsterSample2.GetComponent<Monster>());
+                tempMonster.name = i + "_Sample2";
             }
             tempMonster.GetComponent<Monster>().index = i;
             tempMonster.GetComponent<Monster>().SetHabitat(this);
@@ -286,5 +297,5 @@ public class HuntingArea : Place
     {
         StartCoroutine(MonsterRegenCycle());
     }
-    #endregion
+#endregion
 }

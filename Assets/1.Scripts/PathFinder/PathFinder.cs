@@ -75,10 +75,14 @@ public class PathFinder : MonoBehaviour
     {
         // 게임 매니저에서 타일맵 받기
         TileMap tempTileMap = GameManager.Instance.GetMap();
+#if DEBUG_PF
         Debug.Log("타일맵? " + tempTileMap);
+#endif
         // 타일레이어 받기
         tileLayer = tempTileMap.GetLayer(0).GetComponent<TileLayer>();
+#if DEBUG_PF
         Debug.Log("타일레이어? " + tileLayer);
+#endif
         id = gameObject.GetInstanceID();
 
         // simulate 결과 받기까지 기다리는 시간.
@@ -102,8 +106,9 @@ public class PathFinder : MonoBehaviour
     {
         yield return null;
         myCurPos = pcurPos;
-
+#if DEBUG_PF
         Debug.Log("pcurPos : [" + pcurPos.GetX() + ", " + pcurPos.GetY() + "]");
+#endif
         destination = pdestination;
 
         // 리스트 및 큐들 초기화
@@ -173,7 +178,9 @@ public class PathFinder : MonoBehaviour
 
         // Close 리스트에 집어넣음
         visited[latest_simulate.Y, latest_simulate.X].isClosed = true;
+#if DEBUG_PF
         Debug.Log("in");
+#endif
 
         while (!latest_simulate.myTilePos.Equals(destination)) // Dest에 도착하지 않은 동안
         {

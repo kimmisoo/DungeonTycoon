@@ -239,7 +239,9 @@ public class HuntingAreaManager : MonoBehaviour
                     //디버깅용임시
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(180, 110, 0);
                     //
+#if DEBUG_CREATE_HA
                     Debug.Log(thatTile);
+#endif
                     // 여기서 딕셔너리에 TileForMove 영역을 추가해주자.
                     //foreach(TileForMove child in thatTile.childs)
                     //{
@@ -247,7 +249,7 @@ public class HuntingAreaManager : MonoBehaviour
                     //}
                     // 디버깅용임시
                     // thatTile.SetPassable(true);
-                    for(int k = 0; k<4; k++)
+                    for (int k = 0; k<4; k++)
                     {
                         huntingArea.AddTerritory(thatTile.childs[k]);
                     }
@@ -258,10 +260,10 @@ public class HuntingAreaManager : MonoBehaviour
                 {
                     thatTile.SetStructed(true);
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
-                    if (thatTile.GetBuildable())
-                    {
+                    //if (thatTile.GetBuildable())
+                    //{
                         huntingArea.addEntrance(thatTile);
-                    }
+                    //}
                 }
             }
         }
@@ -298,7 +300,7 @@ public class HuntingAreaManager : MonoBehaviour
         tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample1Num]["atkcritical"].AsFloat;
         tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample1Num]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample1Num]["movespeed"].AsFloat;
-        tempBattleStat.BaseRange = monsterJson[monsterSet][sample1Num]["range"].AsInt;
+        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample1Num]["range"].AsInt;
 
         RewardStat tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample1Num]["exp"].AsInt;
@@ -327,8 +329,8 @@ public class HuntingAreaManager : MonoBehaviour
         tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample2Num]["atkcritical"].AsFloat;
         tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample2Num]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample2Num]["movespeed"].AsFloat;
-        tempBattleStat.BaseRange = monsterJson[monsterSet][sample2Num]["range"].AsInt;
-
+        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample2Num]["range"].AsInt;
+        
         tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample2Num]["exp"].AsInt;
         tempRewardStat.Gold = monsterJson[monsterSet][sample2Num]["gold"].AsInt;

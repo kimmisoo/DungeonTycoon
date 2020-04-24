@@ -181,7 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   superState: 0
   state: 0
-  pathFinder: {fileID: 0}
+  pathFinder: {fileID: 114611986827091796}
   index: 0
 --- !u!212 &212038393639115676
 SpriteRenderer:

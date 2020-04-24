@@ -7,7 +7,7 @@ public class StatInvincibleCount : StatBaseDiscrete
 	private readonly int statMax;
 	private readonly int statMin;
 	public const StatType type = StatType.InvincibleCount;
-	public override int baseValue
+	public override int BaseValue
 	{
 		get
 		{

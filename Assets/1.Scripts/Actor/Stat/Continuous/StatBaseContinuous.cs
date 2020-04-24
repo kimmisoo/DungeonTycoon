@@ -7,7 +7,7 @@ public class StatBaseContinuous {
 
 	protected List<StatModContinuous> modList = new List<StatModContinuous>();
 
-	public virtual float baseValue
+	public virtual float BaseValue
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class StatBaseContinuous {
 				valueMult += mod.modValue;
 			} // Mult 합
 		}
-		return (baseValue + valueFixed) * valueMult;
+		return (BaseValue + valueFixed) * valueMult;
 	}
 	
 	public virtual void AddStatMod(StatModContinuous mod)
