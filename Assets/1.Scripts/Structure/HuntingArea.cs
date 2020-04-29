@@ -115,6 +115,7 @@ public class HuntingArea : Place
         tempMonsterComp.ResetBattleStat();
         tempMonsterComp.SetCurTile(curTile);
         tempMonsterComp.SetCurTileForMove(curTileForMove);
+        tempMonsterComp.AlignPositionToCurTileForMove();
         
         // 객체 풀 관리. 비활성화 리스트에서 활성화 리스트로.
         monstersDisabled[lastKey].SetActive(true);

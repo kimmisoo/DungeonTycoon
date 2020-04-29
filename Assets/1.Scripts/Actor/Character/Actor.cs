@@ -435,6 +435,14 @@ public abstract class Actor : MonoBehaviour
         animator.SetBool("MoveFlg", false);
     } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
+    /// <summary>
+    /// CurTileForMove에 맞춰 transform.position 조정.
+    /// </summary>
+    public void AlignPositionToCurTileForMove()
+    {
+        transform.position = curTileForMove.GetPosition();
+    }
+
     public abstract bool ValidateNextTile(Tile tile);
     public abstract void SetPathFindEvent();
 

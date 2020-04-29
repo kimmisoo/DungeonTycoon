@@ -38,6 +38,7 @@ public class Traveler : Actor {
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
     protected Coroutine curCoroutine;
+    protected Coroutine curSubCoroutine;
     //protected Tile destinationTile;
     protected Place destinationPlace;
     protected Structure[] structureListByPref;

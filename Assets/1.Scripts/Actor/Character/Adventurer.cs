@@ -27,7 +27,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     HuntingArea curHuntingArea;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
-    Coroutine atkCoroutine;
+    public event MoveStartedEventHandler moveStartedEvent;
 
     public int Level
     {
@@ -181,8 +181,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("PassedOut");
 #endif
-                animator.SetBool("isDead", true);
                 superState = SuperState.PassedOut;
+                animator.SetTrigger("DeathFlg");
                 PassedOut();
                 break;
             case State.SpontaneousRecovery:
@@ -267,6 +267,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             case SuperState.PassedOut:
                 curState = State.Rescued;
                 break;
+            case SuperState.Battle:
+                curState = State.ApproachingToEnemy;
+                break;
             default: //EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
                 curState = State.MovingToDestination;
                 break;
@@ -279,7 +282,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //길찾기 성공!
         wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
         // TODO: GetWayForMove로 고치기
-        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
+        MoveStartedNotify();
+        yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 
         switch(superState)
         {
@@ -400,6 +404,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         curHuntingArea.ExitAdventurer(this.gameObject);
 
         curHuntingArea = null;
+        ResetBattleEvents();
 
         curState = State.PathFinding;
         yield return null;
@@ -407,7 +412,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected virtual void PassedOut()
     {
-        EndBattle();
+        StopCurActivities();
+
+        ResetBattleEvents();
 
         Structure[] tempArr = StructureManager.Instance.FindRescue(this);
 
@@ -442,6 +449,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         curState = State.ExitingHuntingArea;
     }
+
+    protected void ResetBattleEvents()
+    {
+        // 이벤트 핸들러 초기화
+        healthBelowZeroEvent = null;
+        moveStartedEvent = null;
+    }
+
 #endregion
 
     public override bool ValidateNextTile(Tile tile)
@@ -459,6 +474,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         yield return null;
 
+        enemy.AddMoveStartedEventHandler(OnEnemyMoveStarted);
+
         Direction dir = Direction.DownLeft;
         //FlipX true == Left, false == Right
         Vector3 dirVector;
@@ -475,7 +492,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             SetCurTile(tileForMoveWay[i].GetParent());
             SetCurTileForMove(tileForMoveWay[i]);
 
-            // 모험가가 이미 누웠거나, 사냥터에서 나갔다면
+            // 적이 이미 누웠거나, 사냥터에서 나갔다면
             if (!ValidatingEnemy())
             {
                 curState = State.AfterBattle;
@@ -526,6 +543,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 default:
                     break;
             }
+
+            SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
+            SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
             //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
@@ -573,8 +593,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator ApproachingToEnemy()
     {
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove);
-
-        yield return curCoroutine = StartCoroutine(Charge(wayForMove));
+        
+        MoveStartedNotify();
+        yield return curSubCoroutine = StartCoroutine(Charge(wayForMove));
     }
 
     // 전투 시작
@@ -593,16 +614,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected IEnumerator Battle()
     {
-        enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
+        //enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
 
         while (ValidatingEnemy())
         {
-            yield return atkCoroutine = StartCoroutine(Attack());
+            yield return curSubCoroutine = StartCoroutine(Attack());
         }
     }
 
     protected IEnumerator Attack() // 공격
     {
+        animator.SetTrigger("AttackFlg");
         yield return new WaitForSeconds(1.0f); // 애니메이션 관련 넣을 것.
 
         // 어차피 이벤트로 나가는데 필요한지?
@@ -618,35 +640,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
     }
 
-    // 적이 죽었을 때 호출되는 메서드
-    protected void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
+    protected void StopCurActivities()
     {
-        EndBattle();
-
-        if (attacker == this) // 내가 죽였다면.
-        {
-#if DEBUG_ADV_BATTLE
-            int goldBefore = stat.gold;
-#endif
-
-            GetBattleReward(victim);// 보상 받기.
-
-#if DEBUG_ADV_BATTLE
-            Debug.Log(this + "가 몬스터 처치." +
-                "\n기존 소지금: " + goldBefore + ", 현재 소지금: " + stat.gold);
-#endif
-        }
-        enemy = null;
-
-        curState = State.AfterBattle;
-    }
-
-    protected void EndBattle()
-    {
-        if (atkCoroutine != null)
-            StopCoroutine(atkCoroutine);
-        StopCoroutine(curCoroutine);
-        atkCoroutine = null;
+        if (curSubCoroutine != null)
+            StopCoroutine(curSubCoroutine);
+        if (curCoroutine != null)
+            StopCoroutine(curCoroutine);
+        curSubCoroutine = null;
     }
 
 
@@ -690,6 +690,48 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         return superState == SuperState.Battle;
     }
+
+    protected void AddHealthBelowZeroEventHandler(HealthBelowZeroEventHandler newEvent) // 이벤트에 추가된 적 없는 이벤트면 추가.
+    {
+        if (healthBelowZeroEvent == null)
+        {
+            healthBelowZeroEvent += newEvent;
+            return;
+        }
+
+        System.Delegate[] invocations = healthBelowZeroEvent.GetInvocationList();
+
+        bool isNew = true;
+        for(int i = 0; i < invocations.Length; i++)
+        {
+            if (invocations[i].Target == newEvent.Target)
+                isNew = false;
+        }
+
+        if (isNew)
+            healthBelowZeroEvent += newEvent;
+    }
+
+    public void AddMoveStartedEventHandler(MoveStartedEventHandler newEvent)
+    {
+        if (moveStartedEvent == null)
+        {
+            moveStartedEvent += newEvent;
+            return;
+        }
+
+        System.Delegate[] invocations = moveStartedEvent.GetInvocationList();
+
+        bool isNew = true;
+        for (int i = 0; i < invocations.Length; i++)
+        {
+            if (invocations[i].Target == newEvent.Target)
+                isNew = false;
+        }
+
+        if (isNew)
+            moveStartedEvent += newEvent;
+    }
 #endregion
 
 #region ICombatant
@@ -697,7 +739,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         float actualDamage;
         bool isEvaded;
-        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded);
+
+        AddHealthBelowZeroEventHandler(attacker.OnEnemyHealthBelowZero); // 이벤트 리스트에 추가.
+
+        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded); // 데미지 입음
         StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
 
 #if DEBUG_ADV_BATTLE
@@ -713,10 +758,51 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
         else if (superState != SuperState.Battle)
         {
+            StopCurActivities();
             enemy = attacker;
             curState = State.InitiatingBattle;
         }
     }
+
+    // 적이 죽었을 때 호출되는 메서드
+    public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
+    {
+        StopCurActivities();
+
+        if (attacker == this) // 내가 죽였다면.
+        {
+#if DEBUG_ADV_BATTLE
+            int goldBefore = stat.gold;
+#endif
+
+            GetBattleReward(victim);// 보상 받기.
+
+#if DEBUG_ADV_BATTLE
+            Debug.Log(this + "가 몬스터 처치." +
+                "\n기존 소지금: " + goldBefore + ", 현재 소지금: " + stat.gold);
+#endif
+        }
+        enemy = null;
+
+        curState = State.AfterBattle;
+    }
+
+    public void OnEnemyMoveStarted(TileForMove newDest)
+    {
+        // 이거 고치자. 순간이동하고 상태 자꾸 바뀌고 문제임.
+        //StopCurActivities();
+
+        //destinationTileForMove = newDest;
+        //destinationTile = newDest.GetParent();
+
+        //curState = State.PathFinding;
+    }
+
+    public void MoveStartedNotify()
+    {
+        moveStartedEvent?.Invoke(destinationTileForMove);
+    }
+
     public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
     {
         // 수정요망. 데미지랑 크리 혹은 회피에 따라서 다른 문구가 위에 뜨도록.

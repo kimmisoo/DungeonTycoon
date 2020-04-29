@@ -24,6 +24,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
     protected Coroutine curCoroutine;
+    protected Coroutine curSubCoroutine;
 
     protected Structure destinationStructure;
     protected Structure[] structureListByPref;
@@ -46,8 +47,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     private readonly float DecayTimer = 3.0f;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
+    public event MoveStartedEventHandler moveStartedEvent;
 
-    protected Coroutine atkCoroutine;
     #endregion
 
     #region initialization
@@ -184,6 +185,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 Debug.Log("Dead");
 #endif
                 superState = SuperState.Dead;
+                animator.SetTrigger("DeathFlg");
                 curCoroutine = StartCoroutine(Dead());
                 break;
             case State.None:
@@ -253,7 +255,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         //길찾기 성공!
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
         animator.SetBool("MoveFlg", true); // animation 이동으로
-        yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
+        MoveStartedNotify();
+        yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
 
         curState = State.Idle;
     }
@@ -298,6 +301,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         yield return null;
 
+        // 적이 이동하면 목적지 수정하도록 이벤트 구독
+        enemy.AddMoveStartedEventHandler(OnEnemyMoveStarted);
+        
         Direction dir = Direction.DownLeft;
         //FlipX true == Left, false == Right
         Vector3 dirVector;
@@ -361,6 +367,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 default:
                     break;
             }
+
+            SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
+            SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
             //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
@@ -409,7 +418,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected IEnumerator ApproachingToEnemy()
     {
         animator.SetBool("MoveFlg", true); // animation 이동으로
-        yield return curCoroutine = StartCoroutine(Charge(wayForMove));
+        MoveStartedNotify();
+        yield return curSubCoroutine = StartCoroutine(Charge(wayForMove));
         animator.SetBool("MoveFlg", false);
     }
 
@@ -429,16 +439,17 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator Battle()
     {
-        enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
+        //enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
 
         while (ValidatingEnemy())
         {
-            yield return atkCoroutine = StartCoroutine(Attack());
+            yield return curSubCoroutine = StartCoroutine(Attack());
         }
     }
 
     protected IEnumerator Attack() // 공격
     {
+        animator.SetTrigger("AttackFlg");
         yield return new WaitForSeconds(1.0f); // 애니메이션 관련 넣을 것.
 
         // 어차피 이벤트로 나가는데 필요한지?
@@ -454,25 +465,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
     }
 
-    protected void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
+    protected void StopCurActivities()
     {
-        EndBattle();
-        //if (attackerIndex == index)
-        //{
-        //    GetBattleReward();// 보상 받기. 몬스터는 없음   
-        //}
-        //enemy = null;
-        atkCoroutine = null;
-
-        curState = State.AfterBattle;
-    }
-
-    protected void EndBattle()
-    {
-        if (atkCoroutine != null)
-            StopCoroutine(atkCoroutine);
-        StopCoroutine(curCoroutine);
-        atkCoroutine = null;
+        if (curSubCoroutine != null)
+            StopCoroutine(curSubCoroutine);
+        if (curCoroutine != null)
+            StopCoroutine(curCoroutine);
+        curSubCoroutine = null;
     }
 
     protected void GetBattleReward()
@@ -496,10 +495,19 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator Dead()
     {
-        EndBattle();
+        StopCurActivities();
+        ResetBattleEvents();
+
         // 여기 애니메이션 설정 넣으면 됨.
         yield return new WaitForSeconds(DecayTimer);
         corpseDecayEvent?.Invoke(index);
+    }
+
+    protected void ResetBattleEvents()
+    {
+        // 이벤트 핸들러 초기화
+        healthBelowZeroEvent = null;
+        moveStartedEvent = null;
     }
 
     // 죽을 때 호출. 이 몬스터를 공격대상으로 하고있는 모험가들에게 알려줌.
@@ -523,13 +531,58 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         return superState == SuperState.Battle;
     }
-#endregion
 
-#region ICombatant
+    protected void AddHealthBelowZeroEventHandler(HealthBelowZeroEventHandler newEvent) // 이벤트에 추가된 적 없는 이벤트면 추가.
+    {
+        if (healthBelowZeroEvent == null)
+        {
+            healthBelowZeroEvent += newEvent;
+            return;
+        }
+
+        System.Delegate[] invocations = healthBelowZeroEvent.GetInvocationList();
+
+        bool isNew = true;
+        for(int i = 0; i < invocations.Length; i++)
+        {
+            if (invocations[i].Target == newEvent.Target)
+                isNew = false;
+        }
+
+        if (isNew)
+            healthBelowZeroEvent += newEvent;
+    }
+
+    public void AddMoveStartedEventHandler(MoveStartedEventHandler newEvent)
+    {
+        if (moveStartedEvent == null)
+        {
+            moveStartedEvent += newEvent;
+            return;
+        }
+
+        System.Delegate[] invocations = moveStartedEvent.GetInvocationList();
+
+        bool isNew = true;
+        for (int i = 0; i < invocations.Length; i++)
+        {
+            if (invocations[i].Target == newEvent.Target)
+                isNew = false;
+        }
+
+        if (isNew)
+            moveStartedEvent += newEvent;
+    }
+    #endregion
+
+    #region ICombatant
     public void TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
         float actualDamage;
         bool isEvaded;
+
+        AddHealthBelowZeroEventHandler(attacker.OnEnemyHealthBelowZero); // 이벤트 리스트에 추가.
+
         battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded);
         StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
 
@@ -546,10 +599,41 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
         else if (superState != SuperState.Battle)
         {
+            StopCurActivities();
             enemy = attacker;
             curState = State.InitiatingBattle;
         }
     }
+
+    public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
+    {
+        StopCurActivities();
+        //if (attackerIndex == index)
+        //{
+        //    GetBattleReward();// 보상 받기. 몬스터는 없음   
+        //}
+        //enemy = null;
+        curSubCoroutine = null;
+
+        curState = State.AfterBattle;
+    }
+
+    public void OnEnemyMoveStarted(TileForMove newDest)
+    {
+        //StopCurActivities();
+
+        //destinationTileForMove = newDest;
+        //destinationTile = newDest.GetParent();
+
+        //StopCoroutine(curCoroutine);
+        //curState = State.PathFinding;
+    }
+
+    public void MoveStartedNotify()
+    {
+        moveStartedEvent?.Invoke(destinationTileForMove);
+    }
+
     public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
     {
         // 수정요망. 데미지랑 크리 혹은 회피에 따라서 다른 문구가 위에 뜨도록.
