@@ -510,12 +510,23 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             // 방향에 따른 애니메이션 설정.
             SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
 
-            SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
-            SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
+            //SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
+            //SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
             //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
             distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
+            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance / 2)
+            {
+                yield return null;
+                transform.Translate(dirVector * Time.deltaTime);
+
+            }
+
+            // 절반 넘어가면 다음 타일로 위치지정해줌.
+            SetCurTile(tileForMoveWay[i + 1].GetParent());
+            SetCurTileForMove(tileForMoveWay[i + 1]);
+
             while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
             {
                 yield return null;
@@ -761,12 +772,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public void OnEnemyMoveStarted(TileForMove newDest)
     {
         // 이거 고치자. 순간이동하고 상태 자꾸 바뀌고 문제임.
-        //StopCurActivities();
+        StopCurActivities();
 
-        //destinationTileForMove = newDest;
-        //destinationTile = newDest.GetParent();
+        destinationTileForMove = newDest;
+        destinationTile = newDest.GetParent();
 
-        //curState = State.PathFinding;
+        curState = State.PathFinding;
     }
 
     public void MoveStartedNotify()

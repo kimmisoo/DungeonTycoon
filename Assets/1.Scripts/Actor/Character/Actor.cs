@@ -382,6 +382,19 @@ public abstract class Actor : MonoBehaviour
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
             distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
+
+
+            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance/2)
+            {
+                yield return null;
+                transform.Translate(dirVector * Time.deltaTime);
+
+            }
+
+            // 절반 넘어가면 다음 타일로 위치지정해줌.
+            SetCurTile(tileForMoveWay[i + 1].GetParent());
+            SetCurTileForMove(tileForMoveWay[i + 1]);
+
             while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
             {
                 yield return null;
@@ -390,10 +403,7 @@ public abstract class Actor : MonoBehaviour
             }
             sum = 0.0f;
             transform.position = tileForMoveWay[i + 1].GetPosition();
-        }
-
-        SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
-        SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
+        }     
 #if DEBUG_GETWAY
         Debug.Log("last curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
 #endif
@@ -411,30 +421,31 @@ public abstract class Actor : MonoBehaviour
         {
             case Direction.DownRight:
                 animator.SetTrigger("UpToDownFlg");
+                animator.SetBool("isUp", false);
                 foreach (SpriteRenderer sr in spriteRenderers)
                 {
                     sr.flipX = true;
                 }
                 break;
             case Direction.UpRight:
-
                 animator.SetTrigger("DownToUpFlg");
+                animator.SetBool("isUp", true);
                 foreach (SpriteRenderer sr in spriteRenderers)
                 {
                     sr.flipX = true;
                 }
                 break;
             case Direction.DownLeft:
-
                 animator.SetTrigger("UpToDownFlg");
+                animator.SetBool("isUp", false);
                 foreach (SpriteRenderer sr in spriteRenderers)
                 {
                     sr.flipX = false;
                 }
                 break;
             case Direction.UpLeft:
-
                 animator.SetTrigger("DownToUpFlg");
+                animator.SetBool("isUp", true);
                 foreach (SpriteRenderer sr in spriteRenderers)
                 {
                     sr.flipX = false;

@@ -258,7 +258,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         MoveStartedNotify();
 
         yield return null;
-        //yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
+        yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
 
         curState = State.Idle;
     }
@@ -335,18 +335,30 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             // 방향에 따른 애니메이션 설정.
             SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
 
-            SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
-            SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
+            //SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
+            //SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
             //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
             distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
+            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance / 2)
+            {
+                yield return null;
+                transform.Translate(dirVector * Time.deltaTime);
+
+            }
+
+            // 절반 넘어가면 다음 타일로 위치지정해줌.
+            SetCurTile(tileForMoveWay[i + 1].GetParent());
+            SetCurTileForMove(tileForMoveWay[i + 1]);
+
             while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
             {
                 yield return null;
                 transform.Translate(dirVector * Time.deltaTime);
 
             }
+
             sum = 0.0f;
             transform.position = tileForMoveWay[i + 1].GetPosition();
         }
