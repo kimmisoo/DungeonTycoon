@@ -190,16 +190,21 @@ public class HuntingArea : Place
         if (monstersEnabled.Count == 0)
             return null; //몬스터가 아예 없다면 null 반환.
 
+        //TileForMove advTFM = adv.GetCurTileForMove();
+        //Monster nearest = monstersEnabled.Values.ToArray<GameObject>()[0].GetComponent<Monster>();
+        //TileForMove monsterTFM = nearest.GetCurTileForMove();
+        //int shortestDist = DistanceBetween(advTFM, monsterTFM);
         TileForMove advTFM = adv.GetCurTileForMove();
-        Monster nearest = monstersEnabled.Values.ToArray<GameObject>()[0].GetComponent<Monster>();
-        TileForMove monsterTFM = nearest.GetCurTileForMove();
-        int shortestDist = DistanceBetween(advTFM, monsterTFM);
-        
-        
-        foreach(KeyValuePair<int, GameObject> item in monstersEnabled)
+        Monster nearest = null;
+        TileForMove monsterTFM = null;
+        int shortestDist = int.MaxValue;
+
+
+        foreach (KeyValuePair<int, GameObject> item in monstersEnabled)
         {
-            monsterTFM = item.Value.GetComponent<Monster>().GetCurTileForMove();
-            if (DistanceBetween(advTFM, monsterTFM) < shortestDist)
+            Monster monster = item.Value.GetComponent<Monster>();
+            monsterTFM = monster.GetCurTileForMove();
+            if (DistanceBetween(advTFM, monsterTFM) < shortestDist && monster.curState != State.Dead)
             {
                 shortestDist = DistanceBetween(advTFM, monsterTFM);
                 nearest = item.Value.GetComponent<Monster>(); // 일단 애드 나고 안나고 떠나서 가까운 거 먼저 치게 돼있음.

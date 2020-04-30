@@ -506,43 +506,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 yield break;
             }
 
+            // curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove());
             // 방향에 따른 애니메이션 설정.
-            switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-            {
-                case Direction.DownRight:
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.UpRight:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.DownLeft:
-
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                case Direction.UpLeft:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                default:
-                    break;
-            }
+            SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
 
             SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
             SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
@@ -624,6 +590,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected IEnumerator Attack() // 공격
     {
+        //방향 설정
+        SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
         animator.SetTrigger("AttackFlg");
         yield return new WaitForSeconds(1.0f); // 애니메이션 관련 넣을 것.
 

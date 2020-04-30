@@ -256,7 +256,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
         animator.SetBool("MoveFlg", true); // animation 이동으로
         MoveStartedNotify();
-        yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
+
+        yield return null;
+        //yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
 
         curState = State.Idle;
     }
@@ -331,42 +333,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             }
 
             // 방향에 따른 애니메이션 설정.
-            switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-            {
-                case Direction.DownRight:
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.UpRight:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.DownLeft:
-
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                case Direction.UpLeft:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                default:
-                    break;
-            }
+            SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
 
             SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
             SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
@@ -449,6 +416,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator Attack() // 공격
     {
+        SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
         animator.SetTrigger("AttackFlg");
         yield return new WaitForSeconds(1.0f); // 애니메이션 관련 넣을 것.
 

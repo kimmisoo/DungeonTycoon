@@ -376,42 +376,8 @@ public abstract class Actor : MonoBehaviour
 #endif
 
             // 방향에 따른 애니메이션 설정.
-            switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-            {
-                case Direction.DownRight:
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.UpRight:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = true;
-                    }
-                    break;
-                case Direction.DownLeft:
-
-                    animator.SetTrigger("UpToDownFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                case Direction.UpLeft:
-
-                    animator.SetTrigger("DownToUpFlg");
-                    foreach (SpriteRenderer sr in spriteRenderers)
-                    {
-                        sr.flipX = false;
-                    }
-                    break;
-                default:
-                    break;
-            }
+            SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
+            
             //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
@@ -435,6 +401,46 @@ public abstract class Actor : MonoBehaviour
         animator.SetBool("MoveFlg", false);
     } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
+
+    protected void SetAnimDirection(Direction dir) // 방향에 따른 애니메이션 설정.
+    {
+        switch (dir)
+        {
+            case Direction.DownRight:
+                animator.SetTrigger("UpToDownFlg");
+                foreach (SpriteRenderer sr in spriteRenderers)
+                {
+                    sr.flipX = true;
+                }
+                break;
+            case Direction.UpRight:
+
+                animator.SetTrigger("DownToUpFlg");
+                foreach (SpriteRenderer sr in spriteRenderers)
+                {
+                    sr.flipX = true;
+                }
+                break;
+            case Direction.DownLeft:
+
+                animator.SetTrigger("UpToDownFlg");
+                foreach (SpriteRenderer sr in spriteRenderers)
+                {
+                    sr.flipX = false;
+                }
+                break;
+            case Direction.UpLeft:
+
+                animator.SetTrigger("DownToUpFlg");
+                foreach (SpriteRenderer sr in spriteRenderers)
+                {
+                    sr.flipX = false;
+                }
+                break;
+            default:
+                break;
+        }
+    }
     /// <summary>
     /// CurTileForMove에 맞춰 transform.position 조정.
     /// </summary>
