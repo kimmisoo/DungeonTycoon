@@ -62,7 +62,7 @@ public abstract class Actor : MonoBehaviour
     protected void Awake()
     {
         animator = GetComponent<Animator>();
-        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
         pathFinder = GetComponent<PathFinder>();
         wayForMove = new List<TileForMove>();
         state = new State();
