@@ -401,8 +401,11 @@ public abstract class Actor : MonoBehaviour
         animator.SetBool("MoveFlg", false);
     } // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
-
-    protected void SetAnimDirection(Direction dir) // 방향에 따른 애니메이션 설정.
+    /// <summary>
+    /// 방향에 따른 애니메이션 설정.
+    /// </summary>
+    /// <param name="dir">방향. 현재타일.GetDirectionFromOtherTile(바라볼 방향의 타일)</param>
+    protected void SetAnimDirection(Direction dir)
     {
         switch (dir)
         {

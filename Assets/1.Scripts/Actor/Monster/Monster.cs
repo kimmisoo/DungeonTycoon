@@ -418,7 +418,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
         animator.SetTrigger("AttackFlg");
-        yield return new WaitForSeconds(1.0f); // 애니메이션 관련 넣을 것.
+        animator.SetFloat("AttackSpeed", battleStat.AttackSpeed); // 공격 속도에 맞춰 애니메이션.
+        yield return new WaitForSeconds(0.5f / battleStat.AttackSpeed);
 
         // 어차피 이벤트로 나가는데 필요한지?
         if (!ValidatingEnemy())
@@ -431,6 +432,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat.CalDamage(out calculatedDamage, out isCrit);
 
         enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
+
+        yield return new WaitForSeconds(0.5f / battleStat.AttackSpeed);
     }
 
     protected void StopCurActivities()

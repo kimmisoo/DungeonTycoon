@@ -560,7 +560,7 @@ public class GameManager : MonoBehaviour
         tempBattleStat.BaseDefence = advStatData[level - 1]["defense"].AsFloat;
         tempBattleStat.BaseAvoid = advStatData[level - 1]["avoid"].AsFloat;
         tempBattleStat.BaseAttack = advStatData[level - 1]["attack"].AsFloat;
-        tempBattleStat.BaseAttackSpeed = advStatData[level - 1]["attackspeeds"].AsFloat;
+        tempBattleStat.BaseAttackSpeed = advStatData[level - 1]["attackspeed"].AsFloat;
         tempBattleStat.BaseCriticalChance = advStatData[level - 1]["criticalchance"].AsFloat;
         tempBattleStat.BaseCriticalDamage = advStatData[level - 1]["criticalattack"].AsFloat;
         tempBattleStat.BasePenetrationFixed = advStatData[level - 1]["penetration"].AsFloat;
