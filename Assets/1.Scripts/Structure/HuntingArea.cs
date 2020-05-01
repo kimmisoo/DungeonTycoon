@@ -224,7 +224,11 @@ public class HuntingArea : Place
 
     public Monster FindNearestMonster(Adventurer adv) // 인자로 받은 모험가와 가장 가까운 몬스터 찾아서 반환.
     {
-        if (monstersEnabled.Count == 0)
+        int monsterCnt = 0;
+        foreach (KeyValuePair<int, GameObject> item in monstersEnabled)
+            if (item.Value.GetComponent<Monster>().GetState() != State.Dead)
+                monsterCnt++;
+        if (monsterCnt == 0)
             return null; //몬스터가 아예 없다면 null 반환.
 
         //TileForMove advTFM = adv.GetCurTileForMove();

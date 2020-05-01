@@ -370,9 +370,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             }
             else
             {
-#if DEBUG_ADV_BATTLE
-                Debug.Log("Monster IDX: " + ((Monster)enemy).index);
-#endif
                 monsterSearchCnt++;
                 curState = State.SearchingMonster_Wandering;
             }
@@ -472,14 +469,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #region Battle
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
-        yield return null;
-
-        enemy.AddMoveStartedEventHandler(OnEnemyMoveStarted);
+        //enemy.AddMoveStartedEventHandler(OnEnemyMoveStarted);
 
         Direction dir = Direction.DownLeft;
         //FlipX true == Left, false == Right
         Vector3 dirVector;
         float distance, sum = 0.0f;
+        int walkCnt = 0;
+        const int posCheckRate = 4;
 
 #if DEBUG_CHARGE
         Debug.Log("적: " + enemy + ", 목적지: " + destinationTile);
@@ -492,19 +489,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             SetCurTile(tileForMoveWay[i].GetParent());
             SetCurTileForMove(tileForMoveWay[i]);
 
-            // 적이 이미 누웠거나, 사냥터에서 나갔다면
-            if (!ValidatingEnemy())
-            {
-                curState = State.AfterBattle;
-                yield break;
-            }
-
-            // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
-            if (CheckInRange())
-            {
-                curState = State.Battle;
-                yield break;
-            }
+            
 
             // curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove());
             // 방향에 따른 애니메이션 설정.
@@ -535,26 +520,48 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             }
             sum = 0.0f;
             transform.position = tileForMoveWay[i + 1].GetPosition();
+
+            // 적이 이미 누웠거나, 사냥터에서 나갔다면
+            if (!ValidatingEnemy())
+            {
+                curState = State.AfterBattle;
+                yield break;
+            }
+            // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
+            if (CheckInRange())
+            {
+                curState = State.Battle;
+                yield break;
+            }
+
+            walkCnt++;
+            if (walkCnt % posCheckRate == 0 && destinationTileForMove != enemy.GetCurTileForMove())
+            {
+                break;
+            }
         }
 
-        // 모험가가 이미 누웠다면.
-        if (!ValidatingEnemy())
-        {
-            curState = State.AfterBattle;
-            yield break;
-        }
+        SetDestinationTowardEnemy();
+        curState = State.PathFinding;
 
-        // 레인지 검사
-        if (CheckInRange())
-        {
-            curState = State.Battle;
-            yield break;
-        }
-        else // 목적지 도착했지만 공격 범위 안에 안 들어올 때. 이게 틀림. 새 목적지를 설정해야하는데 하지않고 그냥 PathFinding
-        {
-            SetDestinationTowardEnemy();
-            curState = State.PathFinding;
-        }
+        //// 모험가가 이미 누웠다면.
+        //if (!ValidatingEnemy())
+        //{
+        //    curState = State.AfterBattle;
+        //    yield break;
+        //}
+
+        //// 레인지 검사
+        //if (CheckInRange())
+        //{
+        //    curState = State.Battle;
+        //    yield break;
+        //}
+        //else // 목적지 도착했지만 공격 범위 안에 안 들어올 때. 이게 틀림. 새 목적지를 설정해야하는데 하지않고 그냥 PathFinding
+        //{
+        //    SetDestinationTowardEnemy();
+        //    curState = State.PathFinding;
+        //}
     }
 
     protected bool ValidatingEnemy()
@@ -578,8 +585,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     // 전투 시작
     protected void InitiatingBattle()
     {
-        StopCoroutine(curCoroutine);
-
         SetDestinationTowardEnemy();
 
         // 적이 공격 범위 안에 있다면 바로 전투.
@@ -746,6 +751,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         else if (superState != SuperState.Battle)
         {
             StopCurActivities();
+            animator.SetTrigger("DamageFlg");
             enemy = attacker;
             curState = State.InitiatingBattle;
         }
@@ -777,12 +783,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public void OnEnemyMoveStarted(TileForMove newDest)
     {
         // 이거 고치자. 순간이동하고 상태 자꾸 바뀌고 문제임.
-        StopCurActivities();
+        //StopCurActivities();
 
-        destinationTileForMove = newDest;
-        destinationTile = newDest.GetParent();
+        //destinationTileForMove = newDest;
+        //destinationTile = newDest.GetParent();
 
-        curState = State.PathFinding;
+        //curState = State.PathFinding;
     }
 
     public void MoveStartedNotify()

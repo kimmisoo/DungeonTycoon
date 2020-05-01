@@ -304,15 +304,16 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #region Battle
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
-        yield return null;
-
-        // 적이 이동하면 목적지 수정하도록 이벤트 구독
-        enemy.AddMoveStartedEventHandler(OnEnemyMoveStarted);
-        
         Direction dir = Direction.DownLeft;
         //FlipX true == Left, false == Right
         Vector3 dirVector;
         float distance, sum = 0.0f;
+        int walkCnt = 0;
+        const int posCheckRate = 4;
+
+#if DEBUG_CHARGE
+        Debug.Log("적: " + enemy + ", 목적지: " + destinationTile);
+#endif
 
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
@@ -321,26 +322,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             SetCurTile(tileForMoveWay[i].GetParent());
             SetCurTileForMove(tileForMoveWay[i]);
 
-            // 모험가가 이미 누웠거나, 사냥터에서 나갔다면
-            if (!ValidatingEnemy())
-            {
-                curState = State.AfterBattle;
-                yield break;
-            }
-
-            // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
-            if (CheckInRange())
-            {
-                curState = State.Battle;
-                yield break;
-            }
-
             // 방향에 따른 애니메이션 설정.
             SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
 
-            //SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
-            //SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
-            //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
             distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
@@ -361,29 +345,31 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 transform.Translate(dirVector * Time.deltaTime);
 
             }
-
             sum = 0.0f;
             transform.position = tileForMoveWay[i + 1].GetPosition();
+
+            // 적이 이미 누웠거나, 사냥터에서 나갔다면
+            if (!ValidatingEnemy())
+            {
+                curState = State.AfterBattle;
+                yield break;
+            }
+            // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
+            if (CheckInRange())
+            {
+                curState = State.Battle;
+                yield break;
+            }
+
+            walkCnt++;
+            if (walkCnt % posCheckRate == 0 && destinationTileForMove != enemy.GetCurTileForMove())
+            {
+                break;
+            }
         }
 
-        // 모험가가 이미 누웠다면.
-        if (!ValidatingEnemy())
-        {
-            curState = State.AfterBattle;
-            yield break;
-        }
-
-        // 레인지 검사
-        if (CheckInRange())
-        {
-            curState = State.Battle;
-            yield break;
-        }
-        else // 목적지 도착했지만 공격 범위 안에 안 들어올 때.
-        {
-            SetDestinationTowardEnemy();
-            curState = State.PathFinding;
-        }
+        SetDestinationTowardEnemy();
+        curState = State.PathFinding;
     }
 
     protected bool ValidatingEnemy()
@@ -408,8 +394,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     // 전투 시작
     protected void InitiatingBattle()
     {
-        StopCoroutine(curCoroutine);
-
         SetDestinationTowardEnemy();
 
         // 적이 공격 범위 안에 있다면 바로 전투.
@@ -593,6 +577,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         else if (superState != SuperState.Battle)
         {
             StopCurActivities();
+            animator.SetTrigger("DamageFlg");
             enemy = attacker;
             curState = State.InitiatingBattle;
         }

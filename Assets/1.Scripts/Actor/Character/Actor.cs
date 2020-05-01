@@ -402,7 +402,7 @@ public abstract class Actor : MonoBehaviour
 
             }
             sum = 0.0f;
-            transform.position = tileForMoveWay[i + 1].GetPosition();
+            transform.position = tileForMoveWay[i + 1].GetPosition(); // TODO! 이 부분 때문에 순간이동하는 걸로 사료됨. 이동 도중에 비정상적으로 종료돼도 여기서 한번에 위치를 맞추기 때문에 순간이동.
         }     
 #if DEBUG_GETWAY
         Debug.Log("last curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
