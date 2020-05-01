@@ -23,4 +23,5 @@ public interface ICombatant
     void MoveStartedNotify();
     void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker); // 적이 죽었을 때 이벤트 처리(보상 획득 및 전투상태 탈출)
     void OnEnemyMoveStarted(TileForMove newDest); // 적이 움직일 때 이벤트 처리
+    Vector3 GetPosition();
 }

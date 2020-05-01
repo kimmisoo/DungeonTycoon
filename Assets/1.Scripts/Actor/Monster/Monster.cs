@@ -431,7 +431,14 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator Attack() // 공격
     {
-        SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
+        //방향 설정
+        if (curTileForMove != enemy.GetCurTileForMove())
+            SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
+        else
+        {
+            SetAnimDirection(GetDirectionToPosition(enemy.GetPosition()));
+        }
+
         animator.SetTrigger("AttackFlg");
         animator.SetFloat("AttackSpeed", battleStat.AttackSpeed); // 공격 속도에 맞춰 애니메이션.
         yield return new WaitForSeconds(0.5f / battleStat.AttackSpeed);
@@ -642,5 +649,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         battleStat.ResetBattleStat();
     }
-#endregion
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+    #endregion
 }

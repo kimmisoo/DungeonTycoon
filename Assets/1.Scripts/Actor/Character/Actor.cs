@@ -464,6 +464,27 @@ public abstract class Actor : MonoBehaviour
         //transform.position = new Vector3(curTileForMove.GetPosition().x, curTileForMove.GetPosition().y + TileForMove.Y_COMPENSATION, curTileForMove.GetPosition().z);
     }
 
+    public Direction GetDirectionToPosition(Vector3 pos)
+    {
+        float distanceX = pos.x - this.transform.position.x;
+        float distanceY = pos.y - this.transform.position.y;
+
+        if(distanceX <= 0)
+        {
+            if (distanceY <= 0)
+                return Direction.DownLeft;
+            else
+                return Direction.UpLeft;
+        }
+        else
+        {
+            if (distanceY <= 0)
+                return Direction.DownRight;
+            else
+                return Direction.UpRight;
+        }
+    }
+
     public abstract bool ValidateNextTile(Tile tile);
     public abstract void SetPathFindEvent();
 

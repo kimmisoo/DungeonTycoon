@@ -602,7 +602,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator Attack() // 공격
     {
         //방향 설정
-        SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
+        if(curTileForMove != enemy.GetCurTileForMove())
+            SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
+        else
+        {
+            SetAnimDirection(GetDirectionToPosition(enemy.GetPosition()));
+        }
         animator.SetTrigger("AttackFlg");
         animator.SetFloat("AttackSpeed", battleStat.AttackSpeed);
         yield return new WaitForSeconds(0.5f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
@@ -806,6 +811,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public void ResetBattleStat() // 전투 관련 멤버변수 리셋
     {
         battleStat.ResetBattleStat();
+    }
+    
+    public Vector3 GetPosition()
+    {
+        return transform.position;
     }
 #endregion
 }
