@@ -4,6 +4,8 @@ using System.Collections;
 // 모험가 이동 타일 클래스
 public class TileForMove
 {
+    public static readonly float Y_COMPENSATION = 0.133f; // position 보정값
+
 	private Vector3 pos;
 	private int x;
 	private int y;
@@ -15,7 +17,8 @@ public class TileForMove
 	{
 		x = _x;
 		y = _y;
-		pos = _pos;
+        //pos = _pos;
+        pos = new Vector3(_pos.x, _pos.y + Y_COMPENSATION, _pos.z);
 		parent = _parent;
 	}
 

@@ -40,7 +40,7 @@ public enum State
 public abstract class Actor : MonoBehaviour
 {
 
-    [SerializeField]
+    
     protected SuperState superState;
     public State state;
     /*public string actorName { get; set; }
@@ -383,7 +383,7 @@ public abstract class Actor : MonoBehaviour
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
             distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
 
-
+            //Vector3 destPos = new Vector3(tileForMoveWay[i].GetPosition().x, tileForMoveWay[i].GetPosition().y + TileForMove.Y_COMPENSATION, tileForMoveWay[i].GetPosition().z);
             while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance/2)
             {
                 yield return null;
@@ -461,6 +461,7 @@ public abstract class Actor : MonoBehaviour
     public void AlignPositionToCurTileForMove()
     {
         transform.position = curTileForMove.GetPosition();
+        //transform.position = new Vector3(curTileForMove.GetPosition().x, curTileForMove.GetPosition().y + TileForMove.Y_COMPENSATION, curTileForMove.GetPosition().z);
     }
 
     public abstract bool ValidateNextTile(Tile tile);
