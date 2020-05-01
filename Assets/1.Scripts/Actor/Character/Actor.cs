@@ -112,7 +112,7 @@ public abstract class Actor : MonoBehaviour
     public void SetCurTileForMove(TileForMove _tileForMove)
     {
         curTileForMove = _tileForMove;
-
+        curTileForMove.SetRecentActor(this);
     }
     public TileForMove GetCurTileForMove()
     {

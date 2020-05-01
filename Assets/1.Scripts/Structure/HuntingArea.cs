@@ -126,6 +126,71 @@ public class HuntingArea : Place
     public List<TileForMove> FindBlanks(int needed)
     {
         List<TileForMove> result = new List<TileForMove>();
+
+//        TileForMove tileBeneathActor;
+        string keyXY;
+
+//        // occupiedTerritory 초기화.
+//        foreach (string key in occupiedTerritory.Keys.ToList())
+//            occupiedTerritory[key] = false;
+
+//#if DEBUG_HA_REGEN
+//                Debug.Log("monster count : " + monstersEnabled.Count);
+//#endif
+//        // 몬스터가 들어가 있는 자리 확인
+//        for (int i = 0; i < monstersEnabled.Count; i++)
+//        {
+//            tileBeneathActor = monstersEnabled.Values.ToArray<GameObject>()[i].GetComponent<Monster>().GetCurTileForMove();
+//            keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
+
+//            if (territory.ContainsKey(keyXY))
+//                occupiedTerritory[keyXY] = true;
+//        }
+
+//        // 모험가가 들어가 있는 자리 확인
+//        for (int i = 0; i < adventurersInside.Count; i++)
+//        {
+//            tileBeneathActor = adventurersInside[i].GetComponent<Adventurer>().GetCurTileForMove();
+//            keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
+
+//            if (territory.ContainsKey(keyXY))
+//                occupiedTerritory[keyXY] = true;
+//        }
+
+        RefreshOccupiedTerritory();
+
+        // 랜덤으로 needed(몬스터 리젠할 칸 수)만큼 빈 칸을 result 에 추가. 
+        int insertionCnt = 0;
+        int randomNum;
+        while (insertionCnt < needed)
+        {
+            while (true)
+            {
+                randomNum = Random.Range(0, territory.Count);
+#if DEBUG_HA_REGEN
+                Debug.Log("randomNum : " + randomNum + ", ocupiedCnt : " + occupiedTerritory.Count);
+#endif
+                keyXY = occupiedTerritory.Keys.ToList<string>()[randomNum];
+
+                // result에 추가되지 않았고, 빈 칸일 때.
+                if (!result.Contains(territory[keyXY]) && occupiedTerritory[keyXY] == false)
+                {
+                    result.Add(territory[keyXY]);
+                    break;
+                }
+            }
+            insertionCnt++;
+        }
+
+#if DEBUG_HA_REGEN
+        Debug.Log("계산 끝. 리턴한 빈 칸 수 : " + result.Count);
+#endif
+
+        return result;
+    }
+
+    private void RefreshOccupiedTerritory()
+    {
         TileForMove tileBeneathActor;
         string keyXY;
 
@@ -155,34 +220,6 @@ public class HuntingArea : Place
             if (territory.ContainsKey(keyXY))
                 occupiedTerritory[keyXY] = true;
         }
-
-        // 랜덤으로 needed(몬스터 리젠할 칸 수)만큼 빈 칸을 result 에 추가. 
-        int insertionCnt = 0;
-        int randomNum;
-        while (insertionCnt < needed)
-        {
-            while (true)
-            {
-                randomNum = Random.Range(0, territory.Count);
-#if DEBUG_HA_REGEN
-                Debug.Log("randomNum : " + randomNum + ", ocupiedCnt : " + occupiedTerritory.Count);
-#endif
-                keyXY = occupiedTerritory.Keys.ToList<string>()[randomNum];
-
-                // result에 추가되지 않았고, 빈 칸일 때.
-                if (!result.Contains(territory[keyXY]) && occupiedTerritory[keyXY] == false)
-                {
-                    result.Add(territory[keyXY]);
-                    break;
-                }
-            }
-            insertionCnt++;
-        }
-#if DEBUG_HA_REGEN
-        Debug.Log("계산 끝. 리턴한 빈 칸 수 : " + result.Count);
-#endif
-
-        return result;
     }
 
     public Monster FindNearestMonster(Adventurer adv) // 인자로 받은 모험가와 가장 가까운 몬스터 찾아서 반환.

@@ -226,10 +226,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #region moving
     protected IEnumerator Wandering()
     {
-        yield return new WaitForSeconds(Random.Range(1.0f, 3.0f));
+        yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
 
         // 목적지(빈 타일) 찾기.
         destinationTileForMove = habitat.FindBlanks(1)[0];
+        
+        // WARNING 이거 부하 있을 수 있음.
+        //List<TileForMove> blanks = habitat.FindBlanks(1);
 
         destinationTile = destinationTileForMove.GetParent();
         curState = State.PathFinding;
