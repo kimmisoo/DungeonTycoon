@@ -16,7 +16,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     RewardStat rewardStat;
 
     public ICombatant enemy;
-    public GameObject attackEffect;
+    protected GameObject attackEffect;
+
 
     protected readonly float RecoveryTick = 6.0f;
     protected readonly int RecoveryTimes = 10;
@@ -636,6 +637,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
+    }
+
+    public void SetAttackEffect(GameObject input)
+    {
+        attackEffect = input;
+        attackEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
     protected void StopCurActivities()

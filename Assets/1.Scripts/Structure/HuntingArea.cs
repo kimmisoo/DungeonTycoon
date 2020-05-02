@@ -255,6 +255,33 @@ public class HuntingArea : Place
         return nearest;
     }
 
+    public TileForMove FindNearestBlank(TileForMove curPos)
+    {
+        RefreshOccupiedTerritory();
+
+        TileForMove nearest = null;
+        int minDist = int.MaxValue;
+
+        foreach(KeyValuePair<string, bool> item in occupiedTerritory)
+        {
+            if(item.Value == false && territory[item.Key].GetDistance(curPos) <= minDist)
+            {
+                if (territory[item.Key].GetDistance(curPos) == minDist)
+                {
+                    if (Random.Range(0, 2) == 1)
+                        nearest = territory[item.Key];
+                }
+                else
+                {
+                    nearest = territory[item.Key];
+                    minDist = nearest.GetDistance(curPos);
+                }
+            }
+        }
+
+        return nearest;
+    }
+
     protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
     {
         return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());

@@ -48,7 +48,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     //public event MoveStartedEventHandler moveStartedEvent;
-    public GameObject attackEffect;
+    protected GameObject attackEffect;
 
     #endregion
 
@@ -78,7 +78,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat = new BattleStat(sample.battleStat);
         rewardStat = new RewardStat(sample.rewardStat);
 
-        attackEffect = Instantiate(sample.attackEffect);
+        SetAttackEffect(Instantiate(sample.attackEffect));
     }
 
     public void OnEnable()
@@ -235,10 +235,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
 
         // 목적지(빈 타일) 찾기.
-        destinationTileForMove = habitat.FindBlanks(1)[0];
-        
+        //destinationTileForMove = habitat.FindBlanks(1)[0];
+
         // WARNING 이거 부하 있을 수 있음.
-        //List<TileForMove> blanks = habitat.FindBlanks(1);
+        do
+        {
+            destinationTileForMove = habitat.FindNearestBlank(curTileForMove);
+        } while (destinationTileForMove == null);
 
         destinationTile = destinationTileForMove.GetParent();
         curState = State.PathFinding;
@@ -452,6 +455,12 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed);
+    }
+
+    public void SetAttackEffect(GameObject input)
+    {
+        attackEffect = input;
+        attackEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
     protected void StopCurActivities()

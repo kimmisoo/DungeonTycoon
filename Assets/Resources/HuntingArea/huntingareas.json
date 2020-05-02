@@ -3,8 +3,8 @@
 		{
 			"name": "1~10",
 			"levelMax": 10,
-			"monsterMax": 1,
-			"monsterPerRegen": 4,
+			"monsterMax": 42,
+			"monsterPerRegen": 7,
 			"monsterRegenRate": 5.5,
 			"monsterSet": "Standard",
 			"monsterSample1Num": 0,

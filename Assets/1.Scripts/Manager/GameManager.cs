@@ -197,7 +197,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < adventurer_Max; i++)
         {
             GameObject go = (GameObject)Resources.Load("CharacterPrefabs/Adventurer_test");
-            go.GetComponent<Adventurer>().attackEffect = (GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect"));
+            //go.GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
 
             // 생성만 해놓고 비활성화
             go.SetActive(false);
@@ -207,6 +207,7 @@ public class GameManager : MonoBehaviour
             go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             adventurersDisabled[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
             adventurersDisabled[i].GetComponent<Adventurer>().index = i;
+            adventurersDisabled[i].GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
             // Debug.Log("character instantiate - " + i);
         }
         StartCoroutine(AdvEnter());
