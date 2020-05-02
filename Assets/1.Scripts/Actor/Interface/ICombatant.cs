@@ -11,7 +11,7 @@ public interface ICombatant
     TileForMove GetCurTileForMove();
     State GetState();
     SuperState GetSuperState();
-    void TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit); // 받은 데미지를 방어력 계산해서 자기자신의 체력에 반영. 비전투시라면 전투상태로 변경.
+    bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit); // 받은 데미지를 방어력 계산해서 자기자신의 체력에 반영. 비전투시라면 전투상태로 변경.
     IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded); // 피격 효과 디스플레이
     int RewardGold();
     int RewardExp();

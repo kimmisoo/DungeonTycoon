@@ -148,9 +148,9 @@ public class HuntingAreaManager : MonoBehaviour
 #region InstantiateStructure()
         string stageNum = "stage" + SceneManager.GetActiveScene().name;
         int huntingAreaNum = areaNum;
-        Debug.Log("stageNum : " + stageNum + " areaNum : " + huntingAreaNum);
-        Debug.Log("디버그2: " + huntingAreaJson[stageNum][huntingAreaNum]["name"]);
-        Debug.Log("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum);
+        //Debug.Log("stageNum : " + stageNum + " areaNum : " + huntingAreaNum);
+        //Debug.Log("디버그2: " + huntingAreaJson[stageNum][huntingAreaNum]["name"]);
+        //Debug.Log("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum);
         constructing = (GameObject)Instantiate(Resources.Load("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum.ToString()));
 
         constructing.transform.parent = rootHuntingAreaObject.transform;
@@ -166,11 +166,11 @@ public class HuntingAreaManager : MonoBehaviour
 
         // 몬스터 프로토타입 넣기. 우선 번호부터.
         string monsterSet = huntingAreaJson[stageNum][huntingAreaNum]["monsterSet"];
-        Debug.Log(monsterSet);
+        //Debug.Log(monsterSet);
         int monsterSample1Num = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample1Num"].AsInt;
-        Debug.Log(monsterSample1Num);
+        //Debug.Log(monsterSample1Num);
         int monsterSample2Num = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample2Num"].AsInt;
-        Debug.Log(monsterSample2Num);
+        //Debug.Log(monsterSample2Num);
 
         // 몬스터 샘플 instantiate
         GameObject monsterSample1, monsterSample2;
@@ -309,6 +309,7 @@ public class HuntingAreaManager : MonoBehaviour
 
         Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
+        tempMonsterComp.attackEffect = (GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect"));
 
 
         // 몬스터 샘플 2 할당
@@ -338,7 +339,7 @@ public class HuntingAreaManager : MonoBehaviour
 
         tempMonsterComp = monsterSample2.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
-
+        tempMonsterComp.attackEffect = (GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect"));
         return;
     }
 

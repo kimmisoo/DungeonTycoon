@@ -48,6 +48,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     //public event MoveStartedEventHandler moveStartedEvent;
+    public GameObject attackEffect;
 
     #endregion
 
@@ -76,6 +77,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         battleStat = new BattleStat(sample.battleStat);
         rewardStat = new RewardStat(sample.rewardStat);
+
+        attackEffect = Instantiate(sample.attackEffect);
     }
 
     public void OnEnable()
@@ -429,7 +432,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         animator.SetTrigger("AttackFlg");
         animator.SetFloat("AttackSpeed", battleStat.AttackSpeed); // 공격 속도에 맞춰 애니메이션.
-        yield return new WaitForSeconds(0.5f / battleStat.AttackSpeed);
+        yield return new WaitForSeconds(0.43f / battleStat.AttackSpeed);
 
         // 어차피 이벤트로 나가는데 필요한지?
         if (!ValidatingEnemy())
@@ -441,9 +444,14 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
 
-        enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit);
+        if(enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit))
+        {
+            attackEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
+            attackEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
+            attackEffect.GetComponent<AttackEffect>().StartEffect();
+        }
 
-        yield return new WaitForSeconds(0.5f / battleStat.AttackSpeed);
+        yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed);
     }
 
     protected void StopCurActivities()
@@ -557,7 +565,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #endregion
 
     #region ICombatant
-    public void TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
         float actualDamage;
         bool isEvaded;
@@ -586,6 +594,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             enemy = attacker;
             curState = State.InitiatingBattle;
         }
+
+        return !isEvaded;
     }
 
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
