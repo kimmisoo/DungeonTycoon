@@ -318,9 +318,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
         {
-            tileForMoveWay[i].SetRecentActor(this);
-            SetCurTile(tileForMoveWay[i].GetParent());
-            SetCurTileForMove(tileForMoveWay[i]);
+            //tileForMoveWay[i].SetRecentActor(this);
+            //SetCurTile(tileForMoveWay[i].GetParent());
+            //SetCurTileForMove(tileForMoveWay[i]);
 
             // 방향에 따른 애니메이션 설정.
             SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
