@@ -47,7 +47,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     private readonly float DecayTimer = 3.0f;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
-    public event MoveStartedEventHandler moveStartedEvent;
+    //public event MoveStartedEventHandler moveStartedEvent;
 
     #endregion
 
@@ -152,12 +152,14 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #if DEBUG_MOB_STATE
                 Debug.Log("MTS");
 #endif
+                animator.SetBool("MoveFlg", true);
                 curCoroutine = StartCoroutine(MoveToDestination());
                 break;
             case State.ApproachingToEnemy:
 #if DEBUG_MOB_STATE
                 Debug.Log("Approaching to the enemy.");
 #endif
+                animator.SetBool("MoveFlg", true);
                 curCoroutine = StartCoroutine(ApproachingToEnemy());
                 break;
             case State.InitiatingBattle:
@@ -208,6 +210,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 animator.SetBool("MoveFlg", false);
                 break;
             case State.ApproachingToEnemy:
+                animator.SetBool("MoveFlg", false);
                 break;
             case State.InitiatingBattle:
                 break;
@@ -257,10 +260,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         //길찾기 성공!
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
-        animator.SetBool("MoveFlg", true); // animation 이동으로
-        MoveStartedNotify();
+        //animator.SetBool("MoveFlg", true); // animation 이동으로
+        //MoveStartedNotify();
+        StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
 
-        yield return null;
         yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation												//순번 or 대기 여부 결정
 
         curState = State.Idle;
@@ -385,10 +388,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator ApproachingToEnemy()
     {
-        animator.SetBool("MoveFlg", true); // animation 이동으로
-        MoveStartedNotify();
+        wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove);
+
+        //MoveStartedNotify();
+        StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
         yield return curSubCoroutine = StartCoroutine(Charge(wayForMove));
-        animator.SetBool("MoveFlg", false);
     }
 
     // 전투 시작
@@ -473,18 +477,18 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected IEnumerator Dead()
     {
         StopCurActivities();
-        ResetBattleEvents();
+        ResetBattleEventHandlers();
 
         // 여기 애니메이션 설정 넣으면 됨.
         yield return new WaitForSeconds(DecayTimer);
         corpseDecayEvent?.Invoke(index);
     }
 
-    protected void ResetBattleEvents()
+    protected void ResetBattleEventHandlers()
     {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
-        moveStartedEvent = null;
+        //moveStartedEvent = null;
     }
 
     // 죽을 때 호출. 이 몬스터를 공격대상으로 하고있는 모험가들에게 알려줌.
@@ -530,26 +534,26 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             healthBelowZeroEvent += newEvent;
     }
 
-    public void AddMoveStartedEventHandler(MoveStartedEventHandler newEvent)
-    {
-        if (moveStartedEvent == null)
-        {
-            moveStartedEvent += newEvent;
-            return;
-        }
+    //public void AddMoveStartedEventHandler(MoveStartedEventHandler newEvent)
+    //{
+    //    if (moveStartedEvent == null)
+    //    {
+    //        moveStartedEvent += newEvent;
+    //        return;
+    //    }
 
-        System.Delegate[] invocations = moveStartedEvent.GetInvocationList();
+    //    System.Delegate[] invocations = moveStartedEvent.GetInvocationList();
 
-        bool isNew = true;
-        for (int i = 0; i < invocations.Length; i++)
-        {
-            if (invocations[i].Target == newEvent.Target)
-                isNew = false;
-        }
+    //    bool isNew = true;
+    //    for (int i = 0; i < invocations.Length; i++)
+    //    {
+    //        if (invocations[i].Target == newEvent.Target)
+    //            isNew = false;
+    //    }
 
-        if (isNew)
-            moveStartedEvent += newEvent;
-    }
+    //    if (isNew)
+    //        moveStartedEvent += newEvent;
+    //}
     #endregion
 
     #region ICombatant
@@ -578,6 +582,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         {
             StopCurActivities();
             animator.SetTrigger("DamageFlg");
+            //StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
             enemy = attacker;
             curState = State.InitiatingBattle;
         }
@@ -596,21 +601,21 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         curState = State.AfterBattle;
     }
 
-    public void OnEnemyMoveStarted(TileForMove newDest)
-    {
-        //StopCurActivities();
+    //public void OnEnemyMoveStarted(TileForMove newDest)
+    //{
+    //    //StopCurActivities();
 
-        //destinationTileForMove = newDest;
-        //destinationTile = newDest.GetParent();
+    //    //destinationTileForMove = newDest;
+    //    //destinationTile = newDest.GetParent();
 
-        //StopCoroutine(curCoroutine);
-        //curState = State.PathFinding;
-    }
+    //    //StopCoroutine(curCoroutine);
+    //    //curState = State.PathFinding;
+    //}
 
-    public void MoveStartedNotify()
-    {
-        moveStartedEvent?.Invoke(destinationTileForMove);
-    }
+    //public void MoveStartedNotify()
+    //{
+    //    moveStartedEvent?.Invoke(destinationTileForMove);
+    //}
 
     public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
     {

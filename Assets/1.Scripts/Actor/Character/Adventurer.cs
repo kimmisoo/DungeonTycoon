@@ -27,7 +27,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     HuntingArea curHuntingArea;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
-    public event MoveStartedEventHandler moveStartedEvent;
+    //public event MoveStartedEventHandler moveStartedEvent;
 
     public int Level
     {
@@ -282,7 +282,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //길찾기 성공!
         wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
         // TODO: GetWayForMove로 고치기
-        MoveStartedNotify();
+        //MoveStartedNotify();
+        StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
         yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 
         switch(superState)
@@ -401,7 +402,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         curHuntingArea.ExitAdventurer(this.gameObject);
 
         curHuntingArea = null;
-        ResetBattleEvents();
+        ResetBattleEventHandlers();
 
         curState = State.PathFinding;
         yield return null;
@@ -411,7 +412,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         StopCurActivities();
 
-        ResetBattleEvents();
+        ResetBattleEventHandlers();
 
         Structure[] tempArr = StructureManager.Instance.FindRescue(this);
 
@@ -447,11 +448,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         curState = State.ExitingHuntingArea;
     }
 
-    protected void ResetBattleEvents()
+    protected void ResetBattleEventHandlers()
     {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
-        moveStartedEvent = null;
+        //moveStartedEvent = null;
     }
 
 #endregion
@@ -577,8 +578,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator ApproachingToEnemy()
     {
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove);
-        
-        MoveStartedNotify();
+        StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
+
+        //MoveStartedNotify();
         yield return curSubCoroutine = StartCoroutine(Charge(wayForMove));
     }
 
@@ -704,26 +706,26 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             healthBelowZeroEvent += newEvent;
     }
 
-    public void AddMoveStartedEventHandler(MoveStartedEventHandler newEvent)
-    {
-        if (moveStartedEvent == null)
-        {
-            moveStartedEvent += newEvent;
-            return;
-        }
+    //public void AddMoveStartedEventHandler(MoveStartedEventHandler newEvent)
+    //{
+    //    if (moveStartedEvent == null)
+    //    {
+    //        moveStartedEvent += newEvent;
+    //        return;
+    //    }
 
-        System.Delegate[] invocations = moveStartedEvent.GetInvocationList();
+    //    System.Delegate[] invocations = moveStartedEvent.GetInvocationList();
 
-        bool isNew = true;
-        for (int i = 0; i < invocations.Length; i++)
-        {
-            if (invocations[i].Target == newEvent.Target)
-                isNew = false;
-        }
+    //    bool isNew = true;
+    //    for (int i = 0; i < invocations.Length; i++)
+    //    {
+    //        if (invocations[i].Target == newEvent.Target)
+    //            isNew = false;
+    //    }
 
-        if (isNew)
-            moveStartedEvent += newEvent;
-    }
+    //    if (isNew)
+    //        moveStartedEvent += newEvent;
+    //}
 #endregion
 
 #region ICombatant
@@ -780,21 +782,21 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         curState = State.AfterBattle;
     }
 
-    public void OnEnemyMoveStarted(TileForMove newDest)
-    {
-        // 이거 고치자. 순간이동하고 상태 자꾸 바뀌고 문제임.
-        //StopCurActivities();
+    //public void OnEnemyMoveStarted(TileForMove newDest)
+    //{
+    //    // 이거 고치자. 순간이동하고 상태 자꾸 바뀌고 문제임.
+    //    //StopCurActivities();
 
-        //destinationTileForMove = newDest;
-        //destinationTile = newDest.GetParent();
+    //    //destinationTileForMove = newDest;
+    //    //destinationTile = newDest.GetParent();
 
-        //curState = State.PathFinding;
-    }
+    //    //curState = State.PathFinding;
+    //}
 
-    public void MoveStartedNotify()
-    {
-        moveStartedEvent?.Invoke(destinationTileForMove);
-    }
+    //public void MoveStartedNotify()
+    //{
+    //    moveStartedEvent?.Invoke(destinationTileForMove);
+    //}
 
     public IEnumerator DisplayHitEffect(float actualDamage, bool isCrit, bool isEvaded)
     {

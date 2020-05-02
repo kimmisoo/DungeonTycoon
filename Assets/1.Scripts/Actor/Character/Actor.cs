@@ -456,10 +456,32 @@ public abstract class Actor : MonoBehaviour
         }
     }
     /// <summary>
-    /// CurTileForMove에 맞춰 transform.position 조정.
+    /// curTileForMove에 맞춰 transform.position 조정.
     /// </summary>
     public void AlignPositionToCurTileForMove()
     {
+        transform.position = curTileForMove.GetPosition();
+        //transform.position = new Vector3(curTileForMove.GetPosition().x, curTileForMove.GetPosition().y + TileForMove.Y_COMPENSATION, curTileForMove.GetPosition().z);
+    }
+
+
+    /// <summary>
+    /// 이동 도중 중단되었을 때 curTileForMove에 맞게 position을 자연스럽게 맞춰줌.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator AlignPositionToCurTileForMoveSmoothly()
+    {
+        Vector3 dirVector = curTileForMove.GetPosition() - transform.position;
+        float distance = dirVector.magnitude;
+        float moved = 0;
+
+        while(moved < distance)
+        {
+            moved += (dirVector * Time.deltaTime).magnitude;
+            transform.Translate(dirVector * Time.deltaTime);
+            yield return null;
+        }
+
         transform.position = curTileForMove.GetPosition();
         //transform.position = new Vector3(curTileForMove.GetPosition().x, curTileForMove.GetPosition().y + TileForMove.Y_COMPENSATION, curTileForMove.GetPosition().z);
     }

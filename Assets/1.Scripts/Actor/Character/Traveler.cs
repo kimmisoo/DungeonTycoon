@@ -67,7 +67,7 @@ public class Traveler : Actor {
         // 입구 타일 랜덤으로 받아오기.
         SetCurTile(GameManager.Instance.GetRandomEntrance()); // 여기서 가끔 터짐. 수정요망. nullpointer 뜸
         SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
-
+        AlignPositionToCurTileForMove();
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         // PathFind 성공/실패에 따라 호출할 delegate 설정.
