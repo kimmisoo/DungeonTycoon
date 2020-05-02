@@ -238,10 +238,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         //destinationTileForMove = habitat.FindBlanks(1)[0];
 
         // WARNING 이거 부하 있을 수 있음.
-        do
+        destinationTileForMove = habitat.FindNearestBlank(curTileForMove);
+        
+        if(destinationTileForMove == null)
         {
-            destinationTileForMove = habitat.FindNearestBlank(curTileForMove);
-        } while (destinationTileForMove == null);
+            curState = State.Wandering;
+            yield break;
+        }
 
         destinationTile = destinationTileForMove.GetParent();
         curState = State.PathFinding;
