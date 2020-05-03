@@ -284,7 +284,7 @@ public class HuntingArea : Place
 
     protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
     {
-        return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
+        return Mathf.Abs(pos1.GetX() - pos2.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
     }
 
     int BlanksCount()
