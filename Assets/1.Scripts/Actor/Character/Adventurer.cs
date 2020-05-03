@@ -5,6 +5,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,9 +19,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     public ICombatant enemy;
     protected GameObject attackEffect;
+    protected GameObject damageText;
+    protected GameObject healText;
 
-
-    protected readonly float RecoveryTick = 4.0f;
+    protected readonly float RecoveryTick = 5.0f;
     protected readonly int RecoveryTimes = 5;
     protected readonly float RecoveryMult = 0.02f;
 
@@ -452,12 +454,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected IEnumerator SpontaneousRecovery()
     {
+        float healAmount = 0;
         for(int i = 0; i < RecoveryTimes; i++)
         {
-            battleStat.Health += battleStat.HealthMax * RecoveryMult;
-            StartCoroutine(RecoveryEffect(battleStat.HealthMax * RecoveryMult));
-
             yield return new WaitForSeconds(RecoveryTick);
+
+            healAmount = battleStat.HealthMax * RecoveryMult;
+            battleStat.Health += healAmount;
+            DisplayHeal(healAmount);
+            //StartCoroutine(RecoveryEffect(battleStat.HealthMax * RecoveryMult));
         }
 
         curState = State.ExitingHuntingArea;
@@ -497,6 +502,18 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_CHARGE
         Debug.Log("적: " + enemy + ", 목적지: " + destinationTile);
 #endif
+        // 적이 이미 누웠거나, 사냥터에서 나갔다면
+        if (!ValidatingEnemy())
+        {
+            curState = State.AfterBattle;
+            yield break;
+        }
+        // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
+        if (CheckInRange())
+        {
+            curState = State.InitiatingBattle;
+            yield break;
+        }
 
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
@@ -659,6 +676,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         attackEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
+    public void SetDamageText(GameObject input)
+    {
+        damageText = input;
+        damageText.SetActive(false);
+    }
+    public void SetHealText(GameObject input)
+    {
+        healText = input;
+        healText.SetActive(false);
+    }
+
     protected void StopCurActivities()
     {
         if (curSubCoroutine != null)
@@ -807,6 +835,25 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #endif
         }
         curState = State.AfterBattle;
+    }
+
+    private void DisplayDamage(float damage)
+    {
+        GameObject tempDamageText = Instantiate(damageText);
+        Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
+        tempDamageText.GetComponent<FloatingText>().InitFloatingText((int)damage, textPos);
+        //tempDamageText.transform.SetParent(canvas.transform);
+        tempDamageText.SetActive(true);
+    }
+
+    private void DisplayHeal(float healed)
+    {
+        GameObject tempHealText = Instantiate(healText);
+        Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.07f, 0.07f), transform.position.y + Random.Range(-0.05f, 0.05f), transform.position.z);
+        tempHealText.GetComponent<FloatingText>().InitFloatingText((int)healed, textPos);
+        //tempDamageText.transform.SetParent(canvas.transform);
+        tempHealText.GetComponent<TextMeshPro>().fontSize = 600;
+        tempHealText.SetActive(true);
     }
 
     //public void OnEnemyMoveStarted(TileForMove newDest)

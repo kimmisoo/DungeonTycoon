@@ -50,6 +50,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     //public event MoveStartedEventHandler moveStartedEvent;
     protected GameObject attackEffect;
+    protected GameObject damageText;
 
     #endregion
 
@@ -85,6 +86,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat = new BattleStat(sample.battleStat);
         rewardStat = new RewardStat(sample.rewardStat);
 
+        SetDamageText(Instantiate(sample.damageText));
         SetAttackEffect(Instantiate(sample.attackEffect));
     }
 
@@ -337,6 +339,18 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #if DEBUG_CHARGE
         Debug.Log("적: " + enemy + ", 목적지: " + destinationTile);
 #endif
+        // 적이 이미 누웠거나, 사냥터에서 나갔다면
+        if (!ValidatingEnemy())
+        {
+            curState = State.AfterBattle;
+            yield break;
+        }
+        // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
+        if (CheckInRange())
+        {
+            curState = State.InitiatingBattle;
+            yield break;
+        }
 
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
@@ -478,6 +492,12 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         attackEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
+    public void SetDamageText(GameObject input)
+    {
+        damageText = input;
+        damageText.SetActive(false);
+    }
+
     protected void StopCurActivities()
     {
         if (curSubCoroutine != null)
@@ -599,6 +619,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded);
         StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
 
+        if (!isEvaded)
+            DisplayDamage(actualDamage);
+
+
 #if DEBUG_ADV_BATTLE
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
             + "\n남은 체력 : " + this.battleStat.Health);
@@ -620,6 +644,15 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
 
         return !isEvaded;
+    }
+
+    private void DisplayDamage(float damage)
+    {
+        GameObject tempDamageText = Instantiate(damageText);
+        Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
+        tempDamageText.GetComponent<FloatingText>().InitFloatingText((int)damage, textPos);
+        //tempDamageText.transform.SetParent(canvas.transform);
+        tempDamageText.SetActive(true);
     }
 
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
@@ -700,6 +733,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         hpBar.GetComponent<HPBar>().SetSubject(this);
 
         hpBar.SetActive(true);
+        damageText.transform.SetParent(canvas.transform);
     }
     #endregion
 }

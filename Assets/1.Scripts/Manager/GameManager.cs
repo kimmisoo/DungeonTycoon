@@ -209,12 +209,14 @@ public class GameManager : MonoBehaviour
             Adventurer tempAdventurer = adventurersDisabled[i].GetComponent<Adventurer>();
             tempAdventurer.index = i;
             tempAdventurer.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
+            tempAdventurer.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+            tempAdventurer.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
             // Debug.Log("character instantiate - " + i);
         }
         StartCoroutine(AdvEnter());
 
 #if DEBUG_ADV
-        GenAndEnqueueSingleAdventurer(1, 10);
+        GenAndEnqueueSingleAdventurer(1, 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
