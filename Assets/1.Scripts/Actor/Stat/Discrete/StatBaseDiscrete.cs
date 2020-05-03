@@ -31,13 +31,13 @@ public class StatBaseDiscrete
 		foreach (StatModDiscrete mod in modList)
 		{
 
-			if (mod.type == ModType.Fixed)
+			if (mod.Type == ModType.Fixed)
 			{
-				valueFixed += mod.modValue;
+				valueFixed += mod.ModValue;
 			} // Fixed 합
 			else
 			{
-				valueMult += mod.modValue;
+				valueMult += mod.ModValue;
 			} // Mult 합
 			
 		}

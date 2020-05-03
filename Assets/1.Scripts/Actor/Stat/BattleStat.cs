@@ -86,6 +86,22 @@ public class BattleStat {
         battleStatContinuous[StatType.Health].BaseValue = HealthMax;
     }
 
+    public void AddStatModContinuous(StatType statType, StatModContinuous mod)
+    {
+        battleStatContinuous[statType].AddStatMod(mod);
+    }
+    public void RemoveStatModContinuous(StatType statType, StatModContinuous mod)
+    {
+        battleStatContinuous[statType].RemoveStatMod(mod);
+    }
+    public void AddStatModDiscrete(StatType statType, StatModDiscrete mod)
+    {
+        battleStatDiscrete[statType].AddStatMod(mod);
+    }
+    public void RemoveStatModDiscrete(StatType statType, StatModDiscrete mod)
+    {
+        battleStatDiscrete[statType].AddStatMod(mod);
+    }
     public int Range
     {
         get

@@ -5,6 +5,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Monster : Actor, ICombatant//:Actor, IDamagable {
 {
@@ -50,6 +51,12 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     //public event MoveStartedEventHandler moveStartedEvent;
     protected GameObject attackEffect;
 
+    #endregion
+
+    #region UI
+    public Canvas canvas;
+    public GameObject hpBar;
+    public Slider hpSlider;
     #endregion
 
     #region initialization
@@ -102,6 +109,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
         // 기본은 Idle.
         StartCoroutine(LateStart());
+
+        SetUI();
     }
     #endregion
 
@@ -176,6 +185,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #if DEBUG_MOB_STATE
                 Debug.Log("Battle");
 #endif
+                hpBar.GetComponent<HPBar>().Show();
                 curCoroutine = StartCoroutine(Battle());
                 break;
             case State.AfterBattle:
@@ -218,6 +228,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             case State.InitiatingBattle:
                 break;
             case State.Battle:
+                hpBar.GetComponent<HPBar>().Hide();
                 break;
             case State.AfterBattle:
                 break;
@@ -665,6 +676,29 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public Vector3 GetPosition()
     {
         return transform.position;
+    }
+
+    public BattleStat GetBattleStat()
+    {
+        return battleStat;
+    }
+
+    public ICombatant GetEnemy()
+    {
+        return enemy;
+    }
+    #endregion
+
+    #region UI
+    public void SetUI()
+    {
+        canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        hpBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HPSlider_Mob"));
+        hpSlider = hpBar.GetComponentInChildren<Slider>();
+        hpBar.transform.SetParent(canvas.transform);
+        hpBar.GetComponent<HPBar>().SetSubject(this);
+
+        hpBar.SetActive(true);
     }
     #endregion
 }

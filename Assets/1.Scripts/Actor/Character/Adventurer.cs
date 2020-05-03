@@ -6,6 +6,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Adventurer : Traveler, ICombatant//, IDamagable {
 {
@@ -20,7 +21,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
 
     protected readonly float RecoveryTick = 6.0f;
-    protected readonly int RecoveryTimes = 10;
+    protected readonly int RecoveryTimes = 2;
     protected readonly float RecoveryMult = 0.01f;
 
     private int monsterSearchCnt;
@@ -30,6 +31,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     //public event MoveStartedEventHandler moveStartedEvent;
+
+    #region UI
+    public Canvas canvas;
+    public GameObject hpBar;
+    public Slider hpSlider;
+    #endregion
 
     public int Level
     {
@@ -54,6 +61,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         base.OnEnable();
         monsterSearchCnt = 0;
+
+        SetUI();
     }
 
     #region StateMachine
@@ -163,6 +172,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("Battle");
 #endif
+                hpBar.GetComponent<HPBar>().Show();
                 curCoroutine = StartCoroutine(Battle());
                 break;
             case State.AfterBattle:
@@ -242,12 +252,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             case State.Battle:
                 break;
             case State.AfterBattle:
+                hpBar.GetComponent<HPBar>().Hide();
                 break;
             case State.ExitingHuntingArea:
                 break;
             case State.PassedOut:
                 break;
             case State.SpontaneousRecovery:
+                hpBar.GetComponent<HPBar>().Hide();
+                animator.SetTrigger("ResurrectionFlg");
                 break;
             case State.Rescued:
                 break;
@@ -416,17 +429,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         ResetBattleEventHandlers();
 
-        Structure[] tempArr = StructureManager.Instance.FindRescue(this);
+        //Structure[] tempArr = StructureManager.Instance.FindRescue(this);
 
-        if (tempArr.Length == 0)
-        {
-            curState = State.SpontaneousRecovery;
-        }
-        else
-        {
-            destinationPlace = tempArr[0];
-            curState = State.PathFinding;
-        }
+        //if (tempArr.Length == 0)
+        //{
+        curState = State.SpontaneousRecovery;
+        //}
+        //else
+        //{
+        //    destinationPlace = tempArr[0];
+        //    curState = State.PathFinding;
+        //}
     }
 
     protected IEnumerator Rescued()
@@ -836,5 +849,28 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         return transform.position;
     }
-#endregion
+
+    public BattleStat GetBattleStat()
+    {
+        return battleStat;
+    }
+
+    public ICombatant GetEnemy()
+    {
+        return enemy;
+    }
+    #endregion
+
+    #region UI
+    public void SetUI()
+    {
+        canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        hpBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HPSlider"));
+        hpSlider = hpBar.GetComponentInChildren<Slider>();
+        hpBar.transform.SetParent(canvas.transform);
+        hpBar.GetComponent<HPBar>().SetSubject(this);
+
+        hpBar.SetActive(true);
+    }
+    #endregion
 }

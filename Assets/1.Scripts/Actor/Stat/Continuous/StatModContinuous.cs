@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class StatModContinuous
 {
-	public float modValue
+    public StatModContinuous(ModType typeIn, float value)
+    {
+        Type = typeIn;
+        ModValue = value;
+    }
+	public float ModValue
 	{
 		get
 		{
@@ -15,7 +20,7 @@ public class StatModContinuous
 			_modValue = value; 
 		}
 	}
-	public ModType type
+	public ModType Type
 	{
 		get
 		{

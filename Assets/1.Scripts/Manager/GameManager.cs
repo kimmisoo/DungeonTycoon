@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using SimpleJSON;
 using UnityEngine.Events;
-
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -206,8 +206,9 @@ public class GameManager : MonoBehaviour
             adventurersDisabled.Add(Instantiate(go));
             go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             adventurersDisabled[i].transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
-            adventurersDisabled[i].GetComponent<Adventurer>().index = i;
-            adventurersDisabled[i].GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
+            Adventurer tempAdventurer = adventurersDisabled[i].GetComponent<Adventurer>();
+            tempAdventurer.index = i;
+            tempAdventurer.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
             // Debug.Log("character instantiate - " + i);
         }
         StartCoroutine(AdvEnter());
