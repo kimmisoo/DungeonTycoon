@@ -288,7 +288,22 @@ public abstract class Actor : MonoBehaviour
                 cur = next;
             }
             count++;
-            dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
+            dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos); // TODO: 이부분에서 종종 터짐. 
+            //ArgumentOutOfRangeException: Index was out of range. Must be non - negative and less than the size of the collection.
+            //Parameter name: index
+            //System.ThrowHelper.ThrowArgumentOutOfRangeException(System.ExceptionArgument argument, System.ExceptionResource resource)(at<e1a80661d61443feb3dbdaac88eeb776>:0)
+            //System.ThrowHelper.ThrowArgumentOutOfRangeException()(at<e1a80661d61443feb3dbdaac88eeb776>:0)
+            //System.Collections.Generic.List`1[T].get_Item(System.Int32 index)(at<e1a80661d61443feb3dbdaac88eeb776>:0)
+            //Actor.GetWay(System.Collections.Generic.List`1[T] path)(at Assets / 1.Scripts / Actor / Character / Actor.cs:291)
+            //Actor.GetWayTileForMove(System.Collections.Generic.List`1[T] path, TileForMove destTileForMove)(at Assets / 1.Scripts / Actor / Character / Actor.cs:303)
+            //Monster +< ApproachingToEnemy > c__Iterator5.MoveNext()(at Assets / 1.Scripts / Actor / Monster / Monster.cs:411)
+            //UnityEngine.SetupCoroutine.InvokeMoveNext(System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress)(at C:/ buildslave / unity / build / Runtime / Export / Coroutines.cs:17)
+            //UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+            //Monster: EnterState(State)(at Assets / 1.Scripts / Actor / Monster / Monster.cs:175)
+            //Monster: set_curState(State)(at Assets / 1.Scripts / Actor / Monster / Monster.cs:22)
+            // < PathFinding > c__Iterator2:MoveNext()(at Assets / 1.Scripts / Actor / Monster / Monster.cs:274)
+            //UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr)
+
             dirVector = DirectionVector.GetDirectionVector(dir);
             //Debug.Log(dir.ToString());
         }

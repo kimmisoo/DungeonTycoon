@@ -31,6 +31,7 @@ public class Traveler : Actor {
         set
         {
             ExitState();
+            Debug.Log(value);
             state = value;
             EnterState(state);
         }

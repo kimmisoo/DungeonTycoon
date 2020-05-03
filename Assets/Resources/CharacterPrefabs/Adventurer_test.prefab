@@ -167,7 +167,7 @@ MonoBehaviour:
   nextMovePos: {fileID: 0}
   tileLayer: {fileID: 0}
   isEnd: 0
-  id: 0
+  id: -1410
 --- !u!114 &114711522231969160
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -182,7 +182,9 @@ MonoBehaviour:
   state: 0
   pathFinder: {fileID: 114611986827091796}
   index: 0
-  attackEffect: {fileID: 0}
+  canvas: {fileID: 0}
+  hpBar: {fileID: 0}
+  hpSlider: {fileID: 0}
 --- !u!212 &212038393639115676
 SpriteRenderer:
   m_ObjectHideFlags: 1

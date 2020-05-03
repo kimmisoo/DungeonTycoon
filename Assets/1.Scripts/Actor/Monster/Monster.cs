@@ -380,7 +380,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
             if (CheckInRange())
             {
-                curState = State.Battle;
+                curState = State.InitiatingBattle;
                 yield break;
             }
 
@@ -469,6 +469,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed);
+        attackEffect.GetComponent<AttackEffect>().StopEffect();
     }
 
     public void SetAttackEffect(GameObject input)

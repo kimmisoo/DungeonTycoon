@@ -20,9 +20,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected GameObject attackEffect;
 
 
-    protected readonly float RecoveryTick = 6.0f;
-    protected readonly int RecoveryTimes = 2;
-    protected readonly float RecoveryMult = 0.01f;
+    protected readonly float RecoveryTick = 4.0f;
+    protected readonly int RecoveryTimes = 5;
+    protected readonly float RecoveryMult = 0.02f;
 
     private int monsterSearchCnt;
     private readonly int MonsterSearchMax = 5;
@@ -546,7 +546,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
             if (CheckInRange())
             {
-                curState = State.Battle;
+                curState = State.InitiatingBattle;
                 yield break;
             }
 
@@ -650,6 +650,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
+        //attackEffect.GetComponent<AttackEffect>().StopEffect();
     }
 
     public void SetAttackEffect(GameObject input)
@@ -678,8 +679,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     // 수정요망
     protected IEnumerator AfterBattle()
     {
+        yield return new WaitForSeconds(2.0f);
+
         // 포션 음용 넣어야한다면 여기에.
-        yield return null;
         if (battleStat.Health < battleStat.HealthMax / 4) //체력이 25%미만이면 
             curState = State.ExitingHuntingArea;
         else
@@ -789,6 +791,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
     {
         StopCurActivities();
+        animator.SetTrigger("StopAttackFlg");
 
         if (attacker == this) // 내가 죽였다면.
         {

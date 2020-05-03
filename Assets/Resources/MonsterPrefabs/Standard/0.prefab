@@ -61,7 +61,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1901718130427222
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,11 +180,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c67855ef497864fa48e8a3ca606f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  superState: 0
   state: 0
   pathFinder: {fileID: 114321440032251130}
   index: 0
   monsterNum: 0
+  canvas: {fileID: 0}
+  hpBar: {fileID: 0}
+  hpSlider: {fileID: 0}
 --- !u!212 &212577811982144490
 SpriteRenderer:
   m_ObjectHideFlags: 1
