@@ -69,32 +69,32 @@ public abstract class Actor : MonoBehaviour
         direction = new Direction();
     }
 
-    public Actor[] GetAdjacentActor(int range)
-    {
-        List<Actor> adjacentActors = new List<Actor>();
-        TileLayer layer = pathFinder.tileLayer;
-        int x = GetCurTileForMove().GetX();
-        int y = GetCurTileForMove().GetY();
-        TileForMove tileForMoveTemp;
-        for (int i = -range; i <= range; i++)
-        {
-            for (int j = -range; j <= range; j++)
-            {
-                if (Mathf.Abs(i) + Mathf.Abs(j) > range) // + 실제 actor가 타일 위에 있는지
-                    continue;
-                tileForMoveTemp = layer.GetTileForMove(x + i, y + j);
-                if (tileForMoveTemp.Equals(tileForMoveTemp.GetRecentActor().GetCurTileForMove())) // tileForMoveTemp에 기록된 recentActor의 현재위치가 tileForMoveTemp와 일치하는지
-                {
-                    adjacentActors.Add(layer.GetTileForMove(x + i, y + j).GetRecentActor());
-                }
-                else
-                {
-                    tileForMoveTemp.SetRecentActor(null);
-                }
-            }
-        }
-        return adjacentActors.ToArray();
-    }
+    //public Actor[] GetAdjacentActor(int range)
+    //{
+    //    List<Actor> adjacentActors = new List<Actor>();
+    //    TileLayer layer = pathFinder.tileLayer;
+    //    int x = GetCurTileForMove().GetX();
+    //    int y = GetCurTileForMove().GetY();
+    //    TileForMove tileForMoveTemp;
+    //    for (int i = -range; i <= range; i++)
+    //    {
+    //        for (int j = -range; j <= range; j++)
+    //        {
+    //            if (Mathf.Abs(i) + Mathf.Abs(j) > range) // + 실제 actor가 타일 위에 있는지
+    //                continue;
+    //            tileForMoveTemp = layer.GetTileForMove(x + i, y + j);
+    //            if (tileForMoveTemp.Equals(tileForMoveTemp.GetRecentActor().GetCurTileForMove())) // tileForMoveTemp에 기록된 recentActor의 현재위치가 tileForMoveTemp와 일치하는지
+    //            {
+    //                adjacentActors.Add(layer.GetTileForMove(x + i, y + j).GetRecentActor());
+    //            }
+    //            else
+    //            {
+    //                tileForMoveTemp.SetRecentActor(null);
+    //            }
+    //        }
+    //    }
+    //    return adjacentActors.ToArray();
+    //}
 
     public void SetCurTile(Tile _tile)
     {
@@ -111,8 +111,10 @@ public abstract class Actor : MonoBehaviour
     }
     public void SetCurTileForMove(TileForMove _tileForMove)
     {
+        if(curTileForMove != null)
+            curTileForMove.RemoveRecentActor(this);
         curTileForMove = _tileForMove;
-        curTileForMove.SetRecentActor(this);
+        curTileForMove.AddRecentActor(this);
     }
     public TileForMove GetCurTileForMove()
     {
