@@ -13,9 +13,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 {
     #region Battle
     //전투 스탯
-    BattleStat battleStat;
+    protected BattleStat battleStat;
     //리워드 스탯(현재는 별 필요 없음)
-    RewardStat rewardStat;
+    protected RewardStat rewardStat;
 
     public ICombatant enemy;
     protected GameObject attackEffect;
@@ -26,10 +26,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected readonly int RecoveryTimes = 5;
     protected readonly float RecoveryMult = 0.02f;
 
-    private int monsterSearchCnt;
-    private readonly int MonsterSearchMax = 5;
+    protected int monsterSearchCnt;
+    protected readonly int MonsterSearchMax = 5;
 
-    HuntingArea curHuntingArea;
+    protected HuntingArea curHuntingArea;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     //public event MoveStartedEventHandler moveStartedEvent;
@@ -43,7 +43,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public int Level
     {
         get { return battleStat.Level; }
-    }    
+    }
     #endregion
 
     public void InitAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat) //
@@ -276,7 +276,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
-        switch(superState)
+        switch (superState)
         {
             case SuperState.SearchingMonster:
                 curState = State.ApproachingToEnemy;
@@ -303,7 +303,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
         yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
 
-        switch(superState)
+        switch (superState)
         {
             case SuperState.SolvingDesire:
                 VisitStructure();
@@ -379,7 +379,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         enemy = curHuntingArea.FindNearestMonster(this); // 가장 가까운 몬스터 찾기.
 
-        if(enemy == null)
+        if (enemy == null)
         {
             if (monsterSearchCnt >= MonsterSearchMax)
             {
@@ -396,7 +396,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         {
             monsterSearchCnt = 0;
             SetDestinationTowardEnemy();
-            
+
             curState = State.PathFinding;
         }
     }
@@ -455,7 +455,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator SpontaneousRecovery()
     {
         float healAmount = 0;
-        for(int i = 0; i < RecoveryTimes; i++)
+        for (int i = 0; i < RecoveryTimes; i++)
         {
             yield return new WaitForSeconds(RecoveryTick);
 
@@ -475,7 +475,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //moveStartedEvent = null;
     }
 
-#endregion
+    #endregion
 
     public override bool ValidateNextTile(Tile tile)
     {
@@ -487,7 +487,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         yield return null;
     }
 
-#region Battle
+    #region Battle
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         //enemy.AddMoveStartedEventHandler(OnEnemyMoveStarted);
@@ -522,7 +522,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             //SetCurTile(tileForMoveWay[i].GetParent());
             //SetCurTileForMove(tileForMoveWay[i]);
 
-            
+
 
             // curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove());
             // 방향에 따른 애니메이션 설정.
@@ -641,7 +641,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator Attack() // 공격
     {
         //방향 설정
-        if(curTileForMove != enemy.GetCurTileForMove())
+        if (curTileForMove != enemy.GetCurTileForMove())
             SetAnimDirection(curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove()));
         else
         {
@@ -750,7 +750,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         System.Delegate[] invocations = healthBelowZeroEvent.GetInvocationList();
 
         bool isNew = true;
-        for(int i = 0; i < invocations.Length; i++)
+        for (int i = 0; i < invocations.Length; i++)
         {
             if (invocations[i].Target == newEvent.Target)
                 isNew = false;
@@ -780,9 +780,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //    if (isNew)
     //        moveStartedEvent += newEvent;
     //}
-#endregion
+    #endregion
 
-#region ICombatant
+    #region ICombatant
     public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
         float actualDamage;
@@ -795,7 +795,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
 #if DEBUG_ADV_BATTLE
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
-            +"\n남은 체력 : " + this.battleStat.Health);
+            + "\n남은 체력 : " + this.battleStat.Health);
 #endif
 
         // 조건?
@@ -894,7 +894,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         battleStat.ResetBattleStat();
     }
-    
+
     public Vector3 GetPosition()
     {
         return transform.position;

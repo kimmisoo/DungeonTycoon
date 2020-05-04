@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpecialAdventurer : Adventurer//, IDamagable {
-{ 
+{
+    Skill uniqueSkill;
+    public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, int skillID)
+    {
+        base.InitAdventurer(stat, battleStat, rewardStat);
+        //uniqueSkill = new Skill(skillID);
+    }
 
-	
-	public void Awake()
-	{
-		
-		base.Awake();
-		//BattleStatus GetComponent;;
-	}
+    public void OnEnable()
+    {
+        base.OnEnable();
+        monsterSearchCnt = 0;
 
-	//+ item 추가만~~
+        SetUI();
+    }
+    //+ item 추가만~~
 
-	/* -> Special Adventurer
+    /* -> Special Adventurer
 	public EquipmentEffect[] GetSameCategoryEffects(int category)
 	{
 		List<EquipmentEffect> tempList = new List<EquipmentEffect>();
@@ -26,5 +31,9 @@ public class SpecialAdventurer : Adventurer//, IDamagable {
 		}
 		return tempList.ToArray();
 	}*/
+    #region Items
+    #endregion
 
+    #region BossBattle
+    #endregion
 }

@@ -1,0 +1,98 @@
+{
+  "OldMan":{
+   "BattleStatJSON":"OldMan_Stat",
+   "SkillID":0,
+   "Stat":{
+     "Name":"할배",
+     "Race":"Human",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Male",
+     "Explanation":"단골 할아버지."
+   }
+ },
+  "Maxi":{
+   "BattleStatJSON":"Maxi_Stat",
+   "SkillID":1,
+   "Stat":{
+     "Name":"맥시밀리안",
+     "Race":"Human",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Male",
+     "Explanation":"눈에 띄는 걸 좋아하는 '셀럽'모험가. 형이라고 부르며 쫓아다니는 남성 팬들이 많다."
+   }
+ },
+  "Iris":{
+   "BattleStatJSON":"Iris_Stat",
+   "SkillID":2,
+   "Stat":{
+     "Name":"아이리스",
+     "Race":"Human",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Female",
+     "Explanation":"주목받는 천재 마법사. 마력이 특히나 많다고."
+   }
+ },
+ "Hana":{
+   "BattleStatJSON":"Hana_Stat",
+   "SkillID":3,
+   "Stat":{
+     "Name":"하나",
+     "Race":"Human",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Female",
+     "Explanation":"아이리스가 데뷔하기 전에는 가장 주목받던 마법사. 가수로도 활동 중."
+   }
+ },
+ "Yeonhwa":{
+   "BattleStatJSON":"Yeonhwa_Stat",
+   "SkillID":4,
+   "Stat":{
+     "Name":"장연화",
+     "Race":"Human",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Female",
+     "Explanation":"이국에서 온 모험가. 수상하다는 말이 많다."
+   }
+ },
+ "Murat":{
+   "BattleStatJSON":"Murat_Stat",
+   "SkillID":5,
+   "Stat":{
+     "Name":"뮈라",
+     "Race":"Human",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Male",
+     "Explanation":"잘 생기고 신실한 사제. 이유없이 재수없다고 말하는 사람들이 종종 있다."
+   }
+ },
+ "Cat":{
+   "BattleStatJSON":"Cat_Stat",
+   "SkillID":6,
+   "Stat":{
+     "Name":"냥냐리우스",
+     "Race":"Cat",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Male",
+     "Explanation":"야옹이족의 대표 모험가. 잰 체도 대표."
+   }
+ },
+ "Dog":{
+   "BattleStatJSON":"Dog_Stat",
+   "SkillID":7,
+   "Stat":{
+     "Name":"왈멍멍",
+     "Race":"Dog",
+     "Wealth":"Upper",
+     "JobType":"SpecialAdventurer",
+     "Gender":"Male",
+     "Explanation":"멍멍이족의 대표 모험가. 수더분해서 아주머니들에게 인기만점."
+   }
+ }
+}

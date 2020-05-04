@@ -10,7 +10,8 @@ public enum SuperState
 {
     None, Idle, Wandering, Battle, AfterBattle, Dead, // 몬스터
     ExitingDungeon, SolvingDesire, SolvingDesire_Wandering, // 트래블러
-    EnteringHuntingArea, SearchingMonster, SearchingMonster_Wandering, PassedOut, ExitingHuntingArea // 어드벤처러
+    EnteringHuntingArea, SearchingMonster, SearchingMonster_Wandering, PassedOut, ExitingHuntingArea, // 어드벤처러
+    SearchingBossRoom, WaitingOtherSpecialAdvs, Skirmish, SkirmishDefeated, SkirmishWon, EnteringBossRoom, BossBattle, BailOut // 스페셜어드벤처러
 
 }
 
@@ -19,9 +20,11 @@ public enum State
     // SuperState의 입구가 되는 State
     None, Idle, AfterBattle, Dead,
     Wandering, SolvingDesire_Wandering, InitiatingBattle, SearchingStructure, SearchingExit, SearchingHuntingArea, SearchingMonster, ExitingHuntingArea, PassedOut, SearchingMonster_Wandering,
+    SearchingBossRoom, WaitingOtherSpecialAdvs, StartingSkirmish, SkirmishDefeated, SkirmishWon, EnteringBossRoom, StartingBossBattle, BailOut,
     // 그 외. 공용 State 포함.
     PathFinding, MovingToDestination, WaitingStructure, UsingStructure, Battle, Exit,
-    ApproachingToEnemy, SearchRescueTeam, Rescued, SpontaneousRecovery
+    ApproachingToEnemy, SearchRescueTeam, Rescued, SpontaneousRecovery,
+    AfterSkirmish
 }
 /*
  * Animator Tirggers
@@ -40,7 +43,7 @@ public enum State
 public abstract class Actor : MonoBehaviour
 {
 
-    
+
     protected SuperState superState;
     public State state;
     /*public string actorName { get; set; }
@@ -111,7 +114,7 @@ public abstract class Actor : MonoBehaviour
     }
     public void SetCurTileForMove(TileForMove _tileForMove)
     {
-        if(curTileForMove != null)
+        if (curTileForMove != null)
             curTileForMove.RemoveRecentActor(this);
         curTileForMove = _tileForMove;
         curTileForMove.AddRecentActor(this);
@@ -394,14 +397,14 @@ public abstract class Actor : MonoBehaviour
 
             // 방향에 따른 애니메이션 설정.
             SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
-            
+
             //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
             distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
 
             //Vector3 destPos = new Vector3(tileForMoveWay[i].GetPosition().x, tileForMoveWay[i].GetPosition().y + TileForMove.Y_COMPENSATION, tileForMoveWay[i].GetPosition().z);
-            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance/2)
+            while (Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance / 2)
             {
                 yield return null;
                 transform.Translate(dirVector * Time.deltaTime);
@@ -420,7 +423,7 @@ public abstract class Actor : MonoBehaviour
             }
             sum = 0.0f;
             transform.position = tileForMoveWay[i + 1].GetPosition(); // TODO! 이 부분 때문에 순간이동하는 걸로 사료됨. 이동 도중에 비정상적으로 종료돼도 여기서 한번에 위치를 맞추기 때문에 순간이동.
-        }     
+        }
 #if DEBUG_GETWAY
         Debug.Log("last curTileForMove : [" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "]");
 #endif
@@ -492,7 +495,7 @@ public abstract class Actor : MonoBehaviour
         float distance = dirVector.magnitude;
         float moved = 0;
 
-        while(moved < distance)
+        while (moved < distance)
         {
             moved += (dirVector * Time.deltaTime).magnitude;
             transform.Translate(dirVector * Time.deltaTime);
@@ -508,7 +511,7 @@ public abstract class Actor : MonoBehaviour
         float distanceX = pos.x - this.transform.position.x;
         float distanceY = pos.y - this.transform.position.y;
 
-        if(distanceX <= 0)
+        if (distanceX <= 0)
         {
             if (distanceY <= 0)
                 return Direction.DownLeft;
@@ -527,7 +530,7 @@ public abstract class Actor : MonoBehaviour
     public abstract bool ValidateNextTile(Tile tile);
     public abstract void SetPathFindEvent();
 
-#region Save Load
+    #region Save Load
     public int GetDestinationTileSave()
     {
         if (destinationTile != null)
@@ -594,7 +597,7 @@ public abstract class Actor : MonoBehaviour
         SetCurTileForMove(curTile.GetChild(childNum));
         return true;
     }
-#endregion
+    #endregion
 
     protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
     {
