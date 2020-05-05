@@ -496,6 +496,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         damageText = input;
         damageText.SetActive(false);
+        damageText.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
     protected void StopCurActivities()

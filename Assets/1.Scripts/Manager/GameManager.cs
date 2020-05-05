@@ -40,10 +40,12 @@ public class GameManager : MonoBehaviour
     public List<GameObject> travelers;
     public List<GameObject> adventurersEnabled;
     public List<GameObject> specialAdventurers;
+    public int activeSpAdvCnt;
     public List<GameObject> inactiveTravelers;
     public List<GameObject> adventurersDisabled;
 
     public Queue<GameObject> advEnterQ;
+    public Queue<GameObject> spAdvEnterQ;
 
     public int corporateNum = 1;
     public List<float> popular;
@@ -175,10 +177,12 @@ public class GameManager : MonoBehaviour
         travelers = new List<GameObject>();
         adventurersEnabled = new List<GameObject>();
         specialAdventurers = new List<GameObject>();
+        activeSpAdvCnt = 0;
         inactiveTravelers = new List<GameObject>();
         adventurersDisabled = new List<GameObject>();
 
         advEnterQ = new Queue<GameObject>();
+        spAdvEnterQ = new Queue<GameObject>();
 
         // Scene별로 미리 정의된 관광객의 최대 수에 따라 생성
         for (int i = 0; i < traveler_Max; i++)
@@ -218,9 +222,11 @@ public class GameManager : MonoBehaviour
             // Debug.Log("character instantiate - " + i);
         }
         StartCoroutine(AdvEnter());
+        StartCoroutine(SpAdvEnter());
 
 #if DEBUG_ADV
-        GenAndEnqueueSingleAdventurer(1, 10);
+        //GenAndEnqueueSingleAdventurer(1, 10);
+        GenAndEnqueueSpecialAdvenuturer("Hana", 5);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -279,11 +285,11 @@ public class GameManager : MonoBehaviour
             string spAdvName = sceneData["scene"][sceneNumber]["specialadventurers"][i];
             string battleStatFileName = spAdvSummary[spAdvName]["BattleStatJSON"];
 
-            Debug.Log("name:" + battleStatFileName);
+            //Debug.Log("name:" + battleStatFileName);
             TextAsset spAdvStatTxt = Resources.Load<TextAsset>("Characters/SpecialAdventurers/" + battleStatFileName);
             spAdvStatDatas.Add(spAdvName, JSON.Parse(spAdvStatTxt.ToString()));
         }
-        Debug.Log("statdata:" + spAdvStatDatas["Hana"][0]["exp"]);
+        //Debug.Log("statdata:" + spAdvStatDatas["Hana"][0]["exp"]);
 
         //Debug.Log("scene 1:" + sceneData["scene"][0]["specialadventurers"][0]);
         //Debug.Log("scene 2:" + sceneData["scene"][1]["specialadventurers"][2]);
@@ -343,7 +349,7 @@ public class GameManager : MonoBehaviour
         return tempStat;
     }
 
-    private Stat GenStatAdv(int level) // 모험가용
+    private Stat GenStat(int level) // 모험가용
     {
         Stat tempStat = new Stat();
         if (Random.Range(0, 2) == 0)
@@ -369,28 +375,50 @@ public class GameManager : MonoBehaviour
         return tempStat;
     }
 
-    private Stat GenStatSpAdv(int level) // 모험가용
+    private Stat GenStat(string name, int level) // 일선 모험가용
     {
         Stat tempStat = new Stat();
-        if (Random.Range(0, 2) == 0)
-        {
+        
+        if (spAdvSummary[name]["Stat"]["Name"] == "Male")
             tempStat.gender = Gender.Male;
-            tempStat.name = namesData["names"]["malename"][Random.Range(0, namesData["malename"].Count)];
-        }
         else
-        {
             tempStat.gender = Gender.Female;
-            tempStat.name = namesData["names"]["femalename"][Random.Range(0, namesData["malename"].Count)];
-        }
         // 임시
-        tempStat.explanation = "";
+        tempStat.explanation = spAdvSummary[name]["Stat"]["Explanation"];
 
-        tempStat.job = JobType.Adventurer;
-        tempStat.race = GetRandomRace();
-        tempStat.wealth = GetRandomWealth(level);
-        tempStat.gold = advStatData[level - 1]["gold"].AsInt;
+        tempStat.job = JobType.SpecialAdventurer;
+        string tempStr = spAdvSummary[name]["Stat"]["Race"];
 
-        SetDesires(ref tempStat, JobType.Adventurer);
+        switch (tempStr)
+        {
+            case "Human":
+                tempStat.race = RaceType.Human;
+                break;
+            case "Elf":
+                tempStat.race = RaceType.Elf;
+                break;
+            case "Dwarf":
+                tempStat.race = RaceType.Dwarf;
+                break;
+            case "Orc":
+                tempStat.race = RaceType.Orc;
+                break;
+            case "Dog":
+                tempStat.race = RaceType.Dog;
+                break;
+            case "Cat":
+                tempStat.race = RaceType.Cat;
+                break;
+            default:
+                tempStat.race = RaceType.Human;
+                break;
+        }
+        tempStat.wealth = WealthType.Upper;
+        tempStat.gold = spAdvStatDatas[name][level - 1]["gold"].AsInt;
+
+        SetDesires(ref tempStat, JobType.Adventurer); // 어차피 같으니 그냥 Adventurer로 넣어줌.
+
+        Debug.Log("name" + tempStat.name + "race" + tempStat.race + "gender" + tempStat.gender);
 
         return tempStat;
     }
@@ -595,8 +623,25 @@ public class GameManager : MonoBehaviour
                 temp.SetActive(true);
                 adventurersEnabled.Add(temp);
             }
+        }   
+    }
+
+    private IEnumerator SpAdvEnter()
+    {
+        GameObject temp;
+        int sceneNumber = int.Parse(SceneManager.GetActiveScene().name);
+
+        while (activeSpAdvCnt < sceneData["scene"][sceneNumber]["specialadventurers"].Count)
+        {
+            if (spAdvEnterQ.Count > 0)
+            {
+                temp = spAdvEnterQ.Dequeue();
+                //temp.GetComponent<SpecialAdventurer>().ResetBattleStat();
+                temp.SetActive(true);
+                activeSpAdvCnt++;
+            }
+            yield return new WaitForSeconds(3.0f); // 임시 수치
         }
-        
     }
 
     private void GenAndEnqueueSingleAdventurer(int minLevel, int maxLevel) // 모험가 하나 생성하고 큐에 집어넣음.
@@ -607,7 +652,7 @@ public class GameManager : MonoBehaviour
 
         int advLevel = Random.Range(minLevel, maxLevel+1);
         BattleStat tempBattleStat = GenBattleStat(advLevel);
-        Stat tempStat = GenStatAdv(advLevel);
+        Stat tempStat = GenStat(advLevel);
         RewardStat tempRewardStat = GenRewardStat(advLevel);
 
         tempAdventurer.InitAdventurer(tempStat, tempBattleStat, tempRewardStat);
@@ -615,10 +660,12 @@ public class GameManager : MonoBehaviour
         advEnterQ.Enqueue(temp);
     }
 
-    private void GenerateSpecialAdvenuturer(int spAdvNum, int level)
+    
+
+    private void GenAndEnqueueSpecialAdvenuturer(string name, int level)
     {
         // 아마 고쳐야할 거임
-        GameObject go = (GameObject)Resources.Load("CharacterPrefabs/SpecialAdventurer_test");
+        GameObject go = (GameObject)Instantiate((GameObject)Resources.Load("CharacterPrefabs/SpecialAdventurer_test"));
         //go.GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
 
         // 생성만 해놓고 비활성화
@@ -636,18 +683,16 @@ public class GameManager : MonoBehaviour
         // Debug.Log("character instantiate - " + i);
 
         BattleStat tempBattleStat = GenBattleStat(level);
-        Stat tempStat = GenStatAdv(level);
+        Stat tempStat = GenStat(name, level);
         RewardStat tempRewardStat = GenRewardStat(level);
-        int skillID = 0;
+        //tempBattleStat.ResetBattleStat();
+        int skillID = spAdvSummary[name]["SkillID"].AsInt;
+
+        Debug.Log(name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
         tempSpAdv.InitSpecialAdventurer(tempStat, tempBattleStat, tempRewardStat, skillID);
 
-        //advEnterQ.Enqueue(temp);
-    }
-
-    private Stat GenStatSpAdv()
-    {
-        return null;
+        spAdvEnterQ.Enqueue(go);
     }
 
     private BattleStat GenBattleStatSpAdv()

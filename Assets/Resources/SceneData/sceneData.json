@@ -4,6 +4,7 @@
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
 			"specialadventurers":["OldMan"],
+			"specialadv_level":5,
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -91,6 +92,7 @@
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
 			"specialadventurers":["Hana", "Iris", "Maxi", "Murat"],
+			"specialadv_level":15,
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -157,6 +159,8 @@
 			"num": 2,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
+			"specialadventurers":["Hana", "Iris", "Maxi", "Murat"],
+			"specialadv_level":25,
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,

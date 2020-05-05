@@ -63,7 +63,9 @@ public class BattleStat {
         BaseMoveSpeed = input.BaseMoveSpeed;
         BaseAttackRange = input.BaseAttackRange;
 
-        // 수정요망
+        battleStatContinuous[StatType.Health].BaseValue = HealthMax;
+        
+        // TODO 수정요망
         curExp = 0;
         NextExp = 150;
         level = 1;

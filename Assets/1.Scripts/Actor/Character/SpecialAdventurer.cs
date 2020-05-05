@@ -8,6 +8,7 @@ public class SpecialAdventurer : Adventurer//, IDamagable {
     public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, int skillID)
     {
         base.InitAdventurer(stat, battleStat, rewardStat);
+        //battleStat.ResetBattleStat();
         //uniqueSkill = new Skill(skillID);
     }
 

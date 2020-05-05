@@ -680,11 +680,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         damageText = input;
         damageText.SetActive(false);
+        damageText.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
     public void SetHealText(GameObject input)
     {
         healText = input;
         healText.SetActive(false);
+        healText.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
     protected void StopCurActivities()
