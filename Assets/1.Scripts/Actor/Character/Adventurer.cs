@@ -171,6 +171,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("InitiatingBattle");
 #endif
+                hpBar.GetComponent<HPBar>().Show();
                 superState = SuperState.Battle;
                 InitiatingBattle();
                 break;
@@ -178,7 +179,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("Battle");
 #endif
-                hpBar.GetComponent<HPBar>().Show();
                 curCoroutine = StartCoroutine(Battle());
                 break;
             case State.AfterBattle:
@@ -665,6 +665,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 break;
             }
         }
+        curState = State.AfterBattle;
     }
 
     protected IEnumerator Attack() // 공격
@@ -729,10 +730,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
 
     // 죽인 몬스터로부터 보상 획득.
-    protected void GetBattleReward(ICombatant attacker)
+    protected bool GetBattleReward(ICombatant attacker)
     {
-        battleStat.CurExp += attacker.RewardExp();
+        bool levelUp = battleStat.TakeExp(attacker.RewardExp());
         stat.gold += attacker.RewardGold();
+
+        return levelUp;
     }
 
     // 수정요망
@@ -855,17 +858,28 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (attacker == this) // 내가 죽였다면.
         {
 #if DEBUG_ADV_BATTLE
-            int goldBefore = stat.gold;
+            int expBefore = battleStat.CurExp;
+            int levelBefore = battleStat.Level;
 #endif
 
-            GetBattleReward(victim);// 보상 받기.
+            if (GetBattleReward(victim))
+                DisplayLevelUP(battleStat.Level);
 
 #if DEBUG_ADV_BATTLE
             Debug.Log(this + "가 몬스터 처치." +
-                "\n기존 소지금: " + goldBefore + ", 현재 소지금: " + stat.gold);
+                "\n기존 exp: " + expBefore + ", 현재 exp: " + battleStat.CurExp + ", 요구 exp: " + battleStat.NextExp +
+                "\n기존 level: " + levelBefore + ", 현재 level: " + battleStat.Level);
 #endif
         }
         curState = State.AfterBattle;
+    }
+
+    private void DisplayLevelUP(int Level)
+    {
+        GameObject levelUpEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/LevelUpEffect"));
+        levelUpEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
+        levelUpEffect.SetActive(true);
+        Debug.Log("LV UP!");
     }
 
     private void DisplayDamage(float damage)

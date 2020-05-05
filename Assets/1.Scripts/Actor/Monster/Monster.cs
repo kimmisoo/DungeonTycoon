@@ -180,6 +180,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #if DEBUG_MOB_STATE
                 Debug.Log("Initiating Battle");
 #endif
+                hpBar.GetComponent<HPBar>().Show();
                 superState = SuperState.Battle;
                 InitiatingBattle();
                 break;
@@ -187,7 +188,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #if DEBUG_MOB_STATE
                 Debug.Log("Battle");
 #endif
-                hpBar.GetComponent<HPBar>().Show();
                 curCoroutine = StartCoroutine(Battle());
                 break;
             case State.AfterBattle:
@@ -455,6 +455,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 break;
             }
         }
+        curState = State.AfterBattle;
     }
 
     protected IEnumerator Attack() // 공격

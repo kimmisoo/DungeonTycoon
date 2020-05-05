@@ -5,7 +5,7 @@ AnimatorController:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: splash_00
+  m_Name: HanaAttack
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: AtkTrigger
@@ -13,13 +13,13 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: StopTrigger
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -98,7 +98,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0ed1813f3c89f2a4c89a8f3f9976d8a4, type: 2}
+  m_Motion: {fileID: 7400000, guid: 0c4c0db197067a34baf4bb0dcc82fa41, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

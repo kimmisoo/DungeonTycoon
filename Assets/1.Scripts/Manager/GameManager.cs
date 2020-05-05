@@ -161,6 +161,7 @@ public class GameManager : MonoBehaviour
         // Scene 이름 받기
         sceneName = SceneManager.GetActiveScene().name;
 
+        Debug.Log("mapName" + sceneName);
         ReadDatasFromJSON();
 
         wait = new WaitForSeconds(0.11f);
@@ -703,7 +704,7 @@ public class GameManager : MonoBehaviour
         spAdvEnterQ.Enqueue(go);
     }
 
-    private BattleStat GenBattleStat(int level) // 레벨에 따라 BattleStat 생성. JSON에서 읽은 데이터로 생성함.
+    public BattleStat GenBattleStat(int level) // 레벨에 따라 BattleStat 생성. JSON에서 읽은 데이터로 생성함.
     {
         BattleStat tempBattleStat = new BattleStat();
 
@@ -718,12 +719,14 @@ public class GameManager : MonoBehaviour
         tempBattleStat.BasePenetrationFixed = advStatData[level - 1]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = advStatData[level - 1]["movespeed"].AsFloat;
         tempBattleStat.BaseAttackRange = advStatData[level - 1]["attackrange"].AsInt;
+
+        tempBattleStat.NextExp = advStatData[level - 1]["exp"].AsInt;
         tempBattleStat.ownerType = "Adventurer";
 
         return tempBattleStat;
     }
 
-    private BattleStat GenBattleStat(string name, int level) // 레벨에 따라 BattleStat 생성. JSON에서 읽은 데이터로 생성함.
+    public BattleStat GenBattleStat(string name, int level) // 레벨에 따라 BattleStat 생성. JSON에서 읽은 데이터로 생성함.
     {
         BattleStat tempBattleStat = new BattleStat();
 
@@ -738,6 +741,8 @@ public class GameManager : MonoBehaviour
         tempBattleStat.BasePenetrationFixed = spAdvStatDatas[name][level - 1]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = spAdvStatDatas[name][level - 1]["movespeed"].AsFloat;
         tempBattleStat.BaseAttackRange = spAdvStatDatas[name][level - 1]["attackrange"].AsInt;
+
+        tempBattleStat.NextExp = spAdvStatDatas[name][level - 1]["exp"].AsInt;
         tempBattleStat.ownerType = name;
 
         Debug.Log("[GenBattleStat] " + name + ", hp : " + tempBattleStat.BaseHealthMax + ", atk : " + tempBattleStat.BaseAttack + ", atkspeed : " + tempBattleStat.AttackSpeed);
@@ -1056,17 +1061,6 @@ public class GameManager : MonoBehaviour
     public void DebugHuntingArea()
     {
         HuntingAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
-    }
-
-    public BattleStat GetBattleStatData(string type, int level)
-    {
-        switch(type)
-        {
-            case "Adventurer":
-                break;
-        }
-
-        return null;
     }
 #endregion
 

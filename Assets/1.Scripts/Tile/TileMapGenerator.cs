@@ -56,7 +56,6 @@ public class TileMapGenerator : MonoBehaviour
         TextAsset jsonmappingtext = Resources.Load<TextAsset>("TileMap/" + "Tile_Mapping");
         mapData = JSON.Parse(jsontext.text);
         preLoadedTileObject = new List<GameObject>();
-
         for (int i = 0; i <= 298; i++) //hard -> 로딩시간 최적화하려면 씬에 등장하는것만 로드.
         {
             preLoadedTileObject.Add(Resources.Load<GameObject>("TilePrefabs/" + i));

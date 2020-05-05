@@ -75,6 +75,26 @@ public class BattleStat
         ownerType = input.ownerType;
     }
 
+    private void SetBattleStat(BattleStat input)
+    {
+        BaseHealthMax = input.BaseHealthMax;
+        BaseDefence = input.BaseDefence;
+        BaseAvoid = input.BaseAvoid;
+        BaseAttack = input.BaseAttack;
+        BaseAttackSpeed = input.BaseAttackSpeed;
+        BaseCriticalChance = input.BaseCriticalChance;
+        BaseCriticalDamage = input.BaseCriticalDamage;
+        BasePenetrationFixed = input.BasePenetrationFixed;
+        BaseMoveSpeed = input.BaseMoveSpeed;
+        BaseAttackRange = input.BaseAttackRange;
+
+        battleStatContinuous[StatType.Health].BaseValue = HealthMax;
+
+        // TODO 수정요망
+        NextExp = input.NextExp;
+        level = input.level;
+    }
+
     public void ResetBattleStat()
     {
         battleStatContinuous[StatType.HealthMax].ClearStatModList();
@@ -191,6 +211,22 @@ public class BattleStat
         }
     }
 
+    public bool TakeExp(int expAmount)
+    {
+        Debug.Assert(expAmount >= 0);
+
+        curExp += expAmount;
+
+        if (CurExp >= NextExp)
+        {
+            CurExp -= NextExp;
+            LevelUp();
+            return true;
+        }
+        else
+            return false;
+    }
+
     public int NextExp
     {
         get
@@ -302,8 +338,11 @@ public class BattleStat
     protected void LevelUp()
     {
         Level++;
-        // 다음 레벨 테이블 불러와서 배틀스탯에 저장.
-        // 애니메이션 트리거.
+
+        if (ownerType == "Adventurer")
+            SetBattleStat(GameManager.Instance.GenBattleStat(Level));
+        else
+            SetBattleStat(GameManager.Instance.GenBattleStat(ownerType, Level));
     }
 
     #region SetBaseStats
