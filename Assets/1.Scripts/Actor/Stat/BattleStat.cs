@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleStat {
-
+public class BattleStat
+{
 	Dictionary<StatType, StatBaseContinuous> battleStatContinuous = new Dictionary<StatType, StatBaseContinuous>();
 	Dictionary<StatType, StatBaseDiscrete> battleStatDiscrete = new Dictionary<StatType, StatBaseDiscrete>();
 
     int curExp;
     int nextExp;
     int level;
+
+    public string ownerType = null; // 어떤 모험가의 능력치인지.(데이터 시트 확인용)
 
     public BattleStat()
     {
@@ -27,6 +29,7 @@ public class BattleStat {
 
         battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
 
+        ownerType = null;
         // 수정요망
         curExp = 0;
         NextExp = 150;
@@ -67,8 +70,9 @@ public class BattleStat {
         
         // TODO 수정요망
         curExp = 0;
-        NextExp = 150;
-        level = 1;
+        NextExp = input.NextExp;
+        level = input.level;
+        ownerType = input.ownerType;
     }
 
     public void ResetBattleStat()

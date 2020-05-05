@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
     public JSONNode advStatData;
     JSONNode advWealthRatioData;
 
-    public Dictionary<string, JSONNode> spAdvStatDatas;
+    Dictionary<string, JSONNode> spAdvStatDatas;
 
     JSONNode spAdvSummary;
 
@@ -225,7 +225,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SpAdvEnter());
 
 #if DEBUG_ADV
-        //GenAndEnqueueSingleAdventurer(1, 10);
+        GenAndEnqueueSingleAdventurer(1, 10);
         GenAndEnqueueSpecialAdvenuturer("Hana", 5);
 #endif
         //StartCoroutine(GCcall());
@@ -378,8 +378,9 @@ public class GameManager : MonoBehaviour
     private Stat GenStat(string name, int level) // 일선 모험가용
     {
         Stat tempStat = new Stat();
-        
-        if (spAdvSummary[name]["Stat"]["Name"] == "Male")
+
+        tempStat.name = spAdvSummary[name]["Stat"]["Name"];
+        if (spAdvSummary[name]["Stat"]["Gender"] == "Male")
             tempStat.gender = Gender.Male;
         else
             tempStat.gender = Gender.Female;
@@ -418,7 +419,7 @@ public class GameManager : MonoBehaviour
 
         SetDesires(ref tempStat, JobType.Adventurer); // 어차피 같으니 그냥 Adventurer로 넣어줌.
 
-        Debug.Log("name" + tempStat.name + "race" + tempStat.race + "gender" + tempStat.gender);
+        //Debug.Log("name :" + tempStat.name + " race :" + tempStat.race + " gender :" + tempStat.gender);
 
         return tempStat;
     }
@@ -655,6 +656,8 @@ public class GameManager : MonoBehaviour
         Stat tempStat = GenStat(advLevel);
         RewardStat tempRewardStat = GenRewardStat(advLevel);
 
+        Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+
         tempAdventurer.InitAdventurer(tempStat, tempBattleStat, tempRewardStat);
 
         advEnterQ.Enqueue(temp);
@@ -665,7 +668,7 @@ public class GameManager : MonoBehaviour
     private void GenAndEnqueueSpecialAdvenuturer(string name, int level)
     {
         // 아마 고쳐야할 거임
-        GameObject go = (GameObject)Instantiate((GameObject)Resources.Load("CharacterPrefabs/SpecialAdventurer_test"));
+        GameObject go = Instantiate((GameObject)Resources.Load("CharacterPrefabs/SpecialAdventurer_test"));
         //go.GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
 
         // 생성만 해놓고 비활성화
@@ -677,27 +680,27 @@ public class GameManager : MonoBehaviour
         go.transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
         SpecialAdventurer tempSpAdv = go.GetComponent<SpecialAdventurer>();
         tempSpAdv.index = specialAdventurers.Count - 1;
-        tempSpAdv.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
+        string attackEffectFileName = "EffectPrefabs/" + name +"_AttackEffect";
+        tempSpAdv.SetAttackEffect((GameObject)Instantiate(Resources.Load(attackEffectFileName)));
         tempSpAdv.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
         tempSpAdv.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
         // Debug.Log("character instantiate - " + i);
 
-        BattleStat tempBattleStat = GenBattleStat(level);
+        
+        BattleStat tempBattleStat = GenBattleStat(name, level);
         Stat tempStat = GenStat(name, level);
         RewardStat tempRewardStat = GenRewardStat(level);
+
+        Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
         //tempBattleStat.ResetBattleStat();
         int skillID = spAdvSummary[name]["SkillID"].AsInt;
 
-        Debug.Log(name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+
+        Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
         tempSpAdv.InitSpecialAdventurer(tempStat, tempBattleStat, tempRewardStat, skillID);
 
         spAdvEnterQ.Enqueue(go);
-    }
-
-    private BattleStat GenBattleStatSpAdv()
-    {
-        return null;
     }
 
     private BattleStat GenBattleStat(int level) // 레벨에 따라 BattleStat 생성. JSON에서 읽은 데이터로 생성함.
@@ -715,6 +718,29 @@ public class GameManager : MonoBehaviour
         tempBattleStat.BasePenetrationFixed = advStatData[level - 1]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = advStatData[level - 1]["movespeed"].AsFloat;
         tempBattleStat.BaseAttackRange = advStatData[level - 1]["attackrange"].AsInt;
+        tempBattleStat.ownerType = "Adventurer";
+
+        return tempBattleStat;
+    }
+
+    private BattleStat GenBattleStat(string name, int level) // 레벨에 따라 BattleStat 생성. JSON에서 읽은 데이터로 생성함.
+    {
+        BattleStat tempBattleStat = new BattleStat();
+
+        tempBattleStat.Level = level;
+        tempBattleStat.BaseHealthMax = spAdvStatDatas[name][level - 1]["health"].AsFloat;
+        tempBattleStat.BaseDefence = spAdvStatDatas[name][level - 1]["defense"].AsFloat;
+        tempBattleStat.BaseAvoid = spAdvStatDatas[name][level - 1]["avoid"].AsFloat;
+        tempBattleStat.BaseAttack = spAdvStatDatas[name][level - 1]["attack"].AsFloat;
+        tempBattleStat.BaseAttackSpeed = spAdvStatDatas[name][level - 1]["attackspeed"].AsFloat;
+        tempBattleStat.BaseCriticalChance = spAdvStatDatas[name][level - 1]["criticalchance"].AsFloat;
+        tempBattleStat.BaseCriticalDamage = spAdvStatDatas[name][level - 1]["criticalattack"].AsFloat;
+        tempBattleStat.BasePenetrationFixed = spAdvStatDatas[name][level - 1]["penetration"].AsFloat;
+        tempBattleStat.BaseMoveSpeed = spAdvStatDatas[name][level - 1]["movespeed"].AsFloat;
+        tempBattleStat.BaseAttackRange = spAdvStatDatas[name][level - 1]["attackrange"].AsInt;
+        tempBattleStat.ownerType = name;
+
+        Debug.Log("[GenBattleStat] " + name + ", hp : " + tempBattleStat.BaseHealthMax + ", atk : " + tempBattleStat.BaseAttack + ", atkspeed : " + tempBattleStat.AttackSpeed);
 
         return tempBattleStat;
     }
@@ -1030,6 +1056,17 @@ public class GameManager : MonoBehaviour
     public void DebugHuntingArea()
     {
         HuntingAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
+    }
+
+    public BattleStat GetBattleStatData(string type, int level)
+    {
+        switch(type)
+        {
+            case "Adventurer":
+                break;
+        }
+
+        return null;
     }
 #endregion
 

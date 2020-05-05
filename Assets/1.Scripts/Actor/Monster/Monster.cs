@@ -447,7 +447,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         while (ValidatingEnemy())
         {
-            yield return curSubCoroutine = StartCoroutine(Attack());
+            if (CheckInRange())
+                yield return curSubCoroutine = StartCoroutine(Attack());
+            else
+            {
+                curState = State.InitiatingBattle;
+                break;
+            }
         }
     }
 

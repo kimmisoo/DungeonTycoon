@@ -146,8 +146,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("SearchingHuntingArea");
 #endif
-                superState = SuperState.EnteringHuntingArea;
+                superState = SuperState.SearchingHuntingArea;
                 curCoroutine = StartCoroutine(SearchingHuntingArea());
+                break;
+            case State.EnteringHuntingArea:
+                superState = SuperState.EnteringHuntingArea;
+                EnteringHuntingArea();
                 break;
             case State.SearchingMonster:
 #if DEBUG_ADV_STATE
@@ -244,6 +248,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             // 모험가 전투관련
             case State.SearchingHuntingArea:
                 break;
+            case State.EnteringHuntingArea:
+                break;
             case State.SearchingMonster:
                 break;
             case State.ApproachingToEnemy:
@@ -287,7 +293,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             case SuperState.Battle:
                 curState = State.ApproachingToEnemy;
                 break;
-            default: //EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
+            default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
                 curState = State.MovingToDestination;
                 break;
         }
@@ -296,8 +302,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     // 수정요망
     protected override IEnumerator MoveToDestination()
     {
-        //길찾기 성공!
-        wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
+        //길찾기 성공
+        destinationTileForMove = destinationTile.childs[Random.Range(0, 4)];
+        wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
         // TODO: GetWayForMove로 고치기
         //MoveStartedNotify();
         StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
@@ -315,8 +322,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             case SuperState.ExitingHuntingArea:
                 curState = State.SearchingStructure;
                 break;
+            case SuperState.SearchingHuntingArea:
+                curState = State.EnteringHuntingArea;
+                break;
             case SuperState.EnteringHuntingArea:
-                VisitHuntingGround();
+                curState = State.SearchingMonster;
                 break;
             case SuperState.ExitingDungeon:
                 curState = State.SearchingExit;
@@ -342,14 +352,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
 
 
-    protected void VisitHuntingGround()
-    {
-        curHuntingArea = destinationPlace as HuntingArea;
-        curHuntingArea.EnterAdventurer(this.gameObject);
+    //protected void VisitHuntingGround()
+    //{
+    //    curHuntingArea = destinationPlace as HuntingArea;
+    //    curHuntingArea.EnterAdventurer(this.gameObject);
 
-        destinationPlace = null; // 사용 후에는 비워주기.
-        curState = State.SearchingMonster;
-    }
+    //    destinationPlace = null; // 사용 후에는 비워주기.
+    //    curState = State.EnteringHuntingArea;
+    //}
 
     // 수정요망
     protected IEnumerator SearchingHuntingArea()
@@ -371,6 +381,19 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             // TODO: 이거 destination TileForMove에 뭐 집어넣게 바꿔야
             curState = State.PathFinding;
         }
+    }
+
+    protected void EnteringHuntingArea()
+    {
+        curHuntingArea = destinationPlace as HuntingArea;
+        curHuntingArea.EnterAdventurer(this.gameObject);
+
+        destinationPlace = null; // 사용 후에는 비워주기.
+
+        destinationTileForMove = curHuntingArea.FindNearestBlank(curTileForMove);
+        destinationTile = destinationTileForMove.GetParent();
+
+        curState = State.PathFinding;
     }
 
     protected IEnumerator SearchingMonster()
@@ -634,7 +657,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         while (ValidatingEnemy())
         {
-            yield return curSubCoroutine = StartCoroutine(Attack());
+            if (CheckInRange())
+                yield return curSubCoroutine = StartCoroutine(Attack());
+            else
+            {
+                curState = State.InitiatingBattle;
+                break;
+            }
         }
     }
 
