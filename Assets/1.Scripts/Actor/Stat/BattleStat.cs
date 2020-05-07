@@ -465,5 +465,13 @@ public class BattleStat
             battleStatDiscrete[StatType.AttackRange].BaseValue = value;
         }
     }
+
+    public float MissingHealth
+    {
+        get
+        {
+            return HealthMax - Health;
+        }
+    }
     #endregion
 }

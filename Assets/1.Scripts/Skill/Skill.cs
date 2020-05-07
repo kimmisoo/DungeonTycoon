@@ -11,7 +11,7 @@ public abstract class Skill : MonoBehaviour
     public ICombatant enemy;
     protected Coroutine curCoroutine;
 
-    protected const float tickTime = 0.5f;
+    protected const float TICK_TIME = 0.5f;
 
     public Skill()
     { }
@@ -26,20 +26,28 @@ public abstract class Skill : MonoBehaviour
     /// <summary>
     /// 맞을 때 발생하는 효과
     /// </summary>
-    public abstract void OnStruck();
+    public abstract void OnStruck(float actualDamage, bool isCrit, bool isDodged);
     /// <summary>
     /// 때릴 때 발생하는 효과
     /// </summary>
-    public abstract void OnAttack();
+    public abstract void OnAttack(float actualDamage, bool isCrit, bool isDodged);
     /// <summary>
     /// 항시발동 및 일정시간마다 발동. 코루틴 실행하는 메서드. 단위시간은 tickTime. 항시발동은 단위시간마다 체크.
     /// 게임 시작 혹은 아이템 착용시마다 실행.
     /// </summary>
-    public abstract void Activate();
+    public void Activate()
+    {
+        curCoroutine = StartCoroutine(OnAlways());
+    }
     /// <summary>
     /// Activate()에서 실행한 코루틴 정지시키는 메서드. 모험가 사망 혹은 아이템 해제시마다 실항.
     /// </summary>
-    public abstract void Deactivate();
+    public void Deactivate()
+    {
+        StopCoroutine(curCoroutine);
+    }
+
+    public abstract IEnumerator OnAlways();
 
     public float AdditionalAttack(List<ICombatant> enemies, float damage, float penFixed, float penMult, bool isCrit)
     {

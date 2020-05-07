@@ -220,14 +220,15 @@ public class GameManager : MonoBehaviour
             tempAdventurer.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
             tempAdventurer.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
             tempAdventurer.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+            tempAdventurer.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
             // Debug.Log("character instantiate - " + i);
         }
         StartCoroutine(AdvEnter());
         StartCoroutine(SpAdvEnter());
 
 #if DEBUG_ADV
-        GenAndEnqueueSingleAdventurer(1, 10);
-        GenAndEnqueueSpecialAdvenuturer("Hana", 5);
+        GenAndEnqueueSingleAdventurer(1, 1);
+        GenAndEnqueueSpecialAdvenuturer("OldMan", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -695,9 +696,10 @@ public class GameManager : MonoBehaviour
         tempSpAdv.SetAttackEffect((GameObject)Instantiate(Resources.Load(attackEffectFileName)));
         tempSpAdv.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
         tempSpAdv.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+        tempSpAdv.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
         // Debug.Log("character instantiate - " + i);
 
-        
+
         BattleStat tempBattleStat = GenBattleStat(name, level);
         Stat tempStat = GenStat(name, level);
         RewardStat tempRewardStat = GenRewardStat(level);

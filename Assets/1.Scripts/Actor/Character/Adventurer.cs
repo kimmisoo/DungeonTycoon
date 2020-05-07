@@ -20,6 +20,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public ICombatant enemy;
     protected GameObject attackEffect;
     protected GameObject damageText;
+    protected GameObject healEffect;
     protected GameObject healText;
 
     protected readonly float RecoveryTick = 5.0f;
@@ -683,9 +684,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         float actualDamage;
         if (enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
         {
-            attackEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
-            attackEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
-            attackEffect.GetComponent<AttackEffect>().StartEffect();
+            DisplayAttackEffect(enemy);
         }
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
@@ -696,6 +695,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         attackEffect = input;
         attackEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+
+    public void SetHealEffect(GameObject input)
+    {
+        healEffect = input;
+        healEffect.transform.SetParent(transform);
+        healEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.12f, transform.position.z);
     }
 
     public void SetDamageText(GameObject input)
@@ -821,12 +827,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit, out float actualDamage) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
-        bool isEvaded;
+        bool isDodged;
 
         AddHealthBelowZeroEventHandler(attacker.OnEnemyHealthBelowZero); // 이벤트 리스트에 추가.
 
-        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded); // 데미지 입음
-        StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
+        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isDodged); // 데미지 입음
+        StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isDodged));
 
 #if DEBUG_ADV_BATTLE
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
@@ -848,7 +854,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             curState = State.InitiatingBattle;
         }
 
-        return !isEvaded;
+        return !isDodged;
     }
 
     // 적이 죽었을 때 호출되는 메서드
@@ -882,6 +888,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         rewardStat.SetRewardStatToLevel(battleStat.Level);
     }
 
+    public void DisplayAttackEffect(ICombatant enemy)
+    {
+        attackEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
+        attackEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
+        attackEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
     private void DisplayLevelUp(int Level)
     {
         GameObject levelUpEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/LevelUpEffect"));
@@ -894,19 +907,30 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
-        tempDamageText.GetComponent<FloatingText>().InitFloatingText((int)damage, textPos);
+        tempDamageText.GetComponent<FloatingText>().InitFloatingText(((int)damage).ToString(), textPos);
         //tempDamageText.transform.SetParent(canvas.transform);
         tempDamageText.SetActive(true);
     }
 
-    private void DisplayHeal(float healed)
+    public void DisplayHeal(float healed)
     {
         GameObject tempHealText = Instantiate(healText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.07f, 0.07f), transform.position.y + Random.Range(-0.05f, 0.05f), transform.position.z);
-        tempHealText.GetComponent<FloatingText>().InitFloatingText((int)healed, textPos);
+        tempHealText.GetComponent<FloatingText>().InitFloatingText(((int)healed).ToString(), textPos);
         //tempDamageText.transform.SetParent(canvas.transform);
         tempHealText.GetComponent<TextMeshPro>().fontSize = 600;
         tempHealText.SetActive(true);
+
+        healEffect.SetActive(true);
+        healEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    private void DisplayDodge()
+    {
+        GameObject tempDamageText = Instantiate(damageText);
+        Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
+        tempDamageText.GetComponent<FloatingText>().InitFloatingText("Dodged", textPos);
+        tempDamageText.SetActive(true);
     }
 
     //public void OnEnemyMoveStarted(TileForMove newDest)

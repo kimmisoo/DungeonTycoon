@@ -621,14 +621,16 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit, out float actualDamage) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
-        bool isEvaded;
+        bool isDodged;
 
         AddHealthBelowZeroEventHandler(attacker.OnEnemyHealthBelowZero); // 이벤트 리스트에 추가.
 
-        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isEvaded);
-        StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isEvaded));
+        battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isDodged);
+        StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isDodged));
 
-        if (!isEvaded)
+        if (isDodged)
+            DisplayDodge();
+        else
             DisplayDamage(actualDamage);
 
 
@@ -652,16 +654,29 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             curState = State.InitiatingBattle;
         }
 
-        return !isEvaded;
+        return !isDodged;
     }
 
     private void DisplayDamage(float damage)
     {
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
-        tempDamageText.GetComponent<FloatingText>().InitFloatingText((int)damage, textPos);
+        tempDamageText.GetComponent<FloatingText>().InitFloatingText(((int)damage).ToString(), textPos);
         //tempDamageText.transform.SetParent(canvas.transform);
         tempDamageText.SetActive(true);
+    }
+
+    private void DisplayDodge()
+    {
+        GameObject tempDamageText = Instantiate(damageText);
+        Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
+        tempDamageText.GetComponent<FloatingText>().InitFloatingText("Dodged", textPos);
+        //tempDamageText.transform.SetParent(canvas.transform);
+        tempDamageText.SetActive(true);
+    }
+
+    public void DisplayHeal(float healed)
+    {
     }
 
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)

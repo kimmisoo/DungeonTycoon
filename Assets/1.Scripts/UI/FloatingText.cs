@@ -11,7 +11,7 @@ public class FloatingText : MonoBehaviour
     private float destroyTime;
     public TextMeshPro text;
     private Color alpha;
-    public int damage;
+    public string msg;
     //public Color atkColor, healColor;
 
     // Start is called before the first frame update
@@ -23,7 +23,7 @@ public class FloatingText : MonoBehaviour
         //text = GetComponent<TextMeshPro>();
 
         alpha = text.color;
-        text.text = damage.ToString();
+        text.text = msg;
         Invoke("DestroyObject", destroyTime);
     }
 
@@ -41,10 +41,10 @@ public class FloatingText : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void InitFloatingText(int dmg, Vector3 worldPos)
+    public void InitFloatingText(string msg, Vector3 worldPos)
     {
         transform.position = worldPos; //WorldToUISpace(GameObject.Find("Canvas").GetComponent<Canvas>(), worldPos);
-        damage = dmg;
+        this.msg = msg;
     }
 
     public Vector3 WorldToUISpace(Canvas parentCanvas, Vector3 worldPos)

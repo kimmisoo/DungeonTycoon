@@ -129,6 +129,7 @@ public class HanaUniqueSkill : AoESkill
     const float RATE_NORM = 0.1f;
     const float RATE_CHARGED = 1.7f;
     const float CHARGED_TRIGGER = 0.12f;
+    const float TICK_MULT = 4;
     GameObject normEffects;
     GameObject chargedEffect;
 
@@ -148,27 +149,17 @@ public class HanaUniqueSkill : AoESkill
         chargedEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/HanaCharged_SkillEffect"));
     }
 
-    public override void OnAttack()
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     { }
 
-    public override void OnStruck()
+    public override void OnStruck(float actualDamage, bool isCrit, bool isDodged)
     { }
 
-    public override void Activate()
-    {
-        curCoroutine = StartCoroutine(OnAlways());
-    }
-
-    public override void Deactivate()
-    {
-        StopCoroutine(curCoroutine);
-    }
-
-    public IEnumerator OnAlways()
+    public override IEnumerator OnAlways()
     {
         while (true)
         {
-            yield return new WaitForSeconds(4 * tickTime);
+            yield return new WaitForSeconds(TICK_MULT * TICK_TIME);
             FindEnemies(owner);
             BattleStat myBattleStat = owner.GetBattleStat();
             normEffects.GetComponent<AttackEffect>().StopEffect();

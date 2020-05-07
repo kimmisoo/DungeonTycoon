@@ -8,6 +8,8 @@ public static class SkillFactory
     {
         switch (skillName)
         {
+            case "OldMan":
+                return go.AddComponent<OldManUniqueSkill>();
             case "Hana":
                 return go.AddComponent<HanaUniqueSkill>();
             default:
