@@ -20,7 +20,7 @@ public class OldManUniqueSkill : Skill
             {
                 yield return new WaitForSeconds(TICK_TIME * TICK_MULT);
                 healAmount = myBattleStat.MissingHealth * 0.05f;
-                myBattleStat.Health += healAmount;
+                myBattleStat.Heal(healAmount);
 
                 if (healAmount > 1)
                     DisplayHeal(healAmount);

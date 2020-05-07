@@ -10,15 +10,26 @@ public abstract class Skill : MonoBehaviour
     public ICombatant owner;
     public ICombatant enemy;
     protected Coroutine curCoroutine;
+    protected List<ICombatant> targets; // 효과 대상 TFM 위에 있는 적들
+    public bool isActive;
+
 
     protected const float TICK_TIME = 0.5f;
 
     public Skill()
-    { }
+    {
+        targets = new List<ICombatant>();
+        isActive = false;
+    }
 
     public void SetOwner(ICombatant ownerIn)
     {
         owner = ownerIn;
+    }
+
+    public void SetEnemy()
+    {
+        enemy = owner.GetEnemy();
     }
 
 
@@ -38,6 +49,7 @@ public abstract class Skill : MonoBehaviour
     public void Activate()
     {
         curCoroutine = StartCoroutine(OnAlways());
+        isActive = true;
     }
     /// <summary>
     /// Activate()에서 실행한 코루틴 정지시키는 메서드. 모험가 사망 혹은 아이템 해제시마다 실항.
@@ -45,6 +57,7 @@ public abstract class Skill : MonoBehaviour
     public void Deactivate()
     {
         StopCoroutine(curCoroutine);
+        isActive = false;
     }
 
     public abstract IEnumerator OnAlways();
@@ -78,6 +91,8 @@ public abstract class Skill : MonoBehaviour
     /// </summary>
     protected bool IsHostile(ICombatant target)
     {
+        SetEnemy();
+
         if (owner is Adventurer)
         {
             if ((target is Monster || target == enemy) && owner.ValidatingEnemy(target))

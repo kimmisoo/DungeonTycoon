@@ -160,8 +160,30 @@ public class BattleStat
         }
         set // 수정해야할 수도 있음.
         {
-            battleStatContinuous[StatType.Health].BaseValue = value;
+            if(value > HealthMax)
+                battleStatContinuous[StatType.Health].BaseValue = HealthMax;
+            else if (value < 0)
+                battleStatContinuous[StatType.Health].BaseValue = 0;
+            else
+                battleStatContinuous[StatType.Health].BaseValue = value;
         }
+    }
+    
+    public float Heal(float healAmount)
+    {
+        float healed;
+        if (healAmount <= MissingHealth)
+        {
+            healed = healAmount;
+            Health += healAmount;
+        }
+        else
+        {
+            healed = MissingHealth;
+            Health = HealthMax;
+        }
+
+        return healed;
     }
 
     public float PenetrationFixed

@@ -12,6 +12,8 @@ public static class SkillFactory
                 return go.AddComponent<OldManUniqueSkill>();
             case "Hana":
                 return go.AddComponent<HanaUniqueSkill>();
+            case "Murat":
+                return go.AddComponent<MuratUniqueSkill>();
             default:
                 return null;
         }

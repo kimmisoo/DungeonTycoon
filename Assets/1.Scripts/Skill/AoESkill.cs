@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class AoESkill : Skill
 {
-    protected List<ICombatant> targets; // 효과 대상 TFM 위에 있는 적들
     protected List<TileForMove> effectedAreas; // 매 공격시, 효과 대상 TFM
     protected List<Coverage> coverages; // 스킬별 고유의 효과지역 모양. {0, 0}이 타겟 좌표, y축이 중심축(소유자와 타겟의).
 
@@ -27,7 +26,7 @@ public abstract class AoESkill : Skill
 
     public AoESkill()
     {
-        targets = new List<ICombatant>();
+        //targets = new List<ICombatant>();
         effectedAreas = new List<TileForMove>();
         coverages = new List<Coverage>();
     }

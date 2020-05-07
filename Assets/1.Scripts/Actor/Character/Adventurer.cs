@@ -17,6 +17,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //리워드 스탯(현재는 별 필요 없음)
     protected RewardStat rewardStat;
 
+    // 스킬들(아이템, 고유능력 등 모두)
+    List<Skill> skills;
+
     public ICombatant enemy;
     protected GameObject attackEffect;
     protected GameObject damageText;
@@ -58,14 +61,22 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //stat 초기화
         this.stat = new Stat(stat, this);
         //pathfinder 초기화 // delegate 그대로
+
+        skills = new List<Skill>();
     }
 
     public void OnEnable()
     {
         base.OnEnable();
         monsterSearchCnt = 0;
-
         SetUI();
+        SkillActivate();
+    }
+
+    public void OnDisable()
+    {
+        base.OnDisable();
+        SkillDeactivate();
     }
 
     #region StateMachine
@@ -685,6 +696,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
         {
             DisplayAttackEffect(enemy);
+            SkillOnAttack(actualDamage, isCrit, false);
         }
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
@@ -833,6 +845,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isDodged); // 데미지 입음
         StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isDodged));
+
+        SkillOnStruck(actualDamage, isCrit, isDodged);
 
 #if DEBUG_ADV_BATTLE
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
@@ -1003,6 +1017,50 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         hpBar.GetComponent<HPBar>().SetSubject(this);
 
         hpBar.SetActive(true);
+    }
+    #endregion
+
+    #region Skill
+    protected void AddSkill(Skill skill)
+    {
+        skills.Add(skill);
+        skill.SetOwner(this);
+        skill.InitSkill();
+        //skill.Activate();
+    }
+    protected void RemoveSkill(Skill skill)
+    {
+        skills.Remove(skill);
+        skill.Deactivate();
+    }
+    protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        foreach(Skill item in skills)
+        {
+            item.OnAttack(actualDamage, isCrit, isDodged);
+        }
+    }
+    protected void SkillOnStruck(float actualDamage, bool isCrit, bool isDodged)
+    {
+        foreach(Skill item in skills)
+        {
+            item.OnStruck(actualDamage, isCrit, isDodged);
+        }
+    }
+    protected void SkillActivate()
+    {
+        foreach (Skill item in skills)
+        {
+            if(!item.isActive)
+                item.Activate();
+        }
+    }
+    protected void SkillDeactivate()
+    {
+        foreach (Skill item in skills)
+        {
+            item.Deactivate();
+        }
     }
     #endregion
 }
