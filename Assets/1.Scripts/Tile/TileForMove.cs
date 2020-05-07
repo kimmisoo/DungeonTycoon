@@ -52,7 +52,7 @@ public class TileForMove
 	{
 		return childNum;
 	}
-	public List<Actor> GetRecentActor()
+	public List<Actor> GetRecentActors()
 	{
 		return recentActors;
 	}

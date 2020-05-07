@@ -668,8 +668,18 @@ public class GameManager : MonoBehaviour
 
     private void GenAndEnqueueSpecialAdvenuturer(string name, int level)
     {
+        /*
+         * 할배: "OldMan"
+         * 맥시밀리안: "Maxi"
+         * 아이리스: "Iris"
+         * 하나: "Hana"
+         * 연화: "Yeonhwa"
+         * 뮈라: "Murat"
+         * 냥냐리우스: "Cat"
+         * 왈멍멍: "Dog"
+         */
         // 아마 고쳐야할 거임
-        GameObject go = Instantiate((GameObject)Resources.Load("CharacterPrefabs/SpecialAdventurer_test"));
+        GameObject go = Instantiate((GameObject)Resources.Load("CharacterPrefabs/"+name));
         //go.GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
 
         // 생성만 해놓고 비활성화
@@ -699,7 +709,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
-        tempSpAdv.InitSpecialAdventurer(tempStat, tempBattleStat, tempRewardStat, skillID);
+        tempSpAdv.InitSpecialAdventurer(tempStat, tempBattleStat, tempRewardStat, name);
 
         spAdvEnterQ.Enqueue(go);
     }
@@ -1117,7 +1127,7 @@ public class GameManager : MonoBehaviour
     private void SetSceneEntrances(JSONNode aData, int sceneNumber)
     {
         mapEntranceCount = aData["scene"][sceneNumber]["mapEntranceCount"].AsInt;
-        TileLayer layer = tileMap.GetComponent<TileMap>().GetLayer(0).GetComponent<TileLayer>();
+        TileLayer layer = GetTileLayer(0);
         int x = 0;
         int y = 0;
         for (int i = 0; i < mapEntranceCount; i++)
@@ -1147,6 +1157,11 @@ public class GameManager : MonoBehaviour
             progressInformations[i].minLevel = aData["scene"][sceneNumber]["progressInformation"]["minLevel"].AsInt;
             progressInformations[i].maxLevel = aData["scene"][sceneNumber]["progressInformation"]["maxLevel"].AsInt;
         }
+    }
+
+    public TileLayer GetTileLayer(int layerNum)
+    {
+        return tileMap.GetComponent<TileMap>().GetLayer(layerNum).GetComponent<TileLayer>();
     }
 #endregion
 }

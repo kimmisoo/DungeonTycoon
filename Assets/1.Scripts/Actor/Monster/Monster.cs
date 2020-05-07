@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_GETWAY
 //#define DEBUG_TELEPORT
-#define DEBUG_ADV_BATTLE
+//#define DEBUG_ADV_BATTLE
 
 using UnityEngine;
 using System.Collections;
@@ -340,7 +340,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         Debug.Log("적: " + enemy + ", 목적지: " + destinationTile);
 #endif
         // 적이 이미 누웠거나, 사냥터에서 나갔다면
-        if (!ValidatingEnemy())
+        if (!ValidatingEnemy(enemy))
         {
             curState = State.AfterBattle;
             yield break;
@@ -386,7 +386,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             transform.position = tileForMoveWay[i + 1].GetPosition();
 
             // 적이 이미 누웠거나, 사냥터에서 나갔다면
-            if (!ValidatingEnemy())
+            if (!ValidatingEnemy(enemy))
             {
                 curState = State.AfterBattle;
                 yield break;
@@ -407,17 +407,6 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         SetDestinationTowardEnemy();
         curState = State.PathFinding;
-    }
-
-    protected bool ValidatingEnemy()
-    {
-        SuperState enemySuperState = enemy.GetSuperState();
-        // 적이 사냥터 내에 있으며 살아 있을 때.
-        if (enemySuperState == SuperState.Battle || enemySuperState == SuperState.SearchingMonster
-            || enemySuperState == SuperState.AfterBattle || enemySuperState == SuperState.ExitingHuntingArea)
-            return true;
-        else
-            return false;
     }
 
     protected IEnumerator ApproachingToEnemy()
@@ -445,14 +434,14 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         //enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
 
-        while (ValidatingEnemy())
+        while (ValidatingEnemy(enemy))
         {
             if (CheckInRange())
                 yield return curSubCoroutine = StartCoroutine(Attack());
             else
             {
                 curState = State.InitiatingBattle;
-                break;
+                yield break;
             }
         }
         curState = State.AfterBattle;
@@ -473,7 +462,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         yield return new WaitForSeconds(0.43f / battleStat.AttackSpeed);
 
         // 어차피 이벤트로 나가는데 필요한지?
-        if (!ValidatingEnemy())
+        if (!ValidatingEnemy(enemy))
         {
             yield break;
         }
@@ -482,7 +471,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
 
-        if(enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit))
+        float actualDamage;
+        if(enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
         {
             attackEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
             attackEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
@@ -549,6 +539,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
+        enemy.healthBelowZeroEvent -= OnEnemyHealthBelowZero;
     }
 
     // 죽을 때 호출. 이 몬스터를 공격대상으로 하고있는 모험가들에게 알려줌.
@@ -617,9 +608,19 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #endregion
 
     #region ICombatant
-    public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    public bool ValidatingEnemy(ICombatant enemy)
     {
-        float actualDamage;
+        SuperState enemySuperState = enemy.GetSuperState();
+        // 적이 사냥터 내에 있으며 살아 있을 때.
+        if (enemySuperState == SuperState.Battle || enemySuperState == SuperState.SearchingMonster
+            || enemySuperState == SuperState.AfterBattle || enemySuperState == SuperState.ExitingHuntingArea)
+            return true;
+        else
+            return false;
+    }
+
+    public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit, out float actualDamage) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    {
         bool isEvaded;
 
         AddHealthBelowZeroEventHandler(attacker.OnEnemyHealthBelowZero); // 이벤트 리스트에 추가.
@@ -665,15 +666,15 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
     {
-        StopCurActivities();
+        //StopCurActivities();
         //if (attackerIndex == index)
         //{
         //    GetBattleReward();// 보상 받기. 몬스터는 없음   
         //}
         //enemy = null;
-        curSubCoroutine = null;
+        //curSubCoroutine = null;
 
-        curState = State.AfterBattle;
+        //curState = State.AfterBattle;
     }
 
     //public void OnEnemyMoveStarted(TileForMove newDest)
@@ -728,6 +729,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public ICombatant GetEnemy()
     {
         return enemy;
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
     }
     #endregion
 

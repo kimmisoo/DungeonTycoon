@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AttackEffect : MonoBehaviour
 {
+    public float soundDelay;
     Animator animator;
     AudioSource sound;
 
@@ -16,7 +17,7 @@ public class AttackEffect : MonoBehaviour
     public void StartEffect()
     {
         animator.SetTrigger("AtkTrigger");
-        sound.PlayDelayed(0.1f);
+        sound.PlayDelayed(soundDelay);
     }
 
     public void StopEffect()

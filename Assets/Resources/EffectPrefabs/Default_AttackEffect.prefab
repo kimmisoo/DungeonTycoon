@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39f6b21ea3f795f49acdc178652de3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundDelay: 0.1
 --- !u!212 &212527769215054408
 SpriteRenderer:
   m_ObjectHideFlags: 1

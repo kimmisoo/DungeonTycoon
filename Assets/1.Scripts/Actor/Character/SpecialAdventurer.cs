@@ -5,19 +5,26 @@ using UnityEngine;
 public class SpecialAdventurer : Adventurer//, IDamagable {
 {
     Skill uniqueSkill;
-    public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, int skillID)
+    public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, string name)
     {
         base.InitAdventurer(stat, battleStat, rewardStat);
         //battleStat.ResetBattleStat();
-        //uniqueSkill = new Skill(skillID);
+        uniqueSkill = SkillFactory.CreateSkill(gameObject, name);
+        uniqueSkill.SetOwner(this);
+        uniqueSkill.InitSkill();
     }
 
     public void OnEnable()
     {
         base.OnEnable();
         monsterSearchCnt = 0;
-
+        uniqueSkill.Activate();
         SetUI();
+    }
+
+    public void OnDisable()
+    {
+        uniqueSkill.Deactivate();
     }
     //+ item 추가만~~
 

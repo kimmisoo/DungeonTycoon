@@ -19,9 +19,9 @@ using UnityEngine;
 // Disable, Enable시 변경가능한 속성
 //이름, 종족, 성별, 선호도, 캐릭터 스프라이트와 애니메이션, 
 
-public class Traveler : Actor {
+public class Traveler : Actor
+{
     //acting 구성
-    //useStructure ~ 구현
     public State curState
     {
         get
@@ -32,9 +32,11 @@ public class Traveler : Actor {
         {
             ExitState();
             state = value;
+            Debug.Log(gameObject.name + " Enters: " + state);
             EnterState(state);
         }
     }
+    //useStructure ~ 구현
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
     protected Coroutine curCoroutine;

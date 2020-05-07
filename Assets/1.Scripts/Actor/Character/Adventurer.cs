@@ -1,7 +1,7 @@
 ﻿//#define DEBUG_ADV
 //#define DEBUG_ADV_STATE
-#define DEBUG_ADV_BATTLE
-#define DEBUG_CHARGE
+//#define DEBUG_ADV_BATTLE
+//#define DEBUG_CHARGE
 
 using System.Collections;
 using System.Collections.Generic;
@@ -496,6 +496,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
+        enemy.healthBelowZeroEvent -= OnEnemyHealthBelowZero;
     }
 
     #endregion
@@ -526,7 +527,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         Debug.Log("적: " + enemy + ", 목적지: " + destinationTile);
 #endif
         // 적이 이미 누웠거나, 사냥터에서 나갔다면
-        if (!ValidatingEnemy())
+        if (!ValidatingEnemy(enemy))
         {
             curState = State.AfterBattle;
             yield break;
@@ -578,7 +579,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             transform.position = tileForMoveWay[i + 1].GetPosition();
 
             // 적이 이미 누웠거나, 사냥터에서 나갔다면
-            if (!ValidatingEnemy())
+            if (!ValidatingEnemy(enemy))
             {
                 curState = State.AfterBattle;
                 yield break;
@@ -620,16 +621,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //}
     }
 
-    protected bool ValidatingEnemy()
-    {
-        SuperState enemySuperState = enemy.GetSuperState();
-        // 적이 살아 있을 때.
-        if (enemySuperState != SuperState.Dead)
-            return true;
-        else
-            return false;
-    }
-
     protected IEnumerator ApproachingToEnemy()
     {
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove);
@@ -655,14 +646,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         //enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
 
-        while (ValidatingEnemy())
+        while (ValidatingEnemy(enemy))
         {
             if (CheckInRange())
                 yield return curSubCoroutine = StartCoroutine(Attack());
             else
             {
                 curState = State.InitiatingBattle;
-                break;
+                yield break;
             }
         }
         curState = State.AfterBattle;
@@ -682,14 +673,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         yield return new WaitForSeconds(0.43f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
 
         // 어차피 이벤트로 나가는데 필요한지?
-        if (!ValidatingEnemy())
+        if (!ValidatingEnemy(enemy))
             yield break;
 
         bool isCrit;
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
 
-        if (enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit))
+        float actualDamage;
+        if (enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
         {
             attackEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
             attackEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
@@ -817,9 +809,18 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     #endregion
 
     #region ICombatant
-    public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    public bool ValidatingEnemy(ICombatant enemy)
     {
-        float actualDamage;
+        SuperState enemySuperState = enemy.GetSuperState();
+        // 적이 살아 있을 때.
+        if (enemySuperState != SuperState.Dead)
+            return true;
+        else
+            return false;
+    }
+
+    public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit, out float actualDamage) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    {
         bool isEvaded;
 
         AddHealthBelowZeroEventHandler(attacker.OnEnemyHealthBelowZero); // 이벤트 리스트에 추가.
@@ -836,6 +837,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (battleStat.Health <= 0)
         {
             HealthBelowZeroNotify(this, attacker);
+            StopCurActivities();
             curState = State.PassedOut;
         }
         else if (superState != SuperState.Battle)
@@ -852,8 +854,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     // 적이 죽었을 때 호출되는 메서드
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
     {
-        StopCurActivities();
-        animator.SetTrigger("StopAttackFlg");
+        //StopCurActivities();
+        //animator.SetTrigger("StopAttackFlg");
 
         if (attacker == this) // 내가 죽였다면.
         {
@@ -863,7 +865,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #endif
 
             if (GetBattleReward(victim))
-                DisplayLevelUP(battleStat.Level);
+                LevelUp();
 
 #if DEBUG_ADV_BATTLE
             Debug.Log(this + "가 몬스터 처치." +
@@ -871,10 +873,16 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 "\n기존 level: " + levelBefore + ", 현재 level: " + battleStat.Level);
 #endif
         }
-        curState = State.AfterBattle;
+        // curState = State.AfterBattle;
     }
 
-    private void DisplayLevelUP(int Level)
+    private void LevelUp()
+    {
+        DisplayLevelUp(battleStat.Level);
+        rewardStat.SetRewardStatToLevel(battleStat.Level);
+    }
+
+    private void DisplayLevelUp(int Level)
     {
         GameObject levelUpEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/LevelUpEffect"));
         levelUpEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
@@ -953,6 +961,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public ICombatant GetEnemy()
     {
         return enemy;
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
     }
     #endregion
 

@@ -42,8 +42,7 @@ public enum State
 
 public abstract class Actor : MonoBehaviour
 {
-
-
+    
     protected SuperState superState;
     public State state;
     /*public string actorName { get; set; }

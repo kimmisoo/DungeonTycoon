@@ -15,6 +15,12 @@ public class RewardStat
         Exp = input.Exp;
     }
 
+    public void SetRewardStatToLevel(int level)
+    {
+        Exp = level * 50;
+        Gold = 5 * (Mathf.RoundToInt(level * 0.9f) + 20);
+    }
+
     public int Gold
     {
         get
