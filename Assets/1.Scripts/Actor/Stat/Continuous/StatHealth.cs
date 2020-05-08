@@ -11,7 +11,7 @@ public class StatHealth : StatBaseContinuous
 	
 	public const StatType type = StatType.Health;
 	
-	public override float baseValue
+	public override float BaseValue
 	{
 		get
 		{
@@ -35,8 +35,8 @@ public class StatHealth : StatBaseContinuous
 	private void ClampHealth(float healthMax)
 	{
 		statMax = healthMax;
-		if (baseValue >= healthMax)
-			baseValue = healthMax;
+		if (BaseValue >= healthMax)
+			BaseValue = healthMax;
 	}
 	public StatHealthMax.NotifyHealthMaxChanged GetClampFunc()
 	{

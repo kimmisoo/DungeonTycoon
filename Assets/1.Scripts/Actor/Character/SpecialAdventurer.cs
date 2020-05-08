@@ -3,19 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpecialAdventurer : Adventurer//, IDamagable {
-{ 
+{
+    //Skill uniqueSkill;
+    public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, string name)
+    {
+        base.InitAdventurer(stat, battleStat, rewardStat);
+        //battleStat.ResetBattleStat();
+        //uniqueSkill = SkillFactory.CreateSkill(gameObject, name);
+        //uniqueSkill.SetOwner(this);
+        //uniqueSkill.InitSkill();
+        AddSkill(SkillFactory.CreateSkill(gameObject, name));
+    }
 
-	
-	public void Awake()
-	{
-		
-		base.Awake();
-		//BattleStatus GetComponent;;
-	}
+    public void OnEnable()
+    {
+        base.OnEnable();
+        monsterSearchCnt = 0;
+        //uniqueSkill.Activate();
+        SetUI();
+    }
 
-	//+ item 추가만~~
+    public void OnDisable()
+    {
+        //uniqueSkill.Deactivate();
+    }
+    //+ item 추가만~~
 
-	/* -> Special Adventurer
+    /* -> Special Adventurer
 	public EquipmentEffect[] GetSameCategoryEffects(int category)
 	{
 		List<EquipmentEffect> tempList = new List<EquipmentEffect>();
@@ -26,5 +40,9 @@ public class SpecialAdventurer : Adventurer//, IDamagable {
 		}
 		return tempList.ToArray();
 	}*/
+    #region Items
+    #endregion
 
+    #region BossBattle
+    #endregion
 }

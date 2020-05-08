@@ -7,7 +7,7 @@ public class StatMoveSpeed : StatBaseContinuous
 	private readonly float statMax;
 	private readonly float statMin;
 	public const StatType type = StatType.MoveSpeed;
-	public override float baseValue
+	public override float BaseValue
 	{
 		get
 		{

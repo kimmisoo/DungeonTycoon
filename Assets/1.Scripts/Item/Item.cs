@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Item : IHasEquipmentEffect {
+public class Item// : IHasEquipmentEffect
+{
+    List<StatModContinuous> statModContinuousList;
+    List<StatModDiscrete> statModDiscreteList;
 
     public int code { get; set; }
 	public string name { get; set; }
@@ -15,7 +18,7 @@ public class Item : IHasEquipmentEffect {
 	public float attackspeed { get; set; }
 	public float penetrate { get; set; }
 	//public List<Enchantment> enchantments;
-	public List<EquipmentEffect> equipmentEffects;
+	//public List<EquipmentEffect> equipmentEffects;
     public int value { get; set; }
 	public int minProperLevel { get; set; }
 	public int maxProperLevel { get; set; }

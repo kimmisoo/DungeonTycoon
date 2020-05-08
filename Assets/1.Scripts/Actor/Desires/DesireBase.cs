@@ -7,7 +7,7 @@ public class DesireBase {
 	public const float desireMax = 100.0f;
 	public const float desireMin = 0.0f;
 	public const float tickMax = 100.0f;
-	public const float tickMin = 0.001f;
+	public const float tickMin = 0.0f;
 	
 	protected WaitForSeconds tickBetweenWait;
 	public float desireValue
@@ -68,10 +68,10 @@ public class DesireBase {
 	}
 	public DesireType desireName
 	{
-		get
-		{
-			return desireName;
-		}
+        get
+        {
+            return _desireName;
+        }
 	}
 	protected float _desireValue;
 	protected float _tickAmount;
@@ -101,6 +101,17 @@ public class DesireBase {
 		tickBetweenWait = new WaitForSeconds(tickBetween);
 		owner = _owner;
 	}
+
+    public DesireBase(DesireBase input)
+    {
+        _desireName = input.desireName;
+        desireValue = input.desireValue;
+        tickAmount = input.tickAmount;
+        tickAmountMult = input.tickAmountMult;
+        tickBetween = input.tickBetween;
+        tickBetweenWait = new WaitForSeconds(tickBetween);
+        owner = input.owner;
+    }
 	
 	public virtual IEnumerator Tick()
 	{
@@ -116,4 +127,8 @@ public class DesireBase {
 		return desireName.ToString();
 	}
 	
+    public void SetOwner(Traveler owner)
+    {
+        this.owner = owner;
+    }
 }

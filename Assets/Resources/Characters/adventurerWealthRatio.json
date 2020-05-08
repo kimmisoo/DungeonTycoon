@@ -1,0 +1,37 @@
+{
+  "GroupByLevel": [
+    {
+      "level": {
+        "min": 1,
+        "max": 34
+      },
+      "wealthRatio": {
+        "lower": 0.7,
+        "middle": 0.25,
+        "upper": 0.05
+      }
+    },
+    {
+      "level": {
+        "min": 35,
+        "max": 67
+      },
+      "wealthRatio": {
+        "lower": 0.2,
+        "middle": 0.6,
+        "upper": 0.2
+      }
+    },
+    {
+      "level": {
+        "min": 68,
+        "max": 100
+      },
+      "wealthRatio": {
+        "lower": 0.05,
+        "middle": 0.25,
+        "upper": 0.7
+      }
+    }
+  ]
+}

@@ -7,7 +7,7 @@ public class StatReduceDamage : StatBaseContinuous
 	private readonly float statMax;
 	private readonly float statMin;
 	public const StatType type = StatType.ReduceDamage;
-	public override float baseValue
+	public override float BaseValue
 	{
 		get
 		{

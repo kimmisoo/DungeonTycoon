@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class StatModDiscrete
 {
+    public StatModDiscrete(ModType typeIn, int value)
+    {
+        Type = typeIn;
+        ModValue = value;
+    }
 
-
-
-	public int modValue
+    public int ModValue
 	{
 		get
 		{
@@ -18,7 +21,7 @@ public class StatModDiscrete
 
 		}
 	}
-	public ModType type
+	public ModType Type
 	{
 		get
 		{

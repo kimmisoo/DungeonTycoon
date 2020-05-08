@@ -9,7 +9,7 @@ public class StatHealthMax : StatBaseContinuous
 	private readonly float statMax;
 	private readonly float statMin;
 	public const StatType type = StatType.HealthMax;
-	public override float baseValue
+	public override float BaseValue
 	{
 		get
 		{

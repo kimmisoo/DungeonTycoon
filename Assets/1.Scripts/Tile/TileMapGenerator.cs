@@ -56,7 +56,6 @@ public class TileMapGenerator : MonoBehaviour
         TextAsset jsonmappingtext = Resources.Load<TextAsset>("TileMap/" + "Tile_Mapping");
         mapData = JSON.Parse(jsontext.text);
         preLoadedTileObject = new List<GameObject>();
-
         for (int i = 0; i <= 298; i++) //hard -> 로딩시간 최적화하려면 씬에 등장하는것만 로드.
         {
             preLoadedTileObject.Add(Resources.Load<GameObject>("TilePrefabs/" + i));
@@ -175,13 +174,13 @@ public class TileMapGenerator : MonoBehaviour
 
                         Vector3 p = tile.transform.position;
 
-                        layer.AddTileForMove(x * 2, y * 2, new Vector3(p.x, p.y + 0.666f, p.z), tile); // u
+                        layer.AddTileForMove(x * 2, y * 2, new Vector3(p.x, p.y + 0.666f, p.z + 0.01f), tile); // u
                         tile.SetChild(0, layer.GetTileForMove(x * 2, y * 2));
-                        layer.AddTileForMove(x * 2 + 1, y * 2, new Vector3(p.x + 0.333f, p.y + 0.5f, p.z), tile); // r
+                        layer.AddTileForMove(x * 2 + 1, y * 2, new Vector3(p.x + 0.333f, p.y + 0.5f, p.z + 0.005f), tile); // r
                         tile.SetChild(1, layer.GetTileForMove(x * 2 + 1, y * 2));
-                        layer.AddTileForMove(x * 2, y * 2 + 1, new Vector3(p.x - 0.333f, p.y + 0.5f, p.z), tile); // l
+                        layer.AddTileForMove(x * 2, y * 2 + 1, new Vector3(p.x - 0.333f, p.y + 0.5f, p.z + 0.005f), tile); // l
                         tile.SetChild(2, layer.GetTileForMove(x * 2, y * 2 + 1));
-                        layer.AddTileForMove(x * 2 + 1, y * 2 + 1, new Vector3(p.x, p.y + 0.333f, p.z), tile); // d
+                        layer.AddTileForMove(x * 2 + 1, y * 2 + 1, new Vector3(p.x, p.y + 0.333f, p.z - 0.01f), tile); // d
                         tile.SetChild(3, layer.GetTileForMove(x * 2 + 1, y * 2 + 1));
 
                         break; // Layer 별로 겹치는 타일 없으니 바로 break;

@@ -167,7 +167,7 @@ MonoBehaviour:
   nextMovePos: {fileID: 0}
   tileLayer: {fileID: 0}
   isEnd: 0
-  id: 0
+  id: -1410
 --- !u!114 &114711522231969160
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -179,10 +179,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28dc9a89ab5416344afbfa498d8a3943, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  superState: 0
   state: 0
-  pathFinder: {fileID: 0}
+  pathFinder: {fileID: 114611986827091796}
   index: 0
+  canvas: {fileID: 0}
+  hpBar: {fileID: 0}
+  hpSlider: {fileID: 0}
 --- !u!212 &212038393639115676
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -148,9 +148,9 @@ public class HuntingAreaManager : MonoBehaviour
 #region InstantiateStructure()
         string stageNum = "stage" + SceneManager.GetActiveScene().name;
         int huntingAreaNum = areaNum;
-        Debug.Log("stageNum : " + stageNum + " areaNum : " + huntingAreaNum);
-        Debug.Log("디버그2: " + huntingAreaJson[stageNum][huntingAreaNum]["name"]);
-        Debug.Log("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum);
+        //Debug.Log("stageNum : " + stageNum + " areaNum : " + huntingAreaNum);
+        //Debug.Log("디버그2: " + huntingAreaJson[stageNum][huntingAreaNum]["name"]);
+        //Debug.Log("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum);
         constructing = (GameObject)Instantiate(Resources.Load("HuntingArea/HuntingAreaPrefabs/" + stageNum + "/" + huntingAreaNum.ToString()));
 
         constructing.transform.parent = rootHuntingAreaObject.transform;
@@ -166,11 +166,11 @@ public class HuntingAreaManager : MonoBehaviour
 
         // 몬스터 프로토타입 넣기. 우선 번호부터.
         string monsterSet = huntingAreaJson[stageNum][huntingAreaNum]["monsterSet"];
-        Debug.Log(monsterSet);
+        //Debug.Log(monsterSet);
         int monsterSample1Num = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample1Num"].AsInt;
-        Debug.Log(monsterSample1Num);
+        //Debug.Log(monsterSample1Num);
         int monsterSample2Num = huntingAreaJson[stageNum][huntingAreaNum]["monsterSample2Num"].AsInt;
-        Debug.Log(monsterSample2Num);
+        //Debug.Log(monsterSample2Num);
 
         // 몬스터 샘플 instantiate
         GameObject monsterSample1, monsterSample2;
@@ -239,7 +239,9 @@ public class HuntingAreaManager : MonoBehaviour
                     //디버깅용임시
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(180, 110, 0);
                     //
+#if DEBUG_CREATE_HA
                     Debug.Log(thatTile);
+#endif
                     // 여기서 딕셔너리에 TileForMove 영역을 추가해주자.
                     //foreach(TileForMove child in thatTile.childs)
                     //{
@@ -247,7 +249,7 @@ public class HuntingAreaManager : MonoBehaviour
                     //}
                     // 디버깅용임시
                     // thatTile.SetPassable(true);
-                    for(int k = 0; k<4; k++)
+                    for (int k = 0; k<4; k++)
                     {
                         huntingArea.AddTerritory(thatTile.childs[k]);
                     }
@@ -258,10 +260,10 @@ public class HuntingAreaManager : MonoBehaviour
                 {
                     thatTile.SetStructed(true);
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
-                    if (thatTile.GetBuildable())
-                    {
+                    //if (thatTile.GetBuildable())
+                    //{
                         huntingArea.addEntrance(thatTile);
-                    }
+                    //}
                 }
             }
         }
@@ -298,7 +300,7 @@ public class HuntingAreaManager : MonoBehaviour
         tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample1Num]["atkcritical"].AsFloat;
         tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample1Num]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample1Num]["movespeed"].AsFloat;
-        tempBattleStat.BaseRange = monsterJson[monsterSet][sample1Num]["range"].AsInt;
+        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample1Num]["range"].AsInt;
 
         RewardStat tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample1Num]["exp"].AsInt;
@@ -307,7 +309,8 @@ public class HuntingAreaManager : MonoBehaviour
 
         Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
-
+        tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
+        tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
 
         // 몬스터 샘플 2 할당
         monsterSample2 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample2Num));
@@ -327,8 +330,8 @@ public class HuntingAreaManager : MonoBehaviour
         tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample2Num]["atkcritical"].AsFloat;
         tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample2Num]["penetration"].AsFloat;
         tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample2Num]["movespeed"].AsFloat;
-        tempBattleStat.BaseRange = monsterJson[monsterSet][sample2Num]["range"].AsInt;
-
+        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample2Num]["range"].AsInt;
+        
         tempRewardStat = new RewardStat();
         tempRewardStat.Exp = monsterJson[monsterSet][sample2Num]["exp"].AsInt;
         tempRewardStat.Gold = monsterJson[monsterSet][sample2Num]["gold"].AsInt;
@@ -336,7 +339,8 @@ public class HuntingAreaManager : MonoBehaviour
 
         tempMonsterComp = monsterSample2.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
-
+        tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
+        tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
         return;
     }
 

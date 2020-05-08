@@ -1,22 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // 모험가 이동 타일 클래스
 public class TileForMove
 {
+    public static readonly float Y_COMPENSATION = 0.133f; // position 보정값
+
 	private Vector3 pos;
 	private int x;
 	private int y;
 	private Tile parent;
 	private int childNum = 0;
-	private Actor recentActor = null;
+    private List<Actor> recentActors;
 
 	public TileForMove(int _x, int _y, Vector3 _pos, Tile _parent)
 	{
 		x = _x;
 		y = _y;
-		pos = _pos;
+        //pos = _pos;
+        pos = new Vector3(_pos.x, _pos.y + Y_COMPENSATION, _pos.z);
 		parent = _parent;
+        recentActors = new List<Actor>();
 	}
 
 	public Vector3 GetPosition()
@@ -47,14 +52,18 @@ public class TileForMove
 	{
 		return childNum;
 	}
-	public Actor GetRecentActor()
+	public List<Actor> GetRecentActors()
 	{
-		return recentActor;
+		return recentActors;
 	}
-	public void SetRecentActor(Actor recent)
+	public void AddRecentActor(Actor recent)
 	{
-		recentActor = recent;
+		recentActors.Add(recent);
 	}
+    public void RemoveRecentActor(Actor recent)
+    {
+        recentActors.Remove(recent);
+    }
 	public int GetDistance(TileForMove another)
 	{
 		return Mathf.Abs(x - another.GetX()) + Mathf.Abs(y - another.GetY());

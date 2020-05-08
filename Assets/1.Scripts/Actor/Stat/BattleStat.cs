@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleStat {
-
+public class BattleStat
+{
 	Dictionary<StatType, StatBaseContinuous> battleStatContinuous = new Dictionary<StatType, StatBaseContinuous>();
 	Dictionary<StatType, StatBaseDiscrete> battleStatDiscrete = new Dictionary<StatType, StatBaseDiscrete>();
 
     int curExp;
     int nextExp;
     int level;
+
+    public string ownerType = null; // 어떤 모험가의 능력치인지.(데이터 시트 확인용)
 
     public BattleStat()
     {
@@ -27,6 +29,7 @@ public class BattleStat {
 
         battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
 
+        ownerType = null;
         // 수정요망
         curExp = 0;
         NextExp = 150;
@@ -49,7 +52,8 @@ public class BattleStat {
 
         battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
 
-        Debug.Log("input: "+input.BaseRange);
+        //Debug.Log("input Range : "+input.BaseAttackRange);
+        //Debug.Log("input MaxHP : " + input.BaseHealthMax);
 
         BaseHealthMax = input.BaseHealthMax;
         BaseDefence = input.BaseDefence;
@@ -60,12 +64,35 @@ public class BattleStat {
         BaseCriticalDamage = input.BaseCriticalDamage;
         BasePenetrationFixed = input.BasePenetrationFixed;
         BaseMoveSpeed = input.BaseMoveSpeed;
-        BaseRange = input.BaseRange;
+        BaseAttackRange = input.BaseAttackRange;
 
-        // 수정요망
+        battleStatContinuous[StatType.Health].BaseValue = HealthMax;
+        
+        // TODO 수정요망
         curExp = 0;
-        NextExp = 150;
-        level = 1;
+        NextExp = input.NextExp;
+        level = input.level;
+        ownerType = input.ownerType;
+    }
+
+    private void SetBattleStat(BattleStat input)
+    {
+        BaseHealthMax = input.BaseHealthMax;
+        BaseDefence = input.BaseDefence;
+        BaseAvoid = input.BaseAvoid;
+        BaseAttack = input.BaseAttack;
+        BaseAttackSpeed = input.BaseAttackSpeed;
+        BaseCriticalChance = input.BaseCriticalChance;
+        BaseCriticalDamage = input.BaseCriticalDamage;
+        BasePenetrationFixed = input.BasePenetrationFixed;
+        BaseMoveSpeed = input.BaseMoveSpeed;
+        BaseAttackRange = input.BaseAttackRange;
+
+        battleStatContinuous[StatType.Health].BaseValue = HealthMax;
+
+        // TODO 수정요망
+        NextExp = input.NextExp;
+        level = input.level;
     }
 
     public void ResetBattleStat()
@@ -82,9 +109,25 @@ public class BattleStat {
         battleStatDiscrete[StatType.AttackRange].ClearStatModList();
 
         // 현재 체력은 어떻게? 시작하고 버프같은 거 걸릴 수도 있는데?
-        battleStatContinuous[StatType.Health].baseValue = HealthMax;
+        battleStatContinuous[StatType.Health].BaseValue = HealthMax;
     }
 
+    public void AddStatModContinuous(StatType statType, StatModContinuous mod)
+    {
+        battleStatContinuous[statType].AddStatMod(mod);
+    }
+    public void RemoveStatModContinuous(StatType statType, StatModContinuous mod)
+    {
+        battleStatContinuous[statType].RemoveStatMod(mod);
+    }
+    public void AddStatModDiscrete(StatType statType, StatModDiscrete mod)
+    {
+        battleStatDiscrete[statType].AddStatMod(mod);
+    }
+    public void RemoveStatModDiscrete(StatType statType, StatModDiscrete mod)
+    {
+        battleStatDiscrete[statType].AddStatMod(mod);
+    }
     public int Range
     {
         get
@@ -113,12 +156,34 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.Health].baseValue;
+            return battleStatContinuous[StatType.Health].BaseValue;
         }
         set // 수정해야할 수도 있음.
         {
-            battleStatContinuous[StatType.Health].baseValue = value;
+            if(value > HealthMax)
+                battleStatContinuous[StatType.Health].BaseValue = HealthMax;
+            else if (value < 0)
+                battleStatContinuous[StatType.Health].BaseValue = 0;
+            else
+                battleStatContinuous[StatType.Health].BaseValue = value;
         }
+    }
+    
+    public float Heal(float healAmount)
+    {
+        float healed;
+        if (healAmount <= MissingHealth)
+        {
+            healed = healAmount;
+            Health += healAmount;
+        }
+        else
+        {
+            healed = MissingHealth;
+            Health = HealthMax;
+        }
+
+        return healed;
     }
 
     public float PenetrationFixed
@@ -129,7 +194,7 @@ public class BattleStat {
         }
         set // 수정해야할 수도 있음.
         {
-            battleStatContinuous[StatType.PenetrationFixed].baseValue = value;
+            battleStatContinuous[StatType.PenetrationFixed].BaseValue = value;
         }
     }
 
@@ -138,6 +203,14 @@ public class BattleStat {
         get
         {
             return battleStatContinuous[StatType.PenetrationMult].GetCalculatedValue();
+        }
+    }
+
+    public float AttackSpeed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.AttackSpeed].GetCalculatedValue();
         }
     }
 
@@ -158,6 +231,22 @@ public class BattleStat {
                 LevelUp();
             }
         }
+    }
+
+    public bool TakeExp(int expAmount)
+    {
+        Debug.Assert(expAmount >= 0);
+
+        curExp += expAmount;
+
+        if (CurExp >= NextExp)
+        {
+            CurExp -= NextExp;
+            LevelUp();
+            return true;
+        }
+        else
+            return false;
     }
 
     public int NextExp
@@ -271,8 +360,11 @@ public class BattleStat {
     protected void LevelUp()
     {
         Level++;
-        // 다음 레벨 테이블 불러와서 배틀스탯에 저장.
-        // 애니메이션 트리거.
+
+        if (ownerType == "Adventurer")
+            SetBattleStat(GameManager.Instance.GenBattleStat(Level));
+        else
+            SetBattleStat(GameManager.Instance.GenBattleStat(ownerType, Level));
     }
 
     #region SetBaseStats
@@ -280,11 +372,11 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.HealthMax].baseValue;
+            return battleStatContinuous[StatType.HealthMax].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.HealthMax].baseValue = value;
+            battleStatContinuous[StatType.HealthMax].BaseValue = value;
         }
     }
 
@@ -292,11 +384,11 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.Defence].baseValue;
+            return battleStatContinuous[StatType.Defence].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.Defence].baseValue = value;
+            battleStatContinuous[StatType.Defence].BaseValue = value;
         }
     }
 
@@ -304,11 +396,11 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.Avoid].baseValue;
+            return battleStatContinuous[StatType.Avoid].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.Avoid].baseValue = value;
+            battleStatContinuous[StatType.Avoid].BaseValue = value;
         }
     }
 
@@ -316,11 +408,11 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.Attack].baseValue;
+            return battleStatContinuous[StatType.Attack].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.Attack].baseValue = value;
+            battleStatContinuous[StatType.Attack].BaseValue = value;
         }
     }
 
@@ -328,11 +420,11 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.AttackSpeed].baseValue;
+            return battleStatContinuous[StatType.AttackSpeed].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.AttackSpeed].baseValue = value;
+            battleStatContinuous[StatType.AttackSpeed].BaseValue = value;
         }
     }
 
@@ -340,11 +432,11 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.CriticalChance].baseValue;
+            return battleStatContinuous[StatType.CriticalChance].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.CriticalChance].baseValue = value;
+            battleStatContinuous[StatType.CriticalChance].BaseValue = value;
         }
     }
 
@@ -352,11 +444,11 @@ public class BattleStat {
     {
         get
         {
-           return  battleStatContinuous[StatType.CriticalDamage].baseValue;
+           return  battleStatContinuous[StatType.CriticalDamage].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.CriticalDamage].baseValue = value;
+            battleStatContinuous[StatType.CriticalDamage].BaseValue = value;
         }
     }
 
@@ -364,11 +456,11 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.PenetrationFixed].baseValue;
+            return battleStatContinuous[StatType.PenetrationFixed].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.PenetrationFixed].baseValue = value;
+            battleStatContinuous[StatType.PenetrationFixed].BaseValue = value;
         }
     }
 
@@ -376,23 +468,31 @@ public class BattleStat {
     {
         get
         {
-            return battleStatContinuous[StatType.MoveSpeed].baseValue;
+            return battleStatContinuous[StatType.MoveSpeed].BaseValue;
         }
         set
         {
-            battleStatContinuous[StatType.MoveSpeed].baseValue = value;
+            battleStatContinuous[StatType.MoveSpeed].BaseValue = value;
         }
     }
 
-    public int BaseRange
+    public int BaseAttackRange
     {
         get
         {
-            return battleStatDiscrete[StatType.AttackRange].baseValue;
+            return battleStatDiscrete[StatType.AttackRange].BaseValue;
         }
         set
         {
-            battleStatDiscrete[StatType.AttackRange].baseValue = value;
+            battleStatDiscrete[StatType.AttackRange].BaseValue = value;
+        }
+    }
+
+    public float MissingHealth
+    {
+        get
+        {
+            return HealthMax - Health;
         }
     }
     #endregion

@@ -5,12 +5,12 @@ using UnityEngine;
 public class StatBaseDiscrete
 {
 
-	private readonly int statMax;
-	private readonly int statMin;
+	private readonly int statMax = 100;
+	private readonly int statMin = 0;
 	private int recentCalculatedValue = 0;
 	private List<StatModDiscrete> modList = new List<StatModDiscrete>();
 
-	public virtual int baseValue
+	public virtual int BaseValue
 	{
 		get
 		{
@@ -31,18 +31,18 @@ public class StatBaseDiscrete
 		foreach (StatModDiscrete mod in modList)
 		{
 
-			if (mod.type == ModType.Fixed)
+			if (mod.Type == ModType.Fixed)
 			{
-				valueFixed += mod.modValue;
+				valueFixed += mod.ModValue;
 			} // Fixed 합
 			else
 			{
-				valueMult += mod.modValue;
+				valueMult += mod.ModValue;
 			} // Mult 합
 			
 		}
 
-		return (baseValue * valueMult) + valueFixed;
+		return (BaseValue * valueMult) + valueFixed;
 	}
 
     public virtual void AddStatMod(StatModDiscrete mod)

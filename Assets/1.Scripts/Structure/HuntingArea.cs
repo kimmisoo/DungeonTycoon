@@ -83,15 +83,18 @@ public class HuntingArea : Place
                 needed = monsterMax - monstersEnabled.Count;
             else
                 needed = monsterPerRegen;
-
+#if DEBUG_HA_REGEN
             Debug.Log("monsterMax, monsterEnabledCnt, monsterPerRegen : " + monsterMax + ", " + monstersEnabled.Count + ", " + monsterPerRegen);
             Debug.Log("needed : " + needed);
+#endif
 
             if (needed > 0)
             {
                 blanks = FindBlanks(needed);
+#if DEBUG_HA_REGEN
                 Debug.Log("리젠! 몬스터 수 : " + needed + ", 계산된 빈 칸 수 : " + blanks.Count);
                 Debug.Log("전체 칸 수 : " + territory.Count + ", 전체 빈 칸 수 : " + BlanksCount());
+#endif
                 for (int i = 0; i < blanks.Count; i++)
                 {
                     MonsterRegen(blanks[i].GetParent(), blanks[i]);
@@ -112,6 +115,7 @@ public class HuntingArea : Place
         tempMonsterComp.ResetBattleStat();
         tempMonsterComp.SetCurTile(curTile);
         tempMonsterComp.SetCurTileForMove(curTileForMove);
+        tempMonsterComp.AlignPositionToCurTileForMove();
         
         // 객체 풀 관리. 비활성화 리스트에서 활성화 리스트로.
         monstersDisabled[lastKey].SetActive(true);
@@ -122,6 +126,71 @@ public class HuntingArea : Place
     public List<TileForMove> FindBlanks(int needed)
     {
         List<TileForMove> result = new List<TileForMove>();
+
+//        TileForMove tileBeneathActor;
+        string keyXY;
+
+//        // occupiedTerritory 초기화.
+//        foreach (string key in occupiedTerritory.Keys.ToList())
+//            occupiedTerritory[key] = false;
+
+//#if DEBUG_HA_REGEN
+//                Debug.Log("monster count : " + monstersEnabled.Count);
+//#endif
+//        // 몬스터가 들어가 있는 자리 확인
+//        for (int i = 0; i < monstersEnabled.Count; i++)
+//        {
+//            tileBeneathActor = monstersEnabled.Values.ToArray<GameObject>()[i].GetComponent<Monster>().GetCurTileForMove();
+//            keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
+
+//            if (territory.ContainsKey(keyXY))
+//                occupiedTerritory[keyXY] = true;
+//        }
+
+//        // 모험가가 들어가 있는 자리 확인
+//        for (int i = 0; i < adventurersInside.Count; i++)
+//        {
+//            tileBeneathActor = adventurersInside[i].GetComponent<Adventurer>().GetCurTileForMove();
+//            keyXY = tileBeneathActor.GetX().ToString() + "." + tileBeneathActor.GetY().ToString();
+
+//            if (territory.ContainsKey(keyXY))
+//                occupiedTerritory[keyXY] = true;
+//        }
+
+        RefreshOccupiedTerritory();
+
+        // 랜덤으로 needed(몬스터 리젠할 칸 수)만큼 빈 칸을 result 에 추가. 
+        int insertionCnt = 0;
+        int randomNum;
+        while (insertionCnt < needed)
+        {
+            while (true)
+            {
+                randomNum = Random.Range(0, territory.Count);
+#if DEBUG_HA_REGEN
+                Debug.Log("randomNum : " + randomNum + ", ocupiedCnt : " + occupiedTerritory.Count);
+#endif
+                keyXY = occupiedTerritory.Keys.ToList<string>()[randomNum];
+
+                // result에 추가되지 않았고, 빈 칸일 때.
+                if (!result.Contains(territory[keyXY]) && occupiedTerritory[keyXY] == false)
+                {
+                    result.Add(territory[keyXY]);
+                    break;
+                }
+            }
+            insertionCnt++;
+        }
+
+#if DEBUG_HA_REGEN
+        Debug.Log("계산 끝. 리턴한 빈 칸 수 : " + result.Count);
+#endif
+
+        return result;
+    }
+
+    private void RefreshOccupiedTerritory()
+    {
         TileForMove tileBeneathActor;
         string keyXY;
 
@@ -129,7 +198,9 @@ public class HuntingArea : Place
         foreach (string key in occupiedTerritory.Keys.ToList())
             occupiedTerritory[key] = false;
 
+#if DEBUG_HA_REGEN
         Debug.Log("monster count : " + monstersEnabled.Count);
+#endif
         // 몬스터가 들어가 있는 자리 확인
         for (int i = 0; i < monstersEnabled.Count; i++)
         {
@@ -149,47 +220,32 @@ public class HuntingArea : Place
             if (territory.ContainsKey(keyXY))
                 occupiedTerritory[keyXY] = true;
         }
-
-        // 랜덤으로 needed(몬스터 리젠할 칸 수)만큼 빈 칸을 result 에 추가. 
-        int insertionCnt = 0;
-        int randomNum;
-        while (insertionCnt < needed)
-        {
-            while (true)
-            {
-                randomNum = Random.Range(0, territory.Count);
-                Debug.Log("randomNum : " + randomNum + ", ocupiedCnt : " + occupiedTerritory.Count);
-                keyXY = occupiedTerritory.Keys.ToList<string>()[randomNum];
-
-                // result에 추가되지 않았고, 빈 칸일 때.
-                if (!result.Contains(territory[keyXY]) && occupiedTerritory[keyXY] == false)
-                {
-                    result.Add(territory[keyXY]);
-                    break;
-                }
-            }
-            insertionCnt++;
-        }
-        Debug.Log("계산 끝. 리턴한 빈 칸 수 : " + result.Count);
-
-        return result;
     }
 
     public Monster FindNearestMonster(Adventurer adv) // 인자로 받은 모험가와 가장 가까운 몬스터 찾아서 반환.
     {
-        if (monstersEnabled.Count == 0)
+        int monsterCnt = 0;
+        foreach (KeyValuePair<int, GameObject> item in monstersEnabled)
+            if (item.Value.GetComponent<Monster>().GetState() != State.Dead)
+                monsterCnt++;
+        if (monsterCnt == 0)
             return null; //몬스터가 아예 없다면 null 반환.
 
+        //TileForMove advTFM = adv.GetCurTileForMove();
+        //Monster nearest = monstersEnabled.Values.ToArray<GameObject>()[0].GetComponent<Monster>();
+        //TileForMove monsterTFM = nearest.GetCurTileForMove();
+        //int shortestDist = DistanceBetween(advTFM, monsterTFM);
         TileForMove advTFM = adv.GetCurTileForMove();
-        Monster nearest = monstersEnabled.Values.ToArray<GameObject>()[0].GetComponent<Monster>();
-        TileForMove monsterTFM = nearest.GetCurTileForMove();
-        int shortestDist = DistanceBetween(advTFM, monsterTFM);
-        
-        
-        foreach(KeyValuePair<int, GameObject> item in monstersEnabled)
+        Monster nearest = null;
+        TileForMove monsterTFM = null;
+        int shortestDist = int.MaxValue;
+
+
+        foreach (KeyValuePair<int, GameObject> item in monstersEnabled)
         {
-            monsterTFM = item.Value.GetComponent<Monster>().GetCurTileForMove();
-            if (DistanceBetween(advTFM, monsterTFM) < shortestDist)
+            Monster monster = item.Value.GetComponent<Monster>();
+            monsterTFM = monster.GetCurTileForMove();
+            if (DistanceBetween(advTFM, monsterTFM) < shortestDist && monster.curState != State.Dead)
             {
                 shortestDist = DistanceBetween(advTFM, monsterTFM);
                 nearest = item.Value.GetComponent<Monster>(); // 일단 애드 나고 안나고 떠나서 가까운 거 먼저 치게 돼있음.
@@ -199,9 +255,36 @@ public class HuntingArea : Place
         return nearest;
     }
 
+    public TileForMove FindNearestBlank(TileForMove curPos)
+    {
+        RefreshOccupiedTerritory();
+
+        TileForMove nearest = null;
+        int minDist = int.MaxValue;
+
+        foreach(KeyValuePair<string, bool> item in occupiedTerritory)
+        {
+            if(item.Value == false && territory[item.Key].GetDistance(curPos) <= minDist)
+            {
+                if (territory[item.Key].GetDistance(curPos) == minDist)
+                {
+                    if (Random.Range(0, 2) == 1)
+                        nearest = territory[item.Key];
+                }
+                else
+                {
+                    nearest = territory[item.Key];
+                    minDist = nearest.GetDistance(curPos);
+                }
+            }
+        }
+
+        return nearest;
+    }
+
     protected int DistanceBetween(TileForMove pos1, TileForMove pos2)
     {
-        return Mathf.Abs(pos1.GetX() - pos1.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
+        return Mathf.Abs(pos1.GetX() - pos2.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
     }
 
     int BlanksCount()
@@ -244,7 +327,7 @@ public class HuntingArea : Place
     }
 
     // Use this for initialization
-    #region 수정!
+#region 수정!
     void Start()
     {
         GameObject tempMonster;
@@ -259,12 +342,14 @@ public class HuntingArea : Place
             if (Random.Range(0.0f, 1.0f) < monsterRatio)
             {
                 tempMonster = Instantiate(monsterSample1);
-                tempMonster.GetComponent<Monster>().InitMonster(monsterSample1.GetComponent<Monster>());      
+                tempMonster.GetComponent<Monster>().InitMonster(monsterSample1.GetComponent<Monster>());
+                tempMonster.name = i + "_Sample1";
             }
             else
             {
                 tempMonster = Instantiate(monsterSample2);
                 tempMonster.GetComponent<Monster>().InitMonster(monsterSample2.GetComponent<Monster>());
+                tempMonster.name = i + "_Sample2";
             }
             tempMonster.GetComponent<Monster>().index = i;
             tempMonster.GetComponent<Monster>().SetHabitat(this);
@@ -286,5 +371,5 @@ public class HuntingArea : Place
     {
         StartCoroutine(MonsterRegenCycle());
     }
-    #endregion
+#endregion
 }
