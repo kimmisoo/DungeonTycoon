@@ -91,7 +91,7 @@
 			"num": 1,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "OldMan"],
+			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "OldMan", "Yeonhwa"],
 			"specialadv_level":15,
 			"complete_Popularity": 10000,
 			"buildable": {

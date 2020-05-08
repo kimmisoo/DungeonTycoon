@@ -151,7 +151,7 @@ public class HanaUniqueSkill : AoESkill
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     { }
 
-    public override void OnStruck(float actualDamage, bool isCrit, bool isDodged)
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
     { }
 
     public override IEnumerator OnAlways()

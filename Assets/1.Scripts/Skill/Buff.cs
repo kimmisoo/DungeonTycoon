@@ -33,7 +33,7 @@ public class OldManUniqueSkill : Skill
         
     }
 
-    public override void OnStruck(float actualDamage, bool isCrit, bool isDodged)
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant Attacker)
     {
         
     }

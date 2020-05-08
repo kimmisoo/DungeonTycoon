@@ -44,7 +44,7 @@ public class MuratUniqueSkill : Skill
         }
     }
 
-    public override void OnStruck(float actualDamage, bool isCrit, bool isDodged)
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
     {    }
 
     public void DisplaySkillEffect()
@@ -55,3 +55,45 @@ public class MuratUniqueSkill : Skill
     }
 }
 
+public class YeonhwaUniqueSkill : Skill
+{
+    const float ATTACK_MULT = 1.55f;
+    GameObject skillEffect;
+    BattleStat myBattleStat;
+
+    public override void InitSkill()
+    {
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Yeonhwa_SkillEffect"));
+        skillEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        yield return null;
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    { }
+
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    {
+        targets.Clear();
+
+        if(isDodged)
+        {
+            myBattleStat = owner.GetBattleStat();
+            float calculatedDamage;
+            bool isCrit;
+            myBattleStat.CalDamage(out calculatedDamage, out isCrit);
+            AdditionalAttack(attacker, calculatedDamage, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+            DisplaySkillEffect(attacker);
+        }
+    }
+
+    private void DisplaySkillEffect(ICombatant enemy)
+    {
+        skillEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
+        skillEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
+        skillEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+}

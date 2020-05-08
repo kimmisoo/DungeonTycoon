@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Hana", 1);
+        GenAndEnqueueSpecialAdvenuturer("Yeonhwa", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -613,6 +613,7 @@ public class GameManager : MonoBehaviour
         inputStat.AddDesire(new DesireBase(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, null));
     }
 
+    // 큐에 있는 모험가 순차적으로 입장시킴.
     IEnumerator AdvEnter()
     {
         GameObject temp;
@@ -647,6 +648,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 모험가 하나 생성해서 큐에 집어넣음
     private void GenAndEnqueueSingleAdventurer(int minLevel, int maxLevel) // 모험가 하나 생성하고 큐에 집어넣음.
     {
         GameObject temp = adventurersDisabled[adventurersDisabled.Count - 1];
@@ -665,8 +667,7 @@ public class GameManager : MonoBehaviour
         advEnterQ.Enqueue(temp);
     }
 
-    
-
+    // 일선모험가 하나 생성해서 큐에 집어넣음. 모험가 이름을 통해 데이터를 불러와서 집어넣음.
     private void GenAndEnqueueSpecialAdvenuturer(string name, int level)
     {
         /*

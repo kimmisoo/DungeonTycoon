@@ -37,7 +37,7 @@ public abstract class Skill : MonoBehaviour
     /// <summary>
     /// 맞을 때 발생하는 효과
     /// </summary>
-    public abstract void OnStruck(float actualDamage, bool isCrit, bool isDodged);
+    public abstract void OnStruck(float actualDamage, bool isDodged, ICombatant attacker);
     /// <summary>
     /// 때릴 때 발생하는 효과
     /// </summary>
@@ -65,15 +65,23 @@ public abstract class Skill : MonoBehaviour
     public float AdditionalAttack(List<ICombatant> enemies, float damage, float penFixed, float penMult, bool isCrit)
     {
         float totalDamage = 0;
-        float actualDamage = 0;
+
         foreach (ICombatant target in enemies)
         {
-            if (IsHostile(target))
-                target.TakeDamage(owner, damage, penFixed, penMult, isCrit, out actualDamage);
-            totalDamage += actualDamage;
+               totalDamage += AdditionalAttack(enemy, damage, penFixed, penMult, isCrit);
         }
 
         return totalDamage;
+    }
+
+    public float AdditionalAttack(ICombatant enemy, float damage, float penFixed, float penMult, bool isCrit)
+    {
+        float actualDamage = 0;
+
+        if (IsHostile(enemy))
+            enemy.TakeDamage(owner, damage, penFixed, penMult, isCrit, out actualDamage);
+
+        return actualDamage;
     }
 
     public void ModifyBattleStatContinuous(ICombatant target, StatType statType, ModType modType, float value)

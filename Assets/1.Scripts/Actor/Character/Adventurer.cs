@@ -846,7 +846,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         battleStat.TakeDamage(damage, penFixed, penMult, out actualDamage, out isDodged); // 데미지 입음
         StartCoroutine(DisplayHitEffect(actualDamage, isCrit, isDodged));
 
-        SkillOnStruck(actualDamage, isCrit, isDodged);
+        SkillOnStruck(actualDamage, isDodged, attacker);
+        if (isDodged)
+            DisplayDodge();
 
 #if DEBUG_ADV_BATTLE
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
@@ -944,6 +946,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
         tempDamageText.GetComponent<FloatingText>().InitFloatingText("Dodged", textPos);
+        tempDamageText.GetComponent<RectTransform>().localScale = new Vector3(0.12f, 0.12f, 0.12f);
         tempDamageText.SetActive(true);
     }
 
@@ -1040,11 +1043,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             item.OnAttack(actualDamage, isCrit, isDodged);
         }
     }
-    protected void SkillOnStruck(float actualDamage, bool isCrit, bool isDodged)
+    protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
     {
         foreach(Skill item in skills)
         {
-            item.OnStruck(actualDamage, isCrit, isDodged);
+            item.OnStruck(actualDamage, isDodged, attacker);
         }
     }
     protected void SkillActivate()
