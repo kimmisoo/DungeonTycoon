@@ -189,6 +189,7 @@ public class HuntingArea : Place
         return result;
     }
 
+    // 빈 칸 판단을 위한 OccupiedTerritoy 최신화.
     private void RefreshOccupiedTerritory()
     {
         TileForMove tileBeneathActor;

@@ -86,14 +86,7 @@ public class YeonhwaUniqueSkill : Skill
             bool isCrit;
             myBattleStat.CalDamage(out calculatedDamage, out isCrit);
             AdditionalAttack(attacker, calculatedDamage, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
-            DisplaySkillEffect(attacker);
+            DisplaySkillEffect(skillEffect, attacker);
         }
-    }
-
-    private void DisplaySkillEffect(ICombatant enemy)
-    {
-        skillEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
-        skillEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
-        skillEffect.GetComponent<AttackEffect>().StartEffect();
     }
 }

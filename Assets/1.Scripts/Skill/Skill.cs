@@ -116,4 +116,12 @@ public abstract class Skill : MonoBehaviour
                 return false;
         }
     }
+
+    protected void DisplaySkillEffect(GameObject skillEffect, ICombatant target, bool randomRotation = true)
+    {
+        skillEffect.transform.position = new Vector3(target.GetPosition().x * 0.9f + transform.position.x * 0.1f, target.GetPosition().y * 0.9f + transform.position.y * 0.1f, target.GetPosition().z * 0.5f + transform.position.z * 0.5f);
+        if(randomRotation)
+            skillEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
+        skillEffect.GetComponent<AttackEffect>().StartEffect();
+    }
 }

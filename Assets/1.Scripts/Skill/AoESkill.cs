@@ -110,7 +110,7 @@ public abstract class AoESkill : Skill
     }
 
     /// <summary>
-    /// 효과 범위 내의 적을 찾아서 targets에 저장해놓음.
+    /// 효과 범위 내의 적을 찾아서 targets에 저장해놓음. GetArea()와 GetTargets()의 캡슐화 메서드
     /// </summary>
     /// <param name="mainTarget">효과범위 중심이 되는 대상</param>
     protected void FindEnemies(ICombatant mainTarget)
@@ -206,11 +206,72 @@ public class HanaUniqueSkill : AoESkill
         coverages.Add(new Coverage(-1, 0));
         coverages.Add(new Coverage(0, 1));
         coverages.Add(new Coverage(0, -1));
+        coverages.Add(new Coverage(0, 0));
     }
 
     public void DisplayChargedEffect()
     {
         chargedEffect.GetComponent<AttackEffect>().StartEffect();
         chargedEffect.transform.position = new Vector3(owner.GetPosition().x, owner.GetPosition().y + 0.2f, owner.GetPosition().z);
+    }
+}
+
+public class IrisUniqueSkill : AoESkill
+{
+    private const float RATE_SINGLE = 2.4f;
+    private const float RATE_NORM = 2.1f;
+    private const float INVOKE_PERIOD = 7;
+    private int attackCnt = 0;
+    private BattleStat myBattleStat;
+
+    GameObject skillEffect;
+
+    public IrisUniqueSkill()
+    {
+        attackCnt = 0;
+        SetCoverage();
+    }
+
+    public override void InitSkill()
+    {
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Iris_SkillEffect"));
+        skillEffect.transform.SetParent(owner.GetTransform());
+        myBattleStat = owner.GetBattleStat();
+        //        normEffects.transform.position = new Vector3(0, 0, 0);
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        attackCnt++;
+
+        if(attackCnt % INVOKE_PERIOD == 0)
+        {
+            SetEnemy();
+            FindEnemies(enemy);
+            if (targets.Count == 1)
+                AdditionalAttack(targets, actualDamage * RATE_SINGLE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+            else
+                AdditionalAttack(targets, actualDamage * RATE_NORM, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+
+            DisplaySkillEffect(skillEffect, enemy, false);
+            skillEffect.transform.position = new Vector3(enemy.GetPosition().x, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f - 0.13f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
+        }
+    }
+
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    { }
+
+    public override IEnumerator OnAlways()
+    {
+        yield return null;
+    }
+
+    public override void SetCoverage()
+    {
+        coverages.Add(new Coverage(1, 0));
+        coverages.Add(new Coverage(-1, 0));
+        coverages.Add(new Coverage(0, 1));
+        coverages.Add(new Coverage(0, -1));
+        coverages.Add(new Coverage(0, 0));
     }
 }

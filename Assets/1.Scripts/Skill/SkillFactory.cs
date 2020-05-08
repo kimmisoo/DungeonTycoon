@@ -16,6 +16,8 @@ public static class SkillFactory
                 return go.AddComponent<MuratUniqueSkill>();
             case "Yeonhwa":
                 return go.AddComponent<YeonhwaUniqueSkill>();
+            case "Iris":
+                return go.AddComponent<IrisUniqueSkill>();
             default:
                 return null;
         }
