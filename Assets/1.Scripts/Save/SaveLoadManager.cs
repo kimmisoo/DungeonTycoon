@@ -324,14 +324,14 @@ public class StructureData
         Traveler[] tempArr = input.GetCurUsingQueueAsArray();
         for (int i = 0; i < tempArr.Length; i++)
             curUsingQueue.Enqueue(tempArr[i].index);
-        tempArr = input.GetCurWatingQueueAsArray();
+        tempArr = input.GetCurWaitingQueueAsArray();
         for (int i = 0; i < tempArr.Length; i++)
             curWaitingQueue.Enqueue(tempArr[i].index);
 
         float timeNow = Time.fixedTime;
-        float[] timeArr = input.GetEnteredTimeQueueAsArray();
-        for (int i = 0; i < timeArr.Length; i++)
-            elapsedTimeQueue.Enqueue(timeNow - timeArr[i]);     
+		float[] timeArr = input.GetElapsedTimeQueueAsArray();/*input.GetEnteredTimeQueueAsArray();*///TravelerTimer에 elapsedTime 만들었음
+		for (int i = 0; i < timeArr.Length; i++)
+			elapsedTimeQueue.Enqueue(timeArr[i]);//elapsedTimeQueue.Enqueue(timeNow - timeArr[i]);//elapsedTime 직접
 
         structureCategory = input.structureCategory;
         structureNumber = input.structureNumber;

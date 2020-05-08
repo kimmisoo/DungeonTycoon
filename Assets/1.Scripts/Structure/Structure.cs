@@ -5,6 +5,36 @@ using System.Collections.Generic;
 
 public class Structure : Place
 {
+	public class TravelerTimer : MonoBehaviour
+	{
+		public Traveler traveler;
+		public delegate void NotifyStateChange();
+		public NotifyStateChange OnUsingStructure, OnExitStructure;
+		WaitForSeconds Tick;
+		public int elapsedTime = 0;
+		public TravelerTimer(Traveler t, NotifyStateChange onUsing, NotifyStateChange onExit)
+		{
+			traveler = t;
+			OnUsingStructure = onUsing;
+			OnExitStructure = onExit;
+			Tick = new WaitForSeconds(1.0f);
+		}
+		public IEnumerator UsingStructure(int duration)
+		{
+			for(int i = 0; i<duration; i++)
+			{
+				yield return Tick;
+				elapsedTime++;
+			}
+			//call ExitTraveler
+			OnExitStructure();
+		}
+		public int GetRemainTime(int duration) // queue라 쓸모가 ..?
+		{
+			return Mathf.Abs(duration - elapsedTime);
+		}
+		
+	}
     public int entCount = 0;
 	private bool isConstructable = true; //건설 가능한 위치에 배치 되어있는가 아닌가
     public int sitInCount = 0;
@@ -38,23 +68,47 @@ public class Structure : Place
 
 	public float resolveAmount = 0.0f;
     public Preference preference = new Preference();
-	
-	Queue<Traveler> curUsingQueue = new Queue<Traveler>();
-    Queue<float> EnteredTimeQueue = new Queue<float>();
-	Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
+
+	//Queue<Traveler> curUsingQueue = new Queue<Traveler>();  
+	//Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
+	Queue<TravelerTimer> curUsingQueue = new Queue<TravelerTimer>();
+	Queue<TravelerTimer> curWaitingQueue = new Queue<TravelerTimer>();
 	
     public Traveler[] GetCurUsingQueueAsArray()
     {
-        return curUsingQueue.ToArray();
+		//return curUsingQueue.ToArray();
+		List<Traveler> travelers = new List<Traveler>();
+		foreach(TravelerTimer t in curUsingQueue)
+		{
+			travelers.Add(t.traveler);
+		}
+		return travelers.ToArray();
     }
-    public float[] GetEnteredTimeQueueAsArray()
+	/*public float[] GetEnteredTimeQueueAsArray()
     {
-        return EnteredTimeQueue.ToArray();
-    }
-    public Traveler[] GetCurWatingQueueAsArray()
+		//return EnteredTimeQueue.ToArray();
+		List<float> enteredTimeList = new List<float>();
+
+    }*///ElapsedTime을 반환하는 함수로 변경
+	public float[] GetElapsedTimeQueueAsArray()
+	{
+		List<float> elapsedTimeList = new List<float>();
+		foreach(TravelerTimer t in curUsingQueue)
+		{
+			elapsedTimeList.Add(t.elapsedTime);
+		}
+		return elapsedTimeList.ToArray();
+	}
+
+	public Traveler[] GetCurWaitingQueueAsArray()
     {
-        return curWaitingQueue.ToArray();
-    }
+		List<Traveler> travelers = new List<Traveler>();
+		foreach (TravelerTimer t in curWaitingQueue)
+		{
+			travelers.Add(t.traveler);
+		}
+		return travelers.ToArray();
+	}
 
 	public string genre
 	{
@@ -116,22 +170,21 @@ public class Structure : Place
 	{
 		isConstructable = isc;
 	}
-	public void EnterTraveler(Traveler t)
+	public void EnterTraveler()
 	{
-		curUsingQueue.Enqueue(t);
-        // 테스트 필요
-        EnteredTimeQueue.Enqueue(Time.fixedTime);
-		Invoke("ExitTraveler", duration);
+		if (curWaitingQueue.Count > 0)
+		{
+			TravelerTimer t = curWaitingQueue.Dequeue();
+			t.OnUsingStructure();
+			curUsingQueue.Enqueue(t);
+		}
 	}
     // data에 있던 잔여시간을 보고 관광객 입장시킴
     public void LoadEnterdTraveler(Traveler t, float elapsedTime)
     {
-        curUsingQueue.Enqueue(t);
-
-        // 음수가 되어도 문제 없을듯.
-        EnteredTimeQueue.Enqueue(Time.fixedTime - elapsedTime);
-        // 이거 수 제대로 계산되는지 볼 필요 있음.
-        Invoke("ExitTraveler", (float)duration - elapsedTime);
+		TravelerTimer timer = new TravelerTimer(t, t.OnUsingStructure, t.OnExitStructure);
+		timer.elapsedTime = (int)elapsedTime;
+        curUsingQueue.Enqueue(timer);
     }
 
     public override void Visit(Actor visitor)
@@ -141,36 +194,31 @@ public class Structure : Place
 
     public void AddWaitTraveler(Traveler t) // 첫번째로 호출.
 	{
-		curWaitingQueue.Enqueue(t);
-		t.curState = State.WaitingStructure;
-		if (curUsingQueue.Count < capacity)
+		TravelerTimer timer = new TravelerTimer(t, t.OnUsingStructure, t.OnExitStructure);
+		curWaitingQueue.Enqueue(timer);
+		
+		if (curUsingQueue.Count < capacity) // 사용가능한 자리가 있을때
 		{
-			EnterTraveler(curWaitingQueue.Dequeue());
-			t.curState = State.UsingStructure;
+			EnterTraveler();
 		}
 		else
 		{
-			//대기 코루틴?
+			//대기 처리
+			
 		}
 	}
-	public void ExitTraveler()
+	public void ExitTraveler() // Timer에서 시간지나면 자동호출됨.
 	{
-		Traveler exitTraveler = curUsingQueue.Dequeue();
-		exitTraveler.curState = State.Idle;
-		if(curWaitingQueue.Count > 0) // 대기열에 사람이 있다면
-		{
-			EnterTraveler(curWaitingQueue.Dequeue());
-		}
-
+		//UsingQueue 에서 한명 빠질때 . 
+		TravelerTimer t = curUsingQueue.Dequeue();
+		EnterTraveler();
 	}
 	public float GetWaitSeconds()
 	{
-		if (curUsingQueue.Count < capacity)
-			return 0.0f;
-		else
-		{
-			return (curWaitingQueue.Count) * duration;
-		}
+		float waitTime = ((curWaitingQueue.Count / capacity)*duration) + duration;
+		//					WaitingQueue에서 내 앞에있는 해당 대기자들 + curUsingQueue 최대 대기시간.
+
+		return waitTime;
 	}
     
 }

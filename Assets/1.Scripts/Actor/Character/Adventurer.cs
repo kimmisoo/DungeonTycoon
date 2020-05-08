@@ -224,7 +224,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         switch(superState)
         {
             case SuperState.SolvingDesire:
-                VisitStructure();
+                CheckStructure();
                 break;
             case SuperState.SolvingDesire_Wandering:
                 wanderCount++;
