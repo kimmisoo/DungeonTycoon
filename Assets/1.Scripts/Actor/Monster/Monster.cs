@@ -539,7 +539,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
-        enemy.healthBelowZeroEvent -= OnEnemyHealthBelowZero;
+        if(enemy != null)
+            enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
     }
 
     // 죽을 때 호출. 이 몬스터를 공격대상으로 하고있는 모험가들에게 알려줌.
@@ -749,6 +750,12 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public Transform GetTransform()
     {
         return transform;
+    }
+
+    public void RemoveHealthBelowZeroEventHandler(HealthBelowZeroEventHandler healthBelowZeroEventHandler)
+    {
+        if (healthBelowZeroEvent != null)
+            healthBelowZeroEvent -= healthBelowZeroEventHandler;
     }
     #endregion
 

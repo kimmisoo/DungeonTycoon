@@ -14,7 +14,7 @@ public abstract class Skill : MonoBehaviour
     public bool isActive;
 
 
-    protected const float TICK_TIME = 0.5f;
+    protected const float TICK_TIME = 0.25f;
 
     public Skill()
     {
@@ -38,10 +38,19 @@ public abstract class Skill : MonoBehaviour
     /// 맞을 때 발생하는 효과
     /// </summary>
     public abstract void OnStruck(float actualDamage, bool isDodged, ICombatant attacker);
+
+    /// <summary>
+    /// 때리기 직전 발생하는 효과. 주로 능력치 버프류.
+    /// </summary>
+    public abstract void BeforeAttack();
     /// <summary>
     /// 때릴 때 발생하는 효과
     /// </summary>
     public abstract void OnAttack(float actualDamage, bool isCrit, bool isDodged);
+    /// <summary>
+    /// 때린 후 발생하는 효과. 주로 능력치 버프를 해제.
+    /// </summary>
+    public abstract void AfterAttack();
     /// <summary>
     /// 항시발동 및 일정시간마다 발동. 코루틴 실행하는 메서드. 단위시간은 tickTime. 항시발동은 단위시간마다 체크.
     /// 게임 시작 혹은 아이템 착용시마다 실행.

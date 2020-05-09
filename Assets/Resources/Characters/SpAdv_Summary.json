@@ -71,8 +71,8 @@
      "Explanation":"잘 생기고 신실한 사제. 이유없이 재수없다고 말하는 사람들이 종종 있다."
    }
  },
- "Cat":{
-   "BattleStatJSON":"Cat_Stat",
+ "Nyang":{
+   "BattleStatJSON":"Nyang_Stat",
    "SkillID":6,
    "Stat":{
      "Name":"냥냐리우스",
@@ -83,8 +83,8 @@
      "Explanation":"야옹이족의 대표 모험가. 잰 체도 대표."
    }
  },
- "Dog":{
-   "BattleStatJSON":"Dog_Stat",
+ "Wal":{
+   "BattleStatJSON":"Wal_Stat",
    "SkillID":7,
    "Stat":{
      "Name":"왈멍멍",

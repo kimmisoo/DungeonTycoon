@@ -126,7 +126,7 @@ public class BattleStat
     }
     public void RemoveStatModDiscrete(StatType statType, StatModDiscrete mod)
     {
-        battleStatDiscrete[statType].AddStatMod(mod);
+        battleStatDiscrete[statType].RemoveStatMod(mod);
     }
     public int Range
     {

@@ -6,8 +6,8 @@ public class MuratUniqueSkill : Skill
 {
     int attackCnt = 0;
     const int INVOKE_PERIOD = 3;
-    const float HEAL_MULT = 0.02f;
-    const float ATTACK_MULT = 0.04f;
+    const float HEAL_RATE = 0.02f;
+    const float ATTACK_RATE = 0.04f;
     GameObject skillEffect;
 
     public override void InitSkill()
@@ -22,6 +22,8 @@ public class MuratUniqueSkill : Skill
         yield return null;
     }
 
+    public override void BeforeAttack() { }
+
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
         BattleStat myBattleStat = owner.GetBattleStat();
@@ -35,8 +37,8 @@ public class MuratUniqueSkill : Skill
             attackCnt++;
             if(attackCnt % INVOKE_PERIOD == 0)
             {
-                AdditionalAttack(targets, myBattleStat.HealthMax * ATTACK_MULT, 0, 1.0f, false);
-                float healed = myBattleStat.Heal(myBattleStat.HealthMax * HEAL_MULT);
+                AdditionalAttack(targets, myBattleStat.HealthMax * ATTACK_RATE, 0, 1.0f, false);
+                float healed = myBattleStat.Heal(myBattleStat.HealthMax * HEAL_RATE);
                 if (healed > 1)
                     owner.DisplayHeal(healed);
                 DisplaySkillEffect();
@@ -44,8 +46,8 @@ public class MuratUniqueSkill : Skill
         }
     }
 
-    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
-    {    }
+    public override void AfterAttack() { }
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker) { }
 
     public void DisplaySkillEffect()
     {
@@ -57,7 +59,7 @@ public class MuratUniqueSkill : Skill
 
 public class YeonhwaUniqueSkill : Skill
 {
-    const float ATTACK_MULT = 1.55f;
+    const float ATTACK_RATE = 1.55f;
     GameObject skillEffect;
     BattleStat myBattleStat;
 
@@ -72,8 +74,9 @@ public class YeonhwaUniqueSkill : Skill
         yield return null;
     }
 
-    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
-    { }
+    public override void BeforeAttack() { }
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged) { }
+    public override void AfterAttack() { }
 
     public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
     {

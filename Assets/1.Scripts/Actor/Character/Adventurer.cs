@@ -508,7 +508,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
-        enemy.healthBelowZeroEvent -= OnEnemyHealthBelowZero;
+        if (enemy != null)
+            enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
     }
 
     #endregion
@@ -688,6 +689,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (!ValidatingEnemy(enemy))
             yield break;
 
+        SkillBeforeAttack();
+
         bool isCrit;
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
@@ -698,6 +701,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             DisplayAttackEffect(enemy);
             SkillOnAttack(actualDamage, isCrit, false);
         }
+
+        SkillAfterAttack();
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
         //attackEffect.GetComponent<AttackEffect>().StopEffect();
@@ -1008,6 +1013,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         return transform;
     }
+    public void RemoveHealthBelowZeroEventHandler(HealthBelowZeroEventHandler healthBelowZeroEventHandler)
+    {
+        if (healthBelowZeroEvent != null)
+            healthBelowZeroEvent -= healthBelowZeroEventHandler;
+    }
     #endregion
 
     #region UI
@@ -1035,6 +1045,20 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         skills.Remove(skill);
         skill.Deactivate();
+    }
+    protected void SkillBeforeAttack()
+    {
+        foreach (Skill item in skills)
+        {
+            item.BeforeAttack();
+        }
+    }
+    protected void SkillAfterAttack()
+    {
+        foreach (Skill item in skills)
+        {
+            item.AfterAttack();
+        }
     }
     protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
     {

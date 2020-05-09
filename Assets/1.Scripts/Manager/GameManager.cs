@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Iris", 1);
+        GenAndEnqueueSpecialAdvenuturer("Nyang", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -677,8 +677,8 @@ public class GameManager : MonoBehaviour
          * 하나: "Hana"
          * 연화: "Yeonhwa"
          * 뮈라: "Murat"
-         * 냥냐리우스: "Cat"
-         * 왈멍멍: "Dog"
+         * 냥냐리우스: "Nyang"
+         * 왈멍멍: "Wal"
          */
         // 아마 고쳐야할 거임
         GameObject go = Instantiate((GameObject)Resources.Load("CharacterPrefabs/"+name));

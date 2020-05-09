@@ -128,7 +128,7 @@ public class HanaUniqueSkill : AoESkill
     const float RATE_NORM = 0.1f;
     const float RATE_CHARGED = 1.7f;
     const float CHARGED_TRIGGER = 0.12f;
-    const float TICK_MULT = 4;
+    const float TICK_MULT = 8;
     GameObject normEffects;
     GameObject chargedEffect;
 
@@ -148,11 +148,10 @@ public class HanaUniqueSkill : AoESkill
         chargedEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/HanaCharged_SkillEffect"));
     }
 
-    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
-    { }
-
-    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
-    { }
+    public override void BeforeAttack() { }
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged) { }
+    public override void AfterAttack() { }
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker) { }
 
     public override IEnumerator OnAlways()
     {
@@ -240,6 +239,8 @@ public class IrisUniqueSkill : AoESkill
         //        normEffects.transform.position = new Vector3(0, 0, 0);
     }
 
+    public override void BeforeAttack() { }
+
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
         attackCnt++;
@@ -258,8 +259,8 @@ public class IrisUniqueSkill : AoESkill
         }
     }
 
-    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
-    { }
+    public override void AfterAttack() { }
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker) { }
 
     public override IEnumerator OnAlways()
     {

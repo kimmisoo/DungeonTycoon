@@ -28,4 +28,5 @@ public interface ICombatant
     ICombatant GetEnemy();
     bool ValidatingEnemy(ICombatant enemy);
     void DisplayHeal(float healAmount);
+    void RemoveHealthBelowZeroEventHandler(HealthBelowZeroEventHandler healthBelowZeroEventHandler);
 }
