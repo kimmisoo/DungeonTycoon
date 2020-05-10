@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatBaseContinuous {
-	
-
+public class StatBaseContinuous
+{
 	protected List<StatModContinuous> modList = new List<StatModContinuous>();
 
 	public virtual float BaseValue
@@ -50,5 +49,8 @@ public class StatBaseContinuous {
     {
         modList.Clear();
     }
-
+    public List<StatModContinuous> GetModList()
+    {
+        return modList;
+    }
 }

@@ -42,6 +42,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public Canvas canvas;
     public GameObject hpBar;
     public Slider hpSlider;
+    public GameObject shieldBar;
+    public Slider shieldSlider;
     #endregion
 
     public int Level
@@ -183,7 +185,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("InitiatingBattle");
 #endif
-                hpBar.GetComponent<HPBar>().Show();
+                ShowBattleUI();
                 superState = SuperState.Battle;
                 InitiatingBattle();
                 break;
@@ -272,14 +274,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             case State.Battle:
                 break;
             case State.AfterBattle:
-                hpBar.GetComponent<HPBar>().Hide();
+                HideBattleUI();
                 break;
             case State.ExitingHuntingArea:
                 break;
             case State.PassedOut:
                 break;
             case State.SpontaneousRecovery:
-                hpBar.GetComponent<HPBar>().Hide();
+                HideBattleUI();
                 animator.SetTrigger("ResurrectionFlg");
                 break;
             case State.Rescued:
@@ -1029,8 +1031,25 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         hpBar.transform.SetParent(canvas.transform);
         hpBar.GetComponent<HPBar>().SetSubject(this);
 
+        shieldBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/ShieldSlider"));
+        shieldSlider = shieldBar.GetComponentInChildren<Slider>();
+        shieldBar.transform.SetParent(canvas.transform);
+        shieldBar.GetComponent<ShieldBar>().SetSubject(this);
+
         hpBar.SetActive(true);
+        shieldBar.SetActive(true);
     }
+    public void ShowBattleUI()
+    {
+        hpBar.GetComponent<HPBar>().Show();
+        shieldBar.GetComponent<ShieldBar>().Show();
+    }
+    public void HideBattleUI()
+    {
+        hpBar.GetComponent<HPBar>().Hide();
+        shieldBar.GetComponent<ShieldBar>().Hide();
+    }
+    
     #endregion
 
     #region Skill

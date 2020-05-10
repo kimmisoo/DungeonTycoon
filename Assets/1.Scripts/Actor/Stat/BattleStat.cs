@@ -7,6 +7,8 @@ public class BattleStat
 	Dictionary<StatType, StatBaseContinuous> battleStatContinuous = new Dictionary<StatType, StatBaseContinuous>();
 	Dictionary<StatType, StatBaseDiscrete> battleStatDiscrete = new Dictionary<StatType, StatBaseDiscrete>();
 
+    List<StatModContinuous> shieldModsGC = new List<StatModContinuous>();
+
     int curExp;
     int nextExp;
     int level;
@@ -26,6 +28,8 @@ public class BattleStat
         battleStatContinuous.Add(StatType.PenetrationMult, new StatBaseContinuous());
         battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
         battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
+
+        battleStatContinuous.Add(StatType.Shield, new StatBaseContinuous());
 
         battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
 
@@ -50,6 +54,8 @@ public class BattleStat
         battleStatContinuous.Add(StatType.MoveSpeed, new StatBaseContinuous());
         battleStatDiscrete.Add(StatType.AttackRange, new StatBaseDiscrete());
 
+        battleStatContinuous.Add(StatType.Shield, new StatBaseContinuous());
+
         battleStatContinuous.Add(StatType.Health, new StatBaseContinuous());
 
         //Debug.Log("input Range : "+input.BaseAttackRange);
@@ -65,6 +71,7 @@ public class BattleStat
         BasePenetrationFixed = input.BasePenetrationFixed;
         BaseMoveSpeed = input.BaseMoveSpeed;
         BaseAttackRange = input.BaseAttackRange;
+
 
         battleStatContinuous[StatType.Health].BaseValue = HealthMax;
         
@@ -87,6 +94,7 @@ public class BattleStat
         BasePenetrationFixed = input.BasePenetrationFixed;
         BaseMoveSpeed = input.BaseMoveSpeed;
         BaseAttackRange = input.BaseAttackRange;
+        BaseShield = input.BaseShield;
 
         battleStatContinuous[StatType.Health].BaseValue = HealthMax;
 
@@ -114,11 +122,13 @@ public class BattleStat
 
     public void AddStatModContinuous(StatType statType, StatModContinuous mod)
     {
-        battleStatContinuous[statType].AddStatMod(mod);
+        if(!battleStatContinuous[statType].GetModList().Contains(mod))
+            battleStatContinuous[statType].AddStatMod(mod);
     }
     public void RemoveStatModContinuous(StatType statType, StatModContinuous mod)
     {
-        battleStatContinuous[statType].RemoveStatMod(mod);
+        if (battleStatContinuous[statType].GetModList().Contains(mod))
+            battleStatContinuous[statType].RemoveStatMod(mod);
     }
     public void AddStatModDiscrete(StatType statType, StatModDiscrete mod)
     {
@@ -168,6 +178,15 @@ public class BattleStat
                 battleStatContinuous[StatType.Health].BaseValue = value;
         }
     }
+
+    public float Shield
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Shield].GetCalculatedValue();
+        }
+    }
+
     
     public float Heal(float healAmount)
     {
@@ -319,7 +338,8 @@ public class BattleStat
 
         // 피격 애니메이션 및 이펙트 관련 여기 넣을 것.
         actualDamage = (damage / (1 + def / 100));
-        Health -= actualDamage;
+        float remainDamage = TakeDamageShield(actualDamage);
+        Health -= remainDamage;
 
 		return;
 		//returns true if Dead
@@ -488,12 +508,59 @@ public class BattleStat
         }
     }
 
+    public float BaseShield
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Shield].BaseValue;
+        }
+        set
+        {
+            battleStatContinuous[StatType.Shield].BaseValue = value;
+        }
+    }
+
+
     public float MissingHealth
     {
         get
         {
             return HealthMax - Health;
         }
+    }
+
+    // 방어막 ModList 순회하며 데미지 적용해줌. ModType.Mult는 적용하지 않음. 기획에도 없음.
+    private float TakeDamageShield(float damage)
+    {
+        List<StatModContinuous> shieldMods = battleStatContinuous[StatType.Shield].GetModList();
+        float damageRemain = damage;
+        shieldModsGC.Clear();
+
+        foreach (StatModContinuous shield in shieldMods)
+        {
+            if(shield.Type == ModType.Fixed)
+            {
+                if(damageRemain >= shield.ModValue)
+                {
+                    damageRemain -= shield.ModValue;
+                    shield.ModValue = 0;
+                    shieldModsGC.Add(shield);
+                }
+                else
+                {
+                    shield.ModValue -= damageRemain;
+                    damageRemain = 0;
+                    break;
+                }
+            }
+        }
+
+        foreach(StatModContinuous shieldBroken in shieldModsGC)
+        {
+            shieldMods.Remove(shieldBroken);
+        }
+
+        return damageRemain;
     }
     #endregion
 }

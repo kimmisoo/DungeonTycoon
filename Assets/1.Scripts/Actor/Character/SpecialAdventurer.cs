@@ -20,7 +20,7 @@ public class SpecialAdventurer : Adventurer//, IDamagable {
         base.OnEnable();
         monsterSearchCnt = 0;
         //uniqueSkill.Activate();
-        SetUI();
+        //SetUI();
     }
 
     public void OnDisable()
