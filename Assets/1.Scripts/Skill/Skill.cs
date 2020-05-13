@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public static class SkillConsts
+{
+    public const float TICK_TIME = 0.25f;
+}
 /// <summary>
 /// 상위클래스 샌드박스 패턴 사용. 
 /// </summary>
@@ -12,9 +16,19 @@ public abstract class Skill : MonoBehaviour
     protected Coroutine curCoroutine;
     protected List<ICombatant> targets; // 효과 대상 TFM 위에 있는 적들
     public bool isActive;
+    public string Name // 스킬 이름
+    {
+        get { return name; }
+    }
+    protected string name;
+    public string Explanation // 스킬 설명
+    {
+        get { return explanation; }
+    }
+    protected string explanation;
+    protected Sprite icon;
 
-
-    protected const float TICK_TIME = 0.25f;
+    //protected const float TICK_TIME = 0.25f;
 
     public Skill()
     {
@@ -37,20 +51,20 @@ public abstract class Skill : MonoBehaviour
     /// <summary>
     /// 맞을 때 발생하는 효과
     /// </summary>
-    public abstract void OnStruck(float actualDamage, bool isDodged, ICombatant attacker);
+    public virtual void OnStruck(float actualDamage, bool isDodged, ICombatant attacker) { }
 
     /// <summary>
     /// 때리기 직전 발생하는 효과. 주로 능력치 버프류.
     /// </summary>
-    public abstract void BeforeAttack();
+    public virtual void BeforeAttack() { }
     /// <summary>
     /// 때릴 때 발생하는 효과
     /// </summary>
-    public abstract void OnAttack(float actualDamage, bool isCrit, bool isDodged);
+    public virtual void OnAttack(float actualDamage, bool isCrit, bool isDodged) { }
     /// <summary>
     /// 때린 후 발생하는 효과. 주로 능력치 버프를 해제.
     /// </summary>
-    public abstract void AfterAttack();
+    public virtual void AfterAttack() { }
     /// <summary>
     /// 항시발동 및 일정시간마다 발동. 코루틴 실행하는 메서드. 단위시간은 tickTime. 항시발동은 단위시간마다 체크.
     /// 게임 시작 혹은 아이템 착용시마다 실행.
@@ -69,7 +83,13 @@ public abstract class Skill : MonoBehaviour
         isActive = false;
     }
 
-    public abstract IEnumerator OnAlways();
+    public virtual void ApplyStatBonus() {}
+    public virtual void RemoveStatBonus() {}
+
+    public virtual IEnumerator OnAlways()
+    {
+        yield return null;
+    }
 
     public float AdditionalAttack(List<ICombatant> enemies, float damage, float penFixed, float penMult, bool isCrit)
     {
@@ -91,16 +111,6 @@ public abstract class Skill : MonoBehaviour
             enemy.TakeDamage(owner, damage, penFixed, penMult, isCrit, out actualDamage);
 
         return actualDamage;
-    }
-
-    public void ModifyBattleStatContinuous(ICombatant target, StatType statType, ModType modType, float value)
-    {
-        target.GetBattleStat().AddStatModContinuous(statType, new StatModContinuous(modType, value));
-    }
-
-    public void ModifyBattleStatDiscrete(ICombatant target, StatType statType, ModType modType, int value)
-    {
-        target.GetBattleStat().AddStatModDiscrete(statType, new StatModDiscrete(modType, value));
     }
 
     /// <summary>
@@ -132,5 +142,13 @@ public abstract class Skill : MonoBehaviour
         if(randomRotation)
             skillEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
         skillEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    protected void SetNameAndExplanation(string nameIn, string explanationIn)
+    {
+        name = nameIn;
+        explanation = explanationIn;
+        // 아마 여기서 아이콘 설정은 이름에 따라 Resource.Load 해주면 될 거 같음
+        // 일단 스킬 아이콘은 리소스도 없고 하니 스킵
     }
 }

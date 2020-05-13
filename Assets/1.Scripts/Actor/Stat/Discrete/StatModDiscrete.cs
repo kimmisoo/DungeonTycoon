@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class StatModDiscrete
 {
-    public StatModDiscrete(ModType typeIn, int value)
+    public StatModDiscrete(StatType statType, ModType modType, int value)
     {
-        Type = typeIn;
+        ModType = modType;
         ModValue = value;
+        StatType = statType;
+    }
+
+    public StatModDiscrete(StatModDiscrete statMod)
+    {
+        StatType = statMod.StatType;
+        ModType = statMod.ModType;
+        ModValue = statMod.ModValue;
     }
 
     public int ModValue
@@ -21,18 +29,19 @@ public class StatModDiscrete
 
 		}
 	}
-	public ModType Type
+	public ModType ModType
 	{
 		get
 		{
-			return _type;
+			return _modType;
 		}
 		set
 		{
 
 		}
 	}
+    public StatType StatType { get; set; }
 
-	ModType _type = ModType.Fixed;
+    ModType _modType = ModType.Fixed;
 	private int _modValue = 0;
 }

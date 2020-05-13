@@ -52,6 +52,12 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected GameObject attackEffect;
     protected GameObject damageText;
 
+    // 스킬들(아이템, 고유능력 등 모두)
+    List<Skill> skills;
+    // 버프/디버프 목록
+    List<TemporaryEffect> temporaryEffects;
+    Coroutine refreshingTempEffectCoroutine;
+
     #endregion
 
     #region UI
@@ -88,16 +94,13 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         SetDamageText(Instantiate(sample.damageText));
         SetAttackEffect(Instantiate(sample.attackEffect));
+
+        skills = new List<Skill>();
+        temporaryEffects = new List<TemporaryEffect>();
     }
 
     public void OnEnable()
     {
-        // 몬스터는 타일을 HuntingArea에서 정해줘야할듯.
-        /*
-        SetCurTile(GameManager.Instance.GetRandomEntrance());
-        SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
-        */
-
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         // PathFind 성공/실패에 따라 호출할 delegate 설정.
@@ -111,6 +114,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
         // 기본은 Idle.
         StartCoroutine(LateStart());
+        refreshingTempEffectCoroutine = StartCoroutine(RefreshTemporaryEffects());
 
         SetUI();
     }
@@ -528,8 +532,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         StopCurActivities();
         ResetBattleEventHandlers();
+        ClearTemporaryEffects();
 
-        // 여기 애니메이션 설정 넣으면 됨.
         yield return new WaitForSeconds(DecayTimer);
         corpseDecayEvent?.Invoke(index);
     }
@@ -756,6 +760,50 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         if (healthBelowZeroEvent != null)
             healthBelowZeroEvent -= healthBelowZeroEventHandler;
+    }
+
+    public IEnumerator RefreshTemporaryEffects()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+            int idx = 0;
+
+            while (idx < temporaryEffects.Count)
+            {
+                if (temporaryEffects[idx].Refresh())
+                    RemoveTemporaryEffect(temporaryEffects[idx]);
+                else
+                    idx++;
+            }
+        }
+    }
+
+    public void ClearTemporaryEffects()
+    {
+        foreach (TemporaryEffect effect in temporaryEffects)
+            effect.RemoveEffect();
+        temporaryEffects.Clear();
+    }
+
+    public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    {
+        if (temporaryEffects.Contains(toBeRemoved))
+        {
+            toBeRemoved.RemoveEffect();
+            temporaryEffects.Remove(toBeRemoved);
+        }
+    }
+
+    public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    {
+        if (!temporaryEffects.Contains(toBeAdded))
+        {
+            toBeAdded.SetSubject(this);
+            toBeAdded.ApplyEffect();
+            temporaryEffects.Add(toBeAdded);
+        }
     }
     #endregion
 

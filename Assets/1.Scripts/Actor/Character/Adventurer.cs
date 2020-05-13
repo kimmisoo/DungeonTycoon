@@ -17,9 +17,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //리워드 스탯(현재는 별 필요 없음)
     protected RewardStat rewardStat;
 
-    // 스킬들(아이템, 고유능력 등 모두)
-    List<Skill> skills;
-
     public ICombatant enemy;
     protected GameObject attackEffect;
     protected GameObject damageText;
@@ -29,6 +26,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected readonly float RecoveryTick = 5.0f;
     protected readonly int RecoveryTimes = 5;
     protected readonly float RecoveryMult = 0.02f;
+
+    // 스킬들(아이템, 고유능력 등 모두)
+    List<Skill> skills;
+    // 버프/디버프 목록
+    List<TemporaryEffect> temporaryEffects;
+    Coroutine refreshingTempEffectCoroutine;
 
     protected int monsterSearchCnt;
     protected readonly int MonsterSearchMax = 5;
@@ -65,6 +68,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //pathfinder 초기화 // delegate 그대로
 
         skills = new List<Skill>();
+        temporaryEffects = new List<TemporaryEffect>();
     }
 
     public void OnEnable()
@@ -73,12 +77,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         monsterSearchCnt = 0;
         SetUI();
         SkillActivate();
+        refreshingTempEffectCoroutine = StartCoroutine(RefreshTemporaryEffects());
     }
 
     public void OnDisable()
     {
         base.OnDisable();
         SkillDeactivate();
+        StopCoroutine(refreshingTempEffectCoroutine);
     }
 
     #region StateMachine
@@ -465,7 +471,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected virtual void PassedOut()
     {
         StopCurActivities();
-
+        ClearTemporaryEffects();
         ResetBattleEventHandlers();
 
         //Structure[] tempArr = StructureManager.Instance.FindRescue(this);
@@ -1049,7 +1055,50 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         hpBar.GetComponent<HPBar>().Hide();
         shieldBar.GetComponent<ShieldBar>().Hide();
     }
-    
+
+    public IEnumerator RefreshTemporaryEffects()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+            int idx = 0;
+
+            while(idx < temporaryEffects.Count)
+            {
+                if (temporaryEffects[idx].Refresh())
+                    RemoveTemporaryEffect(temporaryEffects[idx]);
+                else
+                    idx++;
+            }
+        }
+    }
+
+    public void ClearTemporaryEffects()
+    {
+        foreach (TemporaryEffect effect in temporaryEffects)
+            effect.RemoveEffect();
+        temporaryEffects.Clear();
+    }
+
+    public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    {
+        if (temporaryEffects.Contains(toBeRemoved))
+        {
+            toBeRemoved.RemoveEffect();
+            temporaryEffects.Remove(toBeRemoved);
+        }
+    }
+
+    public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    {
+        if (!temporaryEffects.Contains(toBeAdded))
+        {
+            toBeAdded.SetSubject(this);
+            toBeAdded.ApplyEffect();
+            temporaryEffects.Add(toBeAdded);
+        }
+    }
     #endregion
 
     #region Skill
@@ -1108,5 +1157,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             item.Deactivate();
         }
     }
+
+    
     #endregion
 }

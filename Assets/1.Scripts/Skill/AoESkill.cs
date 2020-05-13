@@ -136,6 +136,7 @@ public class HanaUniqueSkill : AoESkill
     {
         totalDmg = 0;
         SetCoverage();
+        SetNameAndExplanation("축전", "매 1초마다 주위 1칸 내의 모든 적에게 공격력의 10%(효과범위 내의 적이 하나일 때는 15%)만큼 피해를 줌. 준 피해의 양이 하나 최대체력의 12%가 될 때마다 주위 1칸 내의 모든 적에게 공격력의 170%(치명타 적용되지 않음) 피해를 주고 방어력을 15% 깎음.(중첩 가능)");
     }
 
     public override void InitSkill()
@@ -148,16 +149,11 @@ public class HanaUniqueSkill : AoESkill
         chargedEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/HanaCharged_SkillEffect"));
     }
 
-    public override void BeforeAttack() { }
-    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged) { }
-    public override void AfterAttack() { }
-    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker) { }
-
     public override IEnumerator OnAlways()
     {
         while (true)
         {
-            yield return new WaitForSeconds(TICK_MULT * TICK_TIME);
+            yield return new WaitForSeconds(TICK_MULT * SkillConsts.TICK_TIME);
             FindEnemies(owner);
             BattleStat myBattleStat = owner.GetBattleStat();
             normEffects.GetComponent<AttackEffect>().StopEffect();
@@ -239,8 +235,6 @@ public class IrisUniqueSkill : AoESkill
         //        normEffects.transform.position = new Vector3(0, 0, 0);
     }
 
-    public override void BeforeAttack() { }
-
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
         attackCnt++;
@@ -258,9 +252,6 @@ public class IrisUniqueSkill : AoESkill
             skillEffect.transform.position = new Vector3(enemy.GetPosition().x, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f - 0.13f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
         }
     }
-
-    public override void AfterAttack() { }
-    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker) { }
 
     public override IEnumerator OnAlways()
     {

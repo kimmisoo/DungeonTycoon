@@ -25,7 +25,7 @@ public class StatBaseContinuous
 		float valueMult = 1.0f;
 		foreach(StatModContinuous mod in modList)
 		{
-			if(mod.Type == ModType.Fixed)
+			if(mod.ModType == ModType.Fixed)
 			{
 				valueFixed += mod.ModValue;
 			} // Fixed 합

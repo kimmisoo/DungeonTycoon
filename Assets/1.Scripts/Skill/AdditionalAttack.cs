@@ -22,8 +22,6 @@ public class MuratUniqueSkill : Skill
         yield return null;
     }
 
-    public override void BeforeAttack() { }
-
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
         BattleStat myBattleStat = owner.GetBattleStat();
@@ -45,9 +43,6 @@ public class MuratUniqueSkill : Skill
             }
         }
     }
-
-    public override void AfterAttack() { }
-    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker) { }
 
     public void DisplaySkillEffect()
     {
@@ -73,10 +68,6 @@ public class YeonhwaUniqueSkill : Skill
     {
         yield return null;
     }
-
-    public override void BeforeAttack() { }
-    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged) { }
-    public override void AfterAttack() { }
 
     public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
     {

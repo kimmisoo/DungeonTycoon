@@ -120,23 +120,25 @@ public class BattleStat
         battleStatContinuous[StatType.Health].BaseValue = HealthMax;
     }
 
-    public void AddStatModContinuous(StatType statType, StatModContinuous mod)
+    public void AddStatModContinuous(StatModContinuous mod)
     {
-        if(!battleStatContinuous[statType].GetModList().Contains(mod))
-            battleStatContinuous[statType].AddStatMod(mod);
+        if(!battleStatContinuous[mod.StatType].GetModList().Contains(mod))
+            battleStatContinuous[mod.StatType].AddStatMod(mod);
     }
-    public void RemoveStatModContinuous(StatType statType, StatModContinuous mod)
+    public void RemoveStatModContinuous(StatModContinuous mod)
     {
-        if (battleStatContinuous[statType].GetModList().Contains(mod))
-            battleStatContinuous[statType].RemoveStatMod(mod);
+        if (battleStatContinuous[mod.StatType].GetModList().Contains(mod))
+            battleStatContinuous[mod.StatType].RemoveStatMod(mod);
     }
-    public void AddStatModDiscrete(StatType statType, StatModDiscrete mod)
+    public void AddStatModDiscrete(StatModDiscrete mod)
     {
-        battleStatDiscrete[statType].AddStatMod(mod);
+        if (!battleStatDiscrete[mod.StatType].GetModList().Contains(mod))
+            battleStatDiscrete[mod.StatType].AddStatMod(mod);
     }
-    public void RemoveStatModDiscrete(StatType statType, StatModDiscrete mod)
+    public void RemoveStatModDiscrete(StatModDiscrete mod)
     {
-        battleStatDiscrete[statType].RemoveStatMod(mod);
+        if (battleStatDiscrete[mod.StatType].GetModList().Contains(mod))
+            battleStatDiscrete[mod.StatType].RemoveStatMod(mod);
     }
     public int Range
     {
@@ -538,7 +540,7 @@ public class BattleStat
 
         foreach (StatModContinuous shield in shieldMods)
         {
-            if(shield.Type == ModType.Fixed)
+            if(shield.ModType == ModType.Fixed)
             {
                 if(damageRemain >= shield.ModValue)
                 {
