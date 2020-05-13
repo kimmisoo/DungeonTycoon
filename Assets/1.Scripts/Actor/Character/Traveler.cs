@@ -32,7 +32,7 @@ public class Traveler : Actor
         {
             ExitState();
             state = value;
-            Debug.Log(gameObject.name + " Enters: " + state);
+            //Debug.Log(gameObject.name + " Enters: " + state);
             EnterState(state);
         }
     }

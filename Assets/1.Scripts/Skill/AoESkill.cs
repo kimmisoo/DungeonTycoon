@@ -123,6 +123,8 @@ public abstract class AoESkill : Skill
 
 public class HanaUniqueSkill : AoESkill
 {
+    BattleStat myBattleStat;
+
     float totalDmg;
     const float RATE_SINGLE = 0.15f;
     const float RATE_NORM = 0.1f;
@@ -132,11 +134,18 @@ public class HanaUniqueSkill : AoESkill
     GameObject normEffects;
     GameObject chargedEffect;
 
+    const float DEBUFF_RATE = -0.15f;
+    const float DURATION = 4.0f;
+    TemporaryEffect defDebuff;
+
     public HanaUniqueSkill()
     {
         totalDmg = 0;
         SetCoverage();
-        SetNameAndExplanation("축전", "매 1초마다 주위 1칸 내의 모든 적에게 공격력의 10%(효과범위 내의 적이 하나일 때는 15%)만큼 피해를 줌. 준 피해의 양이 하나 최대체력의 12%가 될 때마다 주위 1칸 내의 모든 적에게 공격력의 170%(치명타 적용되지 않음) 피해를 주고 방어력을 15% 깎음.(중첩 가능)");
+        SetNameAndExplanation("축전", "매 1초마다 주위 1칸 내의 모든 적에게 공격력의 10%(효과범위 내의 적이 하나일 때는 15%)만큼 피해를 줌. 준 피해의 양이 하나 최대체력의 12%가 될 때마다 주위 1칸 내의 모든 적에게 공격력의 170%(치명타 적용되지 않음) 피해를 주고 4초동안 지속되는 방어력을 -15% 디버프를 줌.(중첩 가능)");
+        defDebuff = new TemporaryEffect(DURATION);
+        defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Mult, DEBUFF_RATE));
+        ///defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 10.0f));
     }
 
     public override void InitSkill()
@@ -146,6 +155,7 @@ public class HanaUniqueSkill : AoESkill
         //        normEffects.transform.position = new Vector3(0, 0, 0);
         normEffects.transform.position = owner.GetPosition();
         //normEffects.GetComponent<ToggleEffect>().OffEffect();
+        myBattleStat = owner.GetBattleStat();
         chargedEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/HanaCharged_SkillEffect"));
     }
 
@@ -155,7 +165,7 @@ public class HanaUniqueSkill : AoESkill
         {
             yield return new WaitForSeconds(TICK_MULT * SkillConsts.TICK_TIME);
             FindEnemies(owner);
-            BattleStat myBattleStat = owner.GetBattleStat();
+            
             normEffects.GetComponent<AttackEffect>().StopEffect();
 
             if (owner.GetSuperState() == SuperState.Battle)
@@ -165,34 +175,48 @@ public class HanaUniqueSkill : AoESkill
 
                 myBattleStat.CalDamage(out dmg, out isCrit);
 
-
                 if (targets.Count == 0)
                 {
                     // 효과범위 내에 아무도 없을 때는 아무거도 안함.
                 }
                 else if (totalDmg >= myBattleStat.HealthMax * CHARGED_TRIGGER)
                 {
-
-                    dmg *= RATE_CHARGED;
-
-                    AdditionalAttack(targets, dmg, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
-                    totalDmg -= myBattleStat.HealthMax * CHARGED_TRIGGER;
-
-                    DisplayChargedEffect();
+                    ChargedAttack(dmg, isCrit);
                 }
                 else
                 {
-                    if (targets.Count == 1)
-                        dmg *= RATE_SINGLE;
-                    else
-                        dmg *= RATE_NORM;
-
-                    totalDmg += AdditionalAttack(targets, dmg, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
-
-                    normEffects.GetComponent<AttackEffect>().StartEffect();
+                    NormAttack(dmg, isCrit);
                 }
             }
         }
+    }
+
+    private void ChargedAttack(float damage, bool isCrit)
+    {
+        // 차지됐을 때의 광역데미지
+        float dmg = damage;
+        dmg *= RATE_CHARGED;
+
+        AdditionalAttack(targets, dmg, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+        totalDmg -= myBattleStat.HealthMax * CHARGED_TRIGGER;
+
+        ApplyTemporaryEffect(targets, defDebuff, true);
+
+        DisplayChargedEffect();
+    }
+
+    private void NormAttack(float damage, bool isCrit)
+    {
+        float dmg = damage;
+
+        if (targets.Count == 1)
+            dmg *= RATE_SINGLE;
+        else
+            dmg *= RATE_NORM;
+
+        totalDmg += AdditionalAttack(targets, dmg, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+
+        normEffects.GetComponent<AttackEffect>().StartEffect();
     }
 
     public override void SetCoverage()

@@ -643,6 +643,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
             + "\n남은 체력 : " + this.battleStat.Health);
 #endif
+        //Debug.Log("방어력 : " + battleStat.Defence);
 
         // 조건?
         if (battleStat.Health <= 0)
@@ -800,9 +801,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         if (!temporaryEffects.Contains(toBeAdded))
         {
+            temporaryEffects.Add(toBeAdded);
             toBeAdded.SetSubject(this);
             toBeAdded.ApplyEffect();
-            temporaryEffects.Add(toBeAdded);
         }
     }
     #endregion

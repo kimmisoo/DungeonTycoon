@@ -26,6 +26,9 @@ public class TemporaryEffect
         continuousMods = new List<StatModContinuous>();
         discreteMods = new List<StatModDiscrete>();
 
+        DURATION = tempEffect.DURATION;
+        elapsedTime = 0;
+
         subject = tempEffect.subject;
         subjectBattleStat = tempEffect.subjectBattleStat;
 
@@ -33,6 +36,8 @@ public class TemporaryEffect
             continuousMods.Add(new StatModContinuous(statMod));
         foreach (StatModDiscrete statMod in tempEffect.discreteMods)
             discreteMods.Add(new StatModDiscrete(statMod));
+
+        //Debug.Log("StatType: " + continuousMods[0].StatType + ", Value: " + continuousMods[0].ModValue);
     }
 
     public void SetSubject(ICombatant subjectIn)
@@ -60,6 +65,7 @@ public class TemporaryEffect
     {
         if (DURATION >= 0)
         {
+            Debug.Log("Elapsed : " + elapsedTime + ",  Duration : " + DURATION);
             elapsedTime += deltaTime;
             if (elapsedTime >= DURATION)
                 return true; //만료되었는지 여부.

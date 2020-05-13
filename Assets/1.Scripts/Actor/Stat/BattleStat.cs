@@ -335,11 +335,11 @@ public class BattleStat
         def = (def - penFixed);
         if(def>0)
         {
-            def = def * (1 - penMult); // 적용되는 실질 방어력
+            def = def * (1.0f - penMult); // 적용되는 실질 방어력
         }
 
         // 피격 애니메이션 및 이펙트 관련 여기 넣을 것.
-        actualDamage = (damage / (1 + def / 100));
+        actualDamage = (damage / (1.0f + def / 100));
         float remainDamage = TakeDamageShield(actualDamage);
         Health -= remainDamage;
 

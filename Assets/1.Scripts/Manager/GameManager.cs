@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Wal", 1);
+        GenAndEnqueueSpecialAdvenuturer("Hana", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -660,7 +660,7 @@ public class GameManager : MonoBehaviour
         Stat tempStat = GenStat(advLevel);
         RewardStat tempRewardStat = GenRewardStat(advLevel);
 
-        Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+        //Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
         tempAdventurer.InitAdventurer(tempStat, tempBattleStat, tempRewardStat);
 

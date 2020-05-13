@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//#define DEBUG_TEMP_EFFECT
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -83,8 +85,8 @@ public abstract class Skill : MonoBehaviour
         isActive = false;
     }
 
-    public virtual void ApplyStatBonus() {}
-    public virtual void RemoveStatBonus() {}
+    public virtual void ApplyStatBonus() { }
+    public virtual void RemoveStatBonus() { }
 
     public virtual IEnumerator OnAlways()
     {
@@ -97,7 +99,8 @@ public abstract class Skill : MonoBehaviour
 
         foreach (ICombatant target in enemies)
         {
-               totalDamage += AdditionalAttack(enemy, damage, penFixed, penMult, isCrit);
+            if (IsHostile(enemy))
+                totalDamage += AdditionalAttack(enemy, damage, penFixed, penMult, isCrit);
         }
 
         return totalDamage;
@@ -107,10 +110,28 @@ public abstract class Skill : MonoBehaviour
     {
         float actualDamage = 0;
 
-        if (IsHostile(enemy))
-            enemy.TakeDamage(owner, damage, penFixed, penMult, isCrit, out actualDamage);
+        enemy.TakeDamage(owner, damage, penFixed, penMult, isCrit, out actualDamage);
 
         return actualDamage;
+    }
+
+    public void ApplyTemporaryEffect(List<ICombatant> targets, TemporaryEffect effect, bool toHostile)
+    {
+        foreach(ICombatant target in targets)
+        {
+            if(toHostile && IsHostile(target))
+                ApplyTemporaryEffect(target, effect);
+            else if(!toHostile && !IsHostile(target))
+                ApplyTemporaryEffect(target, effect);
+        }
+    }
+
+    public void ApplyTemporaryEffect(ICombatant target, TemporaryEffect effect)
+    {
+#if DEBUG_TEMP_EFFECT
+        Debug.Log("적: " + target);
+#endif
+        target.AddTemporaryEffect(new TemporaryEffect(effect));
     }
 
     /// <summary>
@@ -139,7 +160,7 @@ public abstract class Skill : MonoBehaviour
     protected void DisplaySkillEffect(GameObject skillEffect, ICombatant target, bool randomRotation = true)
     {
         skillEffect.transform.position = new Vector3(target.GetPosition().x * 0.9f + transform.position.x * 0.1f, target.GetPosition().y * 0.9f + transform.position.y * 0.1f, target.GetPosition().z * 0.5f + transform.position.z * 0.5f);
-        if(randomRotation)
+        if (randomRotation)
             skillEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
         skillEffect.GetComponent<AttackEffect>().StartEffect();
     }
