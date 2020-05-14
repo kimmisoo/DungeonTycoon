@@ -8,7 +8,9 @@ public class OldManUniqueSkill : Skill
     private const float HEAL_RATE = 0.05f;
 
     public override void InitSkill()
-    { }
+    {
+        SetNameAndExplanation("숨 고르기", "매 5초마다 잃은 체력의 5%를 회복합니다.");
+    }
 
     public override IEnumerator OnAlways()
     {
@@ -44,9 +46,12 @@ public class NyangUniqueSkill : Skill
     {
         myBattleStat = owner.GetBattleStat();
         myMod = new StatModContinuous(StatType.Attack, ModType.Mult, 2.0f);
+
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Default_BuffEffect"));
         skillEffect.transform.SetParent(owner.GetTransform());
         skillEffect.transform.position = owner.GetPosition();
+
+        SetNameAndExplanation("선수필승!", "비 전투 상태의 적을 공격할 때 공격력이 200% 증가합니다.");
     }
 
     public override void BeforeAttack()
@@ -81,23 +86,34 @@ public class NyangUniqueSkill : Skill
 public class WalUniqueSkill : Skill
 {
     BattleStat myBattleStat;
-    StatModContinuous myMod;
+
+    StatModContinuous atkMod;
+    const float ATK_BONUS_RATE = 0.4f;
+    StatModContinuous atkSpdMod;
+    const float ATKSPD_PENALTY_RATE = -0.33f;
+
+    StatModContinuous shieldMod;
     GameObject skillEffect;
     float shieldTimer;
     TemporaryEffect shieldBuff;
     const float DURATION = 3.0f;
-    const float SHIELD_RATE = 0.23f;
+    const float SHIELD_RATE = 0.03f;
 
     public override void InitSkill()
     {
         myBattleStat = owner.GetBattleStat();
-        myMod = new StatModContinuous(StatType.Shield, ModType.Fixed, 0);
+        shieldMod = new StatModContinuous(StatType.Shield, ModType.Fixed, 0);
         shieldBuff = new TemporaryEffect(DURATION);
         shieldTimer = -1;
+
+        atkMod = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_BONUS_RATE);
+        atkSpdMod = new StatModContinuous(StatType.AttackSpeed, ModType.Mult, ATKSPD_PENALTY_RATE);
 
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/ShieldGaining_BuffEffect"));
         skillEffect.transform.SetParent(owner.GetTransform());
         skillEffect.transform.position = owner.GetPosition();
+
+        SetNameAndExplanation("파비스 석궁병", "공격력이 40% 증가하는 대신 공격속도가 33% 감소합니다. 매 사격마다 최대체력의 3%에 해당하는 방어막을 얻습니다. 방어막은 중첩되지 않습니다.");
     }
 
     public override IEnumerator OnAlways()
@@ -125,14 +141,26 @@ public class WalUniqueSkill : Skill
         owner.RemoveTemporaryEffect(shieldBuff);
 
         // TemporaryEffect 생성
-        myMod.ModValue = myBattleStat.HealthMax * SHIELD_RATE;
-        StatModContinuous tempMod = new StatModContinuous(myMod);
+        shieldMod.ModValue = myBattleStat.HealthMax * SHIELD_RATE;
+        StatModContinuous tempMod = new StatModContinuous(shieldMod);
         shieldBuff = new TemporaryEffect(DURATION);
-        shieldBuff.AddContinuousMod(myMod);
+        shieldBuff.AddContinuousMod(shieldMod);
 
         owner.AddTemporaryEffect(shieldBuff);
         //shieldTimer = 0;
         DisplaySkillEffect();
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        myBattleStat.AddStatModContinuous(atkMod);
+        myBattleStat.AddStatModContinuous(atkSpdMod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        myBattleStat.RemoveStatModContinuous(atkMod);
+        myBattleStat.RemoveStatModContinuous(atkSpdMod);
     }
 
     public void DisplaySkillEffect()
@@ -141,3 +169,65 @@ public class WalUniqueSkill : Skill
         skillEffect.transform.position = new Vector3(owner.GetPosition().x, owner.GetPosition().y + 0.08f, owner.GetPosition().z);
     }
 }
+
+public class CommonSelfBuffSkill : Skill
+{
+    List<StatModContinuous> continuousMods;
+    List<StatModDiscrete> discreteMods;
+    BattleStat myBattleStat;
+
+    public CommonSelfBuffSkill(string name, string explanation)
+    {
+        SetNameAndExplanation(name, explanation);
+    }
+
+    public override void InitSkill()
+    {
+        myBattleStat = owner.GetBattleStat();
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        foreach (StatModContinuous mod in continuousMods)
+            myBattleStat.AddStatModContinuous(mod);
+        foreach (StatModDiscrete mod in discreteMods)
+            myBattleStat.AddStatModDiscrete(mod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        foreach (StatModContinuous mod in continuousMods)
+            myBattleStat.RemoveStatModContinuous(mod);
+        foreach (StatModDiscrete mod in discreteMods)
+            myBattleStat.RemoveStatModDiscrete(mod);
+    }
+
+    public void InstantiateLists()
+    {
+        continuousMods = new List<StatModContinuous>();
+        discreteMods = new List<StatModDiscrete>();
+    }
+
+    public void AddContinuousMod(StatModContinuous mod)
+    {
+        continuousMods.Add(mod);
+    }
+
+    public void AddDiscreteMod(StatModDiscrete mod)
+    {
+        discreteMods.Add(mod);
+    }
+}
+
+//public class MaxiUniqueSkill : Skill
+//{
+//    StatModContinuous atkMod;
+//    const float ATK_BONUS_RATE = 0.4f;
+//    StatModContinuous atkSpdMod;
+//    const float ATKSPD_PENALTY_RATE = -0.33f;
+
+//    public override void InitSkill()
+//    {
+//        SetNameAndExplanation("쇼맨십", "공격속도가 200% 증가하지만 공격력은 65% 감소합니다.");
+//    }
+//}

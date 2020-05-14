@@ -22,6 +22,13 @@ public static class SkillFactory
                 return go.AddComponent<NyangUniqueSkill>();
             case "Wal":
                 return go.AddComponent<WalUniqueSkill>();
+            case "Maxi":
+                CommonSelfBuffSkill temp = go.AddComponent<CommonSelfBuffSkill>();
+                temp.InstantiateLists();
+                temp.SetNameAndExplanation("쇼맨십", "공격속도가 200% 증가하지만 공격력은 65% 감소합니다.");
+                temp.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, -0.65f));
+                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 2.0f));
+                return temp;
             default:
                 return null;
         }

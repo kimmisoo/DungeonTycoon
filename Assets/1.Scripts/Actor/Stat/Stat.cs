@@ -6,8 +6,8 @@ using System.Linq;
 
 public enum Gender { Male, Female }
 
-public class Stat : MonoBehaviour{
-	
+public class Stat : MonoBehaviour
+{
 	#region CommonStat
 	public int id
 	{
@@ -83,6 +83,24 @@ public class Stat : MonoBehaviour{
 		owner = _owner;
 		StartDesireTick();
 	}
+
+    public void Init(Stat inputStat, Traveler owner)
+    {
+        id = inputStat.id;
+        race = inputStat.race;
+        wealth = inputStat.wealth;
+        name = inputStat.name;
+        explanation = inputStat.explanation;
+        gender = inputStat.gender;
+        gold = inputStat.gold;
+        desireDict = new Dictionary<DesireType, DesireBase>(inputStat.GetDesireDict());
+
+        this.owner = owner;
+        for (int i = 0; i < desireDict.Count; i++)
+        {
+            desireDict[desireDict.Keys.ToArray()[i]].SetOwner(owner);
+        }
+    }
 
     #region Desire Tick메소드
     public void StartDesireTick()

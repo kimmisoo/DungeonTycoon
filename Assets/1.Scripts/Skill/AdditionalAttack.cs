@@ -15,6 +15,7 @@ public class MuratUniqueSkill : Skill
         attackCnt = 0;
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Murat_SkillEffect"));
         skillEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
+        SetNameAndExplanation("광휘", "매 3번째 공격마다 최대 체력의 2%를 회복하고 그 2배의 피해를 적에게 줍니다. 적에게 주는 피해는 치명타가 발생하지 않는 대신, 적의 방어력을 무시합니다.");
     }
 
     public override IEnumerator OnAlways()
@@ -62,6 +63,7 @@ public class YeonhwaUniqueSkill : Skill
     {
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Yeonhwa_SkillEffect"));
         skillEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
+        SetNameAndExplanation("환류", "회피율이 10% 증가합니다. 적의 공격을 회피할 때마다, 공격력의 155%만큼의 피해를 공격자에게 줍니다.");
     }
 
     public override IEnumerator OnAlways()

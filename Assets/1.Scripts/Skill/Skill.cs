@@ -73,6 +73,7 @@ public abstract class Skill : MonoBehaviour
     /// </summary>
     public void Activate()
     {
+        ApplyStatBonuses();
         curCoroutine = StartCoroutine(OnAlways());
         isActive = true;
     }
@@ -81,12 +82,13 @@ public abstract class Skill : MonoBehaviour
     /// </summary>
     public void Deactivate()
     {
+        RemoveStatBonuses();
         StopCoroutine(curCoroutine);
         isActive = false;
     }
 
-    public virtual void ApplyStatBonus() { }
-    public virtual void RemoveStatBonus() { }
+    public virtual void ApplyStatBonuses() { }
+    public virtual void RemoveStatBonuses() { }
 
     public virtual IEnumerator OnAlways()
     {
@@ -165,7 +167,7 @@ public abstract class Skill : MonoBehaviour
         skillEffect.GetComponent<AttackEffect>().StartEffect();
     }
 
-    protected void SetNameAndExplanation(string nameIn, string explanationIn)
+    public void SetNameAndExplanation(string nameIn, string explanationIn)
     {
         name = nameIn;
         explanation = explanationIn;
