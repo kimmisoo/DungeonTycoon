@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Maxi", 1);
+        GenAndEnqueueSpecialAdvenuturer("Hana", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)

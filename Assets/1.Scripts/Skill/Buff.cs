@@ -219,6 +219,24 @@ public class CommonSelfBuffSkill : Skill
     }
 }
 
+public class DamageAbsorbSkill : Skill
+{
+    const float HEAL_AMOUNT = 15f;
+    BattleStat myBattleStat;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("데미지 흡수", "공격을 받을 때마다, 체력을 15 회복합니다.");
+        myBattleStat = owner.GetBattleStat();
+    }
+
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    {
+        float healed = myBattleStat.Heal(HEAL_AMOUNT);
+        if (healed >= 1.0f)
+            owner.DisplayHeal(healed);
+    }
+}
 //public class MaxiUniqueSkill : Skill
 //{
 //    StatModContinuous atkMod;

@@ -86,3 +86,17 @@ public class YeonhwaUniqueSkill : Skill
         }
     }
 }
+
+public class ThornMailSkill : Skill
+{
+    const float REFLECTION_RATE = 0.15f;
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("가시갑옷", "공격을 받을 때, 받은 데미지의 15%를 공격자에게 되돌려줍니다.");
+    }
+
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    {
+        AdditionalAttack(attacker, actualDamage * REFLECTION_RATE, 0, 1.0f, false);
+    }
+}

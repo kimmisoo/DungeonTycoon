@@ -29,6 +29,10 @@ public static class SkillFactory
                 temp.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, -0.65f));
                 temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 2.0f));
                 return temp;
+            case "ThornMail":
+                return go.AddComponent<ThornMailSkill>();
+            case "DamageAbsorb":
+                return go.AddComponent<DamageAbsorbSkill>();
             default:
                 return null;
         }
