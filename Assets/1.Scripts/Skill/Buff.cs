@@ -287,6 +287,82 @@ public class OverBoostSkill : BuffSkill
     }
 }
 
+public class BlessSkill : Skill
+{
+    const float SHIELD_RATE = 0.12f;
+    const float DURATION = 3.0f;
+    GameObject skillEffect;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("축복", "적을 공격할 때마다 입힌 피해의 12%에 해당하는 방어막을 얻습니다. 방어막은 3초 동안 지속됩니다.");
+        SetSkillEffect();
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        TemporaryEffect shieldBuff = new TemporaryEffect(DURATION);
+        shieldBuff.AddContinuousMod(new StatModContinuous(StatType.Shield, ModType.Fixed, actualDamage * SHIELD_RATE));
+        owner.AddTemporaryEffect(shieldBuff);
+        DisplaySkillEffect();
+    }
+
+    private void SetSkillEffect()
+    {
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/ShieldGaining_BuffEffect"));
+        skillEffect.transform.SetParent(owner.GetTransform());
+        skillEffect.transform.position = owner.GetPosition();
+    }
+
+    private void DisplaySkillEffect()
+    {
+        skillEffect.GetComponent<AttackEffect>().StartEffect();
+        skillEffect.transform.position = new Vector3(owner.GetPosition().x, owner.GetPosition().y + 0.08f, owner.GetPosition().z);
+    }
+}
+
+public class BuckshotSkill : BuffSkill
+{
+    const float ATTACK_BONUS_RATE = 0.10f;
+    StatModContinuous atkStatMod;
+    StatModDiscrete rangeStatMod;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("산탄", "사정거리가 1 증가합니다. 가까이 있는 적을 공격할 때 추가 공격력을 얻습니다.");
+        SetMyBattleStat();
+        atkStatMod = new StatModContinuous(StatType.Attack, ModType.Mult, 0.0f);
+        rangeStatMod = new StatModDiscrete(StatType.AttackRange, ModType.Fixed, 1);
+    }
+
+    public override void BeforeAttack()
+    {
+        SetEnemy();
+        int dist = owner.GetCurTileForMove().GetDistance(enemy.GetCurTileForMove());
+        atkStatMod.ModValue = (myBattleStat.Range - dist) * ATTACK_BONUS_RATE;
+        if (atkStatMod.ModValue > 0)
+        {
+            DisplayBuffEffect();
+            myBattleStat.AddStatModContinuous(atkStatMod);
+        }
+    }
+
+    public override void AfterAttack()
+    {
+        myBattleStat.RemoveStatModContinuous(atkStatMod);
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        myBattleStat.AddStatModDiscrete(rangeStatMod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        myBattleStat.RemoveStatModDiscrete(rangeStatMod);
+    }
+}
+
 //public class MaxiUniqueSkill : Skill
 //{
 //    StatModContinuous atkMod;

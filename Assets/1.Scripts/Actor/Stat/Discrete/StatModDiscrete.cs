@@ -26,7 +26,7 @@ public class StatModDiscrete
 		}
 		set
 		{
-
+            _modValue = value;
 		}
 	}
 	public ModType ModType
@@ -37,7 +37,7 @@ public class StatModDiscrete
 		}
 		set
 		{
-
+            _modType = value;
 		}
 	}
     public StatType StatType { get; set; }

@@ -229,7 +229,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Wal", 1);
+        GenAndEnqueueSpecialAdvenuturer("OldMan", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -704,12 +704,12 @@ public class GameManager : MonoBehaviour
         Stat tempStat = GenStat(name, level);
         RewardStat tempRewardStat = GenRewardStat(level);
 
-        Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+        //Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
         //tempBattleStat.ResetBattleStat();
         int skillID = spAdvSummary[name]["SkillID"].AsInt;
 
 
-        Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+        //Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
         tempSpAdv.InitSpecialAdventurer(tempStat, tempBattleStat, tempRewardStat, name);
 
@@ -1136,7 +1136,7 @@ public class GameManager : MonoBehaviour
         {
             x = aData["scene"][sceneNumber]["mapEntrance"][i]["x"].AsInt;
             y = aData["scene"][sceneNumber]["mapEntrance"][i]["y"].AsInt;
-#if DEBUG
+#if DEBUG_ADV
             Debug.Log(x + "   " + y);
 #endif
             mapEntrance.Add(layer.GetTileForMove(x * 2, y * 2));

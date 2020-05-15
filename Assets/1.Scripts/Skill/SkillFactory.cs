@@ -41,6 +41,10 @@ public static class SkillFactory
                 return go.AddComponent<CrackSkill>();
             case "Sweep":
                 return go.AddComponent<SweepSkill>();
+            case "Bless":
+                return go.AddComponent<BlessSkill>();
+            case "Buckshot":
+                return go.AddComponent<BuckshotSkill>();
             default:
                 return null;
         }
