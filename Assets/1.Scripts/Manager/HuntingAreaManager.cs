@@ -310,7 +310,8 @@ public class HuntingAreaManager : MonoBehaviour
         Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
         tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-        tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        tempMonsterComp.SetDefaultEffects();
 
         // 몬스터 샘플 2 할당
         monsterSample2 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample2Num));
@@ -340,7 +341,8 @@ public class HuntingAreaManager : MonoBehaviour
         tempMonsterComp = monsterSample2.GetComponent<Monster>();
         tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
         tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-        tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        tempMonsterComp.SetDefaultEffects();
         return;
     }
 

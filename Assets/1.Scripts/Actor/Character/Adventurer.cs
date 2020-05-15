@@ -22,6 +22,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected GameObject damageText;
     protected GameObject healEffect;
     protected GameObject healText;
+    protected GameObject buffEffect;
+    protected GameObject debuffEffect;
 
     protected readonly float RecoveryTick = 5.0f;
     protected readonly int RecoveryTimes = 5;
@@ -191,7 +193,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("InitiatingBattle");
 #endif
-                ShowBattleUI();
                 superState = SuperState.Battle;
                 InitiatingBattle();
                 break;
@@ -199,6 +200,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("Battle");
 #endif
+                ShowBattleUI();
                 curCoroutine = StartCoroutine(Battle());
                 break;
             case State.AfterBattle:
@@ -278,9 +280,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             case State.InitiatingBattle:
                 break;
             case State.Battle:
+                HideBattleUI();
                 break;
             case State.AfterBattle:
-                HideBattleUI();
                 break;
             case State.ExitingHuntingArea:
                 break;
@@ -729,6 +731,20 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         healEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.12f, transform.position.z);
     }
 
+    public void SetBuffEffect(GameObject input)
+    {
+        buffEffect = input;
+        buffEffect.transform.SetParent(transform);
+        buffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
+    public void SetDebuffEffect(GameObject input)
+    {
+        debuffEffect = input;
+        debuffEffect.transform.SetParent(transform);
+        debuffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
     public void SetDamageText(GameObject input)
     {
         damageText = input;
@@ -740,6 +756,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         healText = input;
         healText.SetActive(false);
         healText.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+
+    public void SetDefaultEffects()
+    {
+        SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+        SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+        SetBuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_BuffEffect")));
+        SetDebuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_DebuffEffect")));
     }
 
     protected void StopCurActivities()
@@ -952,6 +977,18 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         healEffect.SetActive(true);
         healEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    public void DisplayBuff()
+    {
+        buffEffect.SetActive(true);
+        buffEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    public void DisplayDebuff()
+    {
+        debuffEffect.SetActive(true);
+        debuffEffect.GetComponent<AttackEffect>().StartEffect();
     }
 
     private void DisplayDodge()

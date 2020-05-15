@@ -65,7 +65,7 @@ public class TemporaryEffect
     {
         if (DURATION >= 0)
         {
-            Debug.Log("Elapsed : " + elapsedTime + ",  Duration : " + DURATION);
+            //Debug.Log("Elapsed : " + elapsedTime + ",  Duration : " + DURATION);
             elapsedTime += deltaTime;
             if (elapsedTime >= DURATION)
                 return true; //만료되었는지 여부.

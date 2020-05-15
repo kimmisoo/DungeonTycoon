@@ -28,6 +28,8 @@ public interface ICombatant
     ICombatant GetEnemy();
     bool ValidatingEnemy(ICombatant enemy);
     void DisplayHeal(float healAmount);
+    void DisplayBuff();
+    void DisplayDebuff();
     void RemoveHealthBelowZeroEventHandler(HealthBelowZeroEventHandler healthBelowZeroEventHandler);
     IEnumerator RefreshTemporaryEffects(); // 버프 디버프 체크해서 지속시간 지났으면 해제.
     void ClearTemporaryEffects();

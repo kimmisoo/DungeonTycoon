@@ -2,7 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OldManUniqueSkill : Skill
+public abstract class BuffSkill : Skill
+{
+    //GameObject buffEffect;
+    protected BattleStat myBattleStat;
+
+    //protected void SetBuffEffect()
+    //{
+    //    buffEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Default_BuffEffect"));
+    //    buffEffect.transform.SetParent(owner.GetTransform());
+    //    buffEffect.transform.position = owner.GetPosition();
+    //}
+
+    protected void DisplayBuffEffect()
+    {
+        owner.DisplayBuff();
+    }
+
+    protected void SetMyBattleStat()
+    {
+        myBattleStat = owner.GetBattleStat();
+    }
+}
+
+public class OldManUniqueSkill : BuffSkill
 {
     private const int TICK_MULT = 20;
     private const float HEAL_RATE = 0.05f;
@@ -14,7 +37,8 @@ public class OldManUniqueSkill : Skill
 
     public override IEnumerator OnAlways()
     {
-        BattleStat myBattleStat = owner.GetBattleStat();
+        SetMyBattleStat();
+
         float healAmount = 0;
         while (true)
         {
@@ -36,20 +60,15 @@ public class OldManUniqueSkill : Skill
     }
 }
 
-public class NyangUniqueSkill : Skill
+public class NyangUniqueSkill : BuffSkill
 {
-    BattleStat myBattleStat;
     StatModContinuous myMod;
     GameObject skillEffect;
 
     public override void InitSkill()
     {
-        myBattleStat = owner.GetBattleStat();
+        SetMyBattleStat();
         myMod = new StatModContinuous(StatType.Attack, ModType.Mult, 2.0f);
-
-        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Default_BuffEffect"));
-        skillEffect.transform.SetParent(owner.GetTransform());
-        skillEffect.transform.position = owner.GetPosition();
 
         SetNameAndExplanation("선수필승!", "비 전투 상태의 적을 공격할 때 공격력이 200% 증가합니다.");
     }
@@ -61,8 +80,7 @@ public class NyangUniqueSkill : Skill
         if (enemy.GetSuperState() != SuperState.Battle)
         {
             myBattleStat.AddStatModContinuous(myMod);
-            DisplaySkillEffect();
-
+            DisplayBuffEffect();
         }
     }
 
@@ -74,12 +92,6 @@ public class NyangUniqueSkill : Skill
     public override IEnumerator OnAlways()
     {
         yield return null;
-    }
-
-    public void DisplaySkillEffect()
-    {
-        skillEffect.GetComponent<AttackEffect>().StartEffect();
-        skillEffect.transform.position = new Vector3(owner.GetPosition().x, owner.GetPosition().y + 0.08f, owner.GetPosition().z);
     }
 }
 
@@ -237,6 +249,44 @@ public class DamageAbsorbSkill : Skill
             owner.DisplayHeal(healed);
     }
 }
+
+public class OverBoostSkill : BuffSkill
+{
+    const float BONUS_TRIGGER = 0.3f;
+    StatModContinuous atkModStat;
+    const float ATK_BONUS_RATE = 0.25f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("오버부스트", "공격대상의 체력이 30% 이하일 때 공격력이 25% 증가합니다.");
+        SetMyBattleStat();
+
+        atkModStat = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_BONUS_RATE);
+    }
+
+    public override void BeforeAttack()
+    {
+        BattleStat enemyBattleStat;
+        SetEnemy();
+        enemyBattleStat = enemy.GetBattleStat();
+
+        if (enemyBattleStat.Health <= enemyBattleStat.HealthMax * BONUS_TRIGGER)
+        {
+            myBattleStat.AddStatModContinuous(atkModStat);
+            DisplayBuffEffect();
+        }
+    }
+
+    public override void AfterAttack()
+    {
+        BattleStat enemyBattleStat;
+        SetEnemy();
+        enemyBattleStat = enemy.GetBattleStat();
+
+        myBattleStat.RemoveStatModContinuous(atkModStat);
+    }
+}
+
 //public class MaxiUniqueSkill : Skill
 //{
 //    StatModContinuous atkMod;

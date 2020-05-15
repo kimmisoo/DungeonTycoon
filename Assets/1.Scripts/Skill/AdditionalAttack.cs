@@ -100,3 +100,33 @@ public class ThornMailSkill : Skill
         AdditionalAttack(attacker, actualDamage * REFLECTION_RATE, 0, 1.0f, false);
     }
 }
+
+public class RepulsivePowerSkill : Skill
+{
+    const float REFLECTION_RATE = 0.2f;
+    BattleStat myBattleStat;
+    StatModContinuous defenceStatMod;
+    const float DEF_BONUS_RATE = 0.35f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("반발력", "방어력이 35% 증가합니다. 공격을 받을 때마다, 방어력의 20%만큼의 피해를 공격자에게 줍니다.");
+        myBattleStat = owner.GetBattleStat();
+        defenceStatMod = new StatModContinuous(StatType.Defence, ModType.Mult, DEF_BONUS_RATE);
+    }
+
+    public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    {
+        AdditionalAttack(attacker, myBattleStat.Defence * REFLECTION_RATE, 0, 1.0f, false);
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        myBattleStat.AddStatModContinuous(defenceStatMod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        myBattleStat.RemoveStatModContinuous(defenceStatMod);
+    }
+}

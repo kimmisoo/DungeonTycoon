@@ -218,9 +218,10 @@ public class GameManager : MonoBehaviour
             Adventurer tempAdventurer = adventurersDisabled[i].GetComponent<Adventurer>();
             tempAdventurer.index = i;
             tempAdventurer.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-            tempAdventurer.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-            tempAdventurer.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
-            tempAdventurer.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+            tempAdventurer.SetDefaultEffects();
+            //tempAdventurer.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+            //tempAdventurer.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+            //tempAdventurer.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
             // Debug.Log("character instantiate - " + i);
         }
         StartCoroutine(AdvEnter());
@@ -228,7 +229,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Hana", 1);
+        GenAndEnqueueSpecialAdvenuturer("Wal", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -695,9 +696,7 @@ public class GameManager : MonoBehaviour
         tempSpAdv.index = specialAdventurers.Count - 1;
         string attackEffectFileName = "EffectPrefabs/" + name +"_AttackEffect";
         tempSpAdv.SetAttackEffect((GameObject)Instantiate(Resources.Load(attackEffectFileName)));
-        tempSpAdv.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-        tempSpAdv.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
-        tempSpAdv.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+        tempSpAdv.SetDefaultEffects();
         // Debug.Log("character instantiate - " + i);
 
 

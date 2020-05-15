@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using TMPro;
 
 public class Monster : Actor, ICombatant//:Actor, IDamagable {
 {
@@ -51,6 +52,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     //public event MoveStartedEventHandler moveStartedEvent;
     protected GameObject attackEffect;
     protected GameObject damageText;
+    protected GameObject healEffect;
+    protected GameObject healText;
+    protected GameObject buffEffect;
+    protected GameObject debuffEffect;
 
     // 스킬들(아이템, 고유능력 등 모두)
     List<Skill> skills;
@@ -92,8 +97,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat = new BattleStat(sample.battleStat);
         rewardStat = new RewardStat(sample.rewardStat);
 
-        SetDamageText(Instantiate(sample.damageText));
+        //SetDamageText(Instantiate(sample.damageText));
         SetAttackEffect(Instantiate(sample.attackEffect));
+        SetDefaultEffects();
 
         skills = new List<Skill>();
         temporaryEffects = new List<TemporaryEffect>();
@@ -493,11 +499,47 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         attackEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
+    public void SetHealEffect(GameObject input)
+    {
+        healEffect = input;
+        healEffect.transform.SetParent(transform);
+        healEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.12f, transform.position.z);
+    }
+
+    public void SetBuffEffect(GameObject input)
+    {
+        buffEffect = input;
+        buffEffect.transform.SetParent(transform);
+        buffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
+    public void SetDebuffEffect(GameObject input)
+    {
+        debuffEffect = input;
+        debuffEffect.transform.SetParent(transform);
+        debuffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
     public void SetDamageText(GameObject input)
     {
         damageText = input;
         damageText.SetActive(false);
         damageText.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+    public void SetHealText(GameObject input)
+    {
+        healText = input;
+        healText.SetActive(false);
+        healText.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+
+    public void SetDefaultEffects()
+    {
+        SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+        SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+        SetBuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_BuffEffect")));
+        SetDebuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_DebuffEffect")));
     }
 
     protected void StopCurActivities()
@@ -683,6 +725,27 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public void DisplayHeal(float healed)
     {
+        GameObject tempHealText = Instantiate(healText);
+        Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.07f, 0.07f), transform.position.y + Random.Range(-0.05f, 0.05f), transform.position.z);
+        tempHealText.GetComponent<FloatingText>().InitFloatingText(((int)healed).ToString(), textPos);
+        //tempDamageText.transform.SetParent(canvas.transform);
+        tempHealText.GetComponent<TextMeshPro>().fontSize = 600;
+        tempHealText.SetActive(true);
+
+        healEffect.SetActive(true);
+        healEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    public void DisplayBuff()
+    {
+        buffEffect.SetActive(true);
+        buffEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    public void DisplayDebuff()
+    {
+        debuffEffect.SetActive(true);
+        debuffEffect.GetComponent<AttackEffect>().StartEffect();
     }
 
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)

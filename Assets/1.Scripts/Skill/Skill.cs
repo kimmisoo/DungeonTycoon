@@ -95,24 +95,26 @@ public abstract class Skill : MonoBehaviour
         yield return null;
     }
 
-    public float AdditionalAttack(List<ICombatant> enemies, float damage, float penFixed, float penMult, bool isCrit)
+    public float AdditionalAttack(List<ICombatant> targets, float damage, float penFixed, float penMult, bool isCrit)
     {
         float totalDamage = 0;
 
-        foreach (ICombatant target in enemies)
+        //Debug.Log("enemies Cnt : " + enemies.Count);
+        foreach (ICombatant target in targets)
         {
-            if (IsHostile(enemy))
-                totalDamage += AdditionalAttack(enemy, damage, penFixed, penMult, isCrit);
+            //Debug.Log("is Monster : " + (target is Monster));
+            if (IsHostile(target))
+                totalDamage += AdditionalAttack(target, damage, penFixed, penMult, isCrit);
         }
 
         return totalDamage;
     }
 
-    public float AdditionalAttack(ICombatant enemy, float damage, float penFixed, float penMult, bool isCrit)
+    public float AdditionalAttack(ICombatant target, float damage, float penFixed, float penMult, bool isCrit)
     {
         float actualDamage = 0;
 
-        enemy.TakeDamage(owner, damage, penFixed, penMult, isCrit, out actualDamage);
+        target.TakeDamage(owner, damage, penFixed, penMult, isCrit, out actualDamage);
 
         return actualDamage;
     }
@@ -128,6 +130,11 @@ public abstract class Skill : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 대상에게 버프 or 디버프를 적용
+    /// </summary>
+    /// <param name="target">대상</param>
+    /// <param name="effect">버프나 디버프의 프로토타입(적용은 내부에서 새로 생성한 TemporaryEffect로 해줌)</param>
     public void ApplyTemporaryEffect(ICombatant target, TemporaryEffect effect)
     {
 #if DEBUG_TEMP_EFFECT

@@ -33,6 +33,14 @@ public static class SkillFactory
                 return go.AddComponent<ThornMailSkill>();
             case "DamageAbsorb":
                 return go.AddComponent<DamageAbsorbSkill>();
+            case "RepulsivePower":
+                return go.AddComponent<RepulsivePowerSkill>();
+            case "OverBoost":
+                return go.AddComponent<OverBoostSkill>();
+            case "Crack":
+                return go.AddComponent<CrackSkill>();
+            case "Sweep":
+                return go.AddComponent<SweepSkill>();
             default:
                 return null;
         }

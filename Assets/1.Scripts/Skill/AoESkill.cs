@@ -210,6 +210,15 @@ public class HanaUniqueSkill : AoESkill
     {
         float dmg = damage;
 
+        //Debug.Log("cnt: " + effectedAreas.Count);
+        //foreach (TileForMove item in effectedAreas)
+        //{
+        //    Debug.Log("[" + item.GetX() + ", " + item.GetY() + "], Actor Cnt: " + item.GetRecentActors().Count);
+        //}
+        //Debug.Log("-----------");
+
+        //Debug.Log("target Cnt: " + targets.Count);
+
         if (targets.Count == 1)
             dmg *= RATE_SINGLE;
         else
@@ -292,5 +301,37 @@ public class IrisUniqueSkill : AoESkill
         coverages.Add(new Coverage(0, 1));
         coverages.Add(new Coverage(0, -1));
         coverages.Add(new Coverage(0, 0));
+    }
+}
+
+public class SweepSkill : AoESkill
+{
+    const float ATTACK_RATE = 0.35f;
+    BattleStat myBattleStat;
+
+    public SweepSkill()
+    {
+        SetCoverage();
+    }
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("휩쓸기", "적을 공격할 때마다 공격 대상 양 옆의 적에게 공격력의 35%만큼 피해를 줍니다.");
+        myBattleStat = owner.GetBattleStat();
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        SetEnemy();
+        FindEnemies(enemy);
+
+        
+
+        AdditionalAttack(targets, actualDamage * ATTACK_RATE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+    }
+
+    public override void SetCoverage()
+    {
+        coverages.Add(new Coverage(1, 0));
+        coverages.Add(new Coverage(-1, 0));
     }
 }
