@@ -2,30 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class BuffSkill : Skill
-{
-    //GameObject buffEffect;
-    protected BattleStat myBattleStat;
-
-    //protected void SetBuffEffect()
-    //{
-    //    buffEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Default_BuffEffect"));
-    //    buffEffect.transform.SetParent(owner.GetTransform());
-    //    buffEffect.transform.position = owner.GetPosition();
-    //}
-
-    protected void DisplayBuffEffect()
-    {
-        owner.DisplayBuff();
-    }
-
-    protected void SetMyBattleStat()
-    {
-        myBattleStat = owner.GetBattleStat();
-    }
-}
-
-public class OldManUniqueSkill : BuffSkill
+public class OldManUniqueSkill : Skill
 {
     private const int TICK_MULT = 20;
     private const float HEAL_RATE = 0.05f;
@@ -60,7 +37,7 @@ public class OldManUniqueSkill : BuffSkill
     }
 }
 
-public class NyangUniqueSkill : BuffSkill
+public class NyangUniqueSkill : Skill
 {
     StatModContinuous myMod;
     GameObject skillEffect;
@@ -80,7 +57,7 @@ public class NyangUniqueSkill : BuffSkill
         if (enemy.GetSuperState() != SuperState.Battle)
         {
             myBattleStat.AddStatModContinuous(myMod);
-            DisplayBuffEffect();
+            owner.DisplayBuff();
         }
     }
 
@@ -97,8 +74,6 @@ public class NyangUniqueSkill : BuffSkill
 
 public class WalUniqueSkill : Skill
 {
-    BattleStat myBattleStat;
-
     StatModContinuous atkMod;
     const float ATK_BONUS_RATE = 0.4f;
     StatModContinuous atkSpdMod;
@@ -186,7 +161,6 @@ public class CommonSelfBuffSkill : Skill
 {
     List<StatModContinuous> continuousMods;
     List<StatModDiscrete> discreteMods;
-    BattleStat myBattleStat;
 
     public CommonSelfBuffSkill(string name, string explanation)
     {
@@ -234,7 +208,6 @@ public class CommonSelfBuffSkill : Skill
 public class DamageAbsorbSkill : Skill
 {
     const float HEAL_AMOUNT = 15f;
-    BattleStat myBattleStat;
 
     public override void InitSkill()
     {
@@ -250,7 +223,7 @@ public class DamageAbsorbSkill : Skill
     }
 }
 
-public class OverBoostSkill : BuffSkill
+public class OverBoostSkill : Skill
 {
     const float BONUS_TRIGGER = 0.3f;
     StatModContinuous atkModStat;
@@ -273,7 +246,7 @@ public class OverBoostSkill : BuffSkill
         if (enemyBattleStat.Health <= enemyBattleStat.HealthMax * BONUS_TRIGGER)
         {
             myBattleStat.AddStatModContinuous(atkModStat);
-            DisplayBuffEffect();
+            owner.DisplayBuff();
         }
     }
 
@@ -321,7 +294,7 @@ public class BlessSkill : Skill
     }
 }
 
-public class BuckshotSkill : BuffSkill
+public class BuckshotSkill : Skill
 {
     const float ATTACK_BONUS_RATE = 0.10f;
     StatModContinuous atkStatMod;
@@ -342,7 +315,7 @@ public class BuckshotSkill : BuffSkill
         atkStatMod.ModValue = (myBattleStat.Range - dist) * ATTACK_BONUS_RATE;
         if (atkStatMod.ModValue > 0)
         {
-            DisplayBuffEffect();
+            owner.DisplayBuff();
             myBattleStat.AddStatModContinuous(atkStatMod);
         }
     }
@@ -362,6 +335,54 @@ public class BuckshotSkill : BuffSkill
         myBattleStat.RemoveStatModDiscrete(rangeStatMod);
     }
 }
+
+public class DualWieldSkill : Skill
+{
+    StatModContinuous atkMod;
+    const float ATK_PENALTY = -0.5f;
+    StatModContinuous atkSpdMod;
+    const float ATKSPD_BONUS = 1.0f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("쌍수무기", "공격속도가 100% 증가하지만 공격력이 50% 감소합니다.");
+        SetMyBattleStat();
+        atkMod = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_PENALTY);
+        atkSpdMod = new StatModContinuous(StatType.AttackSpeed, ModType.Mult, ATKSPD_BONUS);
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        myBattleStat.AddStatModContinuous(atkMod);
+        myBattleStat.AddStatModContinuous(atkSpdMod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        myBattleStat.RemoveStatModContinuous(atkMod);
+        myBattleStat.RemoveStatModContinuous(atkSpdMod);
+    }
+}
+
+public class LifeStealSkill : Skill
+{
+    const float HEAL_RATE = 0.12f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("흡혈", "적을 공격할 때마다, 입힌 데미지의 12%만큼의 체력을 회복합니다.");
+        SetMyBattleStat();
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        float healAmount = actualDamage * HEAL_RATE;
+        myBattleStat.Heal(healAmount);
+        if (healAmount >= 1)
+            owner.DisplayHeal(healAmount);
+    }
+}
+
 
 //public class MaxiUniqueSkill : Skill
 //{

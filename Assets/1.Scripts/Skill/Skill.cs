@@ -14,6 +14,7 @@ public static class SkillConsts
 public abstract class Skill : MonoBehaviour
 {
     public ICombatant owner;
+    protected BattleStat myBattleStat;
     public ICombatant enemy;
     protected Coroutine curCoroutine;
     protected List<ICombatant> targets; // 효과 대상 TFM 위에 있는 적들
@@ -46,6 +47,11 @@ public abstract class Skill : MonoBehaviour
     public void SetEnemy()
     {
         enemy = owner.GetEnemy();
+    }
+
+    protected void SetMyBattleStat()
+    {
+        myBattleStat = owner.GetBattleStat();
     }
 
 
@@ -170,7 +176,7 @@ public abstract class Skill : MonoBehaviour
     {
         skillEffect.transform.position = new Vector3(target.GetPosition().x * 0.9f + transform.position.x * 0.1f, target.GetPosition().y * 0.9f + transform.position.y * 0.1f, target.GetPosition().z * 0.5f + transform.position.z * 0.5f);
         if (randomRotation)
-            skillEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
+            skillEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360f));
         skillEffect.GetComponent<AttackEffect>().StartEffect();
     }
 

@@ -27,14 +27,14 @@ public class MuratUniqueSkill : Skill
     {
         BattleStat myBattleStat = owner.GetBattleStat();
 
-        if(!isDodged && actualDamage != 0)
+        if (!isDodged && actualDamage != 0)
         {
             targets.Clear();
             SetEnemy();
             targets.Add(enemy);
 
             attackCnt++;
-            if(attackCnt % INVOKE_PERIOD == 0)
+            if (attackCnt % INVOKE_PERIOD == 0)
             {
                 AdditionalAttack(targets, myBattleStat.HealthMax * ATTACK_RATE, 0, 1.0f, false);
                 float healed = myBattleStat.Heal(myBattleStat.HealthMax * HEAL_RATE);
@@ -75,7 +75,7 @@ public class YeonhwaUniqueSkill : Skill
     {
         targets.Clear();
 
-        if(isDodged)
+        if (isDodged)
         {
             myBattleStat = owner.GetBattleStat();
             float calculatedDamage;
@@ -128,5 +128,112 @@ public class RepulsivePowerSkill : Skill
     public override void RemoveStatBonuses()
     {
         myBattleStat.RemoveStatModContinuous(defenceStatMod);
+    }
+}
+
+public class StaticElectricitySkill : Skill
+{
+    const float DAMAGE = 4.0f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("정전기 발생", "적을 공격할 때마다 4 공격력의 추가 공격을 합니다.");
+        SetMyBattleStat();
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        SetEnemy();
+        AdditionalAttack(enemy, DAMAGE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+    }
+}
+
+public class ThunderboltSkill : Skill
+{
+    const float DAMAGE = 60.0f;
+
+    TemporaryEffect defDebuff;
+    const float DEF_DEBUFF_VALUE = -10.0f;
+    const float DURATION = 3.0f;
+
+    GameObject skillEffect;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("벼락", "적을 공격할 때 치명타가 발생하면 60의 추가 데미지를 주고 적의 방어력을 10 감소시키는 디버프를 남깁니다. 디버프는 3초간 지속됩니다.");
+        defDebuff = new TemporaryEffect(DURATION);
+        defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_DEBUFF_VALUE));
+
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/HanaNorm_SkillEffect"));
+        skillEffect.transform.SetParent(owner.GetTransform());
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        if (isCrit)
+        {
+            SetEnemy();
+            SetMyBattleStat();
+            AdditionalAttack(enemy, DAMAGE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, false);
+            enemy.AddTemporaryEffect(defDebuff);
+
+            DisplaySkillEffect(skillEffect, enemy, true);
+        }
+    }
+}
+
+public class BlazeSkill : Skill
+{
+    const float DAMAGE = 12.0f;
+    GameObject skillEffect;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("불꽃", "적을 공격할 때마다, 12의 추가피해를 줍니다.");
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Blaze_SkillEffect"));
+        skillEffect.transform.SetParent(owner.GetTransform());
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        SetEnemy();
+        SetMyBattleStat();
+
+        float additionalAttackDmg = DAMAGE;
+        bool isAdditionalAttackCrit = myBattleStat.CheckCrit();
+        if (isAdditionalAttackCrit)
+            additionalAttackDmg *= 2;
+
+        AdditionalAttack(enemy, additionalAttackDmg, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isAdditionalAttackCrit);
+
+        DisplaySkillEffect(skillEffect, enemy, true);
+    }
+}
+
+public class LavaSkill : Skill
+{
+    const float DAMAGE = 26.0f;
+    GameObject skillEffect;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("용암", "적을 공격할 때마다, 26의 추가피해를 줍니다.");
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Lava_SkillEffect"));
+        skillEffect.transform.SetParent(owner.GetTransform());
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        SetEnemy();
+        SetMyBattleStat();
+
+        float additionalAttackDmg = DAMAGE;
+        bool isAdditionalAttackCrit = myBattleStat.CheckCrit();
+        if (isAdditionalAttackCrit)
+            additionalAttackDmg *= 2;
+
+        AdditionalAttack(enemy, additionalAttackDmg, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isAdditionalAttackCrit);
+
+        DisplaySkillEffect(skillEffect, enemy, true);
     }
 }

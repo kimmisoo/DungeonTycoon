@@ -297,6 +297,16 @@ public class BattleStat
         }
     }
 
+    public bool CheckCrit()
+    {
+        float randNum = Random.Range(0.0f, 1.0f);
+        float critChance = battleStatContinuous[StatType.CriticalChance].GetCalculatedValue();
+
+        if (randNum <= critChance)
+            return true;
+        else
+            return false;
+    }
 
     // 데미지 계산식. 방어력 적용안된 순수 공격력.
     public void CalDamage(out float calculatedDamage, out bool isCrit)
@@ -306,10 +316,9 @@ public class BattleStat
         float critChance = battleStatContinuous[StatType.CriticalChance].GetCalculatedValue();
         float critDmg;
 
-        isCrit = false;
-        if (randNum<= critChance)
+        isCrit = CheckCrit();
+        if (isCrit)
         {
-            isCrit = true;
             critDmg = battleStatContinuous[StatType.CriticalDamage].GetCalculatedValue(); ;
             damage *= critDmg;
         }

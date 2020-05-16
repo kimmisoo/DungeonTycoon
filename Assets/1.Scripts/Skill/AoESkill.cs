@@ -123,8 +123,6 @@ public abstract class AoESkill : Skill
 
 public class HanaUniqueSkill : AoESkill
 {
-    BattleStat myBattleStat;
-
     float totalDmg;
     const float RATE_SINGLE = 0.15f;
     const float RATE_NORM = 0.1f;
@@ -166,7 +164,7 @@ public class HanaUniqueSkill : AoESkill
         {
             yield return new WaitForSeconds(TICK_MULT * SkillConsts.TICK_TIME);
             FindEnemies(owner);
-            
+
             normEffects.GetComponent<AttackEffect>().StopEffect();
 
             if (owner.GetSuperState() == SuperState.Battle)
@@ -251,7 +249,6 @@ public class IrisUniqueSkill : AoESkill
     private const float RATE_NORM = 2.1f;
     private const float INVOKE_PERIOD = 7;
     private int attackCnt = 6;
-    private BattleStat myBattleStat;
 
     GameObject skillEffect;
 
@@ -275,7 +272,7 @@ public class IrisUniqueSkill : AoESkill
     {
         attackCnt++;
 
-        if(attackCnt % INVOKE_PERIOD == 0)
+        if (attackCnt % INVOKE_PERIOD == 0)
         {
             SetEnemy();
             FindEnemies(enemy);
@@ -307,7 +304,6 @@ public class IrisUniqueSkill : AoESkill
 public class SweepSkill : AoESkill
 {
     const float ATTACK_RATE = 0.35f;
-    BattleStat myBattleStat;
 
     public SweepSkill()
     {
@@ -324,7 +320,7 @@ public class SweepSkill : AoESkill
         SetEnemy();
         FindEnemies(enemy);
 
-        
+
 
         AdditionalAttack(targets, actualDamage * ATTACK_RATE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
     }
@@ -333,5 +329,62 @@ public class SweepSkill : AoESkill
     {
         coverages.Add(new Coverage(1, 0));
         coverages.Add(new Coverage(-1, 0));
+    }
+}
+
+public class AmplifySkill : AoESkill
+{
+    const float ATTACK_RATE = 0.15f;
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("증폭", "적을 공격할 때마다, 공격대상 주위 1칸내에 있는 적들에게 공격력의 15%만큼 피해를 입힙니다.");
+        SetMyBattleStat();
+        SetCoverage();
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        SetEnemy();
+        FindEnemies(enemy);
+
+        AdditionalAttack(targets, actualDamage * ATTACK_RATE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+    }
+
+    public override void SetCoverage()
+    {
+        coverages.Add(new Coverage(1, 0));
+        coverages.Add(new Coverage(-1, 0));
+        coverages.Add(new Coverage(0, 1));
+        coverages.Add(new Coverage(0, -1));
+        coverages.Add(new Coverage(0, 0));
+    }
+}
+
+public class ShockWaveSkill : AoESkill
+{
+    const float DAMAGE = 10.0f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("충격파 생성", "적을 공격할 때마다, 주위 1칸내에 있는 적에게 10만큼의 피해를 입힙니다.");
+        SetMyBattleStat();
+        SetCoverage();
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        SetEnemy();
+        FindEnemies(owner);
+
+        AdditionalAttack(targets, DAMAGE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+    }
+
+    public override void SetCoverage()
+    {
+        coverages.Add(new Coverage(1, 0));
+        coverages.Add(new Coverage(-1, 0));
+        coverages.Add(new Coverage(0, 1));
+        coverages.Add(new Coverage(0, -1));
+        coverages.Add(new Coverage(0, 0));
     }
 }

@@ -45,6 +45,22 @@ public static class SkillFactory
                 return go.AddComponent<BlessSkill>();
             case "Buckshot":
                 return go.AddComponent<BuckshotSkill>();
+            case "StaticElectricity":
+                return go.AddComponent<StaticElectricitySkill>();
+            case "DualWield":
+                return go.AddComponent<DualWieldSkill>();
+            case "Thunderbolt":
+                return go.AddComponent<ThunderboltSkill>();
+            case "Amplify":
+                return go.AddComponent<AmplifySkill>();
+            case "ShockWave":
+                return go.AddComponent<ShockWaveSkill>();
+            case "LifeSteal":
+                return go.AddComponent<LifeStealSkill>();
+            case "Blaze":
+                return go.AddComponent<BlazeSkill>();
+            case "Lava":
+                return go.AddComponent<LavaSkill>();
             default:
                 return null;
         }
