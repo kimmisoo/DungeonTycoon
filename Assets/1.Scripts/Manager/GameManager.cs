@@ -229,7 +229,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("OldMan", 1);
+        GenAndEnqueueSpecialAdvenuturer("Iris", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)

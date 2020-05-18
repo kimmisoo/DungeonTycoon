@@ -65,6 +65,10 @@ public static class SkillFactory
                 return go.AddComponent<ImmerseSkill>();
             case "FlameAura":
                 return go.AddComponent<FlameAuraSkill>();
+            case "RedPotion":
+                return go.AddComponent<RedPotionSkill>();
+            case "Rejuvenate":
+                return go.AddComponent<RejuvenateSkill>();
             default:
                 return null;
         }

@@ -412,6 +412,62 @@ public class ImmerseSkill : Skill
     }
 }
 
+public class RedPotionSkill : Skill
+{
+    const int TICK_MULT = 12;
+    const float HEAL_AMOUNT = 1.0f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("빨간 물약", "매 3초마다, 체력을 1 회복합니다.");
+        SetMyBattleStat();
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+
+            if(owner.GetState() != State.PassedOut)
+            {
+                float healed = myBattleStat.Heal(HEAL_AMOUNT);
+
+                //if (healed >= 1.0f - Mathf.Epsilon)
+                //    owner.DisplayHeal(healed);
+            }
+        }
+    }
+}
+
+public class RejuvenateSkill : Skill
+{
+    const int TICK_MULT = 4;
+    const float HEAL_RATE = 0.015f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("재생", "매 1초마다, 잃은 체력의 1.5%를 회복합니다.");
+        SetMyBattleStat();
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+
+            if (owner.GetState() != State.PassedOut)
+            {
+                float healed = myBattleStat.Heal(myBattleStat.MissingHealth * HEAL_RATE);
+
+                if (healed >= 1.0f - Mathf.Epsilon)
+                    owner.DisplayHeal(healed);
+            }
+        }
+    }
+}
+
 
 //public class MaxiUniqueSkill : Skill
 //{

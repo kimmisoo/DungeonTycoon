@@ -16,8 +16,6 @@ public class AttackEffect : MonoBehaviour
 
     public void StartEffect()
     {
-        Debug.Log("this : " + this);
-        Debug.Log("animator : " + animator);
         animator.SetTrigger("AtkTrigger");
         sound.PlayDelayed(soundDelay);
     }
