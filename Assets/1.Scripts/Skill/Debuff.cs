@@ -26,19 +26,23 @@ using UnityEngine;
 public class CrackSkill : Skill
 {
     const float DEF_PENALTY_RATE = -0.06f;
-    TemporaryEffect debuffPrototype;
+    TemporaryEffect defDebuff;
+    StatModContinuous defMod;
+    const int STACK_LIMIT = 5;
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("균열", "적을 공격할 때마다 방어력을 6% 감소시키는 디버프를 남깁니다. 디버프는 2초간 지속됩니다.");
-        debuffPrototype = new TemporaryEffect(2);
-        debuffPrototype.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Mult, DEF_PENALTY_RATE));
+        SetNameAndExplanation("균열", "적을 공격할 때마다 방어력을 6% 감소시키는 디버프를 남깁니다. 디버프는 최대 5번까지 중첩되며 2초간 지속됩니다.");
+        defDebuff = new TemporaryEffect(2, STACK_LIMIT);
+        defMod = new StatModContinuous(StatType.Defence, ModType.Mult, DEF_PENALTY_RATE);
+        defDebuff.AddContinuousMod(defMod);
     }
 
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
         SetEnemy();
-        ApplyTemporaryEffect(enemy, debuffPrototype);
+
+        ApplyTemporaryEffect(enemy, defDebuff, false);
         enemy.DisplayDebuff();
     }
 }

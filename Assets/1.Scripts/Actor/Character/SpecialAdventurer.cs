@@ -13,7 +13,7 @@ public class SpecialAdventurer : Adventurer//, IDamagable {
         //uniqueSkill.SetOwner(this);
         //uniqueSkill.InitSkill();
         AddSkill(SkillFactory.CreateSkill(gameObject, name));
-        AddSkill(SkillFactory.CreateSkill(gameObject, "Lava"));
+        AddSkill(SkillFactory.CreateSkill(gameObject, "FlameAura"));
     }
 
     public void OnEnable()

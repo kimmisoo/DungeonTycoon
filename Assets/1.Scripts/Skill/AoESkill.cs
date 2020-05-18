@@ -264,7 +264,7 @@ public class IrisUniqueSkill : AoESkill
         skillEffect.transform.SetParent(owner.GetTransform());
         myBattleStat = owner.GetBattleStat();
 
-        SetNameAndExplanation("빙화", "전투 개시 시, 그 후 7번째 공격마다 얼음 마법을 시전하여 공격 대상과 주변 1칸 범위에 공격력의 210%(대상이 하나일 때는 240%)의 피해를 줍니다.");
+        SetNameAndExplanation("빙화", "전투 개시 시, 그 후 7번째 공격마다 얼음 마법을 시전하여 공격 대상과 그 주위 1칸 모든 적에게 공격력의 210%(대상이 하나일 때는 240%)의 피해를 줍니다.");
         //        normEffects.transform.position = new Vector3(0, 0, 0);
     }
 
@@ -337,7 +337,7 @@ public class AmplifySkill : AoESkill
     const float ATTACK_RATE = 0.15f;
     public override void InitSkill()
     {
-        SetNameAndExplanation("증폭", "적을 공격할 때마다, 공격대상 주위 1칸내에 있는 적들에게 공격력의 15%만큼 피해를 입힙니다.");
+        SetNameAndExplanation("증폭", "적을 공격할 때마다, 공격대상 주위 1칸 내의 모든 적에게 공격력의 15%만큼 피해를 입힙니다.");
         SetMyBattleStat();
         SetCoverage();
     }
@@ -366,7 +366,7 @@ public class ShockWaveSkill : AoESkill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("충격파 생성", "적을 공격할 때마다, 주위 1칸내에 있는 적에게 10만큼의 피해를 입힙니다.");
+        SetNameAndExplanation("충격파 생성", "적을 공격할 때마다, 주위 1칸 내의 모든 적에게 10만큼의 피해를 입힙니다.");
         SetMyBattleStat();
         SetCoverage();
     }
@@ -386,5 +386,54 @@ public class ShockWaveSkill : AoESkill
         coverages.Add(new Coverage(0, 1));
         coverages.Add(new Coverage(0, -1));
         coverages.Add(new Coverage(0, 0));
+    }
+}
+
+public class FlameAuraSkill : AoESkill
+{
+    const float ATTACK_RATE = 0.08f;
+    const int TICK_MULT = 4;
+    GameObject skillEffect;
+    string prefabRoot = "EffectPrefabs/FlameAura_SkillEffect";
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("화염 오라", "매 1초마다, 주위 1칸 내의 모든 적에게 공격력의 8%만큼의 피해를 입힙니다.");
+        SetCoverage();
+        SetMyBattleStat();
+
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/FlameAura_SkillEffect"));
+    }
+
+    public override void SetCoverage()
+    {
+        coverages.Add(new Coverage(1, 0));
+        coverages.Add(new Coverage(-1, 0));
+        coverages.Add(new Coverage(0, 1));
+        coverages.Add(new Coverage(0, -1));
+        coverages.Add(new Coverage(0, 0));
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+            if (owner.GetSuperState() == SuperState.Battle)
+            {
+                FindEnemies(owner);
+
+                if (targets.Count != 0)
+                {
+                    float dmg;
+                    bool isCrit;
+                    myBattleStat.CalDamage(out dmg, out isCrit);
+
+                    AdditionalAttack(targets, dmg * ATTACK_RATE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+                }
+                //DisplaySkillEffect(skillEffect, targets[0], false);
+                DisplaySkillEffect(skillEffect, targets, false);
+            }
+        }
     }
 }

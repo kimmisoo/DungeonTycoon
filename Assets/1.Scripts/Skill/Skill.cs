@@ -7,6 +7,7 @@ using UnityEngine;
 public static class SkillConsts
 {
     public const float TICK_TIME = 0.25f;
+    public const float EFFECT_DESTROY_DELAY = 3.0f;
 }
 /// <summary>
 /// 상위클래스 샌드박스 패턴 사용. 
@@ -140,13 +141,17 @@ public abstract class Skill : MonoBehaviour
     /// 대상에게 버프 or 디버프를 적용
     /// </summary>
     /// <param name="target">대상</param>
-    /// <param name="effect">버프나 디버프의 프로토타입(적용은 내부에서 새로 생성한 TemporaryEffect로 해줌)</param>
-    public void ApplyTemporaryEffect(ICombatant target, TemporaryEffect effect)
+    /// <param name="effect">버프나 디버프의 프로토타입</param>
+    /// <param name="createNew">전달된 그대로 적용할 건지, 새 개체를 생성해서 적용할 건지. 중첩가능한 스킬은 false</param>
+    public void ApplyTemporaryEffect(ICombatant target, TemporaryEffect effect, bool createNew = true)
     {
 #if DEBUG_TEMP_EFFECT
         Debug.Log("적: " + target);
 #endif
-        target.AddTemporaryEffect(new TemporaryEffect(effect));
+        if (createNew)
+            target.AddTemporaryEffect(new TemporaryEffect(effect));
+        else
+            target.AddTemporaryEffect(effect);
     }
 
     /// <summary>
@@ -170,6 +175,34 @@ public abstract class Skill : MonoBehaviour
             else
                 return false;
         }
+    }
+
+    protected void DisplaySkillEffect(GameObject skillEffect, List<ICombatant> targets, bool randomRotation = true, bool toHostile = true)
+    {
+        GameObject temp;
+        foreach (ICombatant target in targets)
+        {
+            if (toHostile && IsHostile(target))
+            {
+                temp = Instantiate(skillEffect);
+                DisplaySkillEffect(temp, target, randomRotation);
+                Destroy(temp, SkillConsts.EFFECT_DESTROY_DELAY);
+            }
+            else if (!toHostile && !IsHostile(target))
+            {
+                temp = Instantiate(skillEffect);
+                DisplaySkillEffect(Instantiate(skillEffect), target, randomRotation);
+                Destroy(temp, SkillConsts.EFFECT_DESTROY_DELAY);
+            }
+        }
+        
+        //foreach (ICombatant target in targets)
+        //{
+        //    if (toHostile && IsHostile(target))
+        //        DisplaySkillEffect(Instantiate((GameObject)Resources.Load(prefabRoot)), target, randomRotation);
+        //    else if (!toHostile && !IsHostile(target))
+        //        DisplaySkillEffect(Instantiate((GameObject)Resources.Load(prefabRoot)), target, randomRotation);
+        //}
     }
 
     protected void DisplaySkillEffect(GameObject skillEffect, ICombatant target, bool randomRotation = true)

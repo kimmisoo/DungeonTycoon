@@ -19,9 +19,9 @@ public class OldManUniqueSkill : Skill
         float healAmount = 0;
         while (true)
         {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
             if (owner.GetSuperState() != SuperState.PassedOut)
-            {
-                yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+            {   
                 healAmount = myBattleStat.MissingHealth * 0.05f;
                 myBattleStat.Heal(healAmount);
 
@@ -81,17 +81,16 @@ public class WalUniqueSkill : Skill
 
     StatModContinuous shieldMod;
     GameObject skillEffect;
-    float shieldTimer;
     TemporaryEffect shieldBuff;
     const float DURATION = 3.0f;
-    const float SHIELD_RATE = 0.03f;
+    const float SHIELD_RATE = 0.53f;
 
     public override void InitSkill()
     {
         myBattleStat = owner.GetBattleStat();
         shieldMod = new StatModContinuous(StatType.Shield, ModType.Fixed, 0);
         shieldBuff = new TemporaryEffect(DURATION);
-        shieldTimer = -1;
+        shieldBuff.AddContinuousMod(shieldMod);
 
         atkMod = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_BONUS_RATE);
         atkSpdMod = new StatModContinuous(StatType.AttackSpeed, ModType.Mult, ATKSPD_PENALTY_RATE);
@@ -125,15 +124,14 @@ public class WalUniqueSkill : Skill
 
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
-        owner.RemoveTemporaryEffect(shieldBuff);
+        //owner.RemoveTemporaryEffect(shieldBuff);
 
         // TemporaryEffect 생성
         shieldMod.ModValue = myBattleStat.HealthMax * SHIELD_RATE;
-        StatModContinuous tempMod = new StatModContinuous(shieldMod);
-        shieldBuff = new TemporaryEffect(DURATION);
-        shieldBuff.AddContinuousMod(shieldMod);
 
-        owner.AddTemporaryEffect(shieldBuff);
+        Debug.Log("elapsedTime: " + shieldBuff.elapsedTime + ", amount: " + shieldMod.ModValue);
+        //owner.AddTemporaryEffect(shieldBuff);
+        ApplyTemporaryEffect(owner, shieldBuff, false);
         //shieldTimer = 0;
         DisplaySkillEffect();
     }
@@ -380,6 +378,37 @@ public class LifeStealSkill : Skill
         myBattleStat.Heal(healAmount);
         if (healAmount >= 1)
             owner.DisplayHeal(healAmount);
+    }
+}
+
+public class ImmerseSkill : Skill
+{
+    TemporaryEffect atkspdBuff;
+    const int TICK_MULT = 8;
+    const float DURATION = 3.0f;
+    const int STACK_LIMIT = 5;
+    const float ATKSPD_BONUS_RATE = 0.05f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("몰입", "전투 시작 후 1초가 지날 때마다 공격속도가 5% 증가하는 버프를 얻습니다. 버프는 최대 5번까지 중첩되며, 2초간 지속됩니다.");
+        atkspdBuff = new TemporaryEffect(DURATION, STACK_LIMIT);
+        atkspdBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, ATKSPD_BONUS_RATE));
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+
+            if(owner.GetState() == State.Battle)
+            {
+                ApplyTemporaryEffect(owner, atkspdBuff, false);
+                Debug.Log(owner.GetBattleStat().AttackSpeed);
+                owner.DisplayBuff();
+            }
+        }
     }
 }
 

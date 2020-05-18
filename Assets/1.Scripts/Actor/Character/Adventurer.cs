@@ -1122,6 +1122,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         if (temporaryEffects.Contains(toBeRemoved))
         {
+            toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
+            toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+
             toBeRemoved.RemoveEffect();
             temporaryEffects.Remove(toBeRemoved);
         }
@@ -1134,6 +1137,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             toBeAdded.SetSubject(this);
             toBeAdded.ApplyEffect();
             temporaryEffects.Add(toBeAdded);
+        }
+        else
+        {
+            Debug.Log("Stacking Up");
+            toBeAdded.StackUp();
         }
     }
     #endregion

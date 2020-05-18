@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour
         // Scene 이름 받기
         sceneName = SceneManager.GetActiveScene().name;
 
-        Debug.Log("mapName" + sceneName);
+        //Debug.Log("mapName" + sceneName);
         ReadDatasFromJSON();
 
         wait = new WaitForSeconds(0.11f);
@@ -229,7 +229,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Hana", 1);
+        GenAndEnqueueSpecialAdvenuturer("OldMan", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -1137,7 +1137,7 @@ public class GameManager : MonoBehaviour
             x = aData["scene"][sceneNumber]["mapEntrance"][i]["x"].AsInt;
             y = aData["scene"][sceneNumber]["mapEntrance"][i]["y"].AsInt;
 #if DEBUG_ADV
-            Debug.Log(x + "   " + y);
+            //Debug.Log(x + "   " + y);
 #endif
             mapEntrance.Add(layer.GetTileForMove(x * 2, y * 2));
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, y * 2));

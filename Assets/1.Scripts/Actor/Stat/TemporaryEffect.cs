@@ -4,21 +4,25 @@ using UnityEngine;
 
 public class TemporaryEffect
 {
-    List<StatModContinuous> continuousMods;
-    List<StatModDiscrete> discreteMods;
-    ICombatant subject;
-    BattleStat subjectBattleStat;
+    private List<StatModContinuous> continuousMods;
+    private List<StatModDiscrete> discreteMods;
+    private ICombatant subject;
+    private BattleStat subjectBattleStat;
+    private int stackCnt;
+    private readonly int STACK_LIMIT;
 
     public readonly float DURATION; // -1이면 영구.
     public float elapsedTime;
 
-    public TemporaryEffect(float duration = -1)
+    public TemporaryEffect(float duration, int stackLimit = 1)
     {
         continuousMods = new List<StatModContinuous>();
         discreteMods = new List<StatModDiscrete>();
 
         DURATION = duration;
         elapsedTime = 0;
+        STACK_LIMIT = stackLimit;
+        stackCnt = 1;
     }
 
     public TemporaryEffect(TemporaryEffect tempEffect)
@@ -27,7 +31,7 @@ public class TemporaryEffect
         discreteMods = new List<StatModDiscrete>();
 
         DURATION = tempEffect.DURATION;
-        elapsedTime = 0;
+        ResetTimer();
 
         subject = tempEffect.subject;
         subjectBattleStat = tempEffect.subjectBattleStat;
@@ -99,5 +103,43 @@ public class TemporaryEffect
         {
             subjectBattleStat.RemoveStatModDiscrete(statMod);
         }
+    }
+
+    public void ResetTimer()
+    {
+        elapsedTime = 0;
+    }
+
+    public void StackUp()
+    {
+        ResetTimer();
+        //Debug.Log("Stacking : " + stackCnt);
+        if(stackCnt < STACK_LIMIT)
+        {
+            for (int i = 0; i < continuousMods.Count; i++)
+                continuousMods[i].ModValue += continuousMods[i].ModValue / stackCnt;
+            for (int i = 0; i < discreteMods.Count; i++)
+                discreteMods[i].ModValue += discreteMods[i].ModValue / stackCnt;
+            stackCnt++;
+        }
+    }
+
+    public void ResetStack()
+    {
+        for (int i = 0; i < continuousMods.Count; i++)
+            continuousMods[i].ModValue = continuousMods[i].ModValue / stackCnt;
+        for (int i = 0; i < discreteMods.Count; i++)
+            discreteMods[i].ModValue = discreteMods[i].ModValue / stackCnt;
+        stackCnt = 1;
+    }
+
+    public List<StatModContinuous> GetContinousModList()
+    {
+        return continuousMods;
+    }
+
+    public List<StatModDiscrete> GetDiscreteModList()
+    {
+        return discreteMods;
     }
 }

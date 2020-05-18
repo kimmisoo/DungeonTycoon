@@ -175,7 +175,7 @@ public class ThunderboltSkill : Skill
             SetEnemy();
             SetMyBattleStat();
             AdditionalAttack(enemy, DAMAGE, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, false);
-            enemy.AddTemporaryEffect(defDebuff);
+            ApplyTemporaryEffect(enemy, defDebuff, false);
 
             DisplaySkillEffect(skillEffect, enemy, true);
         }

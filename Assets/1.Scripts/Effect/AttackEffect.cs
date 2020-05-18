@@ -8,7 +8,7 @@ public class AttackEffect : MonoBehaviour
     Animator animator;
     AudioSource sound;
 
-    public void Start()
+    public void Awake()
     {
         animator = GetComponent<Animator>();
         sound = GetComponent<AudioSource>();
@@ -16,6 +16,8 @@ public class AttackEffect : MonoBehaviour
 
     public void StartEffect()
     {
+        Debug.Log("this : " + this);
+        Debug.Log("animator : " + animator);
         animator.SetTrigger("AtkTrigger");
         sound.PlayDelayed(soundDelay);
     }
