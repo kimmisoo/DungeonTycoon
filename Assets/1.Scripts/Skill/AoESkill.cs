@@ -140,7 +140,7 @@ public class HanaUniqueSkill : AoESkill
     {
         totalDmg = 0;
         SetCoverage();
-        defDebuff = new TemporaryEffect(DURATION);
+        defDebuff = new TemporaryEffect("감전", DURATION);
         defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Mult, DEBUFF_RATE));
         ///defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 10.0f));
     }

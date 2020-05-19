@@ -161,7 +161,7 @@ public class ThunderboltSkill : Skill
     public override void InitSkill()
     {
         SetNameAndExplanation("벼락", "적을 공격할 때 치명타가 발생하면 60의 추가 데미지를 주고 적의 방어력을 10 감소시키는 디버프를 남깁니다. 디버프는 3초간 지속됩니다.");
-        defDebuff = new TemporaryEffect(DURATION);
+        defDebuff = new TemporaryEffect("저릿저릿", DURATION);
         defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_DEBUFF_VALUE));
 
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/HanaNorm_SkillEffect"));

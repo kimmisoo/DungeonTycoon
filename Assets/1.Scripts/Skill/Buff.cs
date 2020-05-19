@@ -89,7 +89,7 @@ public class WalUniqueSkill : Skill
     {
         myBattleStat = owner.GetBattleStat();
         shieldMod = new StatModContinuous(StatType.Shield, ModType.Fixed, 0);
-        shieldBuff = new TemporaryEffect(DURATION);
+        shieldBuff = new TemporaryEffect("파비스", DURATION);
         shieldBuff.AddContinuousMod(shieldMod);
 
         atkMod = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_BONUS_RATE);
@@ -272,7 +272,7 @@ public class BlessSkill : Skill
 
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
-        TemporaryEffect shieldBuff = new TemporaryEffect(DURATION);
+        TemporaryEffect shieldBuff = new TemporaryEffect(name, DURATION);
         shieldBuff.AddContinuousMod(new StatModContinuous(StatType.Shield, ModType.Fixed, actualDamage * SHIELD_RATE));
         owner.AddTemporaryEffect(shieldBuff);
         DisplaySkillEffect();
@@ -392,7 +392,7 @@ public class ImmerseSkill : Skill
     public override void InitSkill()
     {
         SetNameAndExplanation("몰입", "전투 시작 후 1초가 지날 때마다 공격속도가 5% 증가하는 버프를 얻습니다. 버프는 최대 5번까지 중첩되며, 2초간 지속됩니다.");
-        atkspdBuff = new TemporaryEffect(DURATION, STACK_LIMIT);
+        atkspdBuff = new TemporaryEffect(name, DURATION, STACK_LIMIT);
         atkspdBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, ATKSPD_BONUS_RATE));
     }
 
@@ -405,7 +405,7 @@ public class ImmerseSkill : Skill
             if(owner.GetState() == State.Battle)
             {
                 ApplyTemporaryEffect(owner, atkspdBuff, false);
-                Debug.Log(owner.GetBattleStat().AttackSpeed);
+                //Debug.Log(owner.GetBattleStat().AttackSpeed);
                 owner.DisplayBuff();
             }
         }

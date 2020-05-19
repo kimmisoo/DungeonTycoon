@@ -11,15 +11,18 @@ public class TemporaryEffect
     private int stackCnt;
     private readonly int STACK_LIMIT;
 
-    public readonly float DURATION; // -1이면 영구.
+    public readonly string name;
+
+    public readonly float duration; // -1이면 영구.
     public float elapsedTime;
 
-    public TemporaryEffect(float duration, int stackLimit = 1)
+    public TemporaryEffect(string nameIn, float durationIn, int stackLimit = 1)
     {
         continuousMods = new List<StatModContinuous>();
         discreteMods = new List<StatModDiscrete>();
 
-        DURATION = duration;
+        name = nameIn;
+        duration = durationIn;
         elapsedTime = 0;
         STACK_LIMIT = stackLimit;
         stackCnt = 1;
@@ -30,7 +33,7 @@ public class TemporaryEffect
         continuousMods = new List<StatModContinuous>();
         discreteMods = new List<StatModDiscrete>();
 
-        DURATION = tempEffect.DURATION;
+        duration = tempEffect.duration;
         ResetTimer();
 
         subject = tempEffect.subject;
@@ -67,11 +70,11 @@ public class TemporaryEffect
     /// <returns>만료되었는지 여부. true면 제거해줘야 함.</returns>
     public bool Refresh(float deltaTime = SkillConsts.TICK_TIME)
     {
-        if (DURATION >= 0)
+        if (duration >= 0)
         {
             //Debug.Log("Elapsed : " + elapsedTime + ",  Duration : " + DURATION);
             elapsedTime += deltaTime;
-            if (elapsedTime >= DURATION)
+            if (elapsedTime >= duration)
                 return true; //만료되었는지 여부.
         }
         return false;

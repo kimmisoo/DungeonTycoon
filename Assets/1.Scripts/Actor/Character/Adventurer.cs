@@ -1140,7 +1140,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
         else
         {
-            Debug.Log("Stacking Up");
+            //Debug.Log("Stacking Up");
             toBeAdded.StackUp();
         }
     }
