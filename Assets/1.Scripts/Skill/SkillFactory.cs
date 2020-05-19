@@ -69,6 +69,14 @@ public static class SkillFactory
                 return go.AddComponent<RedPotionSkill>();
             case "Rejuvenate":
                 return go.AddComponent<RejuvenateSkill>();
+            case "DivineProtection":
+                return go.AddComponent<DivineProtectionSkill>();
+            case "CrisisManagement":
+                return go.AddComponent<CrisisManagementSkill>();
+            case "Execution":
+                return go.AddComponent<ExecutionSkill>();
+            case "MirrorImage":
+                return go.AddComponent<MirrorImage>();
             default:
                 return null;
         }

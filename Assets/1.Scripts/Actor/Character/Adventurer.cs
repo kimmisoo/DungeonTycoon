@@ -5,6 +5,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,7 +33,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     // 스킬들(아이템, 고유능력 등 모두)
     List<Skill> skills;
     // 버프/디버프 목록
-    List<TemporaryEffect> temporaryEffects;
+    Dictionary<string, TemporaryEffect> temporaryEffects;
     Coroutine refreshingTempEffectCoroutine;
 
     protected int monsterSearchCnt;
@@ -70,7 +71,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //pathfinder 초기화 // delegate 그대로
 
         skills = new List<Skill>();
-        temporaryEffects = new List<TemporaryEffect>();
+        temporaryEffects = new Dictionary<string, TemporaryEffect>();
     }
 
     public void OnEnable()
@@ -892,7 +893,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
             + "\n남은 체력 : " + this.battleStat.Health);
 #endif
-
+        //Debug.Log("방어력 : " + battleStat.Defence);
         // 조건?
         if (battleStat.Health <= 0)
         {
@@ -1095,55 +1096,100 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     public IEnumerator RefreshTemporaryEffects()
     {
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME);
 
-            int idx = 0;
-
-            while(idx < temporaryEffects.Count)
+            foreach (string key in temporaryEffects.Keys.ToList())
             {
-                if (temporaryEffects[idx].Refresh())
-                    RemoveTemporaryEffect(temporaryEffects[idx]);
-                else
-                    idx++;
+                if (temporaryEffects[key].Refresh())
+                    RemoveTemporaryEffect(temporaryEffects[key]);
             }
         }
     }
 
     public void ClearTemporaryEffects()
     {
-        foreach (TemporaryEffect effect in temporaryEffects)
-            effect.RemoveEffect();
+        foreach (string key in temporaryEffects.Keys.ToList())
+            temporaryEffects[key].RemoveEffect();
         temporaryEffects.Clear();
     }
 
     public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
     {
-        if (temporaryEffects.Contains(toBeRemoved))
+        if (temporaryEffects.ContainsKey(toBeRemoved.name))
         {
             toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
             toBeRemoved.ResetStack(); // 스택도 여기서 리셋
 
             toBeRemoved.RemoveEffect();
-            temporaryEffects.Remove(toBeRemoved);
+            temporaryEffects.Remove(toBeRemoved.name);
         }
     }
 
     public void AddTemporaryEffect(TemporaryEffect toBeAdded)
     {
-        if (!temporaryEffects.Contains(toBeAdded))
+        if (!temporaryEffects.ContainsKey(toBeAdded.name))
         {
+            temporaryEffects.Add(toBeAdded.name, toBeAdded);
             toBeAdded.SetSubject(this);
             toBeAdded.ApplyEffect();
-            temporaryEffects.Add(toBeAdded);
         }
         else
-        {
-            //Debug.Log("Stacking Up");
             toBeAdded.StackUp();
-        }
     }
+
+    //public IEnumerator RefreshTemporaryEffects()
+    //{
+    //    while(true)
+    //    {
+    //        yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+    //        int idx = 0;
+
+    //        while(idx < temporaryEffects.Count)
+    //        {
+    //            if (temporaryEffects[idx].Refresh())
+    //                RemoveTemporaryEffect(temporaryEffects[idx]);
+    //            else
+    //                idx++;
+    //        }
+    //    }
+    //}
+
+    //public void ClearTemporaryEffects()
+    //{
+    //    foreach (TemporaryEffect effect in temporaryEffects)
+    //        effect.RemoveEffect();
+    //    temporaryEffects.Clear();
+    //}
+
+    //public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    //{
+    //    if (temporaryEffects.Contains(toBeRemoved))
+    //    {
+    //        toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
+    //        toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+
+    //        toBeRemoved.RemoveEffect();
+    //        temporaryEffects.Remove(toBeRemoved);
+    //    }
+    //}
+
+    //public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    //{
+    //    if (!temporaryEffects.Contains(toBeAdded))
+    //    {
+    //        toBeAdded.SetSubject(this);
+    //        toBeAdded.ApplyEffect();
+    //        temporaryEffects.Add(toBeAdded);
+    //    }
+    //    else
+    //    {
+    //        //Debug.Log("Stacking Up");
+    //        toBeAdded.StackUp();
+    //    }
+    //}
     #endregion
 
     #region Skill

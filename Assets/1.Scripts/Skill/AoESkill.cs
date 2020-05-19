@@ -437,3 +437,51 @@ public class FlameAuraSkill : AoESkill
         }
     }
 }
+
+public class DivineProtectionSkill : AoESkill
+{
+    private const int TICK_MULT = 4;
+    private const float DAMAGE = 12;
+    private const float DEF_PENALTY = -15;
+    private const float DURATION = 2.0f;
+    private TemporaryEffect defDebuff;
+    private GameObject skillEffect;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("신의 가호", "매 1초마다, 주위 1칸 내의 모든 적에게 12만큼의 피해를 주고 방어력을 15 감소시키는 디버프를 남깁니다. 피해는 적의 방어력을 무시하며, 디버프는 2초 동안 지속됩니다.");
+        SetCoverage();
+        SetMyBattleStat();
+        defDebuff = new TemporaryEffect("눈부심", DURATION);
+        defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_PENALTY));
+
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/DivineProtection_SkillEffect"));
+        skillEffect.transform.SetParent(owner.GetTransform());
+        skillEffect.transform.position = owner.GetPosition() + new Vector3(0, -0.11f, 0);
+    }
+
+    public override void SetCoverage()
+    {
+        coverages.Add(new Coverage(1, 0));
+        coverages.Add(new Coverage(-1, 0));
+        coverages.Add(new Coverage(0, 1));
+        coverages.Add(new Coverage(0, -1));
+        coverages.Add(new Coverage(0, 0));
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+            if (owner.GetSuperState() == SuperState.Battle)
+            {
+                FindEnemies(owner);
+                AdditionalAttack(targets, DAMAGE, 0.0f, 1.0f, false);
+
+                ApplyTemporaryEffect(targets, defDebuff, true);
+                skillEffect.GetComponent<AttackEffect>().StartEffect();
+            }
+        }
+    }
+}

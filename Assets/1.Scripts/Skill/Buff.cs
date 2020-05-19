@@ -21,7 +21,7 @@ public class OldManUniqueSkill : Skill
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
             if (owner.GetSuperState() != SuperState.PassedOut)
-            {   
+            {
                 healAmount = myBattleStat.MissingHealth * 0.05f;
                 myBattleStat.Heal(healAmount);
 
@@ -398,14 +398,14 @@ public class ImmerseSkill : Skill
 
     public override IEnumerator OnAlways()
     {
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
 
-            if(owner.GetState() == State.Battle)
+            if (owner.GetState() == State.Battle)
             {
                 ApplyTemporaryEffect(owner, atkspdBuff, false);
-                //Debug.Log(owner.GetBattleStat().AttackSpeed);
+                Debug.Log(owner.GetBattleStat().AttackSpeed);
                 owner.DisplayBuff();
             }
         }
@@ -425,11 +425,11 @@ public class RedPotionSkill : Skill
 
     public override IEnumerator OnAlways()
     {
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
 
-            if(owner.GetState() != State.PassedOut)
+            if (owner.GetState() != State.PassedOut)
             {
                 float healed = myBattleStat.Heal(HEAL_AMOUNT);
 
@@ -465,6 +465,96 @@ public class RejuvenateSkill : Skill
                     owner.DisplayHeal(healed);
             }
         }
+    }
+}
+
+public class CrisisManagementSkill : Skill
+{
+    private const float HEALTH_TRIGGER = 0.2f;
+    private const float DEF_BONUS = 75.0f;
+    private StatModContinuous defBuff;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("위기 대처", "체력이 20% 이하일 때, 방어력이 75 증가합니다.");
+        SetMyBattleStat();
+        defBuff = new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_BONUS);
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+            if (myBattleStat.Health <= myBattleStat.HealthMax * HEALTH_TRIGGER)
+            {
+                if (!myBattleStat.ContainsStatMod(defBuff))
+                    owner.DisplayBuff();
+                myBattleStat.AddStatModContinuous(defBuff);
+            }
+            else
+            {
+                myBattleStat.RemoveStatModContinuous(defBuff);
+            }
+        }
+    }
+}
+
+public class ExecutionSkill : Skill
+{
+    private const float ATK_BONUS = 0.5f;
+    private const float HEALTH_TRIGGER = 0.2f;
+    private StatModContinuous atkMod;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("처형", "공격 대상의 체력이 20% 이하일 때 공격력이 50% 증가합니다.");
+        atkMod = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_BONUS);
+        SetMyBattleStat();
+    }
+
+    //public override IEnumerator OnAlways()
+    //{
+    //    while (true)
+    //    {
+    //        yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+    //        SetEnemy();
+    //        if (enemy != null)
+    //        {
+    //            if (enemy.GetBattleStat().Health <= enemy.GetBattleStat().HealthMax * HEALTH_TRIGGER)
+    //            {
+    //                if (!myBattleStat.ContainsStatMod(atkMod))
+    //                    owner.DisplayBuff();
+    //                Debug.Log("before : " + myBattleStat.Attack);
+    //                myBattleStat.AddStatModContinuous(atkMod);
+    //                Debug.Log("After : " + myBattleStat.Attack);
+    //            }
+    //            else
+    //            {
+    //                myBattleStat.RemoveStatModContinuous(atkMod);
+    //            }
+    //        }
+    //    }
+    //}
+
+    public override void BeforeAttack()
+    {
+        SetEnemy();
+
+        if (enemy.GetBattleStat().Health <= enemy.GetBattleStat().HealthMax * HEALTH_TRIGGER)
+        {
+            owner.DisplayBuff();
+            Debug.Log("before : " + myBattleStat.Attack);
+            myBattleStat.AddStatModContinuous(atkMod);
+            Debug.Log("After : " + myBattleStat.Attack);
+        }
+    }
+
+    public override void AfterAttack()
+    {
+        myBattleStat.RemoveStatModContinuous(atkMod);
     }
 }
 

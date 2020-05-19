@@ -140,6 +140,20 @@ public class BattleStat
         if (battleStatDiscrete[mod.StatType].GetModList().Contains(mod))
             battleStatDiscrete[mod.StatType].RemoveStatMod(mod);
     }
+    public bool ContainsStatMod(StatModContinuous mod)
+    {
+        if (battleStatContinuous[mod.StatType].GetModList().Contains(mod))
+            return true;
+        else
+            return false;
+    }
+    public bool ContainsStatMod(StatModDiscrete mod)
+    {
+        if (battleStatDiscrete[mod.StatType].GetModList().Contains(mod))
+            return true;
+        else
+            return false;
+    }
     public int Range
     {
         get
@@ -161,6 +175,14 @@ public class BattleStat
         get
         {
             return battleStatContinuous[StatType.Defence].GetCalculatedValue();
+        }
+    }
+
+    public float Attack
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Attack].GetCalculatedValue();
         }
     }
 

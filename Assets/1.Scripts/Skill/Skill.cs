@@ -126,14 +126,14 @@ public abstract class Skill : MonoBehaviour
         return actualDamage;
     }
 
-    public void ApplyTemporaryEffect(List<ICombatant> targets, TemporaryEffect effect, bool toHostile)
+    public void ApplyTemporaryEffect(List<ICombatant> targets, TemporaryEffect effect, bool toHostile, bool createNew = true)
     {
         foreach(ICombatant target in targets)
         {
             if(toHostile && IsHostile(target))
-                ApplyTemporaryEffect(target, effect);
+                ApplyTemporaryEffect(target, effect, createNew);
             else if(!toHostile && !IsHostile(target))
-                ApplyTemporaryEffect(target, effect);
+                ApplyTemporaryEffect(target, effect, createNew);
         }
     }
 

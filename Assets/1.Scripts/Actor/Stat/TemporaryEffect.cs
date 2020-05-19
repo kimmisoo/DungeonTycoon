@@ -9,22 +9,22 @@ public class TemporaryEffect
     private ICombatant subject;
     private BattleStat subjectBattleStat;
     private int stackCnt;
-    private readonly int STACK_LIMIT;
+    private readonly int stackLimit;
 
     public readonly string name;
 
     public readonly float duration; // -1이면 영구.
     public float elapsedTime;
 
-    public TemporaryEffect(string nameIn, float durationIn, int stackLimit = 1)
+    public TemporaryEffect(string nameIn, float durationIn, int stackLimitIn = 1)
     {
         continuousMods = new List<StatModContinuous>();
         discreteMods = new List<StatModDiscrete>();
 
         name = nameIn;
         duration = durationIn;
-        elapsedTime = 0;
-        STACK_LIMIT = stackLimit;
+        ResetTimer();
+        stackLimit = stackLimitIn;
         stackCnt = 1;
     }
 
@@ -33,7 +33,10 @@ public class TemporaryEffect
         continuousMods = new List<StatModContinuous>();
         discreteMods = new List<StatModDiscrete>();
 
+        name = tempEffect.name;
         duration = tempEffect.duration;
+        stackLimit = tempEffect.stackLimit;
+        stackCnt = 1;
         ResetTimer();
 
         subject = tempEffect.subject;
@@ -117,7 +120,7 @@ public class TemporaryEffect
     {
         ResetTimer();
         //Debug.Log("Stacking : " + stackCnt);
-        if(stackCnt < STACK_LIMIT)
+        if(stackCnt < stackLimit)
         {
             for (int i = 0; i < continuousMods.Count; i++)
                 continuousMods[i].ModValue += continuousMods[i].ModValue / stackCnt;

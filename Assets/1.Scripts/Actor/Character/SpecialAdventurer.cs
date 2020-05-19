@@ -13,7 +13,7 @@ public class SpecialAdventurer : Adventurer//, IDamagable {
         //uniqueSkill.SetOwner(this);
         //uniqueSkill.InitSkill();
         AddSkill(SkillFactory.CreateSkill(gameObject, name));
-        AddSkill(SkillFactory.CreateSkill(gameObject, "Immerse"));
+        AddSkill(SkillFactory.CreateSkill(gameObject, "MirrorImage"));
     }
 
     public void OnEnable()

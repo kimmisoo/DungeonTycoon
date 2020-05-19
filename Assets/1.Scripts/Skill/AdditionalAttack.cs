@@ -137,7 +137,7 @@ public class StaticElectricitySkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("정전기 발생", "적을 공격할 때마다 4 공격력의 추가 공격을 합니다.");
+        SetNameAndExplanation("정전기 발생", "적을 공격할 때마다, 4의 추가 피해를 줍니다.");
         SetMyBattleStat();
     }
 
@@ -160,7 +160,7 @@ public class ThunderboltSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("벼락", "적을 공격할 때 치명타가 발생하면 60의 추가 데미지를 주고 적의 방어력을 10 감소시키는 디버프를 남깁니다. 디버프는 3초간 지속됩니다.");
+        SetNameAndExplanation("벼락", "적을 공격할 때 치명타가 발생하면, 60의 추가 피해를 주고 적의 방어력을 10 감소시키는 디버프를 남깁니다. 디버프는 3초간 지속됩니다.");
         defDebuff = new TemporaryEffect("저릿저릿", DURATION);
         defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_DEBUFF_VALUE));
 
@@ -189,7 +189,7 @@ public class BlazeSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("불꽃", "적을 공격할 때마다, 12의 추가피해를 줍니다.");
+        SetNameAndExplanation("불꽃", "적을 공격할 때마다, 12의 추가 피해를 줍니다.");
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Blaze_SkillEffect"));
         skillEffect.transform.SetParent(owner.GetTransform());
     }
@@ -217,7 +217,7 @@ public class LavaSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("용암", "적을 공격할 때마다, 26의 추가피해를 줍니다.");
+        SetNameAndExplanation("용암", "적을 공격할 때마다, 26의 추가 피해를 줍니다.");
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Lava_SkillEffect"));
         skillEffect.transform.SetParent(owner.GetTransform());
     }
@@ -235,5 +235,29 @@ public class LavaSkill : Skill
         AdditionalAttack(enemy, additionalAttackDmg, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isAdditionalAttackCrit);
 
         DisplaySkillEffect(skillEffect, enemy, true);
+    }
+}
+
+public class MirrorImage : Skill
+{
+    private const float ATTACK_RATE = 0.5f;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("분신", "적을 공격할 때 치명타가 발생하면, 공격력의 50%만큼 추가 피해를 줍니다.");
+        SetMyBattleStat();
+    }
+
+    public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        if(isCrit)
+        {
+            SetEnemy();
+            bool isAdditionalAttackCrit;
+            float additionalAttackDamage;
+            myBattleStat.CalDamage(out additionalAttackDamage, out isAdditionalAttackCrit);
+
+            AdditionalAttack(enemy, additionalAttackDamage, myBattleStat.PenetrationFixed, myBattleStat.PenetrationMult, isCrit);
+        }
     }
 }
