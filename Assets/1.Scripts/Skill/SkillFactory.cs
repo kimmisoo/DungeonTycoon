@@ -77,6 +77,12 @@ public static class SkillFactory
                 return go.AddComponent<ExecutionSkill>();
             case "MirrorImage":
                 return go.AddComponent<MirrorImage>();
+            case "SiphonStrength":
+                return go.AddComponent<SiphonStrengthSkill>();
+            case "SelfDefence":
+                return go.AddComponent<SelfDefenceSkill>();
+            case "Scar":
+                return go.AddComponent<ScarSkill>();
             default:
                 return null;
         }

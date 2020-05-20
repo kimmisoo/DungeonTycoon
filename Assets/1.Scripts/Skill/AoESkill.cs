@@ -29,6 +29,7 @@ public abstract class AoESkill : Skill
         //targets = new List<ICombatant>();
         effectedAreas = new List<TileForMove>();
         coverages = new List<Coverage>();
+        SetCoverage();
     }
 
     /// <summary>
@@ -139,7 +140,7 @@ public class HanaUniqueSkill : AoESkill
     public HanaUniqueSkill()
     {
         totalDmg = 0;
-        SetCoverage();
+        //SetCoverage();
         defDebuff = new TemporaryEffect("감전", DURATION);
         defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Mult, DEBUFF_RATE));
         ///defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 10.0f));
@@ -255,7 +256,7 @@ public class IrisUniqueSkill : AoESkill
     public IrisUniqueSkill()
     {
         attackCnt = 0;
-        SetCoverage();
+        //SetCoverage();
     }
 
     public override void InitSkill()
@@ -307,7 +308,7 @@ public class SweepSkill : AoESkill
 
     public SweepSkill()
     {
-        SetCoverage();
+        //SetCoverage();
     }
     public override void InitSkill()
     {
@@ -339,7 +340,7 @@ public class AmplifySkill : AoESkill
     {
         SetNameAndExplanation("증폭", "적을 공격할 때마다, 공격대상 주위 1칸 내의 모든 적에게 공격력의 15%만큼 피해를 입힙니다.");
         SetMyBattleStat();
-        SetCoverage();
+        //SetCoverage();
     }
 
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
@@ -368,7 +369,7 @@ public class ShockWaveSkill : AoESkill
     {
         SetNameAndExplanation("충격파 생성", "적을 공격할 때마다, 주위 1칸 내의 모든 적에게 10만큼의 피해를 입힙니다.");
         SetMyBattleStat();
-        SetCoverage();
+        //SetCoverage();
     }
 
     public override void OnAttack(float actualDamage, bool isCrit, bool isDodged)
@@ -399,7 +400,7 @@ public class FlameAuraSkill : AoESkill
     public override void InitSkill()
     {
         SetNameAndExplanation("화염 오라", "매 1초마다, 주위 1칸 내의 모든 적에게 공격력의 8%만큼의 피해를 입힙니다.");
-        SetCoverage();
+        //SetCoverage();
         SetMyBattleStat();
 
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/FlameAura_SkillEffect"));
@@ -450,7 +451,7 @@ public class DivineProtectionSkill : AoESkill
     public override void InitSkill()
     {
         SetNameAndExplanation("신의 가호", "매 1초마다, 주위 1칸 내의 모든 적에게 12만큼의 피해를 주고 방어력을 15 감소시키는 디버프를 남깁니다. 피해는 적의 방어력을 무시하며, 디버프는 2초 동안 지속됩니다.");
-        SetCoverage();
+        //SetCoverage();
         SetMyBattleStat();
         defDebuff = new TemporaryEffect("눈부심", DURATION);
         defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_PENALTY));
@@ -483,5 +484,84 @@ public class DivineProtectionSkill : AoESkill
                 skillEffect.GetComponent<AttackEffect>().StartEffect();
             }
         }
+    }
+}
+
+public class SiphonStrengthSkill : AoESkill
+{
+    TemporaryEffect siphonStrengthBuff;
+    StatModContinuous atkMod;
+    TemporaryEffect siphonStrengthDebuff;
+    float SIPHON_RATE = 0.1f;
+    float DURATION = 0.5f;
+
+    GameObject skillEffect;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("힘 흡수", "주위 1칸 내의 모든 적 공격력의 10%를 흡수합니다.");
+        SetMyBattleStat();
+
+        siphonStrengthDebuff = new TemporaryEffect("빠져나간 힘", DURATION);
+
+        siphonStrengthBuff = new TemporaryEffect("흡수한 힘", DURATION);
+        atkMod = new StatModContinuous(StatType.Attack, ModType.Fixed, 0.0f);
+        siphonStrengthBuff.AddContinuousMod(atkMod);
+
+        skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/SiphonStrength_SkillEffect"));
+        skillEffect.transform.SetParent(owner.GetTransform());
+        skillEffect.transform.position = owner.GetPosition() + new Vector3(0, -0.11f, 0);
+        //SetCoverage();
+    }
+
+    public override void SetCoverage()
+    {
+        coverages.Add(new Coverage(1, 0));
+        coverages.Add(new Coverage(-1, 0));
+        coverages.Add(new Coverage(0, 1));
+        coverages.Add(new Coverage(0, -1));
+        coverages.Add(new Coverage(0, 0));
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+            FindEnemies(owner);
+
+            float modValueBefore = atkMod.ModValue;
+            atkMod.ModValue = SiphonFromArea();
+            if(atkMod.ModValue > 0.0f + Mathf.Epsilon)
+            {
+                //owner.DisplayBuff();
+
+                Debug.Log("공격력 : " + myBattleStat.Attack + ", 베이스 : " + myBattleStat.BaseAttack);
+                ApplyTemporaryEffect(owner, siphonStrengthBuff, false);
+
+                if(modValueBefore <= 0.0f + Mathf.Epsilon)
+                    skillEffect.GetComponent<AttackEffect>().StartEffect();
+            }
+        }
+    }
+
+    private float SiphonFromArea()
+    {
+        float totalSiphonedAtk = 0;
+
+        foreach (ICombatant target in targets)
+        {
+            if(IsHostile(target))
+            {
+                float siphonedAtk = target.GetBattleStat().Attack * SIPHON_RATE;
+                totalSiphonedAtk += siphonedAtk;
+                TemporaryEffect temp = new TemporaryEffect(siphonStrengthDebuff);
+                temp.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Fixed, siphonedAtk * -1));
+
+                ApplyTemporaryEffect(target, temp, false);
+            }
+        }
+
+        return totalSiphonedAtk;
     }
 }

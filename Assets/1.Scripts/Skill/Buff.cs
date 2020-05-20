@@ -558,6 +558,80 @@ public class ExecutionSkill : Skill
     }
 }
 
+public class SelfDefenceSkill : Skill
+{
+    private const float ATK_BONUS_RATIO = 0.2f;
+    private const int TICK_MULT = 4;
+    private StatModContinuous atkMod;
+    
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("자기 방어", "방어력의 20%만큼 공격력이 증가합니다.");
+        SetMyBattleStat();
+
+        atkMod = new StatModContinuous(StatType.Attack, ModType.Fixed, 0);
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+            atkMod.ModValue = myBattleStat.Defence * ATK_BONUS_RATIO;
+        }
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        myBattleStat.AddStatModContinuous(atkMod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        myBattleStat.RemoveStatModContinuous(atkMod);
+    }
+}
+
+public class ScarSkill : Skill
+{
+    private const float ATKSPD_BONUS_UNIT = 0.01f;
+    private const int MISSING_HEALTH_UNIT = 50;
+    private const int ATKSPD_BONUS_LIMIT = 20;
+    private StatModContinuous atkspdMod;
+    private int multiplier;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("상흔", "잃은 체력 50당 공격 속도가 1% 증가합니다. 최대치는 20%입니다.");
+        SetMyBattleStat();
+        atkspdMod = new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.0f);
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+            multiplier = ((int)myBattleStat.MissingHealth) / MISSING_HEALTH_UNIT;
+
+            if (multiplier > ATKSPD_BONUS_LIMIT)
+                multiplier = ATKSPD_BONUS_LIMIT;
+            atkspdMod.ModValue = multiplier * ATKSPD_BONUS_UNIT;
+        }
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        myBattleStat.AddStatModContinuous(atkspdMod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        myBattleStat.RemoveStatModContinuous(atkspdMod);
+    }
+}
+
 
 //public class MaxiUniqueSkill : Skill
 //{
