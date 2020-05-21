@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SpAdvEnter());
 
 #if DEBUG_ADV
-        GenAndEnqueueSingleAdventurer(1, 1);
+        //GenAndEnqueueSingleAdventurer(1, 1);
         GenAndEnqueueSpecialAdvenuturer("OldMan", 1);
 #endif
         //StartCoroutine(GCcall());

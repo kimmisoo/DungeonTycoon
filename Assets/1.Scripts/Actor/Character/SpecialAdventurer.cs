@@ -13,7 +13,7 @@ public class SpecialAdventurer : Adventurer//, IDamagable {
         //uniqueSkill.SetOwner(this);
         //uniqueSkill.InitSkill();
         AddSkill(SkillFactory.CreateSkill(gameObject, name));
-        AddSkill(SkillFactory.CreateSkill(gameObject, "Scar"));
+        //AddSkill(SkillFactory.CreateSkill(gameObject, "LargeShield"));
     }
 
     public void OnEnable()
