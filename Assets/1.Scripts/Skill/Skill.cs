@@ -225,7 +225,9 @@ public abstract class Skill : MonoBehaviour
 
     public void SetNameAndExplanation(string key)
     {
-        SkillFactory.
+        this.key = key;
+
+        SkillFactory.GetNameAndExplanation(key, out name, out explanation);
         // 아마 여기서 아이콘 설정은 이름에 따라 Resource.Load 해주면 될 거 같음
         // 일단 스킬 아이콘은 리소스도 없고 하니 스킵
     }

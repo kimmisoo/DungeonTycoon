@@ -15,7 +15,7 @@ public class MuratUniqueSkill : Skill
         attackCnt = 0;
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Murat_SkillEffect"));
         skillEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
-        SetNameAndExplanation("광휘", "매 3번째 공격마다 최대 체력의 2%를 회복하고 그 2배의 피해를 적에게 줍니다. 적에게 주는 피해는 치명타가 발생하지 않는 대신, 적의 방어력을 무시합니다.");
+        //SetNameAndExplanation("광휘", "매 3번째 공격마다 최대 체력의 2%를 회복하고 그 2배의 피해를 적에게 줍니다. 적에게 주는 피해는 치명타가 발생하지 않는 대신, 적의 방어력을 무시합니다.");
     }
 
     public override IEnumerator OnAlways()
@@ -63,7 +63,7 @@ public class YeonhwaUniqueSkill : Skill
     {
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Yeonhwa_SkillEffect"));
         skillEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
-        SetNameAndExplanation("환류", "회피율이 10% 증가합니다. 적의 공격을 회피할 때마다, 공격력의 155%만큼의 피해를 공격자에게 줍니다.");
+        //SetNameAndExplanation("환류", "회피율이 10% 증가합니다. 적의 공격을 회피할 때마다, 공격력의 155%만큼의 피해를 공격자에게 줍니다.");
     }
 
     public override IEnumerator OnAlways()
@@ -92,7 +92,7 @@ public class ThornMailSkill : Skill
     const float REFLECTION_RATE = 0.15f;
     public override void InitSkill()
     {
-        SetNameAndExplanation("가시갑옷", "공격을 받을 때, 받은 데미지의 15%를 공격자에게 되돌려줍니다.");
+        //SetNameAndExplanation("가시갑옷", "공격을 받을 때, 받은 데미지의 15%를 공격자에게 되돌려줍니다.");
     }
 
     public override void OnStruck(float actualDamage, bool isDodged, ICombatant attacker)
@@ -110,7 +110,7 @@ public class RepulsivePowerSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("반발력", "방어력이 35% 증가합니다. 공격을 받을 때마다, 방어력의 20%만큼의 피해를 공격자에게 줍니다.");
+        //SetNameAndExplanation("반발력", "방어력이 35% 증가합니다. 공격을 받을 때마다, 방어력의 20%만큼의 피해를 공격자에게 줍니다.");
         myBattleStat = owner.GetBattleStat();
         defenceStatMod = new StatModContinuous(StatType.Defence, ModType.Mult, DEF_BONUS_RATE);
     }
@@ -137,7 +137,7 @@ public class StaticElectricitySkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("정전기 발생", "적을 공격할 때마다, 4의 추가 피해를 줍니다.");
+        //SetNameAndExplanation("정전기 발생", "적을 공격할 때마다, 4의 추가 피해를 줍니다.");
         SetMyBattleStat();
     }
 
@@ -160,7 +160,7 @@ public class ThunderboltSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("벼락", "적을 공격할 때 치명타가 발생하면, 60의 추가 피해를 주고 적의 방어력을 10 감소시키는 디버프를 남깁니다. 디버프는 3초간 지속됩니다.");
+        //SetNameAndExplanation("벼락", "적을 공격할 때 치명타가 발생하면, 60의 추가 피해를 주고 적의 방어력을 10 감소시키는 디버프를 남깁니다. 디버프는 3초간 지속됩니다.");
         defDebuff = new TemporaryEffect("저릿저릿", DURATION);
         defDebuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_DEBUFF_VALUE));
 
@@ -189,7 +189,7 @@ public class BlazeSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("불꽃", "적을 공격할 때마다, 12의 추가 피해를 줍니다.");
+        //SetNameAndExplanation("불꽃", "적을 공격할 때마다, 12의 추가 피해를 줍니다.");
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Blaze_SkillEffect"));
         skillEffect.transform.SetParent(owner.GetTransform());
     }
@@ -217,7 +217,7 @@ public class LavaSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("용암", "적을 공격할 때마다, 26의 추가 피해를 줍니다.");
+        //SetNameAndExplanation("용암", "적을 공격할 때마다, 26의 추가 피해를 줍니다.");
         skillEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/Lava_SkillEffect"));
         skillEffect.transform.SetParent(owner.GetTransform());
     }
@@ -244,7 +244,7 @@ public class MirrorImage : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("분신", "적을 공격할 때 치명타가 발생하면, 공격력의 50%만큼 추가 피해를 줍니다.");
+        //SetNameAndExplanation("분신", "적을 공격할 때 치명타가 발생하면, 공격력의 50%만큼 추가 피해를 줍니다.");
         SetMyBattleStat();
     }
 

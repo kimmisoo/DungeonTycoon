@@ -9,7 +9,7 @@ public class OldManUniqueSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("숨 고르기", "매 5초마다 잃은 체력의 5%를 회복합니다.");
+        //SetNameAndExplanation("숨 고르기", "매 5초마다 잃은 체력의 5%를 회복합니다.");
     }
 
     public override IEnumerator OnAlways()
@@ -47,7 +47,7 @@ public class NyangUniqueSkill : Skill
         SetMyBattleStat();
         myMod = new StatModContinuous(StatType.Attack, ModType.Mult, 2.0f);
 
-        SetNameAndExplanation("선수필승!", "비 전투 상태의 적을 공격할 때 공격력이 200% 증가합니다.");
+        //SetNameAndExplanation("선수필승!", "비 전투 상태의 적을 공격할 때 공격력이 200% 증가합니다.");
     }
 
     public override void BeforeAttack()
@@ -99,7 +99,7 @@ public class WalUniqueSkill : Skill
         skillEffect.transform.SetParent(owner.GetTransform());
         skillEffect.transform.position = owner.GetPosition();
 
-        SetNameAndExplanation("파비스 석궁병", "공격력이 40% 증가하는 대신 공격속도가 33% 감소합니다. 매 사격마다 최대체력의 3%에 해당하는 방어막을 얻습니다. 방어막은 중첩되지 않습니다.");
+        //SetNameAndExplanation("파비스 석궁병", "공격력이 40% 증가하는 대신 공격속도가 33% 감소합니다. 매 사격마다 최대체력의 3%에 해당하는 방어막을 얻습니다. 방어막은 중첩되지 않습니다.");
     }
 
     public override IEnumerator OnAlways()
@@ -162,7 +162,7 @@ public class CommonSelfBuffSkill : Skill
 
     public CommonSelfBuffSkill(string name, string explanation)
     {
-        SetNameAndExplanation(name, explanation);
+        //SetNameAndExplanation(name, explanation);
     }
 
     public override void InitSkill()
@@ -209,7 +209,7 @@ public class DamageAbsorbSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("데미지 흡수", "공격을 받을 때마다, 체력을 15 회복합니다.");
+        //SetNameAndExplanation("데미지 흡수", "공격을 받을 때마다, 체력을 15 회복합니다.");
         myBattleStat = owner.GetBattleStat();
     }
 
@@ -229,7 +229,7 @@ public class OverBoostSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("오버부스트", "공격대상의 체력이 30% 이하일 때 공격력이 25% 증가합니다.");
+        //SetNameAndExplanation("오버부스트", "공격대상의 체력이 30% 이하일 때 공격력이 25% 증가합니다.");
         SetMyBattleStat();
 
         atkModStat = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_BONUS_RATE);
@@ -266,7 +266,7 @@ public class BlessSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("축복", "적을 공격할 때마다 입힌 피해의 12%에 해당하는 방어막을 얻습니다. 방어막은 3초 동안 지속됩니다.");
+        //SetNameAndExplanation("축복", "적을 공격할 때마다 입힌 피해의 12%에 해당하는 방어막을 얻습니다. 방어막은 3초 동안 지속됩니다.");
         SetSkillEffect();
     }
 
@@ -300,7 +300,7 @@ public class BuckshotSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("산탄", "사정거리가 1 증가합니다. 가까이 있는 적을 공격할 때 추가 공격력을 얻습니다.");
+        //SetNameAndExplanation("산탄", "사정거리가 1 증가합니다. 가까이 있는 적을 공격할 때 추가 공격력을 얻습니다.");
         SetMyBattleStat();
         atkStatMod = new StatModContinuous(StatType.Attack, ModType.Mult, 0.0f);
         rangeStatMod = new StatModDiscrete(StatType.AttackRange, ModType.Fixed, 1);
@@ -343,7 +343,7 @@ public class DualWieldSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("쌍수무기", "공격속도가 100% 증가하지만 공격력이 50% 감소합니다.");
+        //SetNameAndExplanation("쌍수무기", "공격속도가 100% 증가하지만 공격력이 50% 감소합니다.");
         SetMyBattleStat();
         atkMod = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_PENALTY);
         atkSpdMod = new StatModContinuous(StatType.AttackSpeed, ModType.Mult, ATKSPD_BONUS);
@@ -368,7 +368,7 @@ public class LifeStealSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("흡혈", "적을 공격할 때마다, 입힌 데미지의 12%만큼의 체력을 회복합니다.");
+        //SetNameAndExplanation("흡혈", "적을 공격할 때마다, 입힌 데미지의 12%만큼의 체력을 회복합니다.");
         SetMyBattleStat();
     }
 
@@ -391,7 +391,7 @@ public class ImmerseSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("몰입", "전투 시작 후 1초가 지날 때마다 공격속도가 5% 증가하는 버프를 얻습니다. 버프는 최대 5번까지 중첩되며, 2초간 지속됩니다.");
+        //SetNameAndExplanation("몰입", "전투 시작 후 1초가 지날 때마다 공격속도가 5% 증가하는 버프를 얻습니다. 버프는 최대 5번까지 중첩되며, 2초간 지속됩니다.");
         atkspdBuff = new TemporaryEffect(name, DURATION, STACK_LIMIT);
         atkspdBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, ATKSPD_BONUS_RATE));
     }
@@ -419,7 +419,7 @@ public class RedPotionSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("빨간 물약", "매 3초마다, 체력을 1 회복합니다.");
+        //SetNameAndExplanation("빨간 물약", "매 3초마다, 체력을 1 회복합니다.");
         SetMyBattleStat();
     }
 
@@ -447,7 +447,7 @@ public class RejuvenateSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("재생", "매 1초마다, 잃은 체력의 1.5%를 회복합니다.");
+        //SetNameAndExplanation("재생", "매 1초마다, 잃은 체력의 1.5%를 회복합니다.");
         SetMyBattleStat();
     }
 
@@ -476,7 +476,7 @@ public class CrisisManagementSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("위기 대처", "체력이 20% 이하일 때, 방어력이 75 증가합니다.");
+        //SetNameAndExplanation("위기 대처", "체력이 20% 이하일 때, 방어력이 75 증가합니다.");
         SetMyBattleStat();
         defBuff = new StatModContinuous(StatType.Defence, ModType.Fixed, DEF_BONUS);
     }
@@ -509,7 +509,7 @@ public class ExecutionSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("처형", "공격 대상의 체력이 20% 이하일 때 공격력이 50% 증가합니다.");
+        //SetNameAndExplanation("처형", "공격 대상의 체력이 20% 이하일 때 공격력이 50% 증가합니다.");
         atkMod = new StatModContinuous(StatType.Attack, ModType.Mult, ATK_BONUS);
         SetMyBattleStat();
     }
@@ -566,7 +566,7 @@ public class SelfDefenceSkill : Skill
     
     public override void InitSkill()
     {
-        SetNameAndExplanation("자기 방어", "방어력의 20%만큼 공격력이 증가합니다.");
+        //SetNameAndExplanation("자기 방어", "방어력의 20%만큼 공격력이 증가합니다.");
         SetMyBattleStat();
 
         atkMod = new StatModContinuous(StatType.Attack, ModType.Fixed, 0);
@@ -602,7 +602,7 @@ public class ScarSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("상흔", "잃은 체력 50당 공격 속도가 1% 증가합니다. 최대치는 20%입니다.");
+        //SetNameAndExplanation("상흔", "잃은 체력 50당 공격 속도가 1% 증가합니다. 최대치는 20%입니다.");
         SetMyBattleStat();
         atkspdMod = new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.0f);
     }
@@ -642,7 +642,7 @@ public class LifeTapSkill : Skill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("생명력 전환", "최대 체력이 20% 감소합니다. 감소한 최대 체력의 15%만큼 공격력이 증가합니다.");
+        //SetNameAndExplanation("생명력 전환", "최대 체력이 20% 감소합니다. 감소한 최대 체력의 15%만큼 공격력이 증가합니다.");
         SetMyBattleStat();
 
         hpMod = new StatModContinuous(StatType.HealthMax, ModType.Mult, MAXHP_PENALTY_RATE);

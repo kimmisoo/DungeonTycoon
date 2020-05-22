@@ -156,7 +156,7 @@ public class HanaUniqueSkill : AoESkill
         myBattleStat = owner.GetBattleStat();
         chargedEffect = Instantiate((GameObject)Resources.Load("EffectPrefabs/HanaCharged_SkillEffect"));
 
-        SetNameAndExplanation("축전", "매 1초마다 주위 1칸 내의 모든 적에게 공격력의 10%(대상이 하나일 때는 15%)만큼 피해를 줍니다. 준 피해의 양이 하나 최대체력의 12%가 될 때마다 주위 1칸 내의 모든 적에게 공격력의 170% 피해를 주고 방어력을 15% 감소시키는 디버프를 남깁니다. 디버프는 4초간 지속됩니다.");
+        //SetNameAndExplanation("축전", "매 1초마다 주위 1칸 내의 모든 적에게 공격력의 10%(대상이 하나일 때는 15%)만큼 피해를 줍니다. 준 피해의 양이 하나 최대체력의 12%가 될 때마다 주위 1칸 내의 모든 적에게 공격력의 170% 피해를 주고 방어력을 15% 감소시키는 디버프를 남깁니다. 디버프는 4초간 지속됩니다.");
     }
 
     public override IEnumerator OnAlways()
@@ -265,7 +265,7 @@ public class IrisUniqueSkill : AoESkill
         skillEffect.transform.SetParent(owner.GetTransform());
         myBattleStat = owner.GetBattleStat();
 
-        SetNameAndExplanation("빙화", "전투 개시 시, 그 후 7번째 공격마다 얼음 마법을 시전하여 공격 대상과 그 주위 1칸 모든 적에게 공격력의 210%(대상이 하나일 때는 240%)의 피해를 줍니다.");
+        //SetNameAndExplanation("빙화", "전투 개시 시, 그 후 7번째 공격마다 얼음 마법을 시전하여 공격 대상과 그 주위 1칸 모든 적에게 공격력의 210%(대상이 하나일 때는 240%)의 피해를 줍니다.");
         //        normEffects.transform.position = new Vector3(0, 0, 0);
     }
 
@@ -312,7 +312,7 @@ public class SweepSkill : AoESkill
     }
     public override void InitSkill()
     {
-        SetNameAndExplanation("휩쓸기", "적을 공격할 때마다 공격 대상 양 옆의 적에게 공격력의 35%만큼 피해를 줍니다.");
+        //SetNameAndExplanation("휩쓸기", "적을 공격할 때마다 공격 대상 양 옆의 적에게 공격력의 35%만큼 피해를 줍니다.");
         myBattleStat = owner.GetBattleStat();
     }
 
@@ -338,7 +338,7 @@ public class AmplifySkill : AoESkill
     const float ATTACK_RATE = 0.15f;
     public override void InitSkill()
     {
-        SetNameAndExplanation("증폭", "적을 공격할 때마다, 공격대상 주위 1칸 내의 모든 적에게 공격력의 15%만큼 피해를 입힙니다.");
+        //SetNameAndExplanation("증폭", "적을 공격할 때마다, 공격대상 주위 1칸 내의 모든 적에게 공격력의 15%만큼 피해를 입힙니다.");
         SetMyBattleStat();
         //SetCoverage();
     }
@@ -367,7 +367,7 @@ public class ShockWaveSkill : AoESkill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("충격파 생성", "적을 공격할 때마다, 주위 1칸 내의 모든 적에게 10만큼의 피해를 입힙니다.");
+        //SetNameAndExplanation("충격파 생성", "적을 공격할 때마다, 주위 1칸 내의 모든 적에게 10만큼의 피해를 입힙니다.");
         SetMyBattleStat();
         //SetCoverage();
     }
@@ -399,7 +399,7 @@ public class FlameAuraSkill : AoESkill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("화염 오라", "매 1초마다, 주위 1칸 내의 모든 적에게 공격력의 8%만큼의 피해를 입힙니다.");
+        //SetNameAndExplanation("화염 오라", "매 1초마다, 주위 1칸 내의 모든 적에게 공격력의 8%만큼의 피해를 입힙니다.");
         //SetCoverage();
         SetMyBattleStat();
 
@@ -450,7 +450,7 @@ public class DivineProtectionSkill : AoESkill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("신의 가호", "매 1초마다, 주위 1칸 내의 모든 적에게 12만큼의 피해를 주고 방어력을 15 감소시키는 디버프를 남깁니다. 피해는 적의 방어력을 무시하며, 디버프는 2초 동안 지속됩니다.");
+        //SetNameAndExplanation("신의 가호", "매 1초마다, 주위 1칸 내의 모든 적에게 12만큼의 피해를 주고 방어력을 15 감소시키는 디버프를 남깁니다. 피해는 적의 방어력을 무시하며, 디버프는 2초 동안 지속됩니다.");
         //SetCoverage();
         SetMyBattleStat();
         defDebuff = new TemporaryEffect("눈부심", DURATION);
@@ -499,7 +499,7 @@ public class SiphonStrengthSkill : AoESkill
 
     public override void InitSkill()
     {
-        SetNameAndExplanation("힘 흡수", "주위 1칸 내의 모든 적 공격력의 10%를 흡수합니다.");
+        //SetNameAndExplanation("힘 흡수", "주위 1칸 내의 모든 적 공격력의 10%를 흡수합니다.");
         SetMyBattleStat();
 
         siphonStrengthDebuff = new TemporaryEffect("빠져나간 힘", DURATION);

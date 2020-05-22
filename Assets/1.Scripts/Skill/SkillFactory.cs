@@ -6,258 +6,329 @@ public static class SkillFactory
 {
     public static Skill CreateSkill(GameObject go, string skillName)
     {
-        CommonSelfBuffSkill commonSelfBuffSkill;
+        CommonSelfBuffSkill tempCommonBuff;
+        Skill skill;
 
         // 여기부터. 스킬 이름, 설명 세팅 바꿔줘야함.
 
         switch (skillName)
         {
             case "OldMan":
-                return go.AddComponent<OldManUniqueSkill>();
+                skill = go.AddComponent<OldManUniqueSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Hana":
-                return go.AddComponent<HanaUniqueSkill>();
+                skill = go.AddComponent<HanaUniqueSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Murat":
-                return go.AddComponent<MuratUniqueSkill>();
+                skill = go.AddComponent<MuratUniqueSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Yeonhwa":
-                return go.AddComponent<YeonhwaUniqueSkill>();
+                skill = go.AddComponent<YeonhwaUniqueSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Iris":
-                return go.AddComponent<IrisUniqueSkill>();
+                skill = go.AddComponent<IrisUniqueSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Nyang":
-                return go.AddComponent<NyangUniqueSkill>();
+                skill = go.AddComponent<NyangUniqueSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Wal":
-                return go.AddComponent<WalUniqueSkill>();
+                skill = go.AddComponent<WalUniqueSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Maxi":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("쇼맨십", "공격속도가 200% 증가하지만 공격력은 65% 감소합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, -0.65f));
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 2.0f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, -0.65f));
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 2.0f));
+                return tempCommonBuff;
             case "ThornMail":
-                return go.AddComponent<ThornMailSkill>();
+                skill = go.AddComponent<ThornMailSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "DamageAbsorb":
-                return go.AddComponent<DamageAbsorbSkill>();
+                skill = go.AddComponent<DamageAbsorbSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "RepulsivePower":
-                return go.AddComponent<RepulsivePowerSkill>();
+                skill = go.AddComponent<RepulsivePowerSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "OverBoost":
-                return go.AddComponent<OverBoostSkill>();
+                skill = go.AddComponent<OverBoostSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Crack":
-                return go.AddComponent<CrackSkill>();
+                skill = go.AddComponent<CrackSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Sweep":
-                return go.AddComponent<SweepSkill>();
+                skill = go.AddComponent<SweepSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Bless":
-                return go.AddComponent<BlessSkill>();
+                skill = go.AddComponent<BlessSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Buckshot":
-                return go.AddComponent<BuckshotSkill>();
+                skill = go.AddComponent<BuckshotSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "StaticElectricity":
-                return go.AddComponent<StaticElectricitySkill>();
+                skill = go.AddComponent<StaticElectricitySkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "DualWield":
-                return go.AddComponent<DualWieldSkill>();
+                skill = go.AddComponent<DualWieldSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Thunderbolt":
-                return go.AddComponent<ThunderboltSkill>();
+                skill = go.AddComponent<ThunderboltSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Amplify":
-                return go.AddComponent<AmplifySkill>();
+                skill = go.AddComponent<AmplifySkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "ShockWave":
-                return go.AddComponent<ShockWaveSkill>();
+                skill = go.AddComponent<ShockWaveSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "LifeSteal":
-                return go.AddComponent<LifeStealSkill>();
+                skill = go.AddComponent<LifeStealSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Blaze":
-                return go.AddComponent<BlazeSkill>();
+                skill = go.AddComponent<BlazeSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Lava":
-                return go.AddComponent<LavaSkill>();
+                skill = go.AddComponent<LavaSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Immerse":
-                return go.AddComponent<ImmerseSkill>();
+                skill = go.AddComponent<ImmerseSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "FlameAura":
-                return go.AddComponent<FlameAuraSkill>();
+                skill = go.AddComponent<FlameAuraSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "RedPotion":
-                return go.AddComponent<RedPotionSkill>();
+                skill = go.AddComponent<RedPotionSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Rejuvenate":
-                return go.AddComponent<RejuvenateSkill>();
+                skill = go.AddComponent<RejuvenateSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "DivineProtection":
-                return go.AddComponent<DivineProtectionSkill>();
+                skill = go.AddComponent<DivineProtectionSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "CrisisManagement":
-                return go.AddComponent<CrisisManagementSkill>();
+                skill = go.AddComponent<CrisisManagementSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Execution":
-                return go.AddComponent<ExecutionSkill>();
+                skill = go.AddComponent<ExecutionSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "MirrorImage":
-                return go.AddComponent<MirrorImage>();
+                skill = go.AddComponent<MirrorImage>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "SiphonStrength":
-                return go.AddComponent<SiphonStrengthSkill>();
+                skill = go.AddComponent<SiphonStrengthSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "SelfDefence":
-                return go.AddComponent<SelfDefenceSkill>();
+                skill = go.AddComponent<SelfDefenceSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "Scar":
-                return go.AddComponent<ScarSkill>();
+                skill = go.AddComponent<ScarSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "LifeTap":
-                return go.AddComponent<LifeTapSkill>();
+                skill = go.AddComponent<LifeTapSkill>();
+                skill.SetNameAndExplanation(skillName);
+                return skill;
             case "HeavyWeight":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("무거움", "공격 속도가 10% 감소합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, -0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, -0.1f));
+                return tempCommonBuff;
             case "LightWeight":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("가벼움", "공격 속도가 10% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.1f));
+                return tempCommonBuff;
             case "Uncomfortable":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("걸리적거림", "치명타 확률이 10% 감소합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, -0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, -0.1f));
+                return tempCommonBuff;
             case "Comfortable":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("움직이기 편함", "치명타 확률이 10% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.1f));
+                return tempCommonBuff;
             case "VeryLightWeight":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("매우 가벼움", "공격 속도가 15% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.15f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.15f));
+                return tempCommonBuff;
             case "PoweredExoskeleton":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("강화 외골격", "공격력이 10% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, 0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, 0.1f));
+                return tempCommonBuff;
             case "VeryUncomfortable":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("매우 걸리적거림", "치명타 확률이 15% 감소합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, -0.15f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, -0.15f));
+                return tempCommonBuff;
             case "VeryComfortable":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("움직이기 매우 편함", "치명타 확률이 15% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
+                return tempCommonBuff;
             case "VeryLightAndComfortable":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("매우 가볍고 편함", "공격 속도가 15%, 치명타 확률이 15% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.15f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.15f));
+                return tempCommonBuff;
             case "WeaponMaintenance":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("무기 정비", "방어구 관통력이 15 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.PenetrationFixed, ModType.Fixed, 15.0f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.PenetrationFixed, ModType.Fixed, 15.0f));
+                return tempCommonBuff;
             case "CatchVitalPoint":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("급소 포착", "치명타 확률이 10% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.1f));
+                return tempCommonBuff;
             case "JustOneSlash":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("일섬", "치명타 공격력이 50% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalDamage, ModType.Fixed, 0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalDamage, ModType.Fixed, 0.1f));
+                return tempCommonBuff;
             case "AdditionalArmor":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("추가 장갑", "방어력이 30% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Mult, 0.3f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Mult, 0.3f));
+                return tempCommonBuff;
             case "Accelerate":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("가속", "공격 속도가 10% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.1f));
+                return tempCommonBuff;
             case "SwordAura":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("검기", "사정거리가 1 증가합니다.");
-                commonSelfBuffSkill.AddDiscreteMod(new StatModDiscrete(StatType.AttackRange, ModType.Fixed, 1));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddDiscreteMod(new StatModDiscrete(StatType.AttackRange, ModType.Fixed, 1));
+                return tempCommonBuff;
             case "CatchVitalPoint2":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("급소 포착 II", "치명타 확률이 20% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.2f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.2f));
+                return tempCommonBuff;
             case "Accelerate2":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("가속 II", "공격 속도가 20% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.2f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.2f));
+                return tempCommonBuff;
             case "BlessedByFortuna":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("포르투나의 축복", "회피율이 10% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.Avoid, ModType.Fixed, 0.1f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.Avoid, ModType.Fixed, 0.1f));
+                return tempCommonBuff;
             case "LesserPretectionSpell":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("하급 보호 마법", "체력이 60 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Fixed, 60.0f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Fixed, 60.0f));
+                return tempCommonBuff;
             case "StandardPretectionSpell":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("중급 보호 마법", "체력이 150 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Fixed, 150.0f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Fixed, 150.0f));
+                return tempCommonBuff;
             case "GreaterPretectionSpell":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("상급 보호 마법", "체력이 12% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Mult, 0.12f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Mult, 0.12f));
+                return tempCommonBuff;
             case "HeavyBlow":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("묵직함", "방어구 관통력이 20% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.2f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.2f));
+                return tempCommonBuff;
             case "SharpendBlade":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("날카로운 날", "방어구 관통력이 30% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.3f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.3f));
+                return tempCommonBuff;
             case "ArcaneBlade":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("비전 칼날", "방어구 관통력이 40% 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.4f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.4f));
+                return tempCommonBuff;
             case "SmallShield":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("소형 방패", "방어력이 20 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 20.0f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 20.0f));
+                return tempCommonBuff;
             case "MediumShield":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("중형 방패", "방어력이 30 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 30.0f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 30.0f));
+                return tempCommonBuff;
             case "LargeShield":
-                commonSelfBuffSkill = go.AddComponent<CommonSelfBuffSkill>();
-                commonSelfBuffSkill.InstantiateLists();
-                commonSelfBuffSkill.SetNameAndExplanation("대형 방패", "방어력이 40 증가합니다.");
-                commonSelfBuffSkill.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 40.0f));
-                return commonSelfBuffSkill;
+                tempCommonBuff = go.AddComponent<CommonSelfBuffSkill>();
+                tempCommonBuff.InstantiateLists();
+                tempCommonBuff.SetNameAndExplanation(skillName);
+                tempCommonBuff.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 40.0f));
+                return tempCommonBuff;
             default:
                 return null;
         }
     }
 
-    public void GetNameAndExplanation(string key, out string name, out string explanation)
+    public static void GetNameAndExplanation(string key, out string name, out string explanation)
     {
         switch (key)
         {
@@ -266,245 +337,257 @@ public static class SkillFactory
                 explanation = "매 5초마다 잃은 체력의 5%를 회복합니다.";
                 break;
             case "Hana":
-                return go.AddComponent<HanaUniqueSkill>();
+                name = "축전";
+                explanation = "매 1초마다 주위 1칸 내의 모든 적에게 공격력의 10%(대상이 하나일 때는 15%)만큼 피해를 줍니다. 준 피해의 양이 하나 최대체력의 12%가 될 때마다 주위 1칸 내의 모든 적에게 공격력의 170% 피해를 주고 방어력을 15% 감소시키는 디버프를 남깁니다. 디버프는 4초간 지속됩니다.";
+                break;
             case "Murat":
-                return go.AddComponent<MuratUniqueSkill>();
+                name = "광휘";
+                explanation = "매 3번째 공격마다 최대 체력의 2%를 회복하고 그 2배의 피해를 적에게 줍니다. 적에게 주는 피해는 치명타가 발생하지 않는 대신, 적의 방어력을 무시합니다.";
+                break;
             case "Yeonhwa":
-                return go.AddComponent<YeonhwaUniqueSkill>();
+                name = "환류";
+                explanation = "회피율이 10% 증가합니다. 적의 공격을 회피할 때마다, 공격력의 155%만큼의 피해를 공격자에게 줍니다.";
+                break;
             case "Iris":
-                return go.AddComponent<IrisUniqueSkill>();
+                name = "빙화";
+                explanation = "전투 개시 시, 그 후 7번째 공격마다 얼음 마법을 시전하여 공격 대상과 그 주위 1칸 모든 적에게 공격력의 210%(대상이 하나일 때는 240%)의 피해를 줍니다.";
+                break;
             case "Nyang":
-                return go.AddComponent<NyangUniqueSkill>();
+                name = "선수필승!";
+                explanation = "비 전투 상태의 적을 공격할 때 공격력이 200% 증가합니다.";
+                break;
             case "Wal":
-                return go.AddComponent<WalUniqueSkill>();
+                name = "파비스 석궁병";
+                explanation = "공격력이 40% 증가하는 대신 공격속도가 33% 감소합니다. 매 사격마다 최대체력의 3%에 해당하는 방어막을 얻습니다. 방어막은 중첩되지 않습니다.";
+                break;
             case "Maxi":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("쇼맨십", "공격속도가 200% 증가하지만 공격력은 65% 감소합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, -0.65f));
-                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 2.0f));
-                return temp;
+                name = "쇼맨십";
+                explanation = "공격속도가 200% 증가하지만 공격력은 65% 감소합니다.";
+                break;
             case "ThornMail":
-                return go.AddComponent<ThornMailSkill>();
+                name = "가시갑옷";
+                explanation = "공격을 받을 때, 받은 데미지의 15%를 공격자에게 되돌려줍니다.";
+                break;
             case "DamageAbsorb":
-                return go.AddComponent<DamageAbsorbSkill>();
+                name = "데미지 흡수";
+                explanation = "공격을 받을 때마다, 체력을 15 회복합니다.";
+                break;
             case "RepulsivePower":
-                return go.AddComponent<RepulsivePowerSkill>();
+                name = "반발력";
+                explanation = "방어력이 35% 증가합니다. 공격을 받을 때마다, 방어력의 20%만큼의 피해를 공격자에게 줍니다.";
+                break;
             case "OverBoost":
-                return go.AddComponent<OverBoostSkill>();
+                name = "오버부스트";
+                explanation = "공격대상의 체력이 30% 이하일 때 공격력이 25% 증가합니다.";
+                break;
             case "Crack":
-                return go.AddComponent<CrackSkill>();
+                name = "균열";
+                explanation = "적을 공격할 때마다 방어력을 6% 감소시키는 디버프를 남깁니다. 디버프는 최대 5번까지 중첩되며 2초간 지속됩니다.";
+                break;
             case "Sweep":
-                return go.AddComponent<SweepSkill>();
+                name = "휩쓸기";
+                explanation = "적을 공격할 때마다 공격 대상 양 옆의 적에게 공격력의 35%만큼 피해를 줍니다.";
+                break;
             case "Bless":
-                return go.AddComponent<BlessSkill>();
+                name = "축복";
+                explanation = "적을 공격할 때마다 입힌 피해의 12%에 해당하는 방어막을 얻습니다. 방어막은 3초 동안 지속됩니다.";
+                break;
             case "Buckshot":
-                return go.AddComponent<BuckshotSkill>();
+                name = "산탄";
+                explanation = "사정거리가 1 증가합니다. 가까이 있는 적을 공격할 때 추가 공격력을 얻습니다.";
+                break;
             case "StaticElectricity":
-                return go.AddComponent<StaticElectricitySkill>();
+                name = "정전기 발생";
+                explanation = "적을 공격할 때마다, 4의 추가 피해를 줍니다.";
+                break;
             case "DualWield":
-                return go.AddComponent<DualWieldSkill>();
+                name = "쌍수무기";
+                explanation = "공격속도가 100% 증가하지만 공격력이 50% 감소합니다.";
+                break;
             case "Thunderbolt":
-                return go.AddComponent<ThunderboltSkill>();
+                name = "벼락";
+                explanation = "적을 공격할 때 치명타가 발생하면, 60의 추가 피해를 주고 적의 방어력을 10 감소시키는 디버프를 남깁니다. 디버프는 3초간 지속됩니다.";
+                break;
             case "Amplify":
-                return go.AddComponent<AmplifySkill>();
+                name = "증폭";
+                explanation = "적을 공격할 때마다, 공격대상 주위 1칸 내의 모든 적에게 공격력의 15%만큼 피해를 입힙니다.";
+                break;
             case "ShockWave":
-                return go.AddComponent<ShockWaveSkill>();
+                name = "충격파 생성";
+                explanation = "적을 공격할 때마다, 주위 1칸 내의 모든 적에게 10만큼의 피해를 입힙니다.";
+                break;
             case "LifeSteal":
-                return go.AddComponent<LifeStealSkill>();
+                name = "흡혈";
+                explanation = "적을 공격할 때마다, 입힌 데미지의 12%만큼의 체력을 회복합니다.";
+                break;
             case "Blaze":
-                return go.AddComponent<BlazeSkill>();
+                name = "불꽃";
+                explanation = "적을 공격할 때마다, 12의 추가 피해를 줍니다.";
+                break;
             case "Lava":
-                return go.AddComponent<LavaSkill>();
+                name = "용암";
+                explanation = "적을 공격할 때마다, 26의 추가 피해를 줍니다.";
+                break;
             case "Immerse":
-                return go.AddComponent<ImmerseSkill>();
+                name = "몰입";
+                explanation = "전투 시작 후 1초가 지날 때마다 공격속도가 5% 증가하는 버프를 얻습니다. 버프는 최대 5번까지 중첩되며, 2초간 지속됩니다.";
+                break;
             case "FlameAura":
-                return go.AddComponent<FlameAuraSkill>();
+                name = "화염 오라";
+                explanation = "매 1초마다, 주위 1칸 내의 모든 적에게 공격력의 8%만큼의 피해를 입힙니다.";
+                break;
             case "RedPotion":
-                return go.AddComponent<RedPotionSkill>();
+                name = "빨간 물약";
+                explanation = "매 3초마다, 체력을 1 회복합니다.";
+                break;
             case "Rejuvenate":
-                return go.AddComponent<RejuvenateSkill>();
+                name = "재생";
+                explanation = "매 1초마다, 잃은 체력의 1.5%를 회복합니다.";
+                break;
             case "DivineProtection":
-                return go.AddComponent<DivineProtectionSkill>();
+                name = "신의 가호";
+                explanation = "매 1초마다, 주위 1칸 내의 모든 적에게 12만큼의 피해를 주고 방어력을 15 감소시키는 디버프를 남깁니다. 피해는 적의 방어력을 무시하며, 디버프는 2초 동안 지속됩니다.";
+                break;
             case "CrisisManagement":
-                return go.AddComponent<CrisisManagementSkill>();
+                name = "위기 대처";
+                explanation = "체력이 20% 이하일 때, 방어력이 75 증가합니다.";
+                break;
             case "Execution":
-                return go.AddComponent<ExecutionSkill>();
+                name = "처형";
+                explanation = "공격 대상의 체력이 20% 이하일 때 공격력이 50% 증가합니다.";
+                break;
             case "MirrorImage":
-                return go.AddComponent<MirrorImage>();
+                name = "분신";
+                explanation = "적을 공격할 때 치명타가 발생하면, 공격력의 50%만큼 추가 피해를 줍니다.";
+                break;
             case "SiphonStrength":
-                return go.AddComponent<SiphonStrengthSkill>();
+                name = "힘 흡수";
+                explanation = "주위 1칸 내의 모든 적 공격력의 10%를 흡수합니다.";
+                break;
             case "SelfDefence":
-                return go.AddComponent<SelfDefenceSkill>();
+                name = "자기 방어";
+                explanation = "방어력의 20%만큼 공격력이 증가합니다.";
+                break;
             case "Scar":
-                return go.AddComponent<ScarSkill>();
+                name = "상흔";
+                explanation = "잃은 체력 50당 공격 속도가 1% 증가합니다. 최대치는 20%입니다.";
+                break;
             case "LifeTap":
-                return go.AddComponent<LifeTapSkill>();
+                name = "생명력 전환";
+                explanation = "최대 체력이 20% 감소합니다. 감소한 최대 체력의 15%만큼 공격력이 증가합니다.";
+                break;
             case "HeavyWeight":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("무거움", "공격 속도가 10% 감소합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, -0.1f));
-                return temp;
+                name = "무거움";
+                explanation = "최대 체력이 20% 감소합니다. 감소한 최대 체력의 15%만큼 공격력이 증가합니다.";
+                break;
             case "LightWeight":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("가벼움", "공격 속도가 10% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.1f));
-                return temp;
+                name = "가벼움";
+                explanation = "공격 속도가 10% 증가합니다.";
+                break;
             case "Uncomfortable":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("걸리적거림", "치명타 확률이 10% 감소합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, -0.1f));
-                return temp;
+                name = "걸리적거림";
+                explanation = "치명타 확률이 10% 감소합니다.";
+                break;
             case "Comfortable":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("움직이기 편함", "치명타 확률이 10% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.1f));
-                return temp;
+                name = "움직이기 편함";
+                explanation = "치명타 확률이 10% 증가합니다.";
+                break;
             case "VeryLightWeight":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("매우 가벼움", "공격 속도가 15% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.15f));
-                return temp;
+                name = "매우 가벼움";
+                explanation = "공격 속도가 15% 증가합니다.";
+                break;
             case "PoweredExoskeleton":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("강화 외골격", "공격력이 10% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.Attack, ModType.Mult, 0.1f));
-                return temp;
+                name = "강화 외골격";
+                explanation = "공격력이 10% 증가합니다.";
+                break;
             case "VeryUncomfortable":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("매우 걸리적거림", "치명타 확률이 15% 감소합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, -0.15f));
-                return temp;
+                name = "매우 걸리적거림";
+                explanation = "치명타 확률이 15% 감소합니다.";
+                break;
             case "VeryComfortable":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("움직이기 매우 편함", "치명타 확률이 15% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
-                return temp;
+                name = "움직이기 매우 편함";
+                explanation = "치명타 확률이 15% 증가합니다.";
+                break;
             case "VeryLightAndComfortable":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("매우 가볍고 편함", "공격 속도가 15%, 치명타 확률이 15% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
-                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.15f));
-                return temp;
+                name = "매우 가볍고 편함";
+                explanation = "공격 속도가 15%, 치명타 확률이 15% 증가합니다.";
+                break;
             case "WeaponMaintenance":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("무기 정비", "방어구 관통력이 15 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.PenetrationFixed, ModType.Fixed, 15.0f));
-                return temp;
+                name = "무기 정비";
+                explanation = "방어구 관통력이 15 증가합니다.";
+                break;
             case "CatchVitalPoint":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("급소 포착", "치명타 확률이 10% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.1f));
-                return temp;
+                name = "급소 포착";
+                explanation = "치명타 확률이 10% 증가합니다.";
+                break;
             case "JustOneSlash":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("일섬", "치명타 공격력이 50% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalDamage, ModType.Fixed, 0.1f));
-                return temp;
+                name = "일섬";
+                explanation = "치명타 공격력이 50% 증가합니다.";
+                break;
             case "AdditionalArmor":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("추가 장갑", "방어력이 30% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Mult, 0.3f));
-                return temp;
+                name = "추가 장갑";
+                explanation = "방어력이 30% 증가합니다.";
+                break;
             case "Accelerate":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("가속", "공격 속도가 10% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.1f));
-                return temp;
+                name = "가속";
+                explanation = "공격 속도가 10% 증가합니다.";
+                break;
             case "SwordAura":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("검기", "사정거리가 1 증가합니다.");
-                temp.AddDiscreteMod(new StatModDiscrete(StatType.AttackRange, ModType.Fixed, 1));
-                return temp;
+                name = "검기";
+                explanation = "사정거리가 1 증가합니다.";
+                break;
             case "CatchVitalPoint2":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("급소 포착 II", "치명타 확률이 20% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.2f));
-                return temp;
+                name = "급소 포착 II";
+                explanation = "치명타 확률이 20% 증가합니다.";
+                break;
             case "Accelerate2":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("가속 II", "공격 속도가 20% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.2f));
-                return temp;
+                name = "가속 II";
+                explanation = "공격 속도가 20% 증가합니다.";
+                break;
             case "BlessedByFortuna":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("포르투나의 축복", "회피율이 10% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.Avoid, ModType.Fixed, 0.1f));
-                return temp;
+                name = "포르투나의 축복";
+                explanation = "회피율이 10% 증가합니다.";
+                break;
             case "LesserPretectionSpell":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("하급 보호 마법", "체력이 60 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Fixed, 60.0f));
-                return temp;
+                name = "하급 보호 마법";
+                explanation = "체력이 60 증가합니다.";
+                break;
             case "StandardPretectionSpell":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("중급 보호 마법", "체력이 150 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Fixed, 150.0f));
-                return temp;
+                name = "중급 보호 마법";
+                explanation = "체력이 150 증가합니다.";
+                break;
             case "GreaterPretectionSpell":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("상급 보호 마법", "체력이 12% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.HealthMax, ModType.Mult, 0.12f));
-                return temp;
+                name = "상급 보호 마법";
+                explanation = "체력이 12% 증가합니다.";
+                break;
             case "HeavyBlow":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("묵직함", "방어구 관통력이 20% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.2f));
-                return temp;
+                name = "묵직함";
+                explanation = "방어구 관통력이 20% 증가합니다.";
+                break;
             case "SharpendBlade":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("날카로운 날", "방어구 관통력이 30% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.3f));
-                return temp;
+                name = "날카로운 날";
+                explanation = "방어구 관통력이 30% 증가합니다.";
+                break;
             case "ArcaneBlade":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("비전 칼날", "방어구 관통력이 40% 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.PenetrationMult, ModType.Fixed, 0.4f));
-                return temp;
+                name = "비전 칼날";
+                explanation = "방어구 관통력이 40% 증가합니다.";
+                break;
             case "SmallShield":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("소형 방패", "방어력이 20 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 20.0f));
-                return temp;
+                name = "소형 방패";
+                explanation = "방어력이 20 증가합니다.";
+                break;
             case "MediumShield":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("중형 방패", "방어력이 30 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 30.0f));
-                return temp;
+                name = "중형 방패";
+                explanation = "방어력이 30 증가합니다.";
+                break;
             case "LargeShield":
-                temp = go.AddComponent<CommonSelfBuffSkill>();
-                temp.InstantiateLists();
-                temp.SetNameAndExplanation("대형 방패", "방어력이 40 증가합니다.");
-                temp.AddContinuousMod(new StatModContinuous(StatType.Defence, ModType.Fixed, 40.0f));
-                return temp;
+                name = "대형 방패";
+                explanation = "방어력이 40 증가합니다.";
+                break;
             default:
-                return null;
+                name = null;
+                explanation = null;
+                break;
         }
     }
 }
