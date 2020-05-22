@@ -7,7 +7,7 @@ public enum ItemType
     Weapon, Armor, Accessory
 }
 
-public class Item// : IHasEquipmentEffect
+public class Item
 {
     List<StatModContinuous> continuousMods;
     List<StatModDiscrete> discreteMods;
@@ -34,7 +34,7 @@ public class Item// : IHasEquipmentEffect
             ownerBattleStat.AddStatModContinuous(mod);
         foreach (StatModDiscrete mod in discreteMods)
             ownerBattleStat.AddStatModDiscrete(mod);
-
+        
         foreach (string skillName in itemSkillNames)
             owner.AddSkill(skillName);
         //    itemSkills.Add(SkillFactory.CreateSkill(owner, skillName));

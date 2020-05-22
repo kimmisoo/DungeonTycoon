@@ -632,6 +632,45 @@ public class ScarSkill : Skill
     }
 }
 
+public class LifeTapSkill : Skill
+{
+    private const float MAXHP_PENALTY_RATE = -0.2f;
+    private const float ATK_BONUS_RATIO = 0.03f;
+    private const int TICK_MULT = 4;
+    private StatModContinuous hpMod;
+    private StatModContinuous atkMod;
+
+    public override void InitSkill()
+    {
+        SetNameAndExplanation("생명력 전환", "최대 체력이 20% 감소합니다. 감소한 최대 체력의 15%만큼 공격력이 증가합니다.");
+        SetMyBattleStat();
+
+        hpMod = new StatModContinuous(StatType.HealthMax, ModType.Mult, MAXHP_PENALTY_RATE);
+        atkMod = new StatModContinuous(StatType.Attack, ModType.Fixed, 0);
+    }
+
+    public override IEnumerator OnAlways()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME * TICK_MULT);
+            atkMod.ModValue = myBattleStat.HealthMax * ATK_BONUS_RATIO;
+        }
+    }
+
+    public override void ApplyStatBonuses()
+    {
+        myBattleStat.AddStatModContinuous(hpMod);
+        myBattleStat.AddStatModContinuous(atkMod);
+    }
+
+    public override void RemoveStatBonuses()
+    {
+        myBattleStat.RemoveStatModContinuous(hpMod);
+        myBattleStat.RemoveStatModContinuous(atkMod);
+    }
+}
+
 
 //public class MaxiUniqueSkill : Skill
 //{

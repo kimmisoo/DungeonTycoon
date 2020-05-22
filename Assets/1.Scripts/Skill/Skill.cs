@@ -20,6 +20,8 @@ public abstract class Skill : MonoBehaviour
     protected Coroutine curCoroutine;
     protected List<ICombatant> targets; // 효과 대상 TFM 위에 있는 적들
     public bool isActive;
+    public string key; // 스킬 생성하고 데이터 받을 때 사용하는 키
+
     public string Name // 스킬 이름
     {
         get { return name; }
@@ -213,10 +215,17 @@ public abstract class Skill : MonoBehaviour
         skillEffect.GetComponent<AttackEffect>().StartEffect();
     }
 
-    public void SetNameAndExplanation(string nameIn, string explanationIn)
+    //public void SetNameAndExplanation(string nameIn, string explanationIn)
+    //{
+    //    name = nameIn;
+    //    explanation = explanationIn;
+    //    // 아마 여기서 아이콘 설정은 이름에 따라 Resource.Load 해주면 될 거 같음
+    //    // 일단 스킬 아이콘은 리소스도 없고 하니 스킵
+    //}
+
+    public void SetNameAndExplanation(string key)
     {
-        name = nameIn;
-        explanation = explanationIn;
+        SkillFactory.
         // 아마 여기서 아이콘 설정은 이름에 따라 Resource.Load 해주면 될 거 같음
         // 일단 스킬 아이콘은 리소스도 없고 하니 스킵
     }

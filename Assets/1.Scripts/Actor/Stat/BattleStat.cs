@@ -122,13 +122,24 @@ public class BattleStat
 
     public void AddStatModContinuous(StatModContinuous mod)
     {
-        if(!battleStatContinuous[mod.StatType].GetModList().Contains(mod))
+        if (!battleStatContinuous[mod.StatType].GetModList().Contains(mod))
+        {
             battleStatContinuous[mod.StatType].AddStatMod(mod);
+
+            // 아이템 탈착을 통한 글리치 방지
+            if (mod.StatType == StatType.HealthMax && Health > HealthMax)
+                Health = HealthMax;
+        }
     }
     public void RemoveStatModContinuous(StatModContinuous mod)
     {
         if (battleStatContinuous[mod.StatType].GetModList().Contains(mod))
+        {
             battleStatContinuous[mod.StatType].RemoveStatMod(mod);
+
+            if (mod.StatType == StatType.HealthMax && Health > HealthMax)
+                Health = HealthMax;
+        }
     }
     public void AddStatModDiscrete(StatModDiscrete mod)
     {

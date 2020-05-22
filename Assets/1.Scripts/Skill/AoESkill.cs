@@ -565,3 +565,4 @@ public class SiphonStrengthSkill : AoESkill
         return totalSiphonedAtk;
     }
 }
+
