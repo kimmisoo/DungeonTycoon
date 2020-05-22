@@ -133,6 +133,13 @@ public static class SkillFactory
                 temp.SetNameAndExplanation("움직이기 매우 편함", "치명타 확률이 15% 증가합니다.");
                 temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
                 return temp;
+            case "VeryLightAndComfortable":
+                temp = go.AddComponent<CommonSelfBuffSkill>();
+                temp.InstantiateLists();
+                temp.SetNameAndExplanation("매우 가볍고 편함", "공격 속도가 15%, 치명타 확률이 15% 증가합니다.");
+                temp.AddContinuousMod(new StatModContinuous(StatType.CriticalChance, ModType.Fixed, 0.15f));
+                temp.AddContinuousMod(new StatModContinuous(StatType.AttackSpeed, ModType.Mult, 0.15f));
+                return temp;
             case "WeaponMaintenance":
                 temp = go.AddComponent<CommonSelfBuffSkill>();
                 temp.InstantiateLists();

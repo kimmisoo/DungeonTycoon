@@ -31,7 +31,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected readonly float RecoveryMult = 0.02f;
 
     // 스킬들(아이템, 고유능력 등 모두)
-    List<Skill> skills;
+    Dictionary<string, Skill> skills;
     // 버프/디버프 목록
     Dictionary<string, TemporaryEffect> temporaryEffects;
     Coroutine refreshingTempEffectCoroutine;
@@ -70,7 +70,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         this.stat = new Stat(stat, this);
         //pathfinder 초기화 // delegate 그대로
 
-        skills = new List<Skill>();
+        skills = new Dictionary<string, Skill>();
         temporaryEffects = new Dictionary<string, TemporaryEffect>();
     }
 
@@ -1064,6 +1064,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (healthBelowZeroEvent != null)
             healthBelowZeroEvent -= healthBelowZeroEventHandler;
     }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
     #endregion
 
     #region UI
@@ -1094,50 +1099,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         shieldBar.GetComponent<ShieldBar>().Hide();
     }
 
-    public IEnumerator RefreshTemporaryEffects()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
 
-            foreach (string key in temporaryEffects.Keys.ToList())
-            {
-                if (temporaryEffects[key].Refresh())
-                    RemoveTemporaryEffect(temporaryEffects[key]);
-            }
-        }
-    }
-
-    public void ClearTemporaryEffects()
-    {
-        foreach (string key in temporaryEffects.Keys.ToList())
-            temporaryEffects[key].RemoveEffect();
-        temporaryEffects.Clear();
-    }
-
-    public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
-    {
-        if (temporaryEffects.ContainsKey(toBeRemoved.name))
-        {
-            toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
-            toBeRemoved.ResetStack(); // 스택도 여기서 리셋
-
-            toBeRemoved.RemoveEffect();
-            temporaryEffects.Remove(toBeRemoved.name);
-        }
-    }
-
-    public void AddTemporaryEffect(TemporaryEffect toBeAdded)
-    {
-        if (!temporaryEffects.ContainsKey(toBeAdded.name))
-        {
-            temporaryEffects.Add(toBeAdded.name, toBeAdded);
-            toBeAdded.SetSubject(this);
-            toBeAdded.ApplyEffect();
-        }
-        else
-            toBeAdded.StackUp();
-    }
 
     //public IEnumerator RefreshTemporaryEffects()
     //{
@@ -1193,62 +1155,180 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     #endregion
 
     #region Skill
-    protected void AddSkill(Skill skill)
+    public void AddSkill(string key)
     {
-        skills.Add(skill);
-        skill.SetOwner(this);
-        skill.InitSkill();
+        if (skills.ContainsKey(key))
+            return; // 이미 같은 종류 있으면 그냥 리턴. 같은 스킬 중복 불가.
+
+        skills.Add(key, SkillFactory.CreateSkill(gameObject, key));
+        skills[key].SetOwner(this);
+        skills[key].InitSkill();
         //skill.Activate();
     }
-    protected void RemoveSkill(Skill skill)
+
+    public void RemoveSkill(string key)
     {
-        skills.Remove(skill);
-        skill.Deactivate();
+        if (!skills.ContainsKey(key))
+            return;
+
+        skills[key].Deactivate();
+        skills.Remove(key);
     }
+
     protected void SkillBeforeAttack()
     {
-        foreach (Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.BeforeAttack();
         }
     }
     protected void SkillAfterAttack()
     {
-        foreach (Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.AfterAttack();
         }
     }
     protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
-        foreach(Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.OnAttack(actualDamage, isCrit, isDodged);
         }
     }
     protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
     {
-        foreach(Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.OnStruck(actualDamage, isDodged, attacker);
         }
     }
     protected void SkillActivate()
     {
-        foreach (Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
-            if(!item.isActive)
+            if (!item.isActive)
                 item.Activate();
         }
     }
     protected void SkillDeactivate()
     {
-        foreach (Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.Deactivate();
         }
     }
+    //public void AddSkill(Skill skill)
+    //{
+    //    skills.Add(skill);
+    //    skill.SetOwner(this);
+    //    skill.InitSkill();
+    //    //skill.Activate();
+    //}
 
-    
+    //public void RemoveSkill(Skill skill)
+    //{
+    //    skills.Remove(skill);
+    //    skill.Deactivate();
+    //}
+
+    //public void AddSKill(string skillName)
+    //{
+    //    AddSkill(SkillFactory.CreateSkill(gameObject, skillName));
+    //}
+
+    //public void RemoveSkill(string skillName)
+    //{
+
+    //}
+
+    //protected void SkillBeforeAttack()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        item.BeforeAttack();
+    //    }
+    //}
+    //protected void SkillAfterAttack()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        item.AfterAttack();
+    //    }
+    //}
+    //protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
+    //{
+    //    foreach(Skill item in skills)
+    //    {
+    //        item.OnAttack(actualDamage, isCrit, isDodged);
+    //    }
+    //}
+    //protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    //{
+    //    foreach(Skill item in skills)
+    //    {
+    //        item.OnStruck(actualDamage, isDodged, attacker);
+    //    }
+    //}
+    //protected void SkillActivate()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        if(!item.isActive)
+    //            item.Activate();
+    //    }
+    //}
+    //protected void SkillDeactivate()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        item.Deactivate();
+    //    }
+    //}
+
+    public IEnumerator RefreshTemporaryEffects()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+            foreach (string key in temporaryEffects.Keys.ToList())
+            {
+                if (temporaryEffects[key].Refresh())
+                    RemoveTemporaryEffect(temporaryEffects[key]);
+            }
+        }
+    }
+
+    public void ClearTemporaryEffects()
+    {
+        foreach (string key in temporaryEffects.Keys.ToList())
+            temporaryEffects[key].RemoveEffect();
+        temporaryEffects.Clear();
+    }
+
+    public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    {
+        if (temporaryEffects.ContainsKey(toBeRemoved.name))
+        {
+            toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
+            toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+
+            toBeRemoved.RemoveEffect();
+            temporaryEffects.Remove(toBeRemoved.name);
+        }
+    }
+
+    public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    {
+        if (!temporaryEffects.ContainsKey(toBeAdded.name))
+        {
+            temporaryEffects.Add(toBeAdded.name, toBeAdded);
+            toBeAdded.SetSubject(this);
+            toBeAdded.ApplyEffect();
+        }
+        else
+            toBeAdded.StackUp();
+    }
     #endregion
 }

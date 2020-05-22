@@ -25,6 +25,7 @@ public interface ICombatant
     void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker); // 적이 죽었을 때 이벤트 처리(보상 획득 및 전투상태 탈출)
     Vector3 GetPosition();
     Transform GetTransform();
+    //GameObject GetGameObject();
     ICombatant GetEnemy();
     bool ValidatingEnemy(ICombatant enemy);
     void DisplayHeal(float healAmount);
@@ -35,4 +36,6 @@ public interface ICombatant
     void ClearTemporaryEffects();
     void RemoveTemporaryEffect(TemporaryEffect toBeRemoved);
     void AddTemporaryEffect(TemporaryEffect toBeAdded);
+    void AddSkill(string key);
+    void RemoveSkill(string key);
 }

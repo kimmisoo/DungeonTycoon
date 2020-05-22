@@ -59,7 +59,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected GameObject debuffEffect;
 
     // 스킬들(아이템, 고유능력 등 모두)
-    List<Skill> skills;
+    Dictionary<string, Skill> skills;
     // 버프/디버프 목록
     Dictionary<string, TemporaryEffect> temporaryEffects;
     Coroutine refreshingTempEffectCoroutine;
@@ -102,7 +102,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         SetAttackEffect(Instantiate(sample.attackEffect));
         SetDefaultEffects();
 
-        skills = new List<Skill>();
+        skills = new Dictionary<string, Skill>();
         temporaryEffects = new Dictionary<string, TemporaryEffect>();
     }
 
@@ -821,6 +821,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         return transform;
     }
 
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
     public void RemoveHealthBelowZeroEventHandler(HealthBelowZeroEventHandler healthBelowZeroEventHandler)
     {
         if (healthBelowZeroEvent != null)
@@ -883,6 +888,70 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
         else
             toBeAdded.StackUp();
+    }
+
+    public void AddSkill(string key)
+    {
+        if (skills.ContainsKey(key))
+            return; // 이미 같은 종류 있으면 그냥 리턴. 같은 스킬 중복 불가.
+
+        skills.Add(key, SkillFactory.CreateSkill(gameObject, key));
+        skills[key].SetOwner(this);
+        skills[key].InitSkill();
+        //skill.Activate();
+    }
+
+    public void RemoveSkill(string key)
+    {
+        if (!skills.ContainsKey(key))
+            return;
+
+        skills[key].Deactivate();
+        skills.Remove(key);
+    }
+
+    protected void SkillBeforeAttack()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.BeforeAttack();
+        }
+    }
+    protected void SkillAfterAttack()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.AfterAttack();
+        }
+    }
+    protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.OnAttack(actualDamage, isCrit, isDodged);
+        }
+    }
+    protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.OnStruck(actualDamage, isDodged, attacker);
+        }
+    }
+    protected void SkillActivate()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            if (!item.isActive)
+                item.Activate();
+        }
+    }
+    protected void SkillDeactivate()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.Deactivate();
+        }
     }
 
     //public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)

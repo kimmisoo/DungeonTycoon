@@ -2,28 +2,52 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public enum ItemType
+{
+    Weapon, Armor, Accessory
+}
+
 public class Item// : IHasEquipmentEffect
 {
-    List<StatModContinuous> statModContinuousList;
-    List<StatModDiscrete> statModDiscreteList;
+    List<StatModContinuous> continuousMods;
+    List<StatModDiscrete> discreteMods;
 
-    public int code { get; set; }
-	public string name { get; set; }
-	public string icon { get; set; }
-	public float attack { get; set; }
-	public float defense { get; set; }
-	public float health { get; set; }
-	public float shiled { get; set; }
-	public float critical { get; set; }
-	public float attackspeed { get; set; }
-	public float penetrate { get; set; }
-	//public List<Enchantment> enchantments;
-	//public List<EquipmentEffect> equipmentEffects;
-    public int value { get; set; }
-	public int minProperLevel { get; set; }
-	public int maxProperLevel { get; set; }
-	public int demandLevel { get; set; }
-	public string explain { get; set; }
+    public List<string> itemSkillNames;
 
+    ICombatant owner;
+    BattleStat ownerBattleStat;
 
+    public ItemType ItemType { get; set; }
+    public int Code { get; set; }
+	public string Name { get; set; }
+	public string Icon { get; set; }
+
+    public int Price { get; set; }
+	public int OptimalLevelLower { get; set; }
+	public int OptimalLevelMax { get; set; }
+	public int DemandedLevel { get; set; }
+	public string Explanation { get; set; }
+
+    public void ApplyItemEffects()
+    {
+        foreach (StatModContinuous mod in continuousMods)
+            ownerBattleStat.AddStatModContinuous(mod);
+        foreach (StatModDiscrete mod in discreteMods)
+            ownerBattleStat.AddStatModDiscrete(mod);
+
+        foreach (string skillName in itemSkillNames)
+            owner.AddSkill(skillName);
+        //    itemSkills.Add(SkillFactory.CreateSkill(owner, skillName));
+    }
+
+    public void RemoveItemEffects()
+    {
+        foreach (StatModContinuous mod in continuousMods)
+            ownerBattleStat.RemoveStatModContinuous(mod);
+        foreach (StatModDiscrete mod in discreteMods)
+            ownerBattleStat.RemoveStatModDiscrete(mod);
+
+        foreach (string skillName in itemSkillNames)
+            owner.RemoveSkill(skillName);
+    }
 }
