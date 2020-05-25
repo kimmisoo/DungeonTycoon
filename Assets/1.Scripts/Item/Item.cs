@@ -9,24 +9,60 @@ public enum ItemType
 
 public class Item
 {
-    List<StatModContinuous> continuousMods;
-    List<StatModDiscrete> discreteMods;
+    private List<StatModContinuous> continuousMods;
+    private List<StatModDiscrete> discreteMods;
 
-    public List<string> itemSkillNames;
+    public string itemSkillKey;
 
-    ICombatant owner;
-    BattleStat ownerBattleStat;
+    private SpecialAdventurer owner;
+    private BattleStat ownerBattleStat;
 
     public ItemType ItemType { get; set; }
     public int Code { get; set; }
-	public string Name { get; set; }
-	public string Icon { get; set; }
+    public string Name { get; set; }
+    public string Icon { get; set; }
 
     public int Price { get; set; }
-	public int OptimalLevelLower { get; set; }
-	public int OptimalLevelMax { get; set; }
-	public int DemandedLevel { get; set; }
-	public string Explanation { get; set; }
+    public int OptimalLevelLower { get; set; }
+    public int OptimalLevelUpper { get; set; }
+    public int DemandedLevel { get; set; }
+    public string Explanation { get; set; }
+
+    public Item()
+    {
+        continuousMods = new List<StatModContinuous>();
+        discreteMods = new List<StatModDiscrete>();
+    }
+
+    public string SkillName
+    {
+        get
+        {
+            string tempName, tempExplanation;
+
+            SkillFactory.GetNameAndExplanation(itemSkillKey, out tempName, out tempExplanation);
+
+            return tempName;
+        }
+    }
+
+    public string SkillExplanation
+    {
+        get
+        {
+            string tempName, tempExplanation;
+
+            SkillFactory.GetNameAndExplanation(itemSkillKey, out tempName, out tempExplanation);
+
+            return tempExplanation;
+        }
+    }
+
+    public void SetOwner(SpecialAdventurer spAdv)
+    {
+        owner = spAdv;
+        ownerBattleStat = spAdv.GetBattleStat();
+    }
 
     public void ApplyItemEffects()
     {
@@ -34,9 +70,10 @@ public class Item
             ownerBattleStat.AddStatModContinuous(mod);
         foreach (StatModDiscrete mod in discreteMods)
             ownerBattleStat.AddStatModDiscrete(mod);
-        
-        foreach (string skillName in itemSkillNames)
-            owner.AddSkill(skillName);
+
+        //Debug.Log("ItemSkillKey : " + itemSkillKey);
+        if (itemSkillKey != null)
+            owner.AddSkill(itemSkillKey);
         //    itemSkills.Add(SkillFactory.CreateSkill(owner, skillName));
     }
 
@@ -47,7 +84,18 @@ public class Item
         foreach (StatModDiscrete mod in discreteMods)
             ownerBattleStat.RemoveStatModDiscrete(mod);
 
-        foreach (string skillName in itemSkillNames)
-            owner.RemoveSkill(skillName);
+        if (itemSkillKey != null)
+            owner.RemoveSkill(itemSkillKey);
+    }
+
+    public void AddStatModContinous(StatModContinuous statMod)
+    {
+        //Debug.Log("[AddStatModContinous] " + statMod.StatType + " : " + statMod.ModValue);
+        continuousMods.Add(statMod);
+    }
+
+    public void AddStatModDiscrete(StatModDiscrete statMod)
+    {
+        discreteMods.Add(statMod);
     }
 }

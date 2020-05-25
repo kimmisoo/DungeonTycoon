@@ -1160,10 +1160,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (skills.ContainsKey(key))
             return; // 이미 같은 종류 있으면 그냥 리턴. 같은 스킬 중복 불가.
 
+        //Debug.Log("aaaa");
         skills.Add(key, SkillFactory.CreateSkill(gameObject, key));
         skills[key].SetOwner(this);
         skills[key].InitSkill();
-        //skill.Activate();
+
+        if(isActiveAndEnabled == true)
+            skills[key].Activate();
     }
 
     public void RemoveSkill(string key)

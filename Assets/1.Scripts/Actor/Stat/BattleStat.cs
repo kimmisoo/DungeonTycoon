@@ -124,7 +124,10 @@ public class BattleStat
     {
         if (!battleStatContinuous[mod.StatType].GetModList().Contains(mod))
         {
+            //Debug.Log("[AddStatModContinuous] " + mod.StatType + " : " + mod.ModValue);
+            //Debug.Log("[AddStatModContinuous] Def before : " + Defence + ", " + "Hp before : " + HealthMax);
             battleStatContinuous[mod.StatType].AddStatMod(mod);
+            //Debug.Log("[AddStatModContinuous] Def after : " + Defence + ", " + "Hp after : " + HealthMax);
 
             // 아이템 탈착을 통한 글리치 방지
             if (mod.StatType == StatType.HealthMax && Health > HealthMax)
@@ -196,6 +199,23 @@ public class BattleStat
             return battleStatContinuous[StatType.Attack].GetCalculatedValue();
         }
     }
+
+    public float CriticalChance
+    {
+        get
+        {
+            return battleStatContinuous[StatType.CriticalChance].GetCalculatedValue();
+        }
+    }
+
+    public float CriticalDamage
+    {
+        get
+        {
+            return battleStatContinuous[StatType.CriticalDamage].GetCalculatedValue();
+        }
+    }
+
 
     public float Health
     {
@@ -333,9 +353,9 @@ public class BattleStat
     public bool CheckCrit()
     {
         float randNum = Random.Range(0.0f, 1.0f);
-        float critChance = battleStatContinuous[StatType.CriticalChance].GetCalculatedValue();
+        //float critChance = battleStatContinuous[StatType.CriticalChance].GetCalculatedValue();
 
-        if (randNum <= critChance)
+        if (randNum <= CriticalChance)
             return true;
         else
             return false;
@@ -352,7 +372,7 @@ public class BattleStat
         isCrit = CheckCrit();
         if (isCrit)
         {
-            critDmg = battleStatContinuous[StatType.CriticalDamage].GetCalculatedValue(); ;
+            critDmg = battleStatContinuous[StatType.CriticalDamage].GetCalculatedValue();
             damage *= critDmg;
         }
 
