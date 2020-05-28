@@ -8,7 +8,7 @@ public class DesireEquipment : DesireBase {
 	{
 		if (!(owner is Adventurer))
 			yield break;
-		else
+		else // 레벨 x 시간 지나면 차도록...
 			yield return base.Tick();
 		
 	}

@@ -69,6 +69,7 @@ public abstract class Actor : MonoBehaviour
         wayForMove = new List<TileForMove>();
         state = new State();
         direction = new Direction();
+		Debug.Log("Actor _ Awake;");
     }
 
     //public Actor[] GetAdjacentActor(int range)

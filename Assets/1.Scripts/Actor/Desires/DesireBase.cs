@@ -73,6 +73,8 @@ public class DesireBase {
             return _desireName;
         }
 	}
+
+	
 	protected float _desireValue;
 	protected float _tickAmount;
 	protected float _tickAmountMult = 1.0f;
@@ -80,6 +82,7 @@ public class DesireBase {
 	protected DesireType _desireName;
 	protected Coroutine tickCoroutine;
 	protected Traveler owner;
+	
 	/*
 	public void Init(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
 	{

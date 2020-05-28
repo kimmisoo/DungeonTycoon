@@ -161,9 +161,9 @@ public class GameSavedata
         travelerDatas = new List<TravelerData>();
 
         // travelers 저장.
-        for (int i = 0; i < gameManager.travelers.Count; i++)
+        for (int i = 0; i < gameManager.travelersEnabled.Count; i++)
         {
-            travelerDatas.Add(new TravelerData(gameManager.travelers[i]));
+            travelerDatas.Add(new TravelerData(gameManager.travelersEnabled[i]));
         }
 
         // 타일맵 저장.

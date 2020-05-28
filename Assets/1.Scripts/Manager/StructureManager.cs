@@ -23,8 +23,8 @@ public class StructureManager : MonoBehaviour
 		}
 	}
 
-    // 건설 대상 지역 표시
-	public GameObject[] constructingAreas;
+	// 건설 대상 지역 표시
+	public List<GameObject> constructingAreas;
 
     // 건설할 건물
 	public GameObject constructing; 
@@ -42,14 +42,22 @@ public class StructureManager : MonoBehaviour
 
     #region 세이브!
     public List<Structure> structures;
-    #endregion
-
-    // Use this for initialization
-    void Start ()
+	#endregion
+	private void Awake()
+	{
+		structures = new List<Structure>();
+	}
+	// Use this for initialization
+	void Start ()
     {
 		_instance = this;
 		LoadStructureData();
-		structures = new List<Structure>();
+		GameObject constructingAreaParent = GameObject.FindGameObjectWithTag("ConstructingArea");
+		
+		for(int i=0; i<constructingAreaParent.transform.childCount; i++)
+		{
+			constructingAreas.Add(constructingAreaParent.transform.GetChild(i).gameObject);
+		}
 	}
 	
 	
@@ -119,11 +127,19 @@ public class StructureManager : MonoBehaviour
 		structure.extentHeight = y;
 
 		structure.extent = new int[x, y];
-		for(int i =0; i< x*y; i++)
+		/*for(int i =0; i< x*y; i++)
 		{
 			structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
 			Debug.Log(structure.extent[i % x, i / x]);
-        }
+        }*/
+		Debug.Log(x + " , " + y);
+		for(int i=0; i<y; i++)
+		{
+			for(int j=0; j<x; j++)
+			{
+				structure.extent[j , i] = structureJson[tempStructureCategory][tempStructureNumber]["site"][j + (i * x)].AsInt;
+			}
+		}
 		AllocateStructure();
 	}
 	
@@ -299,6 +315,7 @@ public class StructureManager : MonoBehaviour
                     // 건설 가능한가, 입구인가에 따라 색칠하고 건설 불가면 bool 변수 변경해줌.
 					if (t != null)
 					{
+						Debug.Log("Area Index = " + areaIndex + " ConstructingAreasCount = " + constructingAreas.Count) ;
 						if (t.GetBuildable() == true && extent[j, i] == 1)
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
@@ -436,6 +453,7 @@ public class StructureManager : MonoBehaviour
 		//이용 요금 고려
 		//욕구 타입과 대기 시간 고려
 		//순서는 종족, 부, 직업 고려
+		
 	}
 
     public Structure[] FindRescue(Traveler t) // 수정필요할듯?
@@ -550,12 +568,12 @@ public class StructureManager : MonoBehaviour
         // 사용중 모험가, 대기중 모험가 큐에 넣어줌.
         while (input.curUsingQueue.Count()>0)
         {
-            structure.LoadEnterdTraveler(GameManager.Instance.travelers[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
+            structure.LoadEnterdTraveler(GameManager.Instance.travelersEnabled[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
         }
 
         while(input.curWaitingQueue.Count()>0)
         {
-            structure.AddWaitTraveler(GameManager.Instance.travelers[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
+            structure.AddWaitTraveler(GameManager.Instance.travelersEnabled[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
         }
     }
 }

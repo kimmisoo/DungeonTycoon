@@ -27,7 +27,7 @@ public class Tile : MonoBehaviour
     public bool isPassable = false;
     public bool isBuildable = false;
     public bool isHuntingArea = false;
-
+	
     [SerializeField]
     // 수정요망 이거 Place로 고치고 관련 코드 고쳐야 함. 일단 보류 쓰는 곳 없음.
     Structure structure;

@@ -6,7 +6,7 @@ using System.Linq;
 
 public enum Gender { Male, Female }
 
-public class Stat : MonoBehaviour{
+public class Stat{
 	
 	#region CommonStat
 	public int id
@@ -41,11 +41,12 @@ public class Stat : MonoBehaviour{
 	{
 		get; set;
 	}
+	
 	#endregion
 
 	Dictionary<DesireType, DesireBase> desireDict;
 	Traveler owner;
-
+	WaitForSeconds tickBetween;
     public Stat()
     {
         desireDict = new Dictionary<DesireType, DesireBase>();
@@ -70,65 +71,8 @@ public class Stat : MonoBehaviour{
         //StartDesireTick();
     }
 
-	public void Init(int _id, RaceType _race, WealthType _wealth, string _name, string _explanation, Gender _gender, int _gold, Dictionary<DesireType, DesireBase> _desireDict, Traveler _owner)
-	{
-		id = _id;
-		race = _race;
-		wealth = _wealth;
-		name = _name;
-		explanation = _explanation;
-		gender = _gender;
-		gold = _gold;
-		desireDict = _desireDict;
-		owner = _owner;
-		StartDesireTick();
-	}
-
-    #region Desire Tick메소드
-    public void StartDesireTick()
-	{
-		foreach(KeyValuePair<DesireType, DesireBase> kvp in desireDict)
-		{
-			StartCoroutine(kvp.Value.Tick());
-		}
-	}
-	public void StopDesireTick()
-	{
-		StopAllCoroutines();
-	}
-
-	/*
-	IEnumerator Ticking()
-	{
-		float tickTimeOrigin = tickTime;
-		float eps = 0.0001f;
-		WaitForSeconds wait = new WaitForSeconds(tickTime);
-
-		while (owner.GetState() != State.Dead)
-		{
-			yield return wait;
-			TickDesire();
-			if (Mathf.Abs(tickTimeOrigin - tickTime) > eps)
-			{
-				tickTimeOrigin = tickTime;
-				wait = new WaitForSeconds(tickTimeOrigin);
-			}
-		}
-	}
-
-	public void TickDesire()
-	{
-
-		thirsty += (thirstyTick * tickAllMult);
-		hungry += (hungryTick * tickAllMult);
-		sleep += (sleepTick * tickAllMult);
-		tour += (tourTick * tickAllMult);
-		fun += (funTick * tickAllMult);
-		convenience += (convenienceTick * tickAllMult);
-		equipment += (equipmentTick * tickAllMult);
-		health = (1.0f - (owner.stat.GetCurrentHealth() / owner.stat.GetCalculatedHealthMax())) * 100.0f;
-	}*/
-
+	#region Desire Tick메소드
+	//Tick은 DesireBase에 Tick으로 Traveler에서 호출.
 	#endregion
 
 	public DesireType GetHighestDesire()

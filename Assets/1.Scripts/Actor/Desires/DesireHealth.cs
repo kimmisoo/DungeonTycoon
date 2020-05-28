@@ -14,6 +14,7 @@ public class DesireHealth : DesireBase {
 			yield return tickBetweenWait;
 			//desireValue = owner.stat.GetCurrentHealth() / owner.stat.GetHealthMax() * 100.0f;
 			//desireValue = (owner as Adventurer).battleStat.GetCurrentHealth / 
+			desireValue = ((owner as Adventurer).GetBattleStat().MissingHealth / (owner as Adventurer).GetBattleStat().HealthMax) * 100.0f;
 		}
 
 	}

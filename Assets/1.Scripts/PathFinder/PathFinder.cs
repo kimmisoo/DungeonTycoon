@@ -152,22 +152,29 @@ public class PathFinder : MonoBehaviour
         //         openList[i].ClearReference(); // NullPointerException 이 나는 곳.
         //     }
         openList.Clear();
-        /*for (int i = 0; i < closeList.Count; i++)
+		/*for (int i = 0; i < closeList.Count; i++)
         {
             closeList[i].ClearReference();
         }*/
-        //delegate call
+		//delegate call
 
-        // 이 부분 때문에 코루틴 증식하는 거 같아서 일단 빼놓음. #CorutineDebug
-        //if (isNoPath)
-        //{
-        //    isNoPath = false;
-        //    pathFindFail();
-        //}
-        //else
-        //{
-        //    pathFindSuccess();
-        //}
+		// 이 부분 때문에 코루틴 증식하는 거 같아서 일단 빼놓음. #CorutineDebug
+		//if (isNoPath)
+		//{
+		//    isNoPath = false;
+		//    pathFindFail();
+		//}
+		//else
+		//{
+		//    pathFindSuccess();
+		//}
+		if (isNoPath)
+		{
+			isNoPath = false;
+			pathFindFail();
+		}
+		else
+			pathFindSuccess();
     }
 
     public void Simulate(System.Object threadContext)

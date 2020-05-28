@@ -41,6 +41,7 @@ public class Traveler : Actor {
     protected int wanderCount = 0;
 	protected const int wanderCountMax = 3;
     protected Coroutine curCoroutine;
+	protected Coroutine curSubCoroutine;
     //protected Tile destinationTile;
     protected Place destinationPlace;
     protected Structure[] structureListByPref;
@@ -51,18 +52,17 @@ public class Traveler : Actor {
     protected void Awake()
     {
         base.Awake();
-    }
+		pathFinder.SetValidateTile(ValidateNextTile);
+		SetPathFindEvent();
+	}
     // Use this for initialization
 
     public void InitTraveler(Stat stat) //
     {
-        // 이동가능한 타일인지 확인할 delegate 설정.
-        pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEvent();
-
-
+		// 이동가능한 타일인지 확인할 delegate 설정.
+        
+		this.stat = new Stat(stat, this);
         //stat 초기화
-        //pathfinder 초기화 // delegate 그대로
     }
 
     public void OnEnable()
@@ -86,7 +86,11 @@ public class Traveler : Actor {
 
         // 기본은 Idle.
         StartCoroutine(LateStart());
-    }
+		foreach (KeyValuePair<DesireType, DesireBase> kvp in stat.GetDesireDict())
+		{
+			StartCoroutine(kvp.Value.Tick()); //Traveler SetActive = false 시 코루틴 종료됨.
+		}
+	}
     IEnumerator LateStart()
     {
         yield return null;
@@ -122,42 +126,42 @@ public class Traveler : Actor {
                 //이외에 체크할거 있으면 여기서
                 break;
             case State.SolvingDesire_Wandering:
-                Debug.Log("SolvingDesire_Wandering");
+                Debug.Log("----------------------------------------------SolvingDesire_Wandering");
                 superState = SuperState.SolvingDesire_Wandering;
                 curCoroutine = StartCoroutine(SolvingDesire_Wandering()); // State -> SearchingExit(if wanderCount exceeded) or PathFinding(normal)
                 break;
             case State.SearchingStructure:
-                Debug.Log("SS");
+                Debug.Log("----------------------------------------------SS");
                 superState = SuperState.SolvingDesire;
                 curCoroutine = StartCoroutine(SearchingStructure()); // State -> SolvingDesrie_Wandering(if no structure) or PathFinding or SearchingExit
                 break;
             case State.PathFinding:
-                Debug.Log("PF");
+                Debug.Log("----------------------------------------------PF");
                 curCoroutine = StartCoroutine(PathFinding()); // State -> MovingToDestination(if Succeed) or SearchingExit(if pathfindCount Exceeded) or SearchingStructure(if pathfindCount under maxValue)
                 break;
             case State.MovingToDestination:
-                Debug.Log("MTS");
+                Debug.Log("----------------------------------------------MTS");
                 curCoroutine = StartCoroutine(MoveToDestination()); // State -> SearchingStructure(if
                 break;
             case State.WaitingStructure:
-                Debug.Log("WS");
+                Debug.Log("----------------------------------------------WS");
                 //destinationPlace.Visit(this);
 				curCoroutine = StartCoroutine(WaitingStructure());
                 break;
             case State.UsingStructure:
-                Debug.Log("US");
+                Debug.Log("----------------------------------------------US");
                 //욕구 감소
                 //소지 골드 감소
                 curCoroutine = StartCoroutine(UsingStructure());
                 break;
             case State.SearchingExit:
-                Debug.Log("SE");
+                Debug.Log("----------------------------------------------SE");
                 superState = SuperState.ExitingDungeon;
 				curCoroutine = StartCoroutine(SearchingExit());
                 //Going to outside 
                 break;
             case State.Exit:
-                Debug.Log("EXIT");
+                Debug.Log("----------------------------------------------EXIT");
 				curCoroutine = StartCoroutine(Exit());
                 break;
             case State.None: // Idle과 동일
@@ -206,7 +210,6 @@ public class Traveler : Actor {
     {
         if (wanderCount < wanderCountMax)
         {
-            //랜덤 거리, 사방으로 이동
             do
             {
                 destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
@@ -224,18 +227,23 @@ public class Traveler : Actor {
 
     protected IEnumerator SearchingStructure()
     {
+		
 		yield return null;
 		if(structureListByPref == null) // List가 비어있을때 . // 건물 이용 후 List 비워줘야함.
 		{
 			structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
+			if (structureListByPref == null)
+				Debug.Log("--------------------------------------------------StructureList is Null");
 		}
 		if(structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때...
 		{
+			Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
 			pathFindCount = 0;
 			curState = State.SolvingDesire_Wandering;
 		}
 		else // 검색 결과 건물로 길찾기진행.
 		{
+			Debug.Log("------------------------------------------------------------Found Structure!");
 			destinationTile = structureListByPref[pathFindCount].GetEntrance();
 			destinationPlace = structureListByPref[pathFindCount];
 			curState = State.PathFinding;
@@ -302,6 +310,7 @@ public class Traveler : Actor {
 
 		// 사용 후에는 비워주기.
 		destinationPlace = null;
+		destinationTile = null;
 		wanderCount = 0;
 	}
 
@@ -357,7 +366,21 @@ public class Traveler : Actor {
 	}
 	IEnumerator CoroutinePathFindSuccess()
 	{
-		if(destinationPlace != null)
+		
+		if(GetSuperState() == SuperState.ExitingDungeon)
+		{
+			//퇴장처리
+			pathFindCount = 0;
+			curState = State.MovingToDestination;
+			yield break;
+		}
+		if(destinationPlace != null) // superState == SolvingDesire;
+		{
+			Debug.Log("-----------------------------------PF Success");
+			pathFindCount = 0;
+			curState = State.MovingToDestination;
+		}
+		else if(destinationTile != null) // superState == SolvingDesire_Wandering
 		{
 			pathFindCount = 0;
 			curState = State.MovingToDestination;
@@ -387,6 +410,8 @@ public class Traveler : Actor {
 	}
 	IEnumerator CoroutinePathFindFail()
 	{
+		Debug.Log("----------------------------------------------------------PF Fail." + destinationPlace is Structure ? (destinationPlace as Structure).name : "Tile..");
+
 		if(superState == SuperState.ExitingDungeon)
 		{
 			//즉시탈출
@@ -410,139 +435,6 @@ public class Traveler : Actor {
 		return tile.GetPassable(); //임시조치
 	}
 
-	protected List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
-    {
-		List<TileForMove> tileForMoveWay = new List<TileForMove>();
-		TileForMove next, cur;
-		int count = 1;
-		cur = curTileForMove;
-		//Debug.Log("Start : " + cur.GetParent().GetX() + " , " + cur.GetParent().GetY() + "dest = " + destinationTile.GetX() + " , " + destinationTile.GetY());
-        // 다음 타일로의 방향
-		Direction dir = curTile.GetDirectionFromOtherTile(path[count].myTilePos);
-		Vector2 dirVector = DirectionVector.GetDirectionVector(dir);
-
-        //현재 타일 추가
-		tileForMoveWay.Add(curTileForMove);
-
-		//Debug.Log(dir.ToString());
-
-		string pathString = "";
-
-		for (int i = 0; i<path.Count; i++)
-		{
-			pathString += path[i].myTilePos.GetX() + " , " + path[i].myTilePos.GetY() + "\n";
-			
-		}
-
-		//Debug.Log(pathString);
-		//Debug.Log("progress : " + cur.GetX() + "(" + cur.GetParent().GetX() + ")" + " , " + cur.GetY() + "(" + cur.GetParent().GetY() + ")"); //19 49
-
-
-		while (!(path[count].myTilePos.Equals(destinationTile)))
-		{
-			next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
-
-			//Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-			tileForMoveWay.Add(next);
-			if(cur.GetParent().Equals(next.GetParent() )) //한칸 진행했는데도 같은 타일일때
-			{
-				//Debug.Log("SameTile..");
-				next = tileLayer.GetTileForMove(next.GetX() + (int)dirVector.x, next.GetY() + (int)dirVector.y);
-				//Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-				tileForMoveWay.Add(next);
-				cur = next;
-			}
-			else
-			{
-				cur = next;
-			}
-			if(Random.Range(0, 2) >= 1)
-			{
-				
-				next = tileLayer.GetTileForMove(cur.GetX() + (int)dirVector.x, cur.GetY() + (int)dirVector.y);
-				if (next == null)
-					continue;
-
-				//Debug.Log("progress : " + next.GetX() + "(" + next.GetParent().GetX() + ")" + " , " + next.GetY() + "(" + next.GetParent().GetY() + ")");
-				tileForMoveWay.Add(next);
-				cur = next;
-			}
-			count++;
-			dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos);
-			dirVector = DirectionVector.GetDirectionVector(dir);
-
-			//Debug.Log(dir.ToString());
-		}
-		//Debug.Log("Done!!!!");
-		return tileForMoveWay;
-	}
-
-    protected IEnumerator MoveAnimation(List<TileForMove> tileForMoveWay)
-	{
-		yield return null;
-		if (tileForMoveWay == null || tileForMoveWay.Count < 1) //Path가 없을때 
-			yield break;
-		Direction dir = Direction.DownLeft;
-		//FlipX true == Left, false == Right
-		Vector3 dirVector;
-		float distance, sum = 0.0f;
-		
-		for (int i = 0; i < tileForMoveWay.Count - 1; i++)
-		{
-			switch (dir = tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]))
-			{
-				case Direction.DownRight:
-					animator.SetTrigger("UpToDownFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = true;
-					}
-					break;
-				case Direction.UpRight:
-
-					animator.SetTrigger("DownToUpFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = true;
-					}
-					break;
-				case Direction.DownLeft:
-
-					animator.SetTrigger("UpToDownFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = false;
-					}
-					break;
-				case Direction.UpLeft:
-
-					animator.SetTrigger("DownToUpFlg");
-					foreach (SpriteRenderer sr in spriteRenderers)
-					{
-						sr.flipX = false;
-					}
-					break;
-				default:
-					break;
-			}
-			//transform.position = tileForMoveWay[i].GetPosition();
-			dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
-			distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
-			while(Vector3.Distance(transform.position, tileForMoveWay[i].GetPosition()) < distance)
-			{
-				yield return null;
-				transform.Translate(dirVector * Time.deltaTime);
-
-			}
-			sum = 0.0f;
-			transform.position = tileForMoveWay[i + 1].GetPosition();
-			tileForMoveWay[i+1].SetRecentActor(this);
-			SetCurTile(tileForMoveWay[i+1].GetParent());
-			SetCurTileForMove(tileForMoveWay[i+1]);
-
-		}
-
-	} // Adventurer에서 이동 중 피격 구현해야함. // Notify?
 
 	public void OnWaitingStructure()
 	{
@@ -562,6 +454,12 @@ public class Traveler : Actor {
 	{
 		yield return null;
 		curState = State.UsingStructure;
+		//스탯 처리
+		stat.gold -= (destinationPlace as Structure).charge;
+		stat.GetSpecificDesire((destinationPlace as Structure).resolveType).desireValue -= (destinationPlace as Structure).resolveAmount;
+		GameManager.Instance.AddGold((destinationPlace as Structure).charge);
+		//이용자 골드 --, 욕구 --
+		//플레이어 골드 ++
 	}
 	public void OnExitStructure()
 	{

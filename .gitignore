@@ -3,7 +3,7 @@
 # =============== #
 Temp/
 Library/
-DungeonTycoon_Data/
+DngeonTycoon_Data/
 *.apk
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
