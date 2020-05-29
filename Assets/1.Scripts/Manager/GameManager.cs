@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviour
         get
         {
             int total = 0;
-            for (int i = 0; i <= HuntingAreaManager.Instance.ActiveIndex; i++)
+            for (int i = 0; i <= CombatAreaManager.Instance.ActiveIndex; i++)
             {
                 total += progressInformations[i].guestCapacity;
             }
@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return CurGuestMax / ((HuntingAreaManager.Instance.ActiveIndex + 1) / 2); // Int연산인데 버려지는 건? 버려지면 나머지는 traveler에서 보충해도 되긴함.
+            return CurGuestMax / ((CombatAreaManager.Instance.ActiveIndex + 1) / 2); // Int연산인데 버려지는 건? 버려지면 나머지는 traveler에서 보충해도 되긴함.
         }
     }
 
@@ -119,7 +119,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return CurAdvMaxPerHuntingArea * (HuntingAreaManager.Instance.ActiveIndex + 1); // 사냥터별 수가 있고 정수 때문에 이렇게 계산.
+            return CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.ActiveIndex + 1); // 사냥터별 수가 있고 정수 때문에 이렇게 계산.
         }
     }
 
@@ -774,7 +774,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetAdvStatistics()
     {
-        for (int i = 0; i <= HuntingAreaManager.Instance.ActiveIndex; i++)
+        for (int i = 0; i <= CombatAreaManager.Instance.ActiveIndex; i++)
         {
             progressInformations[i].curAdvNum = 0;
         }
@@ -805,7 +805,7 @@ public class GameManager : MonoBehaviour
         List<ProgressInformation> tempArr = new List<ProgressInformation>(progressInformations);
 
         tempArr.Sort(CompareByCurHuntingAreaAsc);
-        int totalAdv = CurAdvMaxPerHuntingArea * (HuntingAreaManager.Instance.ActiveIndex + 1);
+        int totalAdv = CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.ActiveIndex + 1);
         tempArr.Add(new ProgressInformation(totalAdv));
 
         int generated = 0;
@@ -1072,7 +1072,7 @@ public class GameManager : MonoBehaviour
     // 디버깅용 사냥터 생성 코드
     public void DebugHuntingArea()
     {
-        HuntingAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
+        CombatAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
     }
 #endregion
 
@@ -1165,5 +1165,10 @@ public class GameManager : MonoBehaviour
     {
         return tileMap.GetComponent<TileMap>().GetLayer(layerNum).GetComponent<TileLayer>();
     }
-#endregion
+
+    public void OnHuntingAreaConquered()
+    {
+        
+    }
+    #endregion
 }

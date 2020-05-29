@@ -18,6 +18,9 @@ public class HuntingArea : Place
     private int monsterPerRegen; // 주기마다 리젠되는 최대 양
     private float monsterRegenRate; // 리젠 주기
     private float monsterRatio; // 몬스터 샘플1의 비율(1-monsterRatio는 샘플2의 비율)
+
+    private int conquerCondition;
+    private int killCount;
     
     // 사냥터 안의 몬스터, 모험가들
     public Dictionary<int, GameObject> monstersEnabled;
@@ -33,6 +36,11 @@ public class HuntingArea : Place
 
     private GameObject monsterSample1;
     private GameObject monsterSample2;
+
+    // 스테이지 진행/공략 용
+    public delegate void AreaConqueredEventHandler();
+    public event AreaConqueredEventHandler areaConquered;
+    
 
     #region Save
     public string stageNum;
@@ -51,9 +59,11 @@ public class HuntingArea : Place
     }
 
 
-    public void InitHuntingArea(int lvMax, int mobMax/* = 42*/, int mobPerRegen/* = 7*/, float mobRegenRate/* = 5.5f*/, float mobRatio,
+    public void InitHuntingArea(int conquerConditionIn, bool isBossAreaIn, int lvMax, int mobMax/* = 42*/, int mobPerRegen/* = 7*/, float mobRegenRate/* = 5.5f*/, float mobRatio,
         GameObject mobSample1, GameObject mobSample2)
-    { 
+    {
+        conquerCondition = conquerConditionIn;
+        IsBossArea = isBossAreaIn;
         levelMax = lvMax;
         monsterMax = mobMax;
         monsterPerRegen = mobPerRegen;
@@ -63,6 +73,8 @@ public class HuntingArea : Place
         // 이부분 복사 제대로 되는지 봐야. 수정요망. 아마 될듯, 복사가 아니라 참조로.
         monsterSample1 = mobSample1;
         monsterSample2 = mobSample2;
+
+        killCount = 0;
     }
 
     // 현재 살아있는 몬스터 리스트 Get
@@ -322,9 +334,20 @@ public class HuntingArea : Place
 
     public void OnMonsterCorpseDecay(int index)
     {
+        // 몬스터 제거 및 다시 객체풀에 넣어주기
         monstersEnabled[index].SetActive(false);
         monstersDisabled.Add(index, monstersEnabled[index]);
         monstersEnabled.Remove(index);
+
+        // 공략 조건 관련
+        if (killCount < conquerCondition)
+        {
+            killCount++;
+            if (killCount >= conquerCondition)
+                areaConquered?.Invoke();
+
+            Debug.Log("killCount : " + killCount);
+        }
     }
 
     // Use this for initialization
@@ -372,5 +395,10 @@ public class HuntingArea : Place
     {
         StartCoroutine(MonsterRegenCycle());
     }
-#endregion
+    #endregion
+
+    #region StageProgress
+    public bool IsBossArea { get; private set; }
+
+    #endregion
 }

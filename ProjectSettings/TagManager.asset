@@ -18,7 +18,7 @@ TagManager:
   - VerticalScroll
   - guard
   - skipButton
-  - HuntingArea
+  - CombatArea
   layers:
   - Default
   - TransparentFX
