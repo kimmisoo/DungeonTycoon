@@ -304,13 +304,9 @@ public class Traveler : Actor {
 		yield return null;
 		Structure destinationStructure = destinationPlace as Structure;
 		stat.gold -= destinationStructure.charge;
-		stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // ??
+		stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // 욕구 해소 처리.
 
-		// 건물 사용에 대한 것 아직 구현 덜 됨. 수정요망.
-
-		// 사용 후에는 비워주기.
-		destinationPlace = null;
-		destinationTile = null;
+		
 		wanderCount = 0;
 	}
 
@@ -468,9 +464,13 @@ public class Traveler : Actor {
 	IEnumerator _OnExitStructure()
 	{
 		yield return null;
+		Debug.Log("\nTraveler.OnExitStructure is Called!!!!!\n");
 		//퇴장 처리
 		(destinationPlace as Structure).ExitTraveler();
 		SetVisible();
+		// 사용 후에는 비워주기.
+		destinationPlace = null;
+		destinationTile = null;
 		curState = State.SearchingStructure;
 	}
 	protected void SetInvisible()

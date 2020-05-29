@@ -265,20 +265,20 @@ public class StructureManager : MonoBehaviour
 		{
 			for(int j = 0; j<structure.extentWidth; j++)
 			{
-                Tile thatTile = tileLayer.GetTileAsComponent(tile.GetX() + j, tile.GetY() + i);
+                Tile tempTile = tileLayer.GetTileAsComponent(tile.GetX() + j, tile.GetY() + i);
 
                 if (extent[j,i] == 1)
 				{
-					thatTile.SetBuildingArea(false);
-                    thatTile.SetStructed(true);
-                    thatTile.SetStructure(structure);
+					tempTile.SetBuildingArea(false);
+                    tempTile.SetStructed(true);
+                    tempTile.SetStructure(structure);
                 }
                 else if(extent[j, i] == 2)
                 {
-                    thatTile.SetStructed(true);
-                    if(thatTile.GetBuildingArea())
+                    tempTile.SetStructed(true);
+                    if(tempTile.GetBuildingArea())
                     {
-                        structure.addEntrance(thatTile);
+                        structure.addEntrance(tempTile);
                     }
                 }
 			}
@@ -365,29 +365,29 @@ public class StructureManager : MonoBehaviour
 					if (t != null)
 					{
 						Debug.Log("Area Index = " + areaIndex + " ConstructingAreasCount = " + constructingAreas.Count) ;
-						if (t.GetBuildingArea() == true && extent[j, i] == 1)
+						if (t.GetBuildingArea() == true && extent[j, i] == 1) // 입구 아니고 타일 건설가능할때
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = Color.green; //new Color(0.0f, 1.0f, 0.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
-						else if (t.GetBuildingArea() == true && extent[j, i] == 2)
+						else if (t.GetBuildingArea() == true && extent[j, i] == 2) // 입구 이고 타일 길일때
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = Color.blue;//new Color(0.0f, 0.0f, 1.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
-						else if (t.GetBuildingArea() == false && extent[j, i] == 1)
+						else if (t.GetBuildingArea() == false && extent[j, i] == 1) // 입구 아니고 타일 건설 불가능일때
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f);
-							conStructure.SetisConstructable(false);
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = Color.red;//new Color(1.0f, 0.0f, 0.0f);
+							conStructure.SetisConstructable(false); // 입구 아닌 부분이 건설 불가능일때만 건설 불가 처리.
 
 						}
-						else if (t.GetBuildingArea() == false && extent[j, i] == 2)
+						else if (t.GetBuildingArea() == false && extent[j, i] == 2) // 입구 이고 타일 길이아닐때
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
-							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 0.0f);
+							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = Color.yellow;//new Color(1.0f, 1.0f, 0.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
 						else

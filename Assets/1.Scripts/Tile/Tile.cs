@@ -97,22 +97,24 @@ public class Tile : MonoBehaviour
     {
         structure = s;
     }
+	//일단 건물은 뚫고 갈 수 있도록 처리해놨음.
+	//나중에 길막힘 구현할때 볼것
 	public bool GetBuildingArea()
 	{
-		return isBuildingArea;
+		return isNonTile==false && isActive == true ? isBuildingArea : false;
 	}
     public bool GetPassableTraveler()
     {
-		return isRoad;
+		return isNonTile == false && isActive == true ? isRoad || isBuildingArea : false;
     }
     public bool GetPassableAdventurer()
     {
-        return isRoad || isHuntingArea;
+        return isNonTile == false && isActive == true ? isRoad || isBuildingArea || isHuntingArea : false; 
     }
     public bool GetPassableMonster()
     {
-        return isHuntingArea;
-    }
+        return isNonTile == false && isActive == true ? isHuntingArea : false;
+	}
 	public void SetBuildingArea(bool _isBuildingArea)
 	{
 		isBuildingArea = _isBuildingArea;
@@ -123,7 +125,7 @@ public class Tile : MonoBehaviour
 	}
 	public bool GetHuntingArea()
 	{
-		return isHuntingArea;
+		return isNonTile == false && isActive == true ? isHuntingArea : false;
 	}
 	public void SetRoad(bool _isRoad)
 	{
@@ -131,7 +133,7 @@ public class Tile : MonoBehaviour
 	}
 	public bool GetRoad()
 	{
-		return isRoad;
+		return isNonTile == false && isActive == true ? isRoad : false;
 	}
 	public void SetIsActive(bool _isActive)
 	{

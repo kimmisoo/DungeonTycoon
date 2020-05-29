@@ -12,9 +12,9 @@ public class TileMap : MonoBehaviour {
 	string renderorder;
 
 	//Dictionary<int, TileLayer> layer; // 0 = Ground,  1 = 2층, 2 = 3층.....
-	List<GameObject> layers;
-
+	List<GameObject> layers = new List<GameObject>();
 	
+
 	public void SetWidth(int _width)
 	{
 		width = _width;

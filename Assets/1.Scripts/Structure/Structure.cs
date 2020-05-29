@@ -21,6 +21,7 @@ public class Structure : Place
 		}
 		public IEnumerator UsingStructure(int duration)
 		{
+			Debug.Log("--------------------Traveler Entered!!!!!!");
 			for(int i = 0; i<duration; i++)
 			{
 				yield return Tick;
@@ -28,6 +29,7 @@ public class Structure : Place
 			}
 			//call ExitTraveler
 			OnExitStructure();
+			Debug.Log("---------------------Traveler Exit!!!!!!");
 		}
 		public int GetRemainTime(int duration) // queue라 쓸모가 ..?
 		{
@@ -177,7 +179,9 @@ public class Structure : Place
 			TravelerTimer t = curWaitingQueue.Dequeue();
 			t.OnUsingStructure();
 			curUsingQueue.Enqueue(t);
+			StartCoroutine(t.UsingStructure(duration));
 		}
+		Debug.Log(names+"-----------------------Current Using Queue Size = " + curUsingQueue.Count + "/" + capacity);
 	}
     // data에 있던 잔여시간을 보고 관광객 입장시킴
     public void LoadEnterdTraveler(Traveler t, float elapsedTime)
@@ -185,11 +189,12 @@ public class Structure : Place
 		TravelerTimer timer = new TravelerTimer(t, t.OnUsingStructure, t.OnExitStructure);
 		timer.elapsedTime = (int)elapsedTime;
         curUsingQueue.Enqueue(timer);
-    }
+		StartCoroutine(timer.UsingStructure(duration-timer.elapsedTime));
+	}
 
     public override void Visit(Actor visitor)
     {
-        AddWaitTraveler(visitor as Traveler);
+        AddWaitTraveler(visitor as Traveler); // 대기시간 체크는 Traveler에서 이미 끝났음.
     }
 
     public void AddWaitTraveler(Traveler t) // 첫번째로 호출.
@@ -211,6 +216,7 @@ public class Structure : Place
 	{
 		//UsingQueue 에서 한명 빠질때 . 
 		TravelerTimer t = curUsingQueue.Dequeue();
+		Debug.Log(names+"-----------------------Current Using Queue Size = " + curUsingQueue.Count+"/"+capacity);
 		EnterTraveler();
 	}
 	public float GetWaitSeconds()

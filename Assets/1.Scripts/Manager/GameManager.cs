@@ -255,10 +255,10 @@ public class GameManager : MonoBehaviour
 #endif
         SaveLoadManager.Instance.InstantiateFromSave();
 		
-		for(int i=0; i<15; i++)
+		for(int i=0; i<280; i++)
 		{
 			GenAndEnqueueTraveler();
-			yield return new WaitForSeconds(10.0f);
+			yield return new WaitForSeconds(1.0f);
 		}
 	}
 
@@ -489,6 +489,9 @@ public class GameManager : MonoBehaviour
             if (num <= total)
                 break;
         }
+
+		if (i >= trvWealthRatios.Count)
+			i = trvWealthRatios.Count - 1;
 
         switch (trvWealthRatios[i].Key)
         {
@@ -934,7 +937,7 @@ public class GameManager : MonoBehaviour
         SetSceneProgressInfos(aData, sceneNumber);
 
 #if DEBUG
-        traveler_Max = 20;
+        traveler_Max = 300;
         adventurer_Max = 1;
         //specialAdventurer_Max = 800;
 #endif
@@ -1199,5 +1202,13 @@ public class GameManager : MonoBehaviour
     {
         return tileMap.GetComponent<TileMap>().GetLayer(layerNum).GetComponent<TileLayer>();
     }
+
+	public void OpenNextStage()
+	{
+		//인덱스 변수 하나 추가하고
+		//보스 잡히면 진행하는걸로 ----
+		//호출은 아마 HuntingArea에서 할듯?
+		
+	}
 #endregion
 }

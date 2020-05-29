@@ -26,8 +26,7 @@ public class TileMapGenerator : MonoBehaviour
         }
     }
 
-    Dictionary<int, GameObject> tile_Resources; //타일 생성할때 . . .
-                                                // 딕셔너리 찾아봄.   있음 -> 사용,   없음 -> 로드 후 사용 및 딕셔너리 삽입
+    
 
     public GameObject tileMap_Object;
     JSONNode mapData;
@@ -35,11 +34,14 @@ public class TileMapGenerator : MonoBehaviour
     public TileMap tileMap;
     public const int road_Start = 227;
     public List<GameObject> preLoadedTileObject;
+	public Dictionary<int, List<Tile>> layerDict;
     int i = 0;
 
     public void Awake()
     {
         _instance = this;
+		layerDict = new Dictionary<int, List<Tile>>(); // 스테이지 개방용으로 ....
+		
     }
 
     public GameObject GenerateMap(string path)  //맵 생성
@@ -70,7 +72,7 @@ public class TileMapGenerator : MonoBehaviour
         int layer_Count = 0;
         string t;
 
-        tile_Resources = new Dictionary<int, GameObject>();
+        
 		/*
         do
         {
@@ -100,13 +102,13 @@ public class TileMapGenerator : MonoBehaviour
 		//Debug.Log("layerCount = " + layer_Count);
 
 		////////////////////////////////////////////////////////////
-		List<TileLayer> tempTileLayers = new List<TileLayer>();
+		
 
         GameObject layer_Object = new GameObject("TileLayers");
         layer_Object.transform.parent = tileMap_Object.transform;
         layer_Object.transform.position = Vector3.zero;
-        TileLayer layer = layer_Object.AddComponent<TileLayer>();
-		tempTileLayers.Add(layer);
+        TileLayer layer = layer_Object.AddComponent<TileLayer>(); //layer == base layer , layer 0
+		
 
         layer.SetLayerNum(0);
         layer.SetLayerWidth(mapData["layers"][0]["width"].AsInt);
@@ -119,25 +121,11 @@ public class TileMapGenerator : MonoBehaviour
         layer.AssignTileArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
         layer.AssignTileForMoveArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
         tileMap.AddLayer(layer_Object);
-		for(int i=1; i<=layer_Count; i++)
+		
+        for(int i=0; i<layer_Count; i++)
 		{
-			GameObject layer_Object_Child = new GameObject("TileLayer" + i);
-			layer_Object.transform.parent = layer_Object.transform;
-			layer_Object.transform.position = Vector3.zero;
-			TileLayer layer_Child = layer_Object_Child.AddComponent<TileLayer>();
-			layer.SetLayerNum(i);
-			layer.SetLayerWidth(mapData["layers"][0]["width"].AsInt);
-			layer.SetLayerHeight(mapData["layers"][0]["height"].AsInt);
-			layer.SetOffsetX(mapData["layers"][0]["offsetx"] == null ? 0 : mapData["layers"][0]["offsetx"].AsInt);
-			layer.SetOffsetY(mapData["layers"][0]["offsety"] == null ? 0 : mapData["layer"][0]["offsety"].AsInt);
-			layer.SetOpacity(mapData["layers"][0]["opacity"].AsInt);
-			layer.SetLayerName(mapData["layers"][0]["name"]);
-			layer.SetLayerType(mapData["layers"][0]["type"]);
-			layer.AssignTileArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
-			layer.AssignTileForMoveArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
-			tileMap.AddLayer(layer_Object_Child);
+			layerDict.Add(i, new List<Tile>());
 		}
-        
         //Layer 0 번 -> 모든 타일에 접근 가능
 		//Layer > 1 -> 해당 레이어에 속하는 타일에만 접근 가능
         for (int y = 0; y < layer.GetLayerHeight(); y++)
@@ -158,7 +146,14 @@ public class TileMapGenerator : MonoBehaviour
 
                         // 로드 했을 때 새로 할당하기 위해서.
                         tile.prefabInfo = mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt;
-
+						if(i == 0) // 첫번째 스테이지라면?
+						{
+							tile.SetIsActive(true);
+						}
+						else
+						{
+							tile.SetIsActive(false);
+						}
                         if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 227 && mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt <= 238)//~238 //길
                         {//Road
                             tile.SetRoad(true);
@@ -188,7 +183,7 @@ public class TileMapGenerator : MonoBehaviour
 
                         tile_Object.transform.position = new Vector3((pivotX), (pivotY), (pivotZ));
                         layer.AddTile(x, y, tile_Object);
-
+						layerDict[i].Add(tile);
                         ////////////////////////////////
                         int ui = y * layer.GetLayerWidth() * 4 + 2 * x;
                         int di = y * layer.GetLayerWidth() * 4 + 2 * x + 2 * layer.GetLayerWidth() + 1;
@@ -426,7 +421,7 @@ public class TileMapGenerator : MonoBehaviour
         List<TileData> tileDatas = savedata.tileDatas;
         GameObject tileObject;
 
-        tile_Resources = new Dictionary<int, GameObject>();
+        
 
         do
         {
