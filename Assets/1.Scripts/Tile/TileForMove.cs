@@ -36,10 +36,6 @@ public class TileForMove
 	{
 		return y;
 	}
-	public bool GetPassableParent()
-	{
-		return parent.GetPassable();
-	}
 	public Tile GetParent()
 	{
 		return parent;

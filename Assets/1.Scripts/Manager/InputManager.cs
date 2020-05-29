@@ -202,7 +202,7 @@ public class InputManager : MonoBehaviour {
                         {
 							UnselectTile();
                         }
-						else if(selectedObject.tag == "Tile" && selectedObject.GetComponent<Tile>().GetPassable() == true)
+						else if(selectedObject.tag == "Tile" && selectedObject.GetComponent<Tile>().GetIsActive() == true)
                         {
 							SelectTile();
                         }

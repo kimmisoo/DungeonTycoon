@@ -71,13 +71,14 @@ public class TileMapGenerator : MonoBehaviour
         string t;
 
         tile_Resources = new Dictionary<int, GameObject>();
-
+		/*
         do
         {
             t = mapData["layers"][layer_Count++];
         } while (t != null);
 
-        layer_Count--;
+        layer_Count--;*/
+		layer_Count = mapData["layers"].Count;
         //맵 데이터 읽기 완료
 
         tileMap_Object = new GameObject("TileMap"); // instantiate 할 필요 없음. 씬에 추가까지 자동으로 됨
@@ -88,7 +89,7 @@ public class TileMapGenerator : MonoBehaviour
         tileMap.SetLayerCount(layer_Count);
         tileMap.SetOrientation(mapData["orientation"]);
         tileMap.SetRenderOrder(mapData["renderorder"]);
-        tileMap.AssignLayerArray(layer_Count);
+        
 
         //타일맵 생성 완료. 레이어 추가는 아직
 
@@ -96,14 +97,17 @@ public class TileMapGenerator : MonoBehaviour
         float pivotY = 0.0f;
         float pivotZ = 0.0f;
         float offsety = 0.0f;
-        //Debug.Log("layerCount = " + layer_Count);
+		//Debug.Log("layerCount = " + layer_Count);
 
-        ////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////
+		List<TileLayer> tempTileLayers = new List<TileLayer>();
 
-        GameObject layer_Object = new GameObject("TileLayer");
+        GameObject layer_Object = new GameObject("TileLayers");
         layer_Object.transform.parent = tileMap_Object.transform;
-        layer_Object.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
+        layer_Object.transform.position = Vector3.zero;
         TileLayer layer = layer_Object.AddComponent<TileLayer>();
+		tempTileLayers.Add(layer);
+
         layer.SetLayerNum(0);
         layer.SetLayerWidth(mapData["layers"][0]["width"].AsInt);
         layer.SetLayerHeight(mapData["layers"][0]["height"].AsInt);
@@ -115,8 +119,27 @@ public class TileMapGenerator : MonoBehaviour
         layer.AssignTileArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
         layer.AssignTileForMoveArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
         tileMap.AddLayer(layer_Object);
-        //layer는 0번 하나만~]
-        //layer_Count = 1;
+		for(int i=1; i<=layer_Count; i++)
+		{
+			GameObject layer_Object_Child = new GameObject("TileLayer" + i);
+			layer_Object.transform.parent = layer_Object.transform;
+			layer_Object.transform.position = Vector3.zero;
+			TileLayer layer_Child = layer_Object_Child.AddComponent<TileLayer>();
+			layer.SetLayerNum(i);
+			layer.SetLayerWidth(mapData["layers"][0]["width"].AsInt);
+			layer.SetLayerHeight(mapData["layers"][0]["height"].AsInt);
+			layer.SetOffsetX(mapData["layers"][0]["offsetx"] == null ? 0 : mapData["layers"][0]["offsetx"].AsInt);
+			layer.SetOffsetY(mapData["layers"][0]["offsety"] == null ? 0 : mapData["layer"][0]["offsety"].AsInt);
+			layer.SetOpacity(mapData["layers"][0]["opacity"].AsInt);
+			layer.SetLayerName(mapData["layers"][0]["name"]);
+			layer.SetLayerType(mapData["layers"][0]["type"]);
+			layer.AssignTileArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
+			layer.AssignTileForMoveArray(mapData["layers"][0]["width"].AsInt, mapData["layers"][0]["height"].AsInt);
+			tileMap.AddLayer(layer_Object_Child);
+		}
+        
+        //Layer 0 번 -> 모든 타일에 접근 가능
+		//Layer > 1 -> 해당 레이어에 속하는 타일에만 접근 가능
         for (int y = 0; y < layer.GetLayerHeight(); y++)
         {
             for (int x = 0; x < layer.GetLayerWidth(); x++)
@@ -137,23 +160,23 @@ public class TileMapGenerator : MonoBehaviour
                         tile.prefabInfo = mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt;
 
                         if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 227 && mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt <= 238)//~238 //길
-                        {
-                            tile.SetPassable(true);
-                            tile.SetBuildable(false);
+                        {//Road
+                            tile.SetRoad(true);
+                            tile.SetBuildingArea(false);
                             tile.SetHuntingArea(false);
                             tile.SetNonTile(false);
                         }
                         else if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 239) // 몬스터
-                        {
-                            tile.SetPassable(true);
-                            tile.SetBuildable(false);
+                        {//HundingArea
+                            tile.SetRoad(false);
+                            tile.SetBuildingArea(false);
                             tile.SetHuntingArea(true);
                             tile.SetNonTile(false);
                         }
                         else // 건설
-                        {
-                            tile.SetPassable(false);
-                            tile.SetBuildable(true);
+                        {//BuildingArea
+                            tile.SetRoad(false);
+                            tile.SetBuildingArea(true);
                             tile.SetHuntingArea(false);
                             tile.SetNonTile(false);
                         }
@@ -201,18 +224,19 @@ public class TileMapGenerator : MonoBehaviour
                     // 저장을 위해
                     tile.prefabInfo = 0;
 
-                    //Tile tile = tile_Object.GetComponent<Tile>();
-                    tile.SetPassable(false);
+					//Tile tile = tile_Object.GetComponent<Tile>();
+					/////////////tile.SetPassable(false);
+					tile.SetIsActive(false);
                     tile.SetX(x);
                     tile.SetY(y);
                     tile.SetLayerNum(0);
                     tile.SetLayer(layer);
                     tile.SetTileType(mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt);
                     tile_Object.GetComponent<SpriteRenderer>().enabled = false;
-                    //2016-12-30
+                    
                     tile_Object.tag = "non_Tile";
                     tile.SetNonTile(true);
-                    //2016-12-30
+                    
                     tile_Object.transform.position = new Vector3((pivotX), (pivotY), (pivotZ));
                     layer.AddTile(x, y, tile_Object);
                 }
@@ -421,7 +445,7 @@ public class TileMapGenerator : MonoBehaviour
         tileMap.SetLayerCount(layer_Count);
         tileMap.SetOrientation(mapData["orientation"]);
         tileMap.SetRenderOrder(mapData["renderorder"]);
-        tileMap.AssignLayerArray(layer_Count);
+        
 
         //타일맵 생성 완료. 레이어 추가는 아직
 
@@ -461,11 +485,12 @@ public class TileMapGenerator : MonoBehaviour
                 // 로드 했을 때 새로 할당하기 위해서.
                 tile.prefabInfo = tileDatas[i].prefabInfo;
 
-                // 프로퍼티 세팅.
-                tile.SetPassable(tileDatas[i].isPassable);
+				// 프로퍼티 세팅.
+				/////////////////tile.SetPassable(tileDatas[i].isPassable);
+				tile.SetRoad(tileDatas[i].isRoad);
                 tile.SetStructed(tileDatas[i].isStructed);
                 tile.SetNonTile(tileDatas[i].isNonTile);
-                tile.SetBuildable(tileDatas[i].isBuildable);
+                tile.SetBuildingArea(tileDatas[i].isBuildable);
                 tile.SetHuntingArea(tileDatas[i].isHuntingArea);
 
                 // structure는 structure 로드 후에 따로 해줘야.
@@ -510,18 +535,19 @@ public class TileMapGenerator : MonoBehaviour
 
                 // 저장을 위해
                 tile.prefabInfo = 0;
-                //Tile tile = tile_Object.GetComponent<Tile>();
-                tile.SetPassable(false);
+				//Tile tile = tile_Object.GetComponent<Tile>();
+				//////////////////tile.SetPassable(false);
+				tile.SetRoad(false);
                 tile.SetX(tileDatas[i].x);
                 tile.SetY(tileDatas[i].y);
                 tile.SetLayerNum(0);
                 tile.SetLayer(layer);
                 tile.SetTileType(mapData["layers"][i]["data"][tile.y * layer.GetLayerWidth() + tile.x].AsInt);
                 tileObject.GetComponent<SpriteRenderer>().enabled = false;
-                //2016-12-30
+                
                 tileObject.tag = "non_Tile";
                 tile.SetNonTile(true);
-                //2016-12-30
+                
                 tileObject.transform.position = new Vector3(tileDatas[i].position.x, tileDatas[i].position.y, tileDatas[i].position.z);
                 layer.AddTile(tile.x, tile.y, tileObject);
             }

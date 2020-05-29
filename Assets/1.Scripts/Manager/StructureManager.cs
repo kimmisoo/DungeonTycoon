@@ -91,6 +91,54 @@ public class StructureManager : MonoBehaviour
 		constructing.transform.parent = rootStructureObject.transform;
 		constructing.tag = "Movable";
 
+		DesireType tempType = DesireType.Base;
+		int tempResolveAmount = 0;
+		switch(tempStructureCategory)
+		{
+			case "Drink":
+				tempType = DesireType.Thirsty;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["thirsty"].AsInt;
+				break;
+
+			case "Food":
+				tempType = DesireType.Hungry;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["hungry"].AsInt;
+				break;
+
+			case "Lodge":
+				tempType = DesireType.Sleep;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["sleepy"].AsInt;
+				break;
+
+			case "Equipment":
+				tempType = DesireType.Equipment;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["equipment"].AsInt;
+				break;
+
+			case "Tour":
+				tempType = DesireType.Tour;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["tour"].AsInt;
+				break;
+
+			case "Convenience":
+				tempType = DesireType.Convenience;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["convenience"].AsInt;
+				break;
+
+			case "Fun":
+				tempType = DesireType.Fun;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["fun"].AsInt;
+				break;
+
+			case "Santuary":
+				tempType = DesireType.Health;
+				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["health"].AsInt;
+				break;
+				
+			case "Rescue":
+				tempType = DesireType.Rescue;
+				break;
+		}
 		//임시
 		Structure structure = constructing.GetComponent<Structure>();
 		structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
@@ -98,7 +146,8 @@ public class StructureManager : MonoBehaviour
 		structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
 		structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
 		structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
-
+		structure.resolveType = tempType;
+		structure.resolveAmount = tempResolveAmount;
         // 저장용.
         structure.structureCategory = tempStructureCategory;
         structure.structureNumber = tempStructureNumber;
@@ -156,7 +205,7 @@ public class StructureManager : MonoBehaviour
 		foreach (GameObject go in gos)
 		{
 			float diff = ((Vector2)go.transform.position - pos).magnitude;
-			if (minDiff > diff && go.GetComponent<Tile>().GetBuildable())
+			if (minDiff > diff && go.GetComponent<Tile>().GetBuildingArea())
 			{
 				minDiff = diff;
 				nearest = go;
@@ -220,14 +269,14 @@ public class StructureManager : MonoBehaviour
 
                 if (extent[j,i] == 1)
 				{
-					thatTile.SetBuildable(false);
+					thatTile.SetBuildingArea(false);
                     thatTile.SetStructed(true);
                     thatTile.SetStructure(structure);
                 }
                 else if(extent[j, i] == 2)
                 {
                     thatTile.SetStructed(true);
-                    if(thatTile.GetBuildable())
+                    if(thatTile.GetBuildingArea())
                     {
                         structure.addEntrance(thatTile);
                     }
@@ -316,26 +365,26 @@ public class StructureManager : MonoBehaviour
 					if (t != null)
 					{
 						Debug.Log("Area Index = " + areaIndex + " ConstructingAreasCount = " + constructingAreas.Count) ;
-						if (t.GetBuildable() == true && extent[j, i] == 1)
+						if (t.GetBuildingArea() == true && extent[j, i] == 1)
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
 							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
-						else if (t.GetBuildable() == true && extent[j, i] == 2)
+						else if (t.GetBuildingArea() == true && extent[j, i] == 2)
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
 							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
 							//constructing.GetComponent<Structure>().SetisConstructable(true);
 						}
-						else if (t.GetBuildable() == false && extent[j, i] == 1)
+						else if (t.GetBuildingArea() == false && extent[j, i] == 1)
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
 							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f);
 							conStructure.SetisConstructable(false);
 
 						}
-						else if (t.GetBuildable() == false && extent[j, i] == 2)
+						else if (t.GetBuildingArea() == false && extent[j, i] == 2)
 						{
 							StructureManager.Instance.constructingAreas[areaIndex].transform.position = t.transform.position;
 							StructureManager.Instance.constructingAreas[areaIndex++].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 0.0f);
@@ -384,12 +433,12 @@ public class StructureManager : MonoBehaviour
                 for(int j = 0; j<s.extentWidth; j++)
                 {
                     Tile t = s.point.GetLayer().GetTileAsComponent(s.point.GetX() + j, s.point.GetY() + i);
-                    if (t.GetBuildable() && ex[j,i] == 2 && !t.GetStructed())
+                    if (t.GetBuildingArea() && ex[j,i] == 2 && !t.GetStructed())
                     {
                         t.SetStructed(true);
                         s.entrance.Add(t);
                     }
-                    else if(!t.GetBuildable() && ex[j,i] == 2 && t.GetStructed())
+                    else if(!t.GetBuildingArea() && ex[j,i] == 2 && t.GetStructed())
                     {
                         t.SetStructed(false);
                         s.entrance.Remove(t);
@@ -424,7 +473,7 @@ public class StructureManager : MonoBehaviour
                 {
                     s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetStructure(null);
                     s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetStructed(false);
-                    s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetBuildable(true);
+                    s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetBuildingArea(true);
                 }
             }
         }
@@ -485,7 +534,7 @@ public class StructureManager : MonoBehaviour
         //structureJson 는 일단 손 안댐.
     }
 
-    public void ConstructStructureFromData(StructureData input)
+    public void ConstructStructureFromData(StructureData input) // Resolve Type, ResolveAmount 내용 추가해야됨. 20200528
     {
         #region InstantiateStructure()
         tempStructureCategory = input.structureCategory;

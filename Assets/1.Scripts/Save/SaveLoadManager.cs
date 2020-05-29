@@ -250,7 +250,7 @@ public class TileData
     public int prefabInfo;
     public int layerNum;
 
-    public bool isPassable;
+    public bool isRoad;
     public bool isStructed;
     public bool isNonTile;
     public bool isBuildable;
@@ -268,10 +268,10 @@ public class TileData
         prefabInfo = inputTile.prefabInfo;
         layerNum = inputTile.GetLayerNum();
 
-        isPassable = inputTile.GetPassable();
+        isRoad = inputTile.GetRoad();
         isStructed = inputTile.GetStructed();
         isNonTile = inputTile.GetNonTile();
-        isBuildable = inputTile.GetBuildable();
+        isBuildable = inputTile.GetBuildingArea();
         isHuntingArea = inputTile.GetHuntingArea();
 
         Structure tileStructure = inputTile.GetStructure();

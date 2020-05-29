@@ -432,7 +432,7 @@ public class Traveler : Actor {
 	{
 		//return tile.GetPassableTraveler();
 		//TileMapGenerator에서 PassableTraveler 설정해줘야함. 아직 안돼있음
-		return tile.GetPassable(); //임시조치
+		return tile.GetPassableTraveler(); //임시조치
 	}
 
 

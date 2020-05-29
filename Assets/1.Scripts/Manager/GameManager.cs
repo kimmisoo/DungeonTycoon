@@ -934,7 +934,7 @@ public class GameManager : MonoBehaviour
         SetSceneProgressInfos(aData, sceneNumber);
 
 #if DEBUG
-        traveler_Max = 50;
+        traveler_Max = 20;
         adventurer_Max = 1;
         //specialAdventurer_Max = 800;
 #endif

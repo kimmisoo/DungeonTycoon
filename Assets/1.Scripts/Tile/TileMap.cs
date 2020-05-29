@@ -11,10 +11,8 @@ public class TileMap : MonoBehaviour {
 	string orientation;
 	string renderorder;
 
-	private int layer_Count_Offset = 0;
-
 	//Dictionary<int, TileLayer> layer; // 0 = Ground,  1 = 2층, 2 = 3층.....
-	GameObject[] layers;
+	List<GameObject> layers;
 
 	
 	public void SetWidth(int _width)
@@ -37,16 +35,10 @@ public class TileMap : MonoBehaviour {
 	{
 		renderorder = _renderorder;
 	}
-	public void AssignLayerArray(int _layer_Count)
-	{
-		layers = new GameObject[_layer_Count];
-	}
+	
 	public void AddLayer(GameObject _layer)
 	{
-		if (layer_Count_Offset >= layer_Count)
-			Debug.Log("Layer Overflow");
-		else
-			layers[layer_Count_Offset++] = _layer;
+		layers.Add(_layer);
 	}
 
 	public void PrintLayer()

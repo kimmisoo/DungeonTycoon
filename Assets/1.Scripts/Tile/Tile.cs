@@ -23,11 +23,11 @@ public class Tile : MonoBehaviour
 
     bool isStructed = false;
     bool isNonTile = false;
-    //수정요망. 임시로 퍼블릭으로 해놓음
-    public bool isPassable = false;
-    public bool isBuildable = false;
-    public bool isHuntingArea = false;
-	
+
+	bool isBuildingArea = false;
+	bool isHuntingArea = false;
+	bool isRoad = false;
+	bool isActive = false;
     [SerializeField]
     // 수정요망 이거 Place로 고치고 관련 코드 고쳐야 함. 일단 보류 쓰는 곳 없음.
     Structure structure;
@@ -54,22 +54,9 @@ public class Tile : MonoBehaviour
 		tile = this;
 		position = transform.position;
 		sr = GetComponent<SpriteRenderer>();
-        //StartCoroutine(CheckColor());
+        
 
     }
-
-    // 길찾기 디버깅용인듯
-	IEnumerator CheckColor()
-	{
-		while(isPassable || isHuntingArea)
-		{
-			yield return new WaitForSeconds(0.1f);
-			if(isOpen == true)
-				sr.color = Color.red;
-			if(isClose == true)
-				sr.color = Color.black;
-		}
-	}
 
     // A*용 메서드
 	public void AddedOpenList()
@@ -110,33 +97,25 @@ public class Tile : MonoBehaviour
     {
         structure = s;
     }
-	public bool GetPassable()
+	public bool GetBuildingArea()
 	{
-		return isPassable;
+		return isBuildingArea;
 	}
     public bool GetPassableTraveler()
     {
-        return isPassable;
+		return isRoad;
     }
     public bool GetPassableAdventurer()
     {
-        return isPassable || isHuntingArea;
+        return isRoad || isHuntingArea;
     }
     public bool GetPassableMonster()
     {
         return isHuntingArea;
     }
-	public void SetPassable(bool _isPassable)
+	public void SetBuildingArea(bool _isBuildingArea)
 	{
-		isPassable = _isPassable;
-	}
-	public bool GetBuildable()
-	{
-		return isBuildable;
-	}
-	public void SetBuildable(bool _isBuildable)
-	{
-		isBuildable = _isBuildable;
+		isBuildingArea = _isBuildingArea;
 	}
 	public void SetHuntingArea(bool _huntingArea)
 	{
@@ -145,6 +124,22 @@ public class Tile : MonoBehaviour
 	public bool GetHuntingArea()
 	{
 		return isHuntingArea;
+	}
+	public void SetRoad(bool _isRoad)
+	{
+		isRoad = _isRoad;
+	}
+	public bool GetRoad()
+	{
+		return isRoad;
+	}
+	public void SetIsActive(bool _isActive)
+	{
+		isActive = _isActive;
+	}
+	public bool GetIsActive()
+	{
+		return isActive;
 	}
 	public void SetX(int _x)
 	{

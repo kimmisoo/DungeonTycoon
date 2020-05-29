@@ -232,7 +232,7 @@ public class HuntingAreaManager : MonoBehaviour
 
                 if (extent[j, i] == 1)
                 {
-                    thatTile.SetBuildable(false);
+                    thatTile.SetBuildingArea(false);
                     thatTile.SetStructed(false);
                     thatTile.SetHuntingArea(true);
 
