@@ -1,19 +1,19 @@
 {
 	"stage1": [{
-			"name": "GateKeeper",
-			"bossNum": 0,
-			"sitewidth": 4,
-			"siteheight": 6,
-			"site": [1, 1, 1, 1,
-				1, 1, 1, 1,
-				1, 1, 1, 1,
-				1, 1, 1, 1,
-				0, 2, 2, 0,
-				0, 2, 2, 0
-			]
-		},
-		{
-			"name": "MidBoss",
+		"name": "FinalBossArea",
+		"bossNum": 0,
+		"sitewidth": 4,
+		"siteheight": 6,
+		"site": [1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1,
+			0, 2, 2, 0,
+			0, 2, 2, 0
+		]
+	}],
+	"stage2": [{
+			"name": "MidBossArea",
 			"bossNum": 1,
 			"sitewidth": 4,
 			"siteheight": 6,
@@ -26,7 +26,47 @@
 			]
 		},
 		{
-			"name": "FinalBoss",
+			"name": "FinalBossArea",
+			"bossNum": 2,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		}
+	],
+	"stage3": [{
+			"name": "GateKeeperArea",
+			"bossNum": 1,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		},
+		{
+			"name": "MidBossArea",
+			"bossNum": 1,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		},
+		{
+			"name": "FinalBossArea",
 			"bossNum": 2,
 			"sitewidth": 4,
 			"siteheight": 6,

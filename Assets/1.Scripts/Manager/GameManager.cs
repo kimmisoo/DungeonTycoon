@@ -1073,6 +1073,7 @@ public class GameManager : MonoBehaviour
     public void DebugHuntingArea()
     {
         CombatAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
+        CombatAreaManager.Instance.ConstructBossArea(0, 0, GetTileLayer().transform.GetChild(1913).gameObject);
     }
 #endregion
 
