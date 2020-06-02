@@ -30,8 +30,7 @@ public class StatBaseDiscrete
 		int valueMult = 1;
 		foreach (StatModDiscrete mod in modList)
 		{
-
-			if (mod.Type == ModType.Fixed)
+			if (mod.ModType == ModType.Fixed)
 			{
 				valueFixed += mod.ModValue;
 			} // Fixed 합
@@ -42,11 +41,12 @@ public class StatBaseDiscrete
 			
 		}
 
-		return (BaseValue * valueMult) + valueFixed;
+		return (BaseValue + valueFixed) * valueMult;
 	}
 
     public virtual void AddStatMod(StatModDiscrete mod)
     {
+        Debug.Log("ModValue : " + mod.ModValue);
         modList.Add(mod);
     }
     public virtual void RemoveStatMod(StatModDiscrete mod)
@@ -56,5 +56,9 @@ public class StatBaseDiscrete
     public void ClearStatModList()
     {
         modList.Clear();
+    }
+    public List<StatModDiscrete> GetModList()
+    {
+        return modList;
     }
 }

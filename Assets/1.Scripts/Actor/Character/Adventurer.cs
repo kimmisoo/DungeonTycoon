@@ -5,6 +5,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,18 +18,23 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //리워드 스탯(현재는 별 필요 없음)
     protected RewardStat rewardStat;
 
-    // 스킬들(아이템, 고유능력 등 모두)
-    List<Skill> skills;
-
     public ICombatant enemy;
     protected GameObject attackEffect;
     protected GameObject damageText;
     protected GameObject healEffect;
     protected GameObject healText;
+    protected GameObject buffEffect;
+    protected GameObject debuffEffect;
 
     protected readonly float RecoveryTick = 5.0f;
     protected readonly int RecoveryTimes = 5;
     protected readonly float RecoveryMult = 0.02f;
+
+    // 스킬들(아이템, 고유능력 등 모두)
+    Dictionary<string, Skill> skills;
+    // 버프/디버프 목록
+    Dictionary<string, TemporaryEffect> temporaryEffects;
+    Coroutine refreshingTempEffectCoroutine;
 
     protected int monsterSearchCnt;
     protected readonly int MonsterSearchMax = 5;
@@ -42,6 +48,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public Canvas canvas;
     public GameObject hpBar;
     public Slider hpSlider;
+    public GameObject shieldBar;
+    public Slider shieldSlider;
     #endregion
 
     public int Level
@@ -62,7 +70,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         this.stat = new Stat(stat, this);
         //pathfinder 초기화 // delegate 그대로
 
-        skills = new List<Skill>();
+        skills = new Dictionary<string, Skill>();
+        temporaryEffects = new Dictionary<string, TemporaryEffect>();
     }
 
     public void OnEnable()
@@ -71,12 +80,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         monsterSearchCnt = 0;
         SetUI();
         SkillActivate();
+        refreshingTempEffectCoroutine = StartCoroutine(RefreshTemporaryEffects());
     }
 
     public void OnDisable()
     {
         base.OnDisable();
         SkillDeactivate();
+        StopCoroutine(refreshingTempEffectCoroutine);
     }
 
     #region StateMachine
@@ -183,7 +194,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("InitiatingBattle");
 #endif
-                hpBar.GetComponent<HPBar>().Show();
                 superState = SuperState.Battle;
                 InitiatingBattle();
                 break;
@@ -191,6 +201,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("Battle");
 #endif
+                ShowBattleUI();
                 curCoroutine = StartCoroutine(Battle());
                 break;
             case State.AfterBattle:
@@ -270,16 +281,16 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             case State.InitiatingBattle:
                 break;
             case State.Battle:
+                HideBattleUI();
                 break;
             case State.AfterBattle:
-                hpBar.GetComponent<HPBar>().Hide();
                 break;
             case State.ExitingHuntingArea:
                 break;
             case State.PassedOut:
                 break;
             case State.SpontaneousRecovery:
-                hpBar.GetComponent<HPBar>().Hide();
+                HideBattleUI();
                 animator.SetTrigger("ResurrectionFlg");
                 break;
             case State.Rescued:
@@ -378,7 +389,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         yield return null;
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
-        destinationPlace = HuntingAreaManager.Instance.FindHuntingArea(battleStat.Level);
+        destinationPlace = CombatAreaManager.Instance.FindHuntingArea(battleStat.Level);
 #if DEBUG_ADV
         if (destinationPlace == null)
             Debug.Log("dest is null");
@@ -463,7 +474,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected virtual void PassedOut()
     {
         StopCurActivities();
-
+        ClearTemporaryEffects();
         ResetBattleEventHandlers();
 
         //Structure[] tempArr = StructureManager.Instance.FindRescue(this);
@@ -508,7 +519,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
-        enemy.healthBelowZeroEvent -= OnEnemyHealthBelowZero;
+        if (enemy != null)
+            enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
     }
 
     #endregion
@@ -688,6 +700,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (!ValidatingEnemy(enemy))
             yield break;
 
+        SkillBeforeAttack();
+
         bool isCrit;
         float calculatedDamage;
         battleStat.CalDamage(out calculatedDamage, out isCrit);
@@ -698,6 +712,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             DisplayAttackEffect(enemy);
             SkillOnAttack(actualDamage, isCrit, false);
         }
+
+        SkillAfterAttack();
 
         yield return new WaitForSeconds(0.57f / battleStat.AttackSpeed); // 애니메이션 관련 넣을 것.
         //attackEffect.GetComponent<AttackEffect>().StopEffect();
@@ -716,6 +732,20 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         healEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.12f, transform.position.z);
     }
 
+    public void SetBuffEffect(GameObject input)
+    {
+        buffEffect = input;
+        buffEffect.transform.SetParent(transform);
+        buffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
+    public void SetDebuffEffect(GameObject input)
+    {
+        debuffEffect = input;
+        debuffEffect.transform.SetParent(transform);
+        debuffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
     public void SetDamageText(GameObject input)
     {
         damageText = input;
@@ -727,6 +757,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         healText = input;
         healText.SetActive(false);
         healText.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+
+    public void SetDefaultEffects()
+    {
+        SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+        SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+        SetBuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_BuffEffect")));
+        SetDebuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_DebuffEffect")));
     }
 
     protected void StopCurActivities()
@@ -854,7 +893,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
             + "\n남은 체력 : " + this.battleStat.Health);
 #endif
-
+        //Debug.Log("방어력 : " + battleStat.Defence);
         // 조건?
         if (battleStat.Health <= 0)
         {
@@ -941,6 +980,18 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         healEffect.GetComponent<AttackEffect>().StartEffect();
     }
 
+    public void DisplayBuff()
+    {
+        buffEffect.SetActive(true);
+        buffEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    public void DisplayDebuff()
+    {
+        debuffEffect.SetActive(true);
+        debuffEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
     private void DisplayDodge()
     {
         GameObject tempDamageText = Instantiate(damageText);
@@ -1008,6 +1059,16 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         return transform;
     }
+    public void RemoveHealthBelowZeroEventHandler(HealthBelowZeroEventHandler healthBelowZeroEventHandler)
+    {
+        if (healthBelowZeroEvent != null)
+            healthBelowZeroEvent -= healthBelowZeroEventHandler;
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
     #endregion
 
     #region UI
@@ -1019,51 +1080,258 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         hpBar.transform.SetParent(canvas.transform);
         hpBar.GetComponent<HPBar>().SetSubject(this);
 
+        shieldBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/ShieldSlider"));
+        shieldSlider = shieldBar.GetComponentInChildren<Slider>();
+        shieldBar.transform.SetParent(canvas.transform);
+        shieldBar.GetComponent<ShieldBar>().SetSubject(this);
+
         hpBar.SetActive(true);
+        shieldBar.SetActive(true);
     }
+    public void ShowBattleUI()
+    {
+        hpBar.GetComponent<HPBar>().Show();
+        shieldBar.GetComponent<ShieldBar>().Show();
+    }
+    public void HideBattleUI()
+    {
+        hpBar.GetComponent<HPBar>().Hide();
+        shieldBar.GetComponent<ShieldBar>().Hide();
+    }
+
+
+
+    //public IEnumerator RefreshTemporaryEffects()
+    //{
+    //    while(true)
+    //    {
+    //        yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+    //        int idx = 0;
+
+    //        while(idx < temporaryEffects.Count)
+    //        {
+    //            if (temporaryEffects[idx].Refresh())
+    //                RemoveTemporaryEffect(temporaryEffects[idx]);
+    //            else
+    //                idx++;
+    //        }
+    //    }
+    //}
+
+    //public void ClearTemporaryEffects()
+    //{
+    //    foreach (TemporaryEffect effect in temporaryEffects)
+    //        effect.RemoveEffect();
+    //    temporaryEffects.Clear();
+    //}
+
+    //public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    //{
+    //    if (temporaryEffects.Contains(toBeRemoved))
+    //    {
+    //        toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
+    //        toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+
+    //        toBeRemoved.RemoveEffect();
+    //        temporaryEffects.Remove(toBeRemoved);
+    //    }
+    //}
+
+    //public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    //{
+    //    if (!temporaryEffects.Contains(toBeAdded))
+    //    {
+    //        toBeAdded.SetSubject(this);
+    //        toBeAdded.ApplyEffect();
+    //        temporaryEffects.Add(toBeAdded);
+    //    }
+    //    else
+    //    {
+    //        //Debug.Log("Stacking Up");
+    //        toBeAdded.StackUp();
+    //    }
+    //}
     #endregion
 
     #region Skill
-    protected void AddSkill(Skill skill)
+    public void AddSkill(string key)
     {
-        skills.Add(skill);
-        skill.SetOwner(this);
-        skill.InitSkill();
-        //skill.Activate();
+        if (skills.ContainsKey(key))
+            return; // 이미 같은 종류 있으면 그냥 리턴. 같은 스킬 중복 불가.
+
+        //Debug.Log("aaaa");
+        skills.Add(key, SkillFactory.CreateSkill(gameObject, key));
+        skills[key].SetOwner(this);
+        skills[key].InitSkill();
+
+        if(isActiveAndEnabled == true)
+            skills[key].Activate();
     }
-    protected void RemoveSkill(Skill skill)
+
+    public void RemoveSkill(string key)
     {
-        skills.Remove(skill);
-        skill.Deactivate();
+        if (!skills.ContainsKey(key))
+            return;
+
+        skills[key].Deactivate();
+        skills.Remove(key);
+    }
+
+    protected void SkillBeforeAttack()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.BeforeAttack();
+        }
+    }
+    protected void SkillAfterAttack()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.AfterAttack();
+        }
     }
     protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
     {
-        foreach(Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.OnAttack(actualDamage, isCrit, isDodged);
         }
     }
     protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
     {
-        foreach(Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.OnStruck(actualDamage, isDodged, attacker);
         }
     }
     protected void SkillActivate()
     {
-        foreach (Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
-            if(!item.isActive)
+            if (!item.isActive)
                 item.Activate();
         }
     }
     protected void SkillDeactivate()
     {
-        foreach (Skill item in skills)
+        foreach (Skill item in skills.Values)
         {
             item.Deactivate();
         }
+    }
+    //public void AddSkill(Skill skill)
+    //{
+    //    skills.Add(skill);
+    //    skill.SetOwner(this);
+    //    skill.InitSkill();
+    //    //skill.Activate();
+    //}
+
+    //public void RemoveSkill(Skill skill)
+    //{
+    //    skills.Remove(skill);
+    //    skill.Deactivate();
+    //}
+
+    //public void AddSKill(string skillName)
+    //{
+    //    AddSkill(SkillFactory.CreateSkill(gameObject, skillName));
+    //}
+
+    //public void RemoveSkill(string skillName)
+    //{
+
+    //}
+
+    //protected void SkillBeforeAttack()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        item.BeforeAttack();
+    //    }
+    //}
+    //protected void SkillAfterAttack()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        item.AfterAttack();
+    //    }
+    //}
+    //protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
+    //{
+    //    foreach(Skill item in skills)
+    //    {
+    //        item.OnAttack(actualDamage, isCrit, isDodged);
+    //    }
+    //}
+    //protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    //{
+    //    foreach(Skill item in skills)
+    //    {
+    //        item.OnStruck(actualDamage, isDodged, attacker);
+    //    }
+    //}
+    //protected void SkillActivate()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        if(!item.isActive)
+    //            item.Activate();
+    //    }
+    //}
+    //protected void SkillDeactivate()
+    //{
+    //    foreach (Skill item in skills)
+    //    {
+    //        item.Deactivate();
+    //    }
+    //}
+
+    public IEnumerator RefreshTemporaryEffects()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+            foreach (string key in temporaryEffects.Keys.ToList())
+            {
+                if (temporaryEffects[key].Refresh())
+                    RemoveTemporaryEffect(temporaryEffects[key]);
+            }
+        }
+    }
+
+    public void ClearTemporaryEffects()
+    {
+        foreach (string key in temporaryEffects.Keys.ToList())
+            temporaryEffects[key].RemoveEffect();
+        temporaryEffects.Clear();
+    }
+
+    public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    {
+        if (temporaryEffects.ContainsKey(toBeRemoved.name))
+        {
+            toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
+            toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+
+            toBeRemoved.RemoveEffect();
+            temporaryEffects.Remove(toBeRemoved.name);
+        }
+    }
+
+    public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    {
+        if (!temporaryEffects.ContainsKey(toBeAdded.name))
+        {
+            temporaryEffects.Add(toBeAdded.name, toBeAdded);
+            toBeAdded.SetSubject(this);
+            toBeAdded.ApplyEffect();
+        }
+        else
+            toBeAdded.StackUp();
     }
     #endregion
 }

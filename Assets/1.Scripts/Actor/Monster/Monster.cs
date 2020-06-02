@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using TMPro;
+using System.Linq;
 
 public class Monster : Actor, ICombatant//:Actor, IDamagable {
 {
@@ -51,6 +53,16 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     //public event MoveStartedEventHandler moveStartedEvent;
     protected GameObject attackEffect;
     protected GameObject damageText;
+    protected GameObject healEffect;
+    protected GameObject healText;
+    protected GameObject buffEffect;
+    protected GameObject debuffEffect;
+
+    // 스킬들(아이템, 고유능력 등 모두)
+    Dictionary<string, Skill> skills;
+    // 버프/디버프 목록
+    Dictionary<string, TemporaryEffect> temporaryEffects;
+    Coroutine refreshingTempEffectCoroutine;
 
     #endregion
 
@@ -86,18 +98,16 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat = new BattleStat(sample.battleStat);
         rewardStat = new RewardStat(sample.rewardStat);
 
-        SetDamageText(Instantiate(sample.damageText));
+        //SetDamageText(Instantiate(sample.damageText));
         SetAttackEffect(Instantiate(sample.attackEffect));
+        SetDefaultEffects();
+
+        skills = new Dictionary<string, Skill>();
+        temporaryEffects = new Dictionary<string, TemporaryEffect>();
     }
 
     public void OnEnable()
     {
-        // 몬스터는 타일을 HuntingArea에서 정해줘야할듯.
-        /*
-        SetCurTile(GameManager.Instance.GetRandomEntrance());
-        SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
-        */
-
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         // PathFind 성공/실패에 따라 호출할 delegate 설정.
@@ -111,6 +121,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
         // 기본은 Idle.
         StartCoroutine(LateStart());
+        refreshingTempEffectCoroutine = StartCoroutine(RefreshTemporaryEffects());
 
         SetUI();
     }
@@ -489,11 +500,47 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         attackEffect.transform.SetParent(GameObject.Find("EffectPool").transform);
     }
 
+    public void SetHealEffect(GameObject input)
+    {
+        healEffect = input;
+        healEffect.transform.SetParent(transform);
+        healEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.12f, transform.position.z);
+    }
+
+    public void SetBuffEffect(GameObject input)
+    {
+        buffEffect = input;
+        buffEffect.transform.SetParent(transform);
+        buffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
+    public void SetDebuffEffect(GameObject input)
+    {
+        debuffEffect = input;
+        debuffEffect.transform.SetParent(transform);
+        debuffEffect.transform.position = new Vector3(transform.position.x, transform.position.y + 0.08f, transform.position.z);
+    }
+
     public void SetDamageText(GameObject input)
     {
         damageText = input;
         damageText.SetActive(false);
         damageText.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+    public void SetHealText(GameObject input)
+    {
+        healText = input;
+        healText.SetActive(false);
+        healText.transform.SetParent(GameObject.Find("EffectPool").transform);
+    }
+
+    public void SetDefaultEffects()
+    {
+        SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+        SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+        SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+        SetBuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_BuffEffect")));
+        SetDebuffEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_DebuffEffect")));
     }
 
     protected void StopCurActivities()
@@ -528,8 +575,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         StopCurActivities();
         ResetBattleEventHandlers();
+        ClearTemporaryEffects();
 
-        // 여기 애니메이션 설정 넣으면 됨.
         yield return new WaitForSeconds(DecayTimer);
         corpseDecayEvent?.Invoke(index);
     }
@@ -539,7 +586,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
-        enemy.healthBelowZeroEvent -= OnEnemyHealthBelowZero;
+        if(enemy != null)
+            enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
     }
 
     // 죽을 때 호출. 이 몬스터를 공격대상으로 하고있는 모험가들에게 알려줌.
@@ -638,6 +686,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         Debug.Log(this + "가 " + attacker + "에게 " + actualDamage + "의 피해를 입음."
             + "\n남은 체력 : " + this.battleStat.Health);
 #endif
+        //Debug.Log("방어력 : " + battleStat.Defence);
 
         // 조건?
         if (battleStat.Health <= 0)
@@ -677,6 +726,27 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     public void DisplayHeal(float healed)
     {
+        GameObject tempHealText = Instantiate(healText);
+        Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.07f, 0.07f), transform.position.y + Random.Range(-0.05f, 0.05f), transform.position.z);
+        tempHealText.GetComponent<FloatingText>().InitFloatingText(((int)healed).ToString(), textPos);
+        //tempDamageText.transform.SetParent(canvas.transform);
+        tempHealText.GetComponent<TextMeshPro>().fontSize = 600;
+        tempHealText.SetActive(true);
+
+        healEffect.SetActive(true);
+        healEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    public void DisplayBuff()
+    {
+        buffEffect.SetActive(true);
+        buffEffect.GetComponent<AttackEffect>().StartEffect();
+    }
+
+    public void DisplayDebuff()
+    {
+        debuffEffect.SetActive(true);
+        debuffEffect.GetComponent<AttackEffect>().StartEffect();
     }
 
     public void OnEnemyHealthBelowZero(ICombatant victim, ICombatant attacker)
@@ -750,6 +820,163 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         return transform;
     }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
+    public void RemoveHealthBelowZeroEventHandler(HealthBelowZeroEventHandler healthBelowZeroEventHandler)
+    {
+        if (healthBelowZeroEvent != null)
+            healthBelowZeroEvent -= healthBelowZeroEventHandler;
+    }
+
+    public IEnumerator RefreshTemporaryEffects()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+
+            foreach(string key in temporaryEffects.Keys.ToList())
+            {
+                if(temporaryEffects[key].Refresh())
+                      RemoveTemporaryEffect(temporaryEffects[key]);
+            }
+
+            //int idx = 0;
+            //while (idx < temporaryEffects.Count)
+            //{
+            //    if (temporaryEffects[idx].Refresh())
+            //        RemoveTemporaryEffect(temporaryEffects[idx]);
+            //    else
+            //        idx++;
+            //}
+        }
+    }
+
+    public void ClearTemporaryEffects()
+    {
+        foreach (string key in temporaryEffects.Keys.ToList())
+            temporaryEffects[key].RemoveEffect();
+        temporaryEffects.Clear();
+
+        //foreach (TemporaryEffect effect in temporaryEffects)
+        //    effect.RemoveEffect();
+        //temporaryEffects.Clear();
+    }
+
+    public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    {
+        if (temporaryEffects.ContainsKey(toBeRemoved.name))
+        {
+            toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
+            toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+
+            toBeRemoved.RemoveEffect();
+            temporaryEffects.Remove(toBeRemoved.name);
+        }
+    }
+
+    public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    {
+        if (!temporaryEffects.ContainsKey(toBeAdded.name))
+        {
+            temporaryEffects.Add(toBeAdded.name, toBeAdded);
+            toBeAdded.SetSubject(this);
+            toBeAdded.ApplyEffect();
+        }
+        else
+            toBeAdded.StackUp();
+    }
+
+    public void AddSkill(string key)
+    {
+        if (skills.ContainsKey(key))
+            return; // 이미 같은 종류 있으면 그냥 리턴. 같은 스킬 중복 불가.
+
+        skills.Add(key, SkillFactory.CreateSkill(gameObject, key));
+        skills[key].SetOwner(this);
+        skills[key].InitSkill();
+        //skill.Activate();
+    }
+
+    public void RemoveSkill(string key)
+    {
+        if (!skills.ContainsKey(key))
+            return;
+
+        skills[key].Deactivate();
+        skills.Remove(key);
+    }
+
+    protected void SkillBeforeAttack()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.BeforeAttack();
+        }
+    }
+    protected void SkillAfterAttack()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.AfterAttack();
+        }
+    }
+    protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.OnAttack(actualDamage, isCrit, isDodged);
+        }
+    }
+    protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.OnStruck(actualDamage, isDodged, attacker);
+        }
+    }
+    protected void SkillActivate()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            if (!item.isActive)
+                item.Activate();
+        }
+    }
+    protected void SkillDeactivate()
+    {
+        foreach (Skill item in skills.Values)
+        {
+            item.Deactivate();
+        }
+    }
+
+    //public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
+    //{
+    //    if (temporaryEffects.Contains(toBeRemoved))
+    //    {
+    //        toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
+    //        toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+
+    //        toBeRemoved.RemoveEffect();
+    //        temporaryEffects.Remove(toBeRemoved);
+    //    }
+    //}
+
+    //public void AddTemporaryEffect(TemporaryEffect toBeAdded)
+    //{
+    //    if (!temporaryEffects.Contains(toBeAdded))
+    //    {
+    //        temporaryEffects.Add(toBeAdded);
+    //        toBeAdded.SetSubject(this);
+    //        toBeAdded.ApplyEffect();
+    //    }
+    //    else
+    //        toBeAdded.StackUp();
+    //}
     #endregion
 
     #region UI

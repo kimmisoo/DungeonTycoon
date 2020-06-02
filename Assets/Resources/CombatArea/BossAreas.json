@@ -1,0 +1,42 @@
+{
+	"stage1": [{
+			"name": "GateKeeper",
+			"bossNum": 0,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		},
+		{
+			"name": "MidBoss",
+			"bossNum": 1,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		},
+		{
+			"name": "FinalBoss",
+			"bossNum": 2,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		}
+	]
+}

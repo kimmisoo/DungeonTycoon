@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatBaseContinuous {
-	
-
+public class StatBaseContinuous
+{
 	protected List<StatModContinuous> modList = new List<StatModContinuous>();
+    const float MULT_MIN = 0.1f; // 최소값
 
 	public virtual float BaseValue
 	{
@@ -26,7 +26,7 @@ public class StatBaseContinuous {
 		float valueMult = 1.0f;
 		foreach(StatModContinuous mod in modList)
 		{
-			if(mod.Type == ModType.Fixed)
+			if(mod.ModType == ModType.Fixed)
 			{
 				valueFixed += mod.ModValue;
 			} // Fixed 합
@@ -35,6 +35,8 @@ public class StatBaseContinuous {
 				valueMult += mod.ModValue;
 			} // Mult 합
 		}
+        if (valueMult < MULT_MIN)
+            valueMult = MULT_MIN;
 		return (BaseValue + valueFixed) * valueMult;
 	}
 	
@@ -46,11 +48,12 @@ public class StatBaseContinuous {
 	{
 		modList.Remove(mod);
 	}
-
 	public virtual void ClearStatModList()
     {
         modList.Clear();
     }
-
-
+    public List<StatModContinuous> GetModList()
+    {
+        return modList;
+    }
 }

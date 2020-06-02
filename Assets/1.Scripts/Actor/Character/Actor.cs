@@ -11,7 +11,7 @@ public enum SuperState
     None, Idle, Wandering, Battle, AfterBattle, Dead, // 몬스터
     ExitingDungeon, SolvingDesire, SolvingDesire_Wandering, // 트래블러
     SearchingHuntingArea, EnteringHuntingArea, SearchingMonster, SearchingMonster_Wandering, PassedOut, ExitingHuntingArea, // 어드벤처러
-    SearchingBossRoom, WaitingOtherSpecialAdvs, Skirmish, SkirmishDefeated, SkirmishWon, EnteringBossRoom, BossBattle, BailOut // 스페셜어드벤처러
+    SearchingBossArea, WaitingOtherSpecialAdvs, Skirmish, SkirmishDefeated, SkirmishWon, EnteringBossArea, BossBattle, BailOut // 스페셜어드벤처러
 
 }
 
@@ -20,7 +20,7 @@ public enum State
     // SuperState의 입구가 되는 State
     None, Idle, AfterBattle, Dead,
     Wandering, SolvingDesire_Wandering, InitiatingBattle, SearchingStructure, SearchingExit, SearchingHuntingArea, EnteringHuntingArea, SearchingMonster, ExitingHuntingArea, PassedOut, SearchingMonster_Wandering,
-    SearchingBossRoom, WaitingOtherSpecialAdvs, StartingSkirmish, SkirmishDefeated, SkirmishWon, EnteringBossRoom, StartingBossBattle, BailOut,
+    SearchingBossArea, WaitingOtherSpecialAdvs, StartingSkirmish, SkirmishDefeated, SkirmishWon, EnteringBossArea, StartingBossBattle, BailOut,
     // 그 외. 공용 State 포함.
     PathFinding, MovingToDestination, WaitingStructure, UsingStructure, Battle, Exit,
     ApproachingToEnemy, SearchRescueTeam, Rescued, SpontaneousRecovery,

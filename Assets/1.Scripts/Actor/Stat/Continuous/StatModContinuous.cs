@@ -4,34 +4,21 @@ using UnityEngine;
 
 public class StatModContinuous
 {
-    public StatModContinuous(ModType typeIn, float value)
+    public StatModContinuous(StatType statType, ModType modType, float value)
     {
-        Type = typeIn;
+        StatType = statType;
+        ModType = modType;
         ModValue = value;
     }
-	public float ModValue
-	{
-		get
-		{
-			return _modValue;
-		}
-		set
-		{
-			_modValue = value; 
-		}
-	}
-	public ModType Type
-	{
-		get
-		{
-			return _type;
-		}
-		set
-		{
-			_type = value;
-		}
-	}
 
-	ModType _type = ModType.Fixed;
-	private float _modValue = 0.0f;
+    public StatModContinuous(StatModContinuous statMod)
+    {
+        StatType = statMod.StatType;
+        ModType = statMod.ModType;
+        ModValue = statMod.ModValue;
+    }
+
+    public float ModValue { get; set; } = 0.0f;
+    public ModType ModType { get; set; } = ModType.Fixed;
+    public StatType StatType { get; set; }
 }

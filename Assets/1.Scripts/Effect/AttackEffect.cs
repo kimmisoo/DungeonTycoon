@@ -8,7 +8,7 @@ public class AttackEffect : MonoBehaviour
     Animator animator;
     AudioSource sound;
 
-    public void Start()
+    public void Awake()
     {
         animator = GetComponent<Animator>();
         sound = GetComponent<AudioSource>();

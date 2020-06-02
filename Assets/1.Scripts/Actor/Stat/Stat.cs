@@ -6,8 +6,8 @@ using System.Linq;
 
 public enum Gender { Male, Female }
 
-public class Stat{
-	
+public class Stat : MonoBehaviour
+{
 	#region CommonStat
 	public int id
 	{
@@ -41,12 +41,10 @@ public class Stat{
 	{
 		get; set;
 	}
-	
 	#endregion
 
 	Dictionary<DesireType, DesireBase> desireDict;
 	Traveler owner;
-	WaitForSeconds tickBetween;
     public Stat()
     {
         desireDict = new Dictionary<DesireType, DesireBase>();
@@ -71,7 +69,21 @@ public class Stat{
         //StartDesireTick();
     }
 
-	#region Desire Tick메소드
+	public void Init(int _id, RaceType _race, WealthType _wealth, string _name, string _explanation, Gender _gender, int _gold, Dictionary<DesireType, DesireBase> _desireDict, Traveler _owner)
+	{
+		id = _id;
+		race = _race;
+		wealth = _wealth;
+		name = _name;
+		explanation = _explanation;
+		gender = _gender;
+		gold = _gold;
+		desireDict = _desireDict;
+		owner = _owner;
+		StartDesireTick();
+	}
+
+    #region Desire Tick메소드
 	//Tick은 DesireBase에 Tick으로 Traveler에서 호출.
 	#endregion
 

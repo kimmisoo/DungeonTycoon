@@ -2,28 +2,100 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Item// : IHasEquipmentEffect
+public enum ItemType
 {
-    List<StatModContinuous> statModContinuousList;
-    List<StatModDiscrete> statModDiscreteList;
+    Weapon, Armor, Accessory
+}
 
-    public int code { get; set; }
-	public string name { get; set; }
-	public string icon { get; set; }
-	public float attack { get; set; }
-	public float defense { get; set; }
-	public float health { get; set; }
-	public float shiled { get; set; }
-	public float critical { get; set; }
-	public float attackspeed { get; set; }
-	public float penetrate { get; set; }
-	//public List<Enchantment> enchantments;
-	//public List<EquipmentEffect> equipmentEffects;
-    public int value { get; set; }
-	public int minProperLevel { get; set; }
-	public int maxProperLevel { get; set; }
-	public int demandLevel { get; set; }
-	public string explain { get; set; }
+public class Item
+{
+    private List<StatModContinuous> continuousMods;
+    private List<StatModDiscrete> discreteMods;
 
+    public string itemSkillKey;
 
+    private SpecialAdventurer owner;
+    private BattleStat ownerBattleStat;
+
+    public ItemType ItemType { get; set; }
+    public int Code { get; set; }
+    public string Name { get; set; }
+    public string Icon { get; set; }
+
+    public int Price { get; set; }
+    public int OptimalLevelLower { get; set; }
+    public int OptimalLevelUpper { get; set; }
+    public int DemandedLevel { get; set; }
+    public string Explanation { get; set; }
+
+    public Item()
+    {
+        continuousMods = new List<StatModContinuous>();
+        discreteMods = new List<StatModDiscrete>();
+    }
+
+    public string SkillName
+    {
+        get
+        {
+            string tempName, tempExplanation;
+
+            SkillFactory.GetNameAndExplanation(itemSkillKey, out tempName, out tempExplanation);
+
+            return tempName;
+        }
+    }
+
+    public string SkillExplanation
+    {
+        get
+        {
+            string tempName, tempExplanation;
+
+            SkillFactory.GetNameAndExplanation(itemSkillKey, out tempName, out tempExplanation);
+
+            return tempExplanation;
+        }
+    }
+
+    public void SetOwner(SpecialAdventurer spAdv)
+    {
+        owner = spAdv;
+        ownerBattleStat = spAdv.GetBattleStat();
+    }
+
+    public void ApplyItemEffects()
+    {
+        foreach (StatModContinuous mod in continuousMods)
+            ownerBattleStat.AddStatModContinuous(mod);
+        foreach (StatModDiscrete mod in discreteMods)
+            ownerBattleStat.AddStatModDiscrete(mod);
+
+        //Debug.Log("ItemSkillKey : " + itemSkillKey);
+        if (itemSkillKey != null)
+            owner.AddSkill(itemSkillKey);
+        //    itemSkills.Add(SkillFactory.CreateSkill(owner, skillName));
+    }
+
+    public void RemoveItemEffects()
+    {
+        foreach (StatModContinuous mod in continuousMods)
+            ownerBattleStat.RemoveStatModContinuous(mod);
+        foreach (StatModDiscrete mod in discreteMods)
+            ownerBattleStat.RemoveStatModDiscrete(mod);
+
+        if (itemSkillKey != null)
+            owner.RemoveSkill(itemSkillKey);
+    }
+
+    public void AddStatModContinous(StatModContinuous statMod)
+    {
+        //Debug.Log("[AddStatModContinous] " + statMod.StatType + " : " + statMod.ModValue);
+        continuousMods.Add(statMod);
+    }
+
+    public void AddStatModDiscrete(StatModDiscrete statMod)
+    {
+        discreteMods.Add(statMod);
+    }
 }

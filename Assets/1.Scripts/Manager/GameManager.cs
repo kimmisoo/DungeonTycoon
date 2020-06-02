@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         get
         {
             int total = 0;
-            for (int i = 0; i <= HuntingAreaManager.Instance.ActiveIndex; i++)
+            for (int i = 0; i <= CombatAreaManager.Instance.ActiveIndex; i++)
             {
                 total += progressInformations[i].guestCapacity;
             }
@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return CurGuestMax / ((HuntingAreaManager.Instance.ActiveIndex + 1) / 2); // Int연산인데 버려지는 건? 버려지면 나머지는 traveler에서 보충해도 되긴함.
+            return CurGuestMax / ((CombatAreaManager.Instance.ActiveIndex + 1) / 2); // Int연산인데 버려지는 건? 버려지면 나머지는 traveler에서 보충해도 되긴함.
         }
     }
 
@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return CurAdvMaxPerHuntingArea * (HuntingAreaManager.Instance.ActiveIndex + 1); // 사냥터별 수가 있고 정수 때문에 이렇게 계산.
+            return CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.ActiveIndex + 1); // 사냥터별 수가 있고 정수 때문에 이렇게 계산.
         }
     }
 
@@ -162,7 +162,7 @@ public class GameManager : MonoBehaviour
         // Scene 이름 받기
         sceneName = SceneManager.GetActiveScene().name;
 
-        Debug.Log("mapName" + sceneName);
+        //Debug.Log("mapName" + sceneName);
         ReadDatasFromJSON();
 
         wait = new WaitForSeconds(0.11f);
@@ -223,9 +223,10 @@ public class GameManager : MonoBehaviour
             Adventurer tempAdventurer = adventurersDisabled[i].GetComponent<Adventurer>();
             tempAdventurer.index = i;
             tempAdventurer.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-            tempAdventurer.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-            tempAdventurer.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
-            tempAdventurer.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+            tempAdventurer.SetDefaultEffects();
+            //tempAdventurer.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
+            //tempAdventurer.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
+            //tempAdventurer.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
             // Debug.Log("character instantiate - " + i);
         }
 		StartCoroutine(TrvEnter());
@@ -234,9 +235,12 @@ public class GameManager : MonoBehaviour
 
 		
 #if DEBUG_ADV
+        
 		//GenAndEnqueueSingleAdventurer(1, 1);
 
 		//GenAndEnqueueSpecialAdvenuturer("Yeonhwa", 1);
+        //GenAndEnqueueSingleAdventurer(1, 1);
+        GenAndEnqueueSpecialAdvenuturer("Hana", 1);
 #endif
 		//StartCoroutine(GCcall());
 		for (int i = 0; i < corporateNum; i++)
@@ -696,7 +700,7 @@ public class GameManager : MonoBehaviour
         Stat tempStat = GenStat(advLevel);
         RewardStat tempRewardStat = GenRewardStat(advLevel);
 
-        Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+        //Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
         tempAdventurer.InitAdventurer(tempStat, tempBattleStat, tempRewardStat);
 
@@ -713,8 +717,8 @@ public class GameManager : MonoBehaviour
          * 하나: "Hana"
          * 연화: "Yeonhwa"
          * 뮈라: "Murat"
-         * 냥냐리우스: "Cat"
-         * 왈멍멍: "Dog"
+         * 냥냐리우스: "Nyang"
+         * 왈멍멍: "Wal"
          */
         // 아마 고쳐야할 거임
         GameObject go = Instantiate((GameObject)Resources.Load("CharacterPrefabs/"+name));
@@ -731,9 +735,7 @@ public class GameManager : MonoBehaviour
         tempSpAdv.index = specialAdventurers.Count - 1;
         string attackEffectFileName = "EffectPrefabs/" + name +"_AttackEffect";
         tempSpAdv.SetAttackEffect((GameObject)Instantiate(Resources.Load(attackEffectFileName)));
-        tempSpAdv.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-        tempSpAdv.SetHealText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HealText")));
-        tempSpAdv.SetHealEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_HealEffect")));
+        tempSpAdv.SetDefaultEffects();
         // Debug.Log("character instantiate - " + i);
 
 
@@ -741,12 +743,12 @@ public class GameManager : MonoBehaviour
         Stat tempStat = GenStat(name, level);
         RewardStat tempRewardStat = GenRewardStat(level);
 
-        Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+        //Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
         //tempBattleStat.ResetBattleStat();
         int skillID = spAdvSummary[name]["SkillID"].AsInt;
 
 
-        Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+        //Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
         tempSpAdv.InitSpecialAdventurer(tempStat, tempBattleStat, tempRewardStat, name);
 
@@ -811,7 +813,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetAdvStatistics()
     {
-        for (int i = 0; i <= HuntingAreaManager.Instance.ActiveIndex; i++)
+        for (int i = 0; i <= CombatAreaManager.Instance.ActiveIndex; i++)
         {
             progressInformations[i].curAdvNum = 0;
         }
@@ -842,7 +844,7 @@ public class GameManager : MonoBehaviour
         List<ProgressInformation> tempArr = new List<ProgressInformation>(progressInformations);
 
         tempArr.Sort(CompareByCurHuntingAreaAsc);
-        int totalAdv = CurAdvMaxPerHuntingArea * (HuntingAreaManager.Instance.ActiveIndex + 1);
+        int totalAdv = CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.ActiveIndex + 1);
         tempArr.Add(new ProgressInformation(totalAdv));
 
         int generated = 0;
@@ -1109,7 +1111,7 @@ public class GameManager : MonoBehaviour
     // 디버깅용 사냥터 생성 코드
     public void DebugHuntingArea()
     {
-        HuntingAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
+        CombatAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
     }
 #endregion
 
@@ -1173,8 +1175,8 @@ public class GameManager : MonoBehaviour
         {
             x = aData["scene"][sceneNumber]["mapEntrance"][i]["x"].AsInt;
             y = aData["scene"][sceneNumber]["mapEntrance"][i]["y"].AsInt;
-#if DEBUG
-            Debug.Log(x + "   " + y);
+#if DEBUG_ADV
+            //Debug.Log(x + "   " + y);
 #endif
             mapEntrance.Add(layer.GetTileForMove(x * 2, y * 2));
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, y * 2));
@@ -1210,5 +1212,10 @@ public class GameManager : MonoBehaviour
 		//호출은 아마 HuntingArea에서 할듯?
 		
 	}
-#endregion
+
+    public void OnHuntingAreaConquered()
+    {
+        
+    }
+#endregion    
 }
