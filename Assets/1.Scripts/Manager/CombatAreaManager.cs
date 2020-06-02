@@ -324,7 +324,7 @@ public class CombatAreaManager : MonoBehaviour
         //LoadMonsterSamples(monsterSet, monsterSample1Num, monsterSample2Num, out monsterSample1, out monsterSample2);
         GameObject boss = LoadMonsterFromJson("Boss", bossNum);
 
-        bossArea.InitBossArea(boss);
+        
 
         //건설공간 지정
         int x = bossAreaJson[stageNum][bossAreaNum]["sitewidth"].AsInt;
@@ -340,7 +340,7 @@ public class CombatAreaManager : MonoBehaviour
         bossArea.extent = new int[x, y];
         for (int i = 0; i < x * y; i++)
         {
-            bossArea.extent[i % x, i / x] = huntingAreaJson[stageNum][bossAreaNum]["site"][i].AsInt;
+            bossArea.extent[i % x, i / x] = bossAreaJson[stageNum][bossAreaNum]["site"][i].AsInt;
         }
         #endregion
 
@@ -351,6 +351,11 @@ public class CombatAreaManager : MonoBehaviour
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
         SetBossAreaPoint(pointTile.GetComponent<Tile>());
+
+        // 보스몬스터 위치 지정
+        //Tile centerTile = tileLayer.GetTile(pointTile.GetComponent<Tile>().GetX() + x/2, pointTile.GetComponent<Tile>().GetY() + y/2).GetComponent<Tile>();
+        //boss.GetComponent<Monster>().SetCurTile(centerTile);
+        //boss.GetComponent<Monster>().SetCurTileForMove(centerTile.GetChild(0));
         #endregion
 
         #region ConstructStructure()
@@ -367,10 +372,13 @@ public class CombatAreaManager : MonoBehaviour
 
         for (int i = 0; i < bossArea.extentHeight; i++)
         {
+            //string debugStr = "";
             for (int j = 0; j < bossArea.extentWidth; j++)
             {
                 Tile thatTile = tileLayer.GetTileAsComponent(tile.GetX() + j, tile.GetY() + i);
 
+                //debugStr += " ";
+                //debugStr += extent[j, i];
                 if (extent[j, i] == 1)
                 {
                     thatTile.SetBuildable(false);
@@ -380,9 +388,10 @@ public class CombatAreaManager : MonoBehaviour
                     //디버깅용임시
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(255, 110, 0);
                     //
-#if DEBUG_CREATE_HA
-                    Debug.Log(thatTile);
-#endif
+                    for (int k = 0; k < 4; k++)
+                    {
+                        bossArea.AddTerritory(thatTile.childs[k]);
+                    }
                 }
                 else if (extent[j, i] == 2)
                 {
@@ -394,8 +403,12 @@ public class CombatAreaManager : MonoBehaviour
                     //}
                 }
             }
+
+            //Debug.Log(debugStr);
         }
 
+        bossArea.InitBossArea(boss);
+        boss.GetComponent<Monster>().SetHabitat(bossArea);
         constructing = null;
         #endregion
     }

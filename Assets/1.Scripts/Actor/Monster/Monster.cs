@@ -32,7 +32,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected Structure destinationStructure;
     protected Structure[] structureListByPref;
 
-    private HuntingArea habitat;
+    private CombatArea habitat;
     public delegate void CorpseDecayEventHandler(int index);
     public event CorpseDecayEventHandler corpseDecayEvent;
 
@@ -88,6 +88,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         this.rewardStat = new RewardStat(rewardStat);
         //stat 초기화
         //pathfinder 초기화 // delegate 그대로
+        SetDefaultEffects();
+        skills = new Dictionary<string, Skill>();
+        temporaryEffects = new Dictionary<string, TemporaryEffect>();
     }
 
     // 몬스터에서 받아서 초기화.
@@ -127,7 +130,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     }
     #endregion
 
-    public void SetHabitat(HuntingArea input)
+    public void SetHabitat(CombatArea input)
     {
         habitat = input;
     }
