@@ -97,19 +97,21 @@ public class Tile : MonoBehaviour
     {
         structure = s;
     }
-	//일단 건물은 뚫고 갈 수 있도록 처리해놨음.
-	//나중에 길막힘 구현할때 볼것
+	
+
 	public bool GetBuildingArea()
 	{
 		return isNonTile==false && isActive == true ? isBuildingArea : false;
 	}
-    public bool GetPassableTraveler()
+	//Validate Tile 기본 조건 - 활성화된 타일 && 존재하는 타일 && 건설 되지 않음!
+	//Traveler - Road, 
+    public bool GetPassableTraveler() 
     {
-		return isNonTile == false && isActive == true ? isRoad || isBuildingArea : false;
+		return isNonTile == false && isActive == true && isStructed == false ? isRoad || isBuildingArea : false;
     }
     public bool GetPassableAdventurer()
     {
-        return isNonTile == false && isActive == true ? isRoad || isBuildingArea || isHuntingArea : false; 
+        return isNonTile == false && isActive == true && isStructed == false ? isRoad || isBuildingArea || isHuntingArea : false; 
     }
     public bool GetPassableMonster()
     {
