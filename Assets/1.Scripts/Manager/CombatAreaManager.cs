@@ -64,12 +64,17 @@ public class CombatAreaManager : MonoBehaviour
     #region 세이브!
     public List<HuntingArea> huntingAreas;
     public List<BossArea> bossAreas;
-    #endregion
+	#endregion
 
-    // Use this for initialization
-    void Start()
+	private void Awake()
+	{
+		_instance = this;
+	}
+
+	// Use this for initialization
+	void Start()
     {
-        _instance = this;
+        
         LoadHuntingAreaData();
         LoadBossAreaData();
         LoadMonsterData();
@@ -256,7 +261,7 @@ public class CombatAreaManager : MonoBehaviour
 
                 if (extent[j, i] == 1)
                 {
-                    thatTile.SetBuildable(false);
+                    thatTile.SetBuildingArea(false);
                     thatTile.SetStructed(false);
                     thatTile.SetHuntingArea(true);
 
@@ -381,7 +386,7 @@ public class CombatAreaManager : MonoBehaviour
                 //debugStr += extent[j, i];
                 if (extent[j, i] == 1)
                 {
-                    thatTile.SetBuildable(false);
+                    thatTile.SetBuildingArea(false);
                     thatTile.SetStructed(false);
                     thatTile.SetHuntingArea(true);
 

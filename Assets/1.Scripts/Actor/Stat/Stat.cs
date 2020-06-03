@@ -6,7 +6,7 @@ using System.Linq;
 
 public enum Gender { Male, Female }
 
-public class Stat : MonoBehaviour
+public class Stat
 {
 	#region CommonStat
 	public int id
@@ -80,7 +80,7 @@ public class Stat : MonoBehaviour
 		gold = _gold;
 		desireDict = _desireDict;
 		owner = _owner;
-		StartDesireTick();
+		
 	}
 
     #region Desire Tick메소드
