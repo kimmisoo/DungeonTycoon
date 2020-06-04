@@ -346,7 +346,7 @@ public class GameManager : MonoBehaviour
         else
         {
             tempStat.gender = Gender.Female;
-            tempStat.name = namesData["ㄴnames"]["femalename"][Random.Range(0, namesData["malename"].Count)];
+            tempStat.name = namesData["names"]["femalename"][Random.Range(0, namesData["malename"].Count)];
         }
         // 임시
         tempStat.explanation = "";

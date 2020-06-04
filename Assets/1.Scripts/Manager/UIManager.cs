@@ -38,6 +38,12 @@ public class UIManager : MonoBehaviour {
 	public GameObject santuaryPanel;
 	public GameObject rescuePanel;
 
+	//Specification Panel
+	public GameObject characterSpecPanel;
+	public GameObject monsterSpecPanel;
+	public GameObject tileSpecPanel;
+	public GameObject structureSpecPanel;
+
 	//---건설
 	public GameObject structureObject;
 	public GameObject structureScroll;

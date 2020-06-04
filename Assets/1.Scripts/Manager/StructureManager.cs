@@ -453,7 +453,6 @@ public class StructureManager : MonoBehaviour
             {
                 //s.입구 막힘 알림.
                 Debug.Log("입구 막힘. " + s.gameObject.name);
-
             }
         }
     }
