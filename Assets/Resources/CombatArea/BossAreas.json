@@ -2,6 +2,7 @@
 	"stage1": [{
 		"name": "FinalBossArea",
 		"bossNum": 0,
+		"challengeLevel": 25,
 		"sitewidth": 4,
 		"siteheight": 6,
 		"site": [1, 1, 1, 1,
@@ -15,6 +16,7 @@
 	"stage2": [{
 			"name": "MidBossArea",
 			"bossNum": 1,
+			"challengeLevel": 25,
 			"sitewidth": 4,
 			"siteheight": 6,
 			"site": [1, 1, 1, 1,
@@ -28,6 +30,7 @@
 		{
 			"name": "FinalBossArea",
 			"bossNum": 2,
+			"challengeLevel": 45,
 			"sitewidth": 4,
 			"siteheight": 6,
 			"site": [1, 1, 1, 1,
@@ -42,6 +45,7 @@
 	"stage3": [{
 			"name": "GateKeeperArea",
 			"bossNum": 1,
+			"challengeLevel": 25,
 			"sitewidth": 4,
 			"siteheight": 6,
 			"site": [1, 1, 1, 1,
@@ -55,6 +59,7 @@
 		{
 			"name": "MidBossArea",
 			"bossNum": 1,
+			"challengeLevel": 45,
 			"sitewidth": 4,
 			"siteheight": 6,
 			"site": [1, 1, 1, 1,
@@ -68,6 +73,7 @@
 		{
 			"name": "FinalBossArea",
 			"bossNum": 2,
+			"challengeLevel": 65,
 			"sitewidth": 4,
 			"siteheight": 6,
 			"site": [1, 1, 1, 1,

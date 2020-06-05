@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
     public Queue<GameObject> advEnterQ;
     public Queue<GameObject> spAdvEnterQ;
 
+    public int chosenSpAdvIndex = -1;
+
     public int corporateNum = 1;
     public List<float> popular;
     #endregion
@@ -84,6 +86,8 @@ public class GameManager : MonoBehaviour
 
     // 사냥터 정보
     int huntingAreaCount = 0;
+    // 보스지역 정보
+    int bossAreaCount = 0;
     // 사냥터 개방에 따라 필요해질 데이터 저장
     List<ProgressInformation> progressInformations;
 
@@ -180,6 +184,8 @@ public class GameManager : MonoBehaviour
 
         // Scene 정보 세팅
         SetSceneData(sceneData);
+        SetCombatAreas(sceneData);
+
 
         travelers = new List<GameObject>();
         adventurersEnabled = new List<GameObject>();
@@ -250,7 +256,7 @@ public class GameManager : MonoBehaviour
     {
         yield return null;
 #if DEBUG_ADV
-        DebugHuntingArea();
+        //DebugHuntingArea();
 #endif
         SaveLoadManager.Instance.InstantiateFromSave();
     }
@@ -319,7 +325,7 @@ public class GameManager : MonoBehaviour
     }
 #endregion
 
-#region Generate Characters
+    #region Generate Characters
     // 모험가 입장 코루틴
     // 이거에 i 값을 던져주면 활성화 문제는 해결됨.
     IEnumerator TEnter()
@@ -850,6 +856,35 @@ public class GameManager : MonoBehaviour
         tileMap = tmg.GenerateMap("TileMap/" + sceneName);
     }
 
+    // 사냥터 및 보스지역 건설
+    private void SetCombatAreas(JSONNode aData)
+    {
+        int sceneNumber = int.Parse(SceneManager.GetActiveScene().name);
+        int areaNum, tileX, tileY;
+        GameObject pointTile;
+
+        // 사냥터 건설
+        for (int i = 0; i<huntingAreaCount; i++)
+        {
+            areaNum = aData["scene"][sceneNumber]["huntingArea"][i]["huntingAreaNum"].AsInt;
+            tileX = aData["scene"][sceneNumber]["huntingArea"][i]["x"].AsInt;
+            tileY = aData["scene"][sceneNumber]["huntingArea"][i]["y"].AsInt;
+            pointTile = GetTileLayer().GetComponent<TileLayer>().GetTile(tileX, tileY);
+            //Debug.Log("haNum : " + areaNum + " ["+tileX + ", " + tileY + "]");
+            CombatAreaManager.Instance.ConstructHuntingArea(areaNum, i, pointTile);
+        }
+
+        // 보스지역 건설
+        for (int i = 0; i < bossAreaCount; i++)
+        {
+            areaNum = aData["scene"][sceneNumber]["bossArea"][i]["bossAreaNum"].AsInt;
+            tileX = aData["scene"][sceneNumber]["bossArea"][i]["x"].AsInt;
+            tileY = aData["scene"][sceneNumber]["bossArea"][i]["y"].AsInt;
+            pointTile = GetTileLayer().GetComponent<TileLayer>().GetTile(tileX, tileY);
+            CombatAreaManager.Instance.ConstructBossArea(areaNum, i, pointTile);
+        }
+    }
+
     // 타일맵 Get
     public TileMap GetMap()
     {
@@ -1074,12 +1109,22 @@ public class GameManager : MonoBehaviour
     }
 #endregion
 
-#region BattleImpl
-    // 디버깅용 사냥터 생성 코드
-    public void DebugHuntingArea()
+#region Stage Progress
+    public void ChooseSpAdv(int spAdvIndex)
     {
-        CombatAreaManager.Instance.ConstructHuntingArea(0, 0, GetTileLayer().transform.GetChild(1868).gameObject);
-        CombatAreaManager.Instance.ConstructBossArea(0, 0, GetTileLayer().transform.GetChild(1913).gameObject);
+        chosenSpAdvIndex = spAdvIndex;
+        specialAdventurers[spAdvIndex].GetComponent<SpecialAdventurer>().ExclusiveContracted();
+    }
+
+    public void DebugBossCall()
+    {
+        ChooseSpAdv(0);
+
+    }
+
+    public void PlayerOrderedRaidParticipate()
+    {
+        PlayerOrderedRaidEventHandler?.Invoke();
     }
 #endregion
 
@@ -1166,6 +1211,8 @@ public class GameManager : MonoBehaviour
             progressInformations[i].minLevel = aData["scene"][sceneNumber]["progressInformation"]["minLevel"].AsInt;
             progressInformations[i].maxLevel = aData["scene"][sceneNumber]["progressInformation"]["maxLevel"].AsInt;
         }
+
+        bossAreaCount = aData["scene"][sceneNumber]["bossAreaCount"].AsInt;
     }
 
     public TileLayer GetTileLayer(int layerNum)

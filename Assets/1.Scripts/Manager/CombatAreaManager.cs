@@ -17,7 +17,7 @@ public class CombatAreaManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                Debug.Log("HuntingAreaManager is null");
+                Debug.Log("CombatAreaManager is null");
                 return null;
             }
             else
@@ -67,8 +67,7 @@ public class CombatAreaManager : MonoBehaviour
     public List<BossArea> bossAreas;
     #endregion
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         _instance = this;
         LoadHuntingAreaData();
@@ -79,9 +78,6 @@ public class CombatAreaManager : MonoBehaviour
 
         PublicHuntingAreaIndex = 0;
         BossAreaIndex = 0;
-
-        HuntingAreaOpenToPublic();
-        HuntingAreaConquerStart();
     }
 
     void LoadHuntingAreaData()
@@ -325,13 +321,13 @@ public class CombatAreaManager : MonoBehaviour
 
         // 보스 생성. 우선 번호부터.
         int bossNum = bossAreaJson[stageNum][bossAreaNum]["bossNum"].AsInt;
-
+        int challengeLevel = bossAreaJson[stageNum][bossAreaNum]["challengeLevel"].AsInt;
+        Debug.Log("challengeLevel : " + challengeLevel);
         // 몬스터 샘플 instantiate
         //GameObject monsterSample1, monsterSample2;
         //LoadMonsterSamples(monsterSet, monsterSample1Num, monsterSample2Num, out monsterSample1, out monsterSample2);
         GameObject boss = LoadMonsterFromJson("Boss", bossNum);
-
-        
+       
 
         //건설공간 지정
         int x = bossAreaJson[stageNum][bossAreaNum]["sitewidth"].AsInt;
@@ -414,7 +410,7 @@ public class CombatAreaManager : MonoBehaviour
             //Debug.Log(debugStr);
         }
 
-        bossArea.InitBossArea(boss);
+        bossArea.InitBossArea(boss, challengeLevel);
         boss.GetComponent<Monster>().SetHabitat(bossArea);
         constructing = null;
         #endregion
@@ -457,28 +453,28 @@ public class CombatAreaManager : MonoBehaviour
         return monster;
     }
 
-
-    public void HuntingAreaOpenToPublic()
+    #region Stage Progress
+    private void HuntingAreaOpenToPublic()
     {
         huntingAreas[PublicHuntingAreaIndex].OpenToPublic();
     }
- 
-    public void HuntingAreaConquerStart()
+
+    private void HuntingAreaConquerStart()
     {
         // Active는 항상 되어있고, 장애물 해체 관련된 거 들어가면 됨.
     }
 
-    public void BossAreaOpenToPublic()
+    private void BossAreaOpenToPublic()
     {
         bossAreas[BossAreaIndex].OpenToPublic();
     }
 
-    public void BossAreaConquerStart()
+    private void BossAreaConquerStart()
     {
 
     }
 
-    public void OnHuntingAreaConquered()
+    private void OnHuntingAreaConquered()
     {
         PublicHuntingAreaIndex++;
         HuntingAreaOpenToPublic();
@@ -492,7 +488,7 @@ public class CombatAreaManager : MonoBehaviour
         }
     }
 
-    public void OnBossAreaConquered()
+    private void OnBossAreaConquered()
     {
         PublicHuntingAreaIndex++;
         HuntingAreaOpenToPublic();
@@ -502,4 +498,11 @@ public class CombatAreaManager : MonoBehaviour
 
         HuntingAreaConquerStart();
     }
+
+    public void StartConquer()
+    {
+        HuntingAreaOpenToPublic();
+        HuntingAreaConquerStart();
+    }
+    #endregion 
 }

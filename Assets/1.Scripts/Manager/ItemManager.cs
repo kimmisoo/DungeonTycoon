@@ -43,8 +43,6 @@ public class ItemManager : MonoBehaviour
     {
         TextAsset itemsText = Resources.Load<TextAsset>("Items/Items");
         itemsJson = JSON.Parse(itemsText.text);
-        Debug.Log(itemsText.text);
-        Debug.Log(itemsJson);
     }
 
     //setStructureCategory -> setStructureNumber -> instantiateStructure // onClick 이벤트 정적 설정이 파라미터가 한개인 함수만 설정 가능하기 때문에 .. 번거롭더라도~~

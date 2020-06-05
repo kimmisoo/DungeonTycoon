@@ -5,16 +5,21 @@ using UnityEngine;
 public class BossArea : HuntingArea
 {
     private GameObject bossMonster;
+    public int ChallengeLevel
+    {
+        get; private set;
+    }
 
     #region Save
     public int bossAreaNum;
     public int bossAreaIndex;
     #endregion
 
-    public void InitBossArea(GameObject bossMonsterIn)
+    public void InitBossArea(GameObject bossMonsterIn, int challengeLevel)
     {
         bossMonster = bossMonsterIn;
         bossMonster.GetComponent<Monster>().corpseDecayEvent += OnBossKilled;
+        ChallengeLevel = challengeLevel;
 
         // 보스몬스터 위치 지정
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();

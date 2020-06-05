@@ -15,6 +15,9 @@ public class SpecialAdventurer : Adventurer
     {
         base.InitAdventurer(stat, battleStat, rewardStat);
         AddSkill(name);
+
+        // 플레이어가 선택하기 전에는 공용이벤트 일단 구독해놓음.
+        GameManager.Instance.BossRaidCallEventHandler += OnBossRaidCall;
     }
 
     public void OnEnable()
@@ -318,19 +321,24 @@ public class SpecialAdventurer : Adventurer
 
     #endregion
 
+    #region Exclusive Contract
+    public void ExclusiveContracted()
+    {
+        // 공통 이벤트에서 구독 해제
+        GameManager.Instance.BossRaidCallEventHandler -= OnBossRaidCall;
+        GameManager.Instance.PlayerOrderedRaidEventHandler += OnPlayerRaidOrder;
+    }
+    #endregion
+
     #region BossBattle
     public void OnBossRaidCall()
     {
-        StopCurActivities();
-        // 전투상태였다면?
-        //if()
-        //    StartCoroutine(ParticipateInRaid());
+        if (CombatAreaManager.Instance.FindBossArea().ChallengeLevel <= battleStat.Level)
+            StartCoroutine(ParticipateInRaid());
     }
 
     public void OnPlayerRaidOrder()
     {
-        StopCurActivities();
-
         StartCoroutine(ParticipateInRaid());
     }
 
@@ -344,7 +352,7 @@ public class SpecialAdventurer : Adventurer
 
         StopCurActivities();
 
-        
+        Debug.Log(stat.name + " 보스 레이드 참여.");
     }
     #endregion
 }
