@@ -35,4 +35,9 @@ public class BossArea : HuntingArea
     {
         InvokeAreaConqueredEvent();
     }
+
+    public void OpenToPublic()
+    {
+
+    }
 }

@@ -188,5 +188,12 @@ public class HuntingArea : CombatArea
         get; private set;
     }
 
+    /// <summary>
+    /// 일선 모험가 말고도 일반 모험가와 관광객에게 개방
+    /// </summary>
+    public void OpenToPublic()
+    {
+
+    }
     #endregion
 }

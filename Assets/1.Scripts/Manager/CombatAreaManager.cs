@@ -32,8 +32,9 @@ public class CombatAreaManager : MonoBehaviour
     public GameObject rootCombatAreaObject;
 
     // 사냥터 몇번까지 활성화됐는지.
-    public int ActiveIndex { get; private set; }
-    public int BossIndex { get; private set; }
+    public int PublicHuntingAreaIndex { get; private set; }
+    public int ConqueringHuntingAreaIndex { get { return PublicHuntingAreaIndex + 1; } }
+    public int BossAreaIndex { get; private set; }
 
 
     // 맵 내에서 maxLevel이 가장 높은 사냥터의 maxLevel
@@ -41,7 +42,7 @@ public class CombatAreaManager : MonoBehaviour
     {
         get
         {
-            return huntingAreas[ActiveIndex].LevelMax;
+            return huntingAreas[PublicHuntingAreaIndex].LevelMax;
         }
     }
 
@@ -75,8 +76,12 @@ public class CombatAreaManager : MonoBehaviour
         LoadMonsterData();
         huntingAreas = new List<HuntingArea>();
         bossAreas = new List<BossArea>();
-        ActiveIndex = -1;
-        BossIndex = 0;
+
+        PublicHuntingAreaIndex = 0;
+        BossAreaIndex = 0;
+
+        HuntingAreaOpenToPublic();
+        HuntingAreaConquerStart();
     }
 
     void LoadHuntingAreaData()
@@ -112,12 +117,13 @@ public class CombatAreaManager : MonoBehaviour
     }
 
     // 사냥터 찾기. 캐릭터 레벨에 맞는 사냥터를 찾아줌.
-    public HuntingArea FindHuntingArea(int level)
+    public HuntingArea FindHuntingAreaAdv(int level)
     {
         HuntingArea searchResult = null;
 
+        Debug.Log("HA IDX : " + PublicHuntingAreaIndex);
         // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
-        for (int i = 0; i < huntingAreas.Count; i++)
+        for (int i = 0; i <= PublicHuntingAreaIndex; i++)
         {
             if (level <= huntingAreas[i].LevelMax)
             {
@@ -129,6 +135,11 @@ public class CombatAreaManager : MonoBehaviour
         }
 
         return searchResult;
+    }
+
+    public BossArea FindBossArea()
+    {
+        return bossAreas[BossAreaIndex];
     }
 
     public void SetHuntingAreaPoint(Tile t)
@@ -294,10 +305,6 @@ public class CombatAreaManager : MonoBehaviour
 
         constructing = null;
 #endregion
-
-#if DEBUG_ADV
-        ActivateNextHuntingArea();
-#endif
     }
 
     public void ConstructBossArea(int areaNum, int areaIndex, GameObject pointTile)
@@ -450,91 +457,49 @@ public class CombatAreaManager : MonoBehaviour
         return monster;
     }
 
-//    // 몬스터 샘플 로드해서 instantiate해주는 함수.
-//    void LoadMonsterSamples(string monsterSet, int sample1Num, int sample2Num, out GameObject monsterSample1, out GameObject monsterSample2)
-//    {
-//        // 몬스터 샘플 1 할당
-//        //Debug.Log("MonsterPrefabs/" + monsterSet + "/" + sample1Num);
-//        monsterSample1 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample1Num));
-//        monsterSample1.SetActive(false);
-//        monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
 
-//#region 스탯로드
-//        BattleStat tempBattleStat = new BattleStat();
-
-//        //Debug.Log("num : " + sample1Num + ", " + sample2Num);
-//        //Debug.Log("level : " + monsterJson[monsterSet][sample1Num]["level"]);
-//        tempBattleStat.Level = monsterJson[monsterSet][sample1Num]["level"].AsInt;
-//        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample1Num]["hp"].AsFloat ;
-//        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample1Num]["def"].AsFloat;
-//        tempBattleStat.BaseAvoid = monsterJson[monsterSet][sample1Num]["avoid"].AsFloat;
-//        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample1Num]["atk"].AsFloat;
-//        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample1Num]["atkspeed"].AsFloat;
-//        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample1Num]["critical"].AsFloat;
-//        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample1Num]["atkcritical"].AsFloat;
-//        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample1Num]["penetration"].AsFloat;
-//        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample1Num]["movespeed"].AsFloat;
-//        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample1Num]["range"].AsInt;
-
-//        RewardStat tempRewardStat = new RewardStat();
-//        tempRewardStat.Exp = monsterJson[monsterSet][sample1Num]["exp"].AsInt;
-//        tempRewardStat.Gold = monsterJson[monsterSet][sample1Num]["gold"].AsInt;
-//#endregion
-
-//        Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
-//        tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
-//        tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-//        //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-//        tempMonsterComp.SetDefaultEffects();
-
-//        // 몬스터 샘플 2 할당
-//        monsterSample2 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample2Num));
-//        monsterSample2.SetActive(false);
-//        monsterSample2.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
-
-//#region 스탯 로드
-//        tempBattleStat = new BattleStat();
-
-//        tempBattleStat.Level = monsterJson[monsterSet][sample2Num]["level"].AsInt;
-//        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample2Num]["hp"].AsFloat;
-//        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample2Num]["def"].AsFloat;
-//        tempBattleStat.BaseAvoid = monsterJson[monsterSet][sample2Num]["avoid"].AsFloat;
-//        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample2Num]["atk"].AsFloat;
-//        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample2Num]["atkspeed"].AsFloat;
-//        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample2Num]["critical"].AsFloat;
-//        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample2Num]["atkcritical"].AsFloat;
-//        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample2Num]["penetration"].AsFloat;
-//        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample2Num]["movespeed"].AsFloat;
-//        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample2Num]["range"].AsInt;
-        
-//        tempRewardStat = new RewardStat();
-//        tempRewardStat.Exp = monsterJson[monsterSet][sample2Num]["exp"].AsInt;
-//        tempRewardStat.Gold = monsterJson[monsterSet][sample2Num]["gold"].AsInt;
-//#endregion
-
-//        tempMonsterComp = monsterSample2.GetComponent<Monster>();
-//        tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
-//        tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-//        //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-//        tempMonsterComp.SetDefaultEffects();
-//        return;
-//    }
-
-    public void ActivateNextHuntingArea()
+    public void HuntingAreaOpenToPublic()
     {
-        ActiveIndex++;
-        
-        // 활성화 관련된 거 더 구현할 것.
-        // Active는 항상 되어있고, 사냥터 검색에 걸리는 거랑 장애물 해체 관련된 거 들어가면 됨.
+        huntingAreas[PublicHuntingAreaIndex].OpenToPublic();
+    }
+ 
+    public void HuntingAreaConquerStart()
+    {
+        // Active는 항상 되어있고, 장애물 해체 관련된 거 들어가면 됨.
+    }
+
+    public void BossAreaOpenToPublic()
+    {
+        bossAreas[BossAreaIndex].OpenToPublic();
+    }
+
+    public void BossAreaConquerStart()
+    {
+
     }
 
     public void OnHuntingAreaConquered()
     {
-        ActivateNextHuntingArea();
+        PublicHuntingAreaIndex++;
+        HuntingAreaOpenToPublic();
+
+        HuntingAreaConquerStart();
         //Debug.Log("OnHuntingAreaConquered");
-        if(huntingAreas[ActiveIndex].IsBossArea)
+        if (huntingAreas[PublicHuntingAreaIndex].IsBossArea)
         {
             // 보스전 신청용 UI 띄우기
+            BossAreaConquerStart();
         }
+    }
+
+    public void OnBossAreaConquered()
+    {
+        PublicHuntingAreaIndex++;
+        HuntingAreaOpenToPublic();
+
+        BossAreaIndex++;
+        BossAreaOpenToPublic();
+
+        HuntingAreaConquerStart();
     }
 }

@@ -389,7 +389,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         yield return null;
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
-        destinationPlace = CombatAreaManager.Instance.FindHuntingArea(battleStat.Level);
+        destinationPlace = CombatAreaManager.Instance.FindHuntingAreaAdv(battleStat.Level);
 #if DEBUG_ADV
         if (destinationPlace == null)
             Debug.Log("dest is null");

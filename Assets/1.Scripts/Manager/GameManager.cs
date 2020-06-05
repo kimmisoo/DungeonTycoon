@@ -76,6 +76,12 @@ public class GameManager : MonoBehaviour
     List<KeyValuePair<string, float>> trvWealthRatios;
     List<WealthRatioByLevel> advWealthRatios; // 이거 어떻게 저장?
 
+    // 보스 사냥 이벤트
+    public delegate void BossRaidEvent();
+    public BossRaidEvent BossRaidCallEventHandler;
+    public BossRaidEvent PlayerOrderedRaidEventHandler;
+
+
     // 사냥터 정보
     int huntingAreaCount = 0;
     // 사냥터 개방에 따라 필요해질 데이터 저장
@@ -98,7 +104,7 @@ public class GameManager : MonoBehaviour
         get
         {
             int total = 0;
-            for (int i = 0; i <= CombatAreaManager.Instance.ActiveIndex; i++)
+            for (int i = 0; i <= CombatAreaManager.Instance.PublicHuntingAreaIndex; i++)
             {
                 total += progressInformations[i].guestCapacity;
             }
@@ -111,7 +117,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return CurGuestMax / ((CombatAreaManager.Instance.ActiveIndex + 1) / 2); // Int연산인데 버려지는 건? 버려지면 나머지는 traveler에서 보충해도 되긴함.
+            return CurGuestMax / ((CombatAreaManager.Instance.PublicHuntingAreaIndex + 1) / 2); // Int연산인데 버려지는 건? 버려지면 나머지는 traveler에서 보충해도 되긴함.
         }
     }
 
@@ -119,7 +125,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.ActiveIndex + 1); // 사냥터별 수가 있고 정수 때문에 이렇게 계산.
+            return CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.PublicHuntingAreaIndex + 1); // 사냥터별 수가 있고 정수 때문에 이렇게 계산.
         }
     }
 
@@ -774,7 +780,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetAdvStatistics()
     {
-        for (int i = 0; i <= CombatAreaManager.Instance.ActiveIndex; i++)
+        for (int i = 0; i <= CombatAreaManager.Instance.PublicHuntingAreaIndex; i++)
         {
             progressInformations[i].curAdvNum = 0;
         }
@@ -805,7 +811,7 @@ public class GameManager : MonoBehaviour
         List<ProgressInformation> tempArr = new List<ProgressInformation>(progressInformations);
 
         tempArr.Sort(CompareByCurHuntingAreaAsc);
-        int totalAdv = CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.ActiveIndex + 1);
+        int totalAdv = CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.PublicHuntingAreaIndex + 1);
         tempArr.Add(new ProgressInformation(totalAdv));
 
         int generated = 0;
