@@ -385,7 +385,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //}
 
     // 수정요망
-    protected IEnumerator SearchingHuntingArea()
+    protected virtual IEnumerator SearchingHuntingArea()
     {
         yield return null;
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
@@ -788,13 +788,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
 
     // 수정요망
-    protected IEnumerator AfterBattle()
+    protected virtual IEnumerator AfterBattle()
     {
         yield return new WaitForSeconds(2.0f);
 
         // 포션 음용 넣어야한다면 여기에.
-        if (battleStat.Health < battleStat.HealthMax / 4) //체력이 25%미만이면 
-            curState = State.ExitingHuntingArea;
+        if (battleStat.Health < battleStat.HealthMax / 4 || //체력이 25%미만이거나
+            (Level > curHuntingArea.LevelMax)) // 사냥터의 LevelMax를 넘겼다면 
+            curState = State.ExitingHuntingArea; // 사냥터에서 퇴장
         else
             curState = State.SearchingMonster;
     }

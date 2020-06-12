@@ -194,6 +194,15 @@ public class SpecialAdventurer : Adventurer
 #endif
                 curCoroutine = StartCoroutine(Rescued());
                 break;
+            // SpAdv 전용
+            case State.SearchingBossArea:
+                superState = SuperState.SearchingBossArea;
+                curCoroutine = StartCoroutine(SearchingBossArea());
+                break;
+            case State.WaitingOtherSpecialAdvs:
+                superState = SuperState.WaitingOtherSpecialAdvs;
+                curCoroutine = StartCoroutine(WaitingOtherSpecialAdvs());
+                break;
             case State.None:
                 curState = State.Idle;
                 break;
@@ -250,6 +259,9 @@ public class SpecialAdventurer : Adventurer
                 animator.SetTrigger("ResurrectionFlg");
                 break;
             case State.Rescued:
+                break;
+            // SpAdv 전용
+            case State.SearchingBossArea:
                 break;
             case State.None:
                 break;
@@ -322,7 +334,7 @@ public class SpecialAdventurer : Adventurer
     #endregion
 
     #region Exclusive Contract
-    public void ExclusiveContracted()
+    public void SignExclusiveContract()
     {
         // 공통 이벤트에서 구독 해제
         GameManager.Instance.BossRaidCallEventHandler -= OnBossRaidCall;
@@ -333,7 +345,7 @@ public class SpecialAdventurer : Adventurer
     #region BossBattle
     public void OnBossRaidCall()
     {
-        if (CombatAreaManager.Instance.FindBossArea().ChallengeLevel <= battleStat.Level)
+        if (!IsParticipatedBossRaid() && CombatAreaManager.Instance.FindBossArea().ChallengeLevel <= battleStat.Level)
             StartCoroutine(ParticipateInRaid());
     }
 
@@ -353,6 +365,127 @@ public class SpecialAdventurer : Adventurer
         StopCurActivities();
 
         Debug.Log(stat.name + " 보스 레이드 참여.");
+        curState = State.SearchingBossArea;
     }
+
+    private bool IsParticipatedBossRaid()
+    {
+        // 그 외의 SuperState는 이후 상황에서만 나오니 제외.
+        return superState == SuperState.SearchingBossArea || superState == SuperState.WaitingOtherSpecialAdvs;
+    }
+    #endregion
+
+    #region State Implements
+    protected override IEnumerator PathFinding()
+    {
+        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        switch (superState)
+        {
+            case SuperState.SearchingMonster:
+                curState = State.ApproachingToEnemy;
+                break;
+            case SuperState.PassedOut:
+                curState = State.Rescued;
+                break;
+            case SuperState.Battle:
+                curState = State.ApproachingToEnemy;
+                break;
+            default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
+                curState = State.MovingToDestination;
+                break;
+        }
+    }
+
+    protected override IEnumerator MoveToDestination()
+    {
+        //길찾기 성공
+        destinationTileForMove = destinationTile.childs[Random.Range(0, 4)];
+        wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
+        // TODO: GetWayForMove로 고치기
+        //MoveStartedNotify();
+        StartCoroutine(AlignPositionToCurTileForMoveSmoothly());
+        yield return curSubCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
+
+        switch (superState)
+        {
+            case SuperState.SolvingDesire:
+                VisitStructure();
+                break;
+            case SuperState.SolvingDesire_Wandering:
+                wanderCount++;
+                curState = State.SearchingStructure;
+                break;
+            case SuperState.ExitingHuntingArea:
+                curState = State.SearchingStructure;
+                break;
+            case SuperState.SearchingHuntingArea:
+                curState = State.EnteringHuntingArea;
+                break;
+            case SuperState.EnteringHuntingArea:
+                curState = State.SearchingMonster;
+                break;
+            case SuperState.ExitingDungeon:
+                curState = State.SearchingExit;
+                break;
+            case SuperState.SearchingMonster_Wandering:
+                curState = State.SearchingMonster;
+                break;
+            case SuperState.SearchingBossArea:
+                curState = State.WaitingOtherSpecialAdvs;
+                break;
+        }
+    }
+
+    protected override IEnumerator SearchingHuntingArea()
+    {
+        yield return null;
+        // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
+        destinationPlace = CombatAreaManager.Instance.FindHuntingAreaSpAdv(battleStat.Level);
+
+        if (destinationPlace == null)
+            curState = State.SearchingExit;
+        else
+        {
+            destinationTile = destinationPlace.GetEntrance();
+            // TODO: 이거 destination TileForMove에 뭐 집어넣게 바꿔야
+            curState = State.PathFinding;
+        }
+    }
+
+    protected override IEnumerator AfterBattle()
+    {
+        yield return new WaitForSeconds(2.0f);
+
+        if ((battleStat.Health < battleStat.HealthMax / 4) || // 체력이 25%미만이거나
+            (Level > curHuntingArea.LevelMax && curHuntingArea.huntingAreaIndex < CombatAreaManager.Instance.ConqueringHuntingAreaIndex)) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
+            curState = State.ExitingHuntingArea; // 사냥터에서 퇴장
+        else
+            curState = State.SearchingMonster;
+    }
+
+    private IEnumerator SearchingBossArea()
+    {
+        yield return null;
+        // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
+        destinationPlace = CombatAreaManager.Instance.FindBossArea();
+
+        if (destinationPlace == null)
+            curState = State.SearchingExit;
+        else
+        {
+            destinationTile = destinationPlace.GetEntrance();
+            // TODO: 이거 destination TileForMove에 뭐 집어넣게 바꿔야
+            curState = State.PathFinding;
+        }
+    }
+
+    private IEnumerator WaitingOtherSpecialAdvs()
+    {
+        yield return null;
+        // 여기서부터 ㄱ
+        // 어떻게 기다림을 풀지?
+    }
+
     #endregion
 }

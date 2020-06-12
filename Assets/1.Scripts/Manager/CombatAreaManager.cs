@@ -112,7 +112,11 @@ public class CombatAreaManager : MonoBehaviour
         return huntingAreas;
     }
 
-    // 사냥터 찾기. 캐릭터 레벨에 맞는 사냥터를 찾아줌.
+    /// <summary>
+    /// 모험가에게 레벨에 적합한 사냥터를 반환해주는 메서드
+    /// </summary>
+    /// <param name="level">모험가의 레벨</param>
+    /// <returns></returns>
     public HuntingArea FindHuntingAreaAdv(int level)
     {
         HuntingArea searchResult = null;
@@ -129,6 +133,35 @@ public class CombatAreaManager : MonoBehaviour
                     searchResult = huntingAreas[i];
             }
         }
+
+        return searchResult;
+    }
+
+    /// <summary>
+    /// 일선 모험가에게 레벨에 적합한 사냥터를 반환해주는 메서드
+    /// </summary>
+    /// <param name="level">일선 모험가의 레벨</param>
+    /// <returns></returns>
+    public HuntingArea FindHuntingAreaSpAdv(int level)
+    {
+        HuntingArea searchResult = null;
+
+        Debug.Log("HA IDX : " + PublicHuntingAreaIndex);
+        // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
+        for (int i = 0; i <= ConqueringHuntingAreaIndex; i++)
+        {
+            if (level <= huntingAreas[i].LevelMax)
+            {
+                if (searchResult == null)
+                    searchResult = huntingAreas[i];
+                else if (searchResult.LevelMax >= huntingAreas[i].LevelMax)
+                    searchResult = huntingAreas[i];
+            }
+        }
+
+        // 일선 모험가는 나가면 안되므로 가장 높은 곳으로 그냥 찍어줌.
+        if (searchResult == null)
+            searchResult = huntingAreas[ConqueringHuntingAreaIndex];
 
         return searchResult;
     }
@@ -268,7 +301,7 @@ public class CombatAreaManager : MonoBehaviour
                     thatTile.SetHuntingArea(true);
 
                     //디버깅용임시
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(180, 110, 0);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 40);
                     //
 #if DEBUG_CREATE_HA
                     Debug.Log(thatTile);
@@ -389,7 +422,7 @@ public class CombatAreaManager : MonoBehaviour
                     thatTile.SetHuntingArea(true);
 
                     //디버깅용임시
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(255, 110, 0);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
                     //
                     for (int k = 0; k < 4; k++)
                     {
@@ -471,7 +504,7 @@ public class CombatAreaManager : MonoBehaviour
 
     private void BossAreaConquerStart()
     {
-
+        GameManager.Instance.OnBossAreaConquerStarted();
     }
 
     private void OnHuntingAreaConquered()

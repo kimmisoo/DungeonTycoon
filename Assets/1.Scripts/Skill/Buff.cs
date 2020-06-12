@@ -83,7 +83,7 @@ public class WalUniqueSkill : Skill
     GameObject skillEffect;
     TemporaryEffect shieldBuff;
     const float DURATION = 3.0f;
-    const float SHIELD_RATE = 0.53f;
+    const float SHIELD_RATE = 0.03f;
 
     public override void InitSkill()
     {

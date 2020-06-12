@@ -66,12 +66,23 @@
 					"y": 79
 				}
 			],
-			"huntingAreaCount": 1,
+			"huntingAreaCount": 3,
 			"huntingArea": [{
-				"huntingAreaNum": 0,
-				"x": 18,
-				"y": 37
-			}],
+					"huntingAreaNum": 0,
+					"x": 18,
+					"y": 37
+				},
+				{
+					"huntingAreaNum": 1,
+					"x": 22,
+					"y": 43
+				},
+				{
+					"huntingAreaNum": 1,
+					"x": 13,
+					"y": 43
+				}
+			],
 			"bossAreaCount": 1,
 			"bossArea": [{
 				"bossAreaNum": 0,
@@ -145,12 +156,23 @@
 					"y": 49
 				}
 			],
-			"huntingAreaCount": 1,
+			"huntingAreaCount": 3,
 			"huntingArea": [{
-				"huntingAreaNum": 0,
-				"x": 18,
-				"y": 37
-			}],
+					"huntingAreaNum": 0,
+					"x": 18,
+					"y": 37
+				},
+				{
+					"huntingAreaNum": 1,
+					"x": 22,
+					"y": 43
+				},
+				{
+					"huntingAreaNum": 2,
+					"x": 13,
+					"y": 43
+				}
+			],
 			"bossAreaCount": 1,
 			"bossArea": [{
 				"bossAreaNum": 0,

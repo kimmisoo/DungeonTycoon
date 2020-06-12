@@ -205,7 +205,7 @@ public class CombatArea : Place
         
     }
 
-    protected void InvokeAreaConqueredEvent()
+    public void InvokeAreaConqueredEvent()
     {
         areaConquered?.Invoke();
     }

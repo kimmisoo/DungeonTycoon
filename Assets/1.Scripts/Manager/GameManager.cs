@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     public Queue<GameObject> advEnterQ;
     public Queue<GameObject> spAdvEnterQ;
 
-    public int chosenSpAdvIndex = -1;
+    public int playerSpAdvIndex = -1;
 
     public int corporateNum = 1;
     public List<float> popular;
@@ -141,6 +141,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool IsBossPhase
+    {
+        get; private set;
+    }
+
+
     int mapEntranceCount = 0;
     public int vertexCount = 0;
     WaitForSeconds wait;
@@ -176,6 +182,8 @@ public class GameManager : MonoBehaviour
 
         wait = new WaitForSeconds(0.11f);
         countLogWait = new WaitForSeconds(3.0f);
+
+        IsBossPhase = false;
     }
 
     void Start()
@@ -241,7 +249,10 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         //GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Hana", 1);
+        GenAndEnqueueSpecialAdvenuturer("Hana", 15);
+        GenAndEnqueueSpecialAdvenuturer("Iris", 1);
+        GenAndEnqueueSpecialAdvenuturer("Maxi", 1);
+        GenAndEnqueueSpecialAdvenuturer("Wal", 1);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -1110,25 +1121,83 @@ public class GameManager : MonoBehaviour
 #endregion
 
 #region Stage Progress
+    /// <summary>
+    /// 일선 모험가 선택 메서드
+    /// </summary>
+    /// <param name="spAdvIndex">선택대상 모험가의 인덱스</param>
     public void ChooseSpAdv(int spAdvIndex)
     {
-        chosenSpAdvIndex = spAdvIndex;
-        specialAdventurers[spAdvIndex].GetComponent<SpecialAdventurer>().ExclusiveContracted();
+        playerSpAdvIndex = spAdvIndex;
+        specialAdventurers[spAdvIndex].GetComponent<SpecialAdventurer>().SignExclusiveContract();
     }
 
+    /// <summary>
+    /// 플레이어가 보스 공략 신청 했을 때의 메서드
+    /// </summary>
+    public void PlayerCalledBossRaid()
+    {
+        PlayerOrderedRaidEventHandler?.Invoke();
+        SomeoneCalledBossRaid();
+    }
+
+    public void AICalledBossRaid()
+    {
+        SomeoneCalledBossRaid();
+        ShowBossRaidDecisionUI();
+    }
+
+    /// <summary>
+    /// 보스 공략을 누군가 신청했을 때 나머지에게 알려주는 메서드.
+    /// </summary>
+    public void SomeoneCalledBossRaid()
+    {
+        BossRaidCallEventHandler?.Invoke();
+    }
+
+    /// <summary>
+    /// 보스 페이즈 시작될 때(== 보스 에어리어 개방시) 호출
+    /// </summary>
+    public void OnBossAreaConquerStarted()
+    {
+        IsBossPhase = true;
+    }
+
+    /// <summary>
+    /// 보스 페이즈 종료 시(==
+    /// </summary>
+    public void OnBossAreaConquered()
+    {
+        IsBossPhase = false;
+    }
+
+    public void OnHuntingAreaConquered()
+    {
+
+    }
+
+    #region UI
+    public void ShowBossRaidDecisionUI()
+    {
+
+    }
+
+    public void ShowSpAdvSelectionUI()
+    {
+
+    }
+    #endregion
+
+    #endregion
+
+    #region For Debugging
     public void DebugBossCall()
     {
         ChooseSpAdv(0);
-
+        BossRaidCallEventHandler?.Invoke();
     }
+    #endregion
 
-    public void PlayerOrderedRaidParticipate()
-    {
-        PlayerOrderedRaidEventHandler?.Invoke();
-    }
-#endregion
-
-#region JSON 처리(Scene 정보 설정)
+    #region JSON 처리(Scene 정보 설정)
     private void SetSceneStructureDatas(JSONNode aData, int sceneNumber)
     {
         drink_Max = aData["scene"][sceneNumber]["buildable"]["drink"].AsInt;
@@ -1218,11 +1287,6 @@ public class GameManager : MonoBehaviour
     public TileLayer GetTileLayer(int layerNum)
     {
         return tileMap.GetComponent<TileMap>().GetLayer(layerNum).GetComponent<TileLayer>();
-    }
-
-    public void OnHuntingAreaConquered()
-    {
-        
     }
     #endregion
 }
