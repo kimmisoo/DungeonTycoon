@@ -345,13 +345,23 @@ public class SpecialAdventurer : Adventurer
     #region BossBattle
     public void OnBossRaidCall()
     {
-        if (!IsParticipatedBossRaid() && CombatAreaManager.Instance.FindBossArea().ChallengeLevel <= battleStat.Level)
-            StartCoroutine(ParticipateInRaid());
+        if (!IsParticipatedBossRaid())
+        {
+            if (CombatAreaManager.Instance.FindBossArea().ChallengeLevel <= battleStat.Level)
+                StartCoroutine(ParticipateInRaid());
+            else
+                GameManager.Instance.SpAdvResponsed();
+        }
     }
 
     public void OnPlayerRaidOrder()
     {
         StartCoroutine(ParticipateInRaid());
+    }
+
+    public void OnPlayerRaidRefusal()
+    {
+        GameManager.Instance.SpAdvResponsed();
     }
 
     private IEnumerator ParticipateInRaid()
@@ -482,9 +492,19 @@ public class SpecialAdventurer : Adventurer
 
     private IEnumerator WaitingOtherSpecialAdvs()
     {
-        yield return null;
         // 여기서부터 ㄱ
         // 어떻게 기다림을 풀지?
+        // 일단 매니저나 그런거에 Cnt++해줌.
+        // 그리고 루프 돌면서 Cnt == spAdvs.Cnt 이면 깨어나고, 정렬?
+        GameManager.Instance.SpAdvResponsed();
+
+        while(true)
+        {
+            if (GameManager.Instance.IsBossRaidPrepEnded)
+                break;
+
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+        }
     }
 
     #endregion

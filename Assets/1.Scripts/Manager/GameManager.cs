@@ -141,11 +141,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public bool IsBossPhase
-    {
-        get; private set;
-    }
-
 
     int mapEntranceCount = 0;
     public int vertexCount = 0;
@@ -853,7 +848,32 @@ public class GameManager : MonoBehaviour
     {
         return info1.curAdvNum - info2.curAdvNum;
     }
-#endregion
+    #endregion
+
+    #region Stage Progress
+    public bool IsBossPhase
+    {
+        get; private set;
+    }
+
+    public int ResponsedSpAdvCnt
+    {
+        get; private set;
+    }
+
+    public bool BossRaidPrepTimeOver
+    {
+        get; private set;
+    }
+
+    public bool IsBossRaidPrepEnded
+    {
+        get
+        {
+            return (ResponsedSpAdvCnt == specialAdventurers.Count) || BossRaidPrepTimeOver;
+        }
+    }
+    #endregion
 
     // 인기도 추가
     public void AddPop(int who, float amount)
@@ -1146,6 +1166,11 @@ public class GameManager : MonoBehaviour
         ShowBossRaidDecisionUI();
     }
 
+    public void SpAdvResponsed()
+    {
+        ResponsedSpAdvCnt++;
+    }
+
     /// <summary>
     /// 보스 공략을 누군가 신청했을 때 나머지에게 알려주는 메서드.
     /// </summary>
@@ -1160,10 +1185,21 @@ public class GameManager : MonoBehaviour
     public void OnBossAreaConquerStarted()
     {
         IsBossPhase = true;
+        ResponsedSpAdvCnt = 0;
+        BossRaidPrepTimeOver = false;
+
+        StartCoroutine(BossRaidPrepTimer());
+    }
+
+    public IEnumerator BossRaidPrepTimer()
+    {
+        yield return new WaitForSeconds(SceneConsts.BOSSRAID_PREP_TIME);
+
+        BossRaidPrepTimeOver = true;
     }
 
     /// <summary>
-    /// 보스 페이즈 종료 시(==
+    /// 보스 페이즈 종료 시
     /// </summary>
     public void OnBossAreaConquered()
     {
