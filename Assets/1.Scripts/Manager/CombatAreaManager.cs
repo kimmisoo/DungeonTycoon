@@ -76,7 +76,7 @@ public class CombatAreaManager : MonoBehaviour
         huntingAreas = new List<HuntingArea>();
         bossAreas = new List<BossArea>();
 
-        PublicHuntingAreaIndex = 0;
+        PublicHuntingAreaIndex = -1;
         BossAreaIndex = 0;
     }
 
@@ -146,7 +146,7 @@ public class CombatAreaManager : MonoBehaviour
     {
         HuntingArea searchResult = null;
 
-        Debug.Log("HA IDX : " + PublicHuntingAreaIndex);
+        Debug.Log("HA IDX : " + ConqueringHuntingAreaIndex);
         // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
         for (int i = 0; i <= ConqueringHuntingAreaIndex; i++)
         {
@@ -487,6 +487,12 @@ public class CombatAreaManager : MonoBehaviour
     }
 
     #region Stage Progress
+    public void InitCombatAreas()
+    {
+        // 일단 하나 열어두고 시작.
+        OnHuntingAreaConquered();
+    }
+
     private void HuntingAreaOpenToPublic()
     {
         huntingAreas[PublicHuntingAreaIndex].OpenToPublic();
@@ -514,7 +520,7 @@ public class CombatAreaManager : MonoBehaviour
 
         HuntingAreaConquerStart();
         //Debug.Log("OnHuntingAreaConquered");
-        if (huntingAreas[PublicHuntingAreaIndex].IsBossArea)
+        if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea)
         {
             // 보스전 신청용 UI 띄우기
             BossAreaConquerStart();

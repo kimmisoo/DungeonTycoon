@@ -103,6 +103,29 @@ public class GameManager : MonoBehaviour
 
     JSONNode desireData;
 
+    #region BossPhase
+    Skirmish curSkirmish;
+    //public List<SpecialAdventurer> skirmishParticipants;
+    //public List<SpecialAdventurer> skirmishSurvivors;
+    //public List<SpecialAdventurer> skirmishLosers;
+    //public List<SpecialAdventurer> skirmishBracket;
+    //// 보스 페이즈인가?
+    public bool isBossPhase;
+    //// 응답한 일선 모험가 수
+    public int responsedSpAdvCnt;
+    //// 보스 레이드 준비 타이머 끝났나?
+    public bool bossRaidPrepTimeOver;
+    //// 토너먼트 끝?
+    //public bool isSkirmishEnded;
+    //public int roundCnt;
+    //public int curRound;
+    //public int matchCntCurRound;
+    //public int curMatch;
+    public float retryTimesLeft;
+    public bool canCallBossRaid;
+
+    #endregion
+
     private int CurGuestMax //현재 맵에 들어올 수 있는 모험가+관광객 최대치
     {
         get
@@ -178,7 +201,10 @@ public class GameManager : MonoBehaviour
         wait = new WaitForSeconds(0.11f);
         countLogWait = new WaitForSeconds(3.0f);
 
-        IsBossPhase = false;
+        //isBossPhase = false;
+        //skirmishSurvivors = new List<SpecialAdventurer>();
+        //skirmishLosers = new List<SpecialAdventurer>();
+        //skirmishBracket = new List<SpecialAdventurer>();
     }
 
     void Start()
@@ -244,10 +270,14 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         //GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Hana", 15);
-        GenAndEnqueueSpecialAdvenuturer("Iris", 1);
-        GenAndEnqueueSpecialAdvenuturer("Maxi", 1);
-        GenAndEnqueueSpecialAdvenuturer("Wal", 1);
+        GenAndEnqueueSpecialAdvenuturer("Hana", 25);
+        GenAndEnqueueSpecialAdvenuturer("Iris", 26);
+        GenAndEnqueueSpecialAdvenuturer("Maxi", 25);
+        GenAndEnqueueSpecialAdvenuturer("Murat", 25);
+        GenAndEnqueueSpecialAdvenuturer("Nyang", 25);
+        GenAndEnqueueSpecialAdvenuturer("Wal", 25);
+        GenAndEnqueueSpecialAdvenuturer("Yeonhwa", 25);
+        GenAndEnqueueSpecialAdvenuturer("OldMan", 5);
 #endif
         //StartCoroutine(GCcall());
         for (int i = 0; i < corporateNum; i++)
@@ -265,6 +295,8 @@ public class GameManager : MonoBehaviour
         //DebugHuntingArea();
 #endif
         SaveLoadManager.Instance.InstantiateFromSave();
+
+        CombatAreaManager.Instance.InitCombatAreas();
     }
 
     private void ReadDatasFromJSON()
@@ -851,26 +883,12 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Stage Progress
-    public bool IsBossPhase
-    {
-        get; private set;
-    }
-
-    public int ResponsedSpAdvCnt
-    {
-        get; private set;
-    }
-
-    public bool BossRaidPrepTimeOver
-    {
-        get; private set;
-    }
-
+    // 보스 레이드 준비 끝났나?
     public bool IsBossRaidPrepEnded
     {
         get
         {
-            return (ResponsedSpAdvCnt == specialAdventurers.Count) || BossRaidPrepTimeOver;
+            return (responsedSpAdvCnt == specialAdventurers.Count) || bossRaidPrepTimeOver;
         }
     }
     #endregion
@@ -1158,6 +1176,12 @@ public class GameManager : MonoBehaviour
     {
         PlayerOrderedRaidEventHandler?.Invoke();
         SomeoneCalledBossRaid();
+        DisableBossRaidUI();
+    }
+
+    public void PlayerRejectedBossRaid()
+    {
+        DisableBossRaidUI();
     }
 
     public void AICalledBossRaid()
@@ -1166,9 +1190,11 @@ public class GameManager : MonoBehaviour
         ShowBossRaidDecisionUI();
     }
 
-    public void SpAdvResponsed()
+    public void SpAdvResponsed(bool isAccepted, SpecialAdventurer respondent)
     {
-        ResponsedSpAdvCnt++;
+        responsedSpAdvCnt++;
+        if (isAccepted)
+            curSkirmish.AddSkirmishParticipant(respondent);
     }
 
     /// <summary>
@@ -1184,18 +1210,38 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnBossAreaConquerStarted()
     {
-        IsBossPhase = true;
-        ResponsedSpAdvCnt = 0;
-        BossRaidPrepTimeOver = false;
+        isBossPhase = true;
+
+        responsedSpAdvCnt = 0;
+        retryTimesLeft = 0.0f;
+        canCallBossRaid = true;
+        bossRaidPrepTimeOver = false;
+
+        // 전초전 하기 전에 리셋
+        curSkirmish = new Skirmish();
 
         StartCoroutine(BossRaidPrepTimer());
     }
 
     public IEnumerator BossRaidPrepTimer()
     {
-        yield return new WaitForSeconds(SceneConsts.BOSSRAID_PREP_TIME);
+        float waitedTime = 0.0f;
 
-        BossRaidPrepTimeOver = true;
+        while(true)
+        {
+            yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+            waitedTime += SkillConsts.TICK_TIME;
+            // TODO: 남은 시간 UI에 띄워주기
+
+            if(waitedTime >= SceneConsts.BOSSRAID_PREP_TIME)
+                bossRaidPrepTimeOver = true;
+
+            if (IsBossRaidPrepEnded)
+                break;
+        }
+
+        DisableBossRaidUI();
+        curSkirmish.StartSkirmish();
     }
 
     /// <summary>
@@ -1203,7 +1249,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void OnBossAreaConquered()
     {
-        IsBossPhase = false;
+        isBossPhase = false;
     }
 
     public void OnHuntingAreaConquered()
@@ -1211,8 +1257,80 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void StartRetryTimer(float waitingTime = SceneConsts.BOSSRAID_RETRY_TIME)
+    {
+        StartCoroutine(RetryTimer(waitingTime));
+    }
+
+    private IEnumerator RetryTimer(float watingTime)
+    {
+        const int TICK_MULT = 2;
+
+        while(true)
+        {
+            yield return new WaitForSeconds(TICK_MULT * SkillConsts.TICK_TIME);
+            retryTimesLeft += TICK_MULT * SkillConsts.TICK_TIME;
+
+            if (retryTimesLeft >= watingTime)
+            {
+                break;
+            }
+        }
+
+        retryTimesLeft = 0;
+        EnableBossRaidUI();
+    }
+
+    // 
+    //private void MakeBracket()
+    //{
+    //    List<SpecialAdventurer> tempList = new List<SpecialAdventurer>(skirmishSurvivors);
+
+    //    while(skirmishBracket.Count != skirmishSurvivors.Count)
+    //    {
+    //        int index = Random.Range(0, tempList.Count);
+
+    //        skirmishBracket.Add(tempList[index]);
+    //        tempList.RemoveAt(index);
+    //    }
+    //}
+
+    //public SpecialAdventurer GetNextSkirmishOpponent(SpecialAdventurer requester)
+    //{
+    //    //int index = skirmishSurvivors.IndexOf(requester);
+    //    //if (index >= skirmishBracket.Count)
+    //    //    return null;
+    //    //else
+    //    //    return skirmishBracket[index];
+    //    return curSkirmish.GetNextSkirmishOpponent(requester);
+    //}
+
+    /// <summary>
+    /// 패배 시 리스트에서 빼줌.
+    /// </summary>
+    /// <param name="loser"></param>
+    public void ReportMatchDefeated(SpecialAdventurer loser)
+    {
+        curSkirmish.ReportMatchDefeated(loser);
+    }
+
+    public void ReportMatchWon(SpecialAdventurer winner)
+    {
+        curSkirmish.ReportMatchWon(winner);
+    }
+
     #region UI
     public void ShowBossRaidDecisionUI()
+    {
+
+    }
+
+    public void EnableBossRaidUI()
+    {
+       
+    }
+
+    public void DisableBossRaidUI()
     {
 
     }
@@ -1324,5 +1442,7 @@ public class GameManager : MonoBehaviour
     {
         return tileMap.GetComponent<TileMap>().GetLayer(layerNum).GetComponent<TileLayer>();
     }
+
+    
     #endregion
 }

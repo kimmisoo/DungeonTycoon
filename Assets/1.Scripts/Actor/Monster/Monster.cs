@@ -664,7 +664,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         SuperState enemySuperState = enemy.GetSuperState();
         // 적이 사냥터 내에 있으며 살아 있을 때.
         if (enemySuperState == SuperState.Battle || enemySuperState == SuperState.SearchingMonster
-            || enemySuperState == SuperState.AfterBattle || enemySuperState == SuperState.ExitingHuntingArea)
+            || enemySuperState == SuperState.AfterBattle || enemySuperState == SuperState.ExitingHuntingArea
+            || enemySuperState == SuperState.BossBattle)
             return true;
         else
             return false;
@@ -697,7 +698,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             HealthBelowZeroNotify(this, attacker);
             curState = State.Dead;
         }
-        else if (superState != SuperState.Battle)
+        else if (IsInBattle() == false)
         {
             StopCurActivities();
             animator.SetTrigger("DamageFlg");
@@ -707,6 +708,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
 
         return !isDodged;
+    }
+
+    public bool IsInBattle()
+    {
+        return superState == SuperState.Battle;
     }
 
     private void DisplayDamage(float damage)
@@ -955,6 +961,14 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         {
             item.Deactivate();
         }
+    }
+
+    public void HealFullHealth(bool displayEffect)
+    {
+        if (displayEffect)
+            DisplayHeal(battleStat.Heal(battleStat.HealthMax));
+        else
+            battleStat.Heal(battleStat.HealthMax);
     }
 
     //public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)

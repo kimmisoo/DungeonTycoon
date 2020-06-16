@@ -38,4 +38,6 @@ public interface ICombatant
     void AddTemporaryEffect(TemporaryEffect toBeAdded);
     void AddSkill(string key);
     void RemoveSkill(string key);
+    bool IsInBattle();
+    void HealFullHealth(bool displayEffect);
 }

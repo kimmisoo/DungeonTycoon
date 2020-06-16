@@ -10,7 +10,7 @@ public class BossAreaTest : MonoBehaviour
 
     private void Update()
     {
-        playerOrderBossRaidBtn.gameObject.SetActive(GameManager.Instance.IsBossPhase);
+        playerOrderBossRaidBtn.gameObject.SetActive(GameManager.Instance.isBossPhase);
     }
 
     public void BossPhaseStarted()
@@ -18,7 +18,7 @@ public class BossAreaTest : MonoBehaviour
         // 게임매니저에서 보스 페이즈 시작하는 메서드
         GameManager.Instance.OnBossAreaConquerStarted();
 
-        playerOrderBossRaidBtn.gameObject.SetActive(GameManager.Instance.IsBossPhase);
+        playerOrderBossRaidBtn.gameObject.SetActive(GameManager.Instance.isBossPhase);
     }
 
     public void PlayerOrderdBossRaid()

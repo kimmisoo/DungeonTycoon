@@ -131,7 +131,7 @@ public class HuntingArea : CombatArea
             if (killCount >= conquerCondition)
                 InvokeAreaConqueredEvent();
 
-            Debug.Log("killCount : " + killCount);
+            //Debug.Log("killCount : " + killCount);
         }
     }
 

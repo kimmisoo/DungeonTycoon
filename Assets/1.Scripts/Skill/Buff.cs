@@ -54,7 +54,7 @@ public class NyangUniqueSkill : Skill
     {
         SetEnemy();
 
-        if (enemy.GetSuperState() != SuperState.Battle)
+        if (enemy.IsInBattle() == false)
         {
             myBattleStat.AddStatModContinuous(myMod);
             owner.DisplayBuff();
@@ -129,7 +129,7 @@ public class WalUniqueSkill : Skill
         // TemporaryEffect 생성
         shieldMod.ModValue = myBattleStat.HealthMax * SHIELD_RATE;
 
-        Debug.Log("elapsedTime: " + shieldBuff.elapsedTime + ", amount: " + shieldMod.ModValue);
+        //Debug.Log("elapsedTime: " + shieldBuff.elapsedTime + ", amount: " + shieldMod.ModValue);
         //owner.AddTemporaryEffect(shieldBuff);
         ApplyTemporaryEffect(owner, shieldBuff, false);
         //shieldTimer = 0;

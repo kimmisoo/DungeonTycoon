@@ -84,7 +84,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1917940477867676}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5000, y: 5000, z: 5000}
+  m_LocalPosition: {x: -19.867998, y: -18.231085, z: 5000}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 4216000690787900}
@@ -179,12 +179,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc489fd22dd513242a5fc2a1419adc1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  superState: 0
   state: 0
   pathFinder: {fileID: 114068362630258958}
   index: 0
   canvas: {fileID: 0}
   hpBar: {fileID: 0}
   hpSlider: {fileID: 0}
+  shieldBar: {fileID: 0}
+  shieldSlider: {fileID: 0}
+  curBossArea: {fileID: 0}
 --- !u!212 &212198162794472114
 SpriteRenderer:
   m_ObjectHideFlags: 1
