@@ -13,7 +13,7 @@ public class SpecialAdventurer : Adventurer
     public BossArea curBossArea;
 
     private const int ACCESSORY_CAPACITY = 2;
-    private const int BOSSRAID_CALL_PERIOD = 10;
+    private const int BOSSRAID_CALL_PERIOD = 20;
     private int bossRaidCallCnt = 0;
 
     //Skill uniqueSkill;
@@ -771,8 +771,8 @@ public class SpecialAdventurer : Adventurer
             GameManager.Instance.playerSpAdvIndex != index && // 플레이어 캐릭터가 아니며
             Level >= CombatAreaManager.Instance.FindBossArea().ChallengeLevel) // 적정 레벨을 만족할 때
             GameManager.Instance.AICalledBossRaid(); // 보스레이드 신청
-        else if ((battleStat.Health < battleStat.HealthMax / 4) || // 체력이 25%미만이거나
-            (Level > curHuntingArea.LevelMax && curHuntingArea.huntingAreaIndex < CombatAreaManager.Instance.ConqueringHuntingAreaIndex)) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
+        else if (curHuntingArea != null && ((battleStat.Health < battleStat.HealthMax / 4) || // 체력이 25%미만이거나
+            (Level > curHuntingArea.LevelMax && curHuntingArea.huntingAreaIndex < CombatAreaManager.Instance.ConqueringHuntingAreaIndex))) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
             curState = State.ExitingHuntingArea; // 사냥터에서 퇴장
         else
             curState = State.SearchingMonster;
@@ -944,6 +944,7 @@ public class SpecialAdventurer : Adventurer
     private void BossBattleWon()
     {
         // 승리
+        // 보상 받기
 
         // 재도전 시간제한 걸어야.
         // 이거 레벨업 때마다 재검사할 필요 없이 그냥 게임 내에서 일정시간 후에 인터페이스 활성화 및 이벤트 발행해주면 됨.

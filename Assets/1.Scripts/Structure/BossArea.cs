@@ -18,18 +18,22 @@ public class BossArea : HuntingArea
     public void InitBossArea(GameObject bossMonsterIn, int challengeLevel)
     {
         bossMonster = bossMonsterIn;
-        bossMonster.GetComponent<Monster>().corpseDecayEvent += OnBossKilled;
+        //bossMonster.GetComponent<Monster>().corpseDecayEvent += OnBossKilled;
         ChallengeLevel = challengeLevel;
 
         // 보스몬스터 위치 지정
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
+        Tile centerTile = tileLayer.GetTile(point.GetX() + 2, point.GetY() + 2).GetComponent<Tile>();
+        bossMonster.GetComponent<Monster>().SetCurTile(centerTile);
+        bossMonster.GetComponent<Monster>().SetCurTileForMove(centerTile.GetChild(0));
+        //GameObject center = tileLayer.GetTile(point.GetX() + extentWidth / 2, point.GetY() + extentHeight / 2);
+        
         //Tile centerTile = tileLayer.GetTile(point.GetX() + extentWidth / 2, point.GetY() + extentHeight / 2).GetComponent<Tile>();
-        //GameObject center = tileLayer.GetTile(point.GetX() + extentWidth/2, point.GetY() + extentHeight/2);
-        //Tile centerTile = tileLayer.GetTile(point.GetX() + extentWidth / 2, point.GetY() + extentHeight / 2).GetComponent<Tile>();
-        List<TileForMove> tfm = FindBlanks(1);
-        bossMonster.GetComponent<Monster>().SetCurTile(tfm[0].GetParent());
-        bossMonster.GetComponent<Monster>().SetCurTileForMove(tfm[0]);
+        //List<TileForMove> tfm = FindBlanks(1);
+        //bossMonster.GetComponent<Monster>().SetCurTile(tfm[0].GetParent());
+        //bossMonster.GetComponent<Monster>().SetCurTileForMove(tfm[0]);
+
         bossMonster.GetComponent<Monster>().AlignPositionToCurTileForMove();
         bossMonster.SetActive(true);
 

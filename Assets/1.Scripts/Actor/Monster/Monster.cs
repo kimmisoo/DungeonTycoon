@@ -26,6 +26,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     }
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
+    // 대기시간에 움직이는지. 보스면 false
+    public bool canWander = true;
     protected Coroutine curCoroutine;
     protected Coroutine curSubCoroutine;
 
@@ -77,7 +79,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     #region 수정!
     // 몬스터 초기화
-    public void InitMonster(int monsterNum, BattleStat battleStat, RewardStat rewardStat)
+    public void InitMonster(int monsterNum, BattleStat battleStat, RewardStat rewardStat, bool canWanderIn = true)
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
@@ -86,6 +88,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         this.monsterNum = monsterNum;
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
+        this.canWander = canWanderIn;
         //stat 초기화
         //pathfinder 초기화 // delegate 그대로
         SetDefaultEffects();
@@ -97,6 +100,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public void InitMonster(Monster sample)
     {
         monsterNum = sample.monsterNum;
+        canWander = sample.canWander;
 
         battleStat = new BattleStat(sample.battleStat);
         rewardStat = new RewardStat(sample.rewardStat);
@@ -264,17 +268,24 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 목적지(빈 타일) 찾기.
         //destinationTileForMove = habitat.FindBlanks(1)[0];
 
-        // WARNING 이거 부하 있을 수 있음.
-        destinationTileForMove = habitat.FindNearestBlank(curTileForMove);
-        
-        if(destinationTileForMove == null)
+        if (canWander)
         {
-            curState = State.Wandering;
-            yield break;
-        }
+            // WARNING 이거 부하 있을 수 있음.
+            destinationTileForMove = habitat.FindNearestBlank(curTileForMove);
 
-        destinationTile = destinationTileForMove.GetParent();
-        curState = State.PathFinding;
+            if (destinationTileForMove == null)
+            {
+                curState = State.Wandering;
+                yield break;
+            }
+
+            destinationTile = destinationTileForMove.GetParent();
+            curState = State.PathFinding;
+        }
+        else
+        {
+            curState = State.Idle;
+        }
     }
 
     protected IEnumerator PathFinding()

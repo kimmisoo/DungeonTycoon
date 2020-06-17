@@ -356,9 +356,6 @@ public class CombatAreaManager : MonoBehaviour
         int bossNum = bossAreaJson[stageNum][bossAreaNum]["bossNum"].AsInt;
         int challengeLevel = bossAreaJson[stageNum][bossAreaNum]["challengeLevel"].AsInt;
         Debug.Log("challengeLevel : " + challengeLevel);
-        // 몬스터 샘플 instantiate
-        //GameObject monsterSample1, monsterSample2;
-        //LoadMonsterSamples(monsterSet, monsterSample1Num, monsterSample2Num, out monsterSample1, out monsterSample2);
         GameObject boss = LoadMonsterFromJson("Boss", bossNum);
        
 
@@ -387,11 +384,6 @@ public class CombatAreaManager : MonoBehaviour
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
         SetBossAreaPoint(pointTile.GetComponent<Tile>());
-
-        // 보스몬스터 위치 지정
-        //Tile centerTile = tileLayer.GetTile(pointTile.GetComponent<Tile>().GetX() + x/2, pointTile.GetComponent<Tile>().GetY() + y/2).GetComponent<Tile>();
-        //boss.GetComponent<Monster>().SetCurTile(centerTile);
-        //boss.GetComponent<Monster>().SetCurTileForMove(centerTile.GetChild(0));
         #endregion
 
         #region ConstructStructure()
@@ -478,7 +470,10 @@ public class CombatAreaManager : MonoBehaviour
         #endregion
 
         Monster monsterComp = monster.GetComponent<Monster>();
-        monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat);
+        if(monsterSet == "Boss")
+            monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat, false);
+        else
+            monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat);
         monsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
         //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
         monsterComp.SetDefaultEffects();
