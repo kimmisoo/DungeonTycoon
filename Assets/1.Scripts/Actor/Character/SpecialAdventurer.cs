@@ -603,35 +603,36 @@ public class SpecialAdventurer : Adventurer
             {
                 case SuperState.Battle:
                     curState = State.AfterBattle;
-                    yield break;
+                    break;
                 case SuperState.Skirmish:
                     curState = State.MatchWon;
-                    yield break;
+                    break;
                 case SuperState.BossBattle:
                     curState = State.BossBattleWon;
                     break;
                 default:
                     curState = State.AfterBattle;
-                    yield break;
+                    break;
             }
+            yield break;
         }
         // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
         if (CheckInRange())
         {
-            switch (superState)
-            {
-                case SuperState.SearchingMonster:
-                    curState = State.InitiatingBattle;
-                    break;
-                case SuperState.Skirmish:
-                    curState = State.StartingSkirmish;
-                    break;
-                case SuperState.BossBattle:
-                    curState = State.StartingBossBattle;
-                    break;
-            }
+            //switch (superState)
+            //{
+            //    case SuperState.SearchingMonster:
+            //        curState = State.InitiatingBattle;
+            //        yield break;
+            //    case SuperState.Skirmish:
+            //        curState = State.StartingSkirmish;
+            //        yield break;
+            //    case SuperState.BossBattle:
+            //        curState = State.StartingBossBattle;
+            //        yield break;
+            //}
 
-            //curState = State.Battle;
+            curState = State.Battle;
             //curState = State.InitiatingBattle;
             yield break;
         }
@@ -672,33 +673,35 @@ public class SpecialAdventurer : Adventurer
                 {
                     case SuperState.Battle:
                         curState = State.AfterBattle;
-                        yield break;
+                        break;
                     case SuperState.Skirmish:
                         curState = State.MatchWon;
-                        yield break;
+                        break;
                     case SuperState.BossBattle:
                         curState = State.BossBattleWon;
                         break;
                     default:
                         curState = State.AfterBattle;
-                        yield break;
+                        break;
                 }
+                yield break;
             }
             // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
             if (CheckInRange())
             {
-                switch (superState)
-                {
-                    case SuperState.SearchingMonster:
-                        curState = State.InitiatingBattle;
-                        break;
-                    case SuperState.Skirmish:
-                        curState = State.StartingSkirmish;
-                        break;
-                    case SuperState.BossBattle:
-                        curState = State.StartingBossBattle;
-                        break;
-                }
+                //switch (superState)
+                //{
+                //    case SuperState.SearchingMonster:
+                //        curState = State.InitiatingBattle;
+                //        break;
+                //    case SuperState.Skirmish:
+                //        curState = State.StartingSkirmish;
+                //        break;
+                //    case SuperState.BossBattle:
+                //        curState = State.StartingBossBattle;
+                //        break;
+                //}
+                curState = State.Battle;
                 //curState = State.InitiatingBattle;
                 yield break;
             }
@@ -752,7 +755,7 @@ public class SpecialAdventurer : Adventurer
                         curState = State.StartingSkirmish;
                         break;
                 }
-                curState = State.InitiatingBattle;
+                //curState = State.InitiatingBattle;
                 yield break;
             }
         }

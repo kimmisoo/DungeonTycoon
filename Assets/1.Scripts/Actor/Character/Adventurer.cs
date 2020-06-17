@@ -441,9 +441,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         else
         {
             monsterSearchCnt = 0;
-            SetDestinationTowardEnemy();
+            //SetDestinationTowardEnemy();
 
-            curState = State.PathFinding;
+            curState = State.InitiatingBattle;
         }
     }
 
@@ -574,7 +574,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
         if (CheckInRange())
         {
-            curState = State.InitiatingBattle;
+            curState = State.Battle;
             yield break;
         }
 
@@ -616,7 +616,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
             if (CheckInRange())
             {
-                curState = State.InitiatingBattle;
+                curState = State.Battle;
                 yield break;
             }
 
