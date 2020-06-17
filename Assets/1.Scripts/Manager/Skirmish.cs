@@ -131,11 +131,11 @@ public class Skirmish
     {
         foreach (SpecialAdventurer spAdv in skirmishLosers)
         {
-            spAdv.HealFullHealth(false);
+            spAdv.HealFullHealth(true);
             spAdv.curState = State.Idle;
         }
         //Debug.Log("EndSkirmish : " + skirmishSurvivors[0].curState + " , " + skirmishSurvivors[0].GetSuperState());
-        skirmishBracket[0].HealFullHealth(false);
+        skirmishBracket[0].HealFullHealth(true);
         skirmishBracket[0].curState = State.EnteringBossArea;
 
         // 그 외 인터페이스 보여주려면 여기서.
