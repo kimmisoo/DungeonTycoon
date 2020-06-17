@@ -1203,6 +1203,7 @@ public class GameManager : MonoBehaviour
     public void SomeoneCalledBossRaid()
     {
         BossRaidCallEventHandler?.Invoke();
+        StartCoroutine(BossRaidPrepTimer());
     }
 
     /// <summary>
@@ -1220,7 +1221,7 @@ public class GameManager : MonoBehaviour
         // 전초전 하기 전에 리셋
         curSkirmish = new Skirmish();
 
-        StartCoroutine(BossRaidPrepTimer());
+        //StartCoroutine(BossRaidPrepTimer());
     }
 
     public IEnumerator BossRaidPrepTimer()

@@ -448,6 +448,8 @@ public class SpecialAdventurer : Adventurer
                 //curState = State.TeleportToBossArea;
                 //StartCoroutine(ParticipateInRaid());
                 willBossRaid = true;
+                if (curState == State.MovingToDestination)
+                    InterruptMoving();
             }
             else
                 GameManager.Instance.SpAdvResponsed(false, this);
@@ -460,6 +462,8 @@ public class SpecialAdventurer : Adventurer
         //curState = State.TeleportToBossArea;
         //StartCoroutine(ParticipateInRaid());
         willBossRaid = true;
+        if (curState == State.MovingToDestination)
+            InterruptMoving();
     }
 
     public void OnPlayerRaidRefusal()
@@ -486,6 +490,16 @@ public class SpecialAdventurer : Adventurer
         ResetDestinations();
 
         //Debug.Log(stat.name + " 보스 레이드 참여.");
+        curState = State.TeleportToBossArea;
+    }
+
+    private void InterruptMoving()
+    {
+        //ResetCurHuntingArea();
+        //ResetBattleParams();
+        StopCurActivities();
+        //ResetDestinations();
+
         curState = State.TeleportToBossArea;
     }
 
