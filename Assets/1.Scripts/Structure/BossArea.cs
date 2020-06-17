@@ -5,6 +5,11 @@ using UnityEngine;
 public class BossArea : HuntingArea
 {
     private GameObject bossMonster;
+    public int Bonus
+    {
+        get; private set;
+    }
+
     public int ChallengeLevel
     {
         get; private set;
@@ -15,11 +20,12 @@ public class BossArea : HuntingArea
     public int bossAreaIndex;
     #endregion
 
-    public void InitBossArea(GameObject bossMonsterIn, int challengeLevel)
+    public void InitBossArea(GameObject bossMonsterIn, int challengeLevel, int bonus)
     {
         bossMonster = bossMonsterIn;
         //bossMonster.GetComponent<Monster>().corpseDecayEvent += OnBossKilled;
         ChallengeLevel = challengeLevel;
+        Bonus = bonus;
 
         // 보스몬스터 위치 지정
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
@@ -38,6 +44,11 @@ public class BossArea : HuntingArea
         bossMonster.SetActive(true);
 
         monstersEnabled.Add(0, bossMonster);
+    }
+
+    public GameObject GetBossMonster()
+    {
+        return bossMonster;
     }
 
     public void OnBossKilled(int idx)

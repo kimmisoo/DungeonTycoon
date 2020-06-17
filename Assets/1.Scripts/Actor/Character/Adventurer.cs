@@ -464,7 +464,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         destinationTile = curHuntingArea.GetEntrance();
 
         ResetCurHuntingArea();
-        ResetBattleEventHandlers();
+        ResetBattleParams();
 
         curState = State.PathFinding;
         yield return null;
@@ -483,7 +483,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         StopCurActivities();
         ClearTemporaryEffects();
-        ResetBattleEventHandlers();
+        ResetBattleParams();
 
         //Structure[] tempArr = StructureManager.Instance.FindRescue(this);
 
@@ -522,13 +522,22 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         curState = State.ExitingHuntingArea;
     }
 
-    protected void ResetBattleEventHandlers()
+    protected void ResetBattleParams()
     {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
         if (enemy != null)
             enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
+        enemy = null;
+
+    }
+
+    protected void ResetDestinations()
+    {
+        destinationTile = null;
+        destinationTileForMove = null;
+        destinationPlace = null;
     }
 
     #endregion

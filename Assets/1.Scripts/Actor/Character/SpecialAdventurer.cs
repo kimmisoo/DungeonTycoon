@@ -15,6 +15,7 @@ public class SpecialAdventurer : Adventurer
     private const int ACCESSORY_CAPACITY = 2;
     private const int BOSSRAID_CALL_PERIOD = 20;
     private int bossRaidCallCnt = 0;
+    public bool willBossRaid = false;
 
     //Skill uniqueSkill;
     public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, string name)
@@ -55,230 +56,235 @@ public class SpecialAdventurer : Adventurer
     #region StateMachine
     protected override void EnterState(State nextState)
     {
-#if DEBUG_SPADV_STATE
-        //Debug.Log(name + " : ");
-#endif
-        switch (nextState)
+        if (willBossRaid)
         {
-            case State.Idle:
+            superState = SuperState.TeleportToBossArea;
+            curCoroutine = StartCoroutine(TeleportToBossArea());
+        }
+        else
+        {
+            switch (nextState)
+            {
+                case State.Idle:
 #if DEBUG_SPADV_STATE
-                Debug.Log("Idle");
+                    Debug.Log("Idle");
 #endif
-                superState = SuperState.Idle;
-                Idle();
-                //Traveler이므로 무조건 SearchingStructure 부터
-                //이외에 체크할거 있으면 여기서
-                break;
-            case State.SolvingDesire_Wandering:
+                    superState = SuperState.Idle;
+                    Idle();
+                    //Traveler이므로 무조건 SearchingStructure 부터
+                    //이외에 체크할거 있으면 여기서
+                    break;
+                case State.SolvingDesire_Wandering:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SolvingDesire_Wandering");
+                    Debug.Log(name + " : " + "SolvingDesire_Wandering");
 #endif
-                superState = SuperState.SolvingDesire_Wandering;
-                curCoroutine = StartCoroutine(SolvingDesire_Wandering());
-                break;
-            case State.SearchingMonster_Wandering:
+                    superState = SuperState.SolvingDesire_Wandering;
+                    curCoroutine = StartCoroutine(SolvingDesire_Wandering());
+                    break;
+                case State.SearchingMonster_Wandering:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SearchingMonster_Wandering");
+                    Debug.Log(name + " : " + "SearchingMonster_Wandering");
 #endif
-                superState = SuperState.SearchingMonster_Wandering;
-                curCoroutine = StartCoroutine(SearchingMonster_Wandering());
-                break;
-            case State.SearchingStructure:
+                    superState = SuperState.SearchingMonster_Wandering;
+                    curCoroutine = StartCoroutine(SearchingMonster_Wandering());
+                    break;
+                case State.SearchingStructure:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SearchingStructure");
+                    Debug.Log(name + " : " + "SearchingStructure");
 #endif
-                superState = SuperState.SolvingDesire;
-                curCoroutine = StartCoroutine(SearchingStructure());
-                break;
-            case State.PathFinding:
+                    superState = SuperState.SolvingDesire;
+                    curCoroutine = StartCoroutine(SearchingStructure());
+                    break;
+                case State.PathFinding:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "PathFinding");
+                    Debug.Log(name + " : " + "PathFinding");
 #endif
-                curCoroutine = StartCoroutine(PathFinding());
-                break;
-            case State.MovingToDestination:
+                    curCoroutine = StartCoroutine(PathFinding());
+                    break;
+                case State.MovingToDestination:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "MovingToDestination");
+                    Debug.Log(name + " : " + "MovingToDestination");
 #endif
-                animator.SetBool("MoveFlg", true);
-                curCoroutine = StartCoroutine(MoveToDestination());
-                break;
-            case State.WaitingStructure:
+                    animator.SetBool("MoveFlg", true);
+                    curCoroutine = StartCoroutine(MoveToDestination());
+                    break;
+                case State.WaitingStructure:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "WaitingStructure");
+                    Debug.Log(name + " : " + "WaitingStructure");
 #endif
-                destinationPlace.Visit(this);
-                break;
-            case State.UsingStructure:
+                    destinationPlace.Visit(this);
+                    break;
+                case State.UsingStructure:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "UsingStructure");
+                    Debug.Log(name + " : " + "UsingStructure");
 #endif
-                //욕구 감소
-                //소지 골드 감소
-                UsingStructure();
-                break;
-            case State.SearchingExit:
+                    //욕구 감소
+                    //소지 골드 감소
+                    UsingStructure();
+                    break;
+                case State.SearchingExit:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SearchingExit");
+                    Debug.Log(name + " : " + "SearchingExit");
 #endif
-                superState = SuperState.ExitingDungeon;
-                //Traveler에서 구현
-                //curCoroutine = StartCoroutine(SearchingExit()); 
-                break;
-            case State.Exit:
-                //Treaveler에서 구현
-                //Exit();
-                break;
-            // 모험가 전투관련
-            case State.SearchingHuntingArea:
+                    superState = SuperState.ExitingDungeon;
+                    //Traveler에서 구현
+                    //curCoroutine = StartCoroutine(SearchingExit()); 
+                    break;
+                case State.Exit:
+                    //Treaveler에서 구현
+                    //Exit();
+                    break;
+                // 모험가 전투관련
+                case State.SearchingHuntingArea:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SearchingHuntingArea");
+                    Debug.Log(name + " : " + "SearchingHuntingArea");
 #endif
-                superState = SuperState.SearchingHuntingArea;
-                curCoroutine = StartCoroutine(SearchingHuntingArea());
-                break;
-            case State.EnteringHuntingArea:
-                superState = SuperState.EnteringHuntingArea;
-                EnteringHuntingArea();
-                break;
-            case State.SearchingMonster:
+                    superState = SuperState.SearchingHuntingArea;
+                    curCoroutine = StartCoroutine(SearchingHuntingArea());
+                    break;
+                case State.EnteringHuntingArea:
+                    superState = SuperState.EnteringHuntingArea;
+                    EnteringHuntingArea();
+                    break;
+                case State.SearchingMonster:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SearchingMonster");
+                    Debug.Log(name + " : " + "SearchingMonster");
 #endif
-                superState = SuperState.SearchingMonster;
-                curCoroutine = StartCoroutine(SearchingMonster());
-                break;
-            case State.ApproachingToEnemy:
+                    superState = SuperState.SearchingMonster;
+                    curCoroutine = StartCoroutine(SearchingMonster());
+                    break;
+                case State.ApproachingToEnemy:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "ApproachingToEnemy");
+                    Debug.Log(name + " : " + "ApproachingToEnemy");
 #endif
-                animator.SetBool("MoveFlg", true);
-                curCoroutine = StartCoroutine(ApproachingToEnemy());
-                break;
-            case State.InitiatingBattle:
+                    animator.SetBool("MoveFlg", true);
+                    curCoroutine = StartCoroutine(ApproachingToEnemy());
+                    break;
+                case State.InitiatingBattle:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "InitiatingBattle");
+                    Debug.Log(name + " : " + "InitiatingBattle");
 #endif
-                superState = SuperState.Battle;
-                InitiatingBattle();
-                break;
-            case State.Battle:
+                    superState = SuperState.Battle;
+                    InitiatingBattle();
+                    break;
+                case State.Battle:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "Battle");
+                    Debug.Log(name + " : " + "Battle");
 #endif
-                ShowBattleUI();
-                curCoroutine = StartCoroutine(Battle());
-                break;
-            case State.AfterBattle:
+                    ShowBattleUI();
+                    curCoroutine = StartCoroutine(Battle());
+                    break;
+                case State.AfterBattle:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "AfterBattle");
+                    Debug.Log(name + " : " + "AfterBattle");
 #endif
-                superState = SuperState.AfterBattle;
-                curCoroutine = StartCoroutine(AfterBattle());
-                break;
-            case State.ExitingHuntingArea:
+                    superState = SuperState.AfterBattle;
+                    curCoroutine = StartCoroutine(AfterBattle());
+                    break;
+                case State.ExitingHuntingArea:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "ExitingHuntingArea");
+                    Debug.Log(name + " : " + "ExitingHuntingArea");
 #endif
-                superState = SuperState.ExitingHuntingArea;
-                curCoroutine = StartCoroutine(ExitingHuntingArea());
-                break;
-            case State.PassedOut:
+                    superState = SuperState.ExitingHuntingArea;
+                    curCoroutine = StartCoroutine(ExitingHuntingArea());
+                    break;
+                case State.PassedOut:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "PassedOut");
+                    Debug.Log(name + " : " + "PassedOut");
 #endif
-                superState = SuperState.PassedOut;
-                animator.SetTrigger("DeathFlg");
-                PassedOut();
-                break;
-            case State.SpontaneousRecovery:
+                    superState = SuperState.PassedOut;
+                    animator.SetTrigger("DeathFlg");
+                    PassedOut();
+                    break;
+                case State.SpontaneousRecovery:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SpontaneousRecovery");
+                    Debug.Log(name + " : " + "SpontaneousRecovery");
 #endif
-                curCoroutine = StartCoroutine(SpontaneousRecovery());
-                break;
-            case State.Rescued:
+                    curCoroutine = StartCoroutine(SpontaneousRecovery());
+                    break;
+                case State.Rescued:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "Rescued");
+                    Debug.Log(name + " : " + "Rescued");
 #endif
-                curCoroutine = StartCoroutine(Rescued());
-                break;
-            // SpAdv 전용
-            case State.TeleportToBossArea:
+                    curCoroutine = StartCoroutine(Rescued());
+                    break;
+                // SpAdv 전용
+                case State.TeleportToBossArea:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SearchingBossArea");
+                    Debug.Log(name + " : " + "SearchingBossArea");
 #endif
-                superState = SuperState.TeleportToBossArea;
-                curCoroutine = StartCoroutine(TeleportToBossArea());
-                break;
-            case State.WaitingOtherSpecialAdvs:
+                    superState = SuperState.TeleportToBossArea;
+                    curCoroutine = StartCoroutine(TeleportToBossArea());
+                    break;
+                case State.WaitingOtherSpecialAdvs:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "WaitingOtherSpecialAdvs");
+                    Debug.Log(name + " : " + "WaitingOtherSpecialAdvs");
 #endif
-                superState = SuperState.WaitingOtherSpecialAdvs;
-                WaitingOtherSpecialAdvs();
-                break;
-            case State.StartingSkirmish:
+                    superState = SuperState.WaitingOtherSpecialAdvs;
+                    WaitingOtherSpecialAdvs();
+                    break;
+                case State.StartingSkirmish:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "StartingSkirmish");
+                    Debug.Log(name + " : " + "StartingSkirmish");
 #endif
-                superState = SuperState.Skirmish;
-                curCoroutine = StartCoroutine(StartingSkirmish());
-                break;
-            case State.MatchWon:
+                    superState = SuperState.Skirmish;
+                    curCoroutine = StartCoroutine(StartingSkirmish());
+                    break;
+                case State.MatchWon:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "MatchWon");
+                    Debug.Log(name + " : " + "MatchWon");
 #endif
-                //여기서 애니메이션 넣기
-                StartCoroutine(MatchWon());
-                break;
-            case State.SkirmishDefeated:
+                    //여기서 애니메이션 넣기
+                    StartCoroutine(MatchWon());
+                    break;
+                case State.SkirmishDefeated:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SkirmishDefeated");
+                    Debug.Log(name + " : " + "SkirmishDefeated");
 #endif
-                superState = SuperState.SkirmishDefeated;
-                animator.SetTrigger("DeathFlg");
-                SkirmishDefeated();
-                break;
-            case State.SkirmishWon:
+                    superState = SuperState.SkirmishDefeated;
+                    animator.SetTrigger("DeathFlg");
+                    SkirmishDefeated();
+                    break;
+                case State.SkirmishWon:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "SkirmishWon");
+                    Debug.Log(name + " : " + "SkirmishWon");
 #endif
-                superState = SuperState.SkirmishWon;
-                curCoroutine = StartCoroutine(SkirmishWon());
-                break;
-            case State.EnteringBossArea:
+                    superState = SuperState.SkirmishWon;
+                    curCoroutine = StartCoroutine(SkirmishWon());
+                    break;
+                case State.EnteringBossArea:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "EnteringBossArea");
+                    Debug.Log(name + " : " + "EnteringBossArea");
 #endif
-                superState = SuperState.EnteringBossArea;
-                EnteringBossArea();
-                break;
-            case State.StartingBossBattle:
+                    superState = SuperState.EnteringBossArea;
+                    EnteringBossArea();
+                    break;
+                case State.StartingBossBattle:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "StartingBossBattle");
+                    Debug.Log(name + " : " + "StartingBossBattle");
 #endif
-                superState = SuperState.BossBattle;
-                StartingBossBattle();
-                break;
-            case State.BossBattleWon:
+                    superState = SuperState.BossBattle;
+                    StartingBossBattle();
+                    break;
+                case State.BossBattleWon:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "BossBattleWon");
+                    Debug.Log(name + " : " + "BossBattleWon");
 #endif
-                superState = SuperState.BossBattleWon;
-                BossBattleWon();
-                break;
-            case State.BailOut:
+                    superState = SuperState.BossBattleWon;
+                    BossBattleWon();
+                    break;
+                case State.BailOut:
 #if DEBUG_SPADV_STATE
-                Debug.Log(name + " : " + "BailOut");
+                    Debug.Log(name + " : " + "BailOut");
 #endif
-                animator.SetTrigger("DeathFlg");
-                superState = SuperState.BailOut;
-                curCoroutine = StartCoroutine(BailOut());
-                break;
-            case State.None:
-                curState = State.Idle;
-                break;
+                    animator.SetTrigger("DeathFlg");
+                    superState = SuperState.BailOut;
+                    curCoroutine = StartCoroutine(BailOut());
+                    break;
+                case State.None:
+                    curState = State.Idle;
+                    break;
+            }
         }
     }
     protected override void ExitState()
@@ -440,7 +446,8 @@ public class SpecialAdventurer : Adventurer
             {
                 //StopCurActivities();
                 //curState = State.TeleportToBossArea;
-                StartCoroutine(ParticipateInRaid());
+                //StartCoroutine(ParticipateInRaid());
+                willBossRaid = true;
             }
             else
                 GameManager.Instance.SpAdvResponsed(false, this);
@@ -451,7 +458,8 @@ public class SpecialAdventurer : Adventurer
     {
         //StopCurActivities();
         //curState = State.TeleportToBossArea;
-        StartCoroutine(ParticipateInRaid());
+        //StartCoroutine(ParticipateInRaid());
+        willBossRaid = true;
     }
 
     public void OnPlayerRaidRefusal()
@@ -462,14 +470,20 @@ public class SpecialAdventurer : Adventurer
     private IEnumerator ParticipateInRaid()
     {
         // 전투 종료까지 기다리기.
-        while (superState == SuperState.Battle)
+        yield return null;
+        //while (superState == SuperState.Battle)
+        //{
+        //    yield return new WaitForSeconds(SkillConsts.TICK_TIME);
+        //}
+        while (curState == State.PathFinding)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME);
         }
 
         ResetCurHuntingArea();
-        ResetBattleEventHandlers();
+        ResetBattleParams();
         StopCurActivities();
+        ResetDestinations();
 
         //Debug.Log(stat.name + " 보스 레이드 참여.");
         curState = State.TeleportToBossArea;
@@ -797,6 +811,8 @@ public class SpecialAdventurer : Adventurer
 
         yield return new WaitForSeconds(SkillConsts.TICK_TIME * 4);
 
+        willBossRaid = false;
+
         curState = State.WaitingOtherSpecialAdvs;
 
         //if (destinationPlace == null)
@@ -945,9 +961,9 @@ public class SpecialAdventurer : Adventurer
     {
         // 승리
         // 보상 받기
+        GameManager.Instance.ReportBossBattleWon(this);
 
-        // 재도전 시간제한 걸어야.
-        // 이거 레벨업 때마다 재검사할 필요 없이 그냥 게임 내에서 일정시간 후에 인터페이스 활성화 및 이벤트 발행해주면 됨.
+        curState = State.Idle;
     }
 
     private IEnumerator BailOut()

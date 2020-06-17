@@ -270,7 +270,7 @@ public class GameManager : MonoBehaviour
 
 #if DEBUG_ADV
         //GenAndEnqueueSingleAdventurer(1, 1);
-        GenAndEnqueueSpecialAdvenuturer("Hana", 25);
+        GenAndEnqueueSpecialAdvenuturer("Hana", 85);
         GenAndEnqueueSpecialAdvenuturer("Iris", 26);
         GenAndEnqueueSpecialAdvenuturer("Maxi", 25);
         GenAndEnqueueSpecialAdvenuturer("Murat", 25);
@@ -361,7 +361,7 @@ public class GameManager : MonoBehaviour
         TextAsset itemText = Resources.Load<TextAsset>("Items/items");
         items = JSON.Parse(itemText.ToString());
     }
-#endregion
+    #endregion
 
     #region Generate Characters
     // 모험가 입장 코루틴
@@ -488,7 +488,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("[GetRandomRace] num: " + num);
 #endif
 
-        for (i = 0; i<raceRatios.Count; i++)
+        for (i = 0; i < raceRatios.Count; i++)
         {
 #if DEBUG_GEN_ADV
             Debug.Log("[GetRandomRace] raceRatio.Key: " + raceRatios[i].Key);
@@ -567,7 +567,7 @@ public class GameManager : MonoBehaviour
         float num = Random.Range(0.0f, 1.0f);
 
         float total = 0.0f;
-        
+
         for (i = 0; i < temp.wealthRatio.Count; i++)
         {
             total += temp.wealthRatio[i].Value;
@@ -590,7 +590,7 @@ public class GameManager : MonoBehaviour
 
     private int GetRandomInitialGold(WealthType wealth)
     {
-        switch(wealth)
+        switch (wealth)
         {
             case WealthType.Lower:
                 return Random.Range(trvInitialGoldData["wealth"]["lower"]["min"].AsInt, trvInitialGoldData["wealth"]["lower"]["max"].AsInt + 1);
@@ -625,7 +625,7 @@ public class GameManager : MonoBehaviour
         const float desireTickMult = 1.0f;
 
         string typeStr;
-        switch(desireType)
+        switch (desireType)
         {
             case DesireType.Thirsty:
                 typeStr = "thirsty";
@@ -678,7 +678,7 @@ public class GameManager : MonoBehaviour
                 temp.SetActive(true);
                 adventurersEnabled.Add(temp);
             }
-        }   
+        }
     }
 
     private IEnumerator SpAdvEnter()
@@ -706,7 +706,7 @@ public class GameManager : MonoBehaviour
         Adventurer tempAdventurer = temp.GetComponent<Adventurer>();
         adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
 
-        int advLevel = Random.Range(minLevel, maxLevel+1);
+        int advLevel = Random.Range(minLevel, maxLevel + 1);
         BattleStat tempBattleStat = GenBattleStat(advLevel);
         Stat tempStat = GenStat(advLevel);
         RewardStat tempRewardStat = GenRewardStat(advLevel);
@@ -732,7 +732,7 @@ public class GameManager : MonoBehaviour
          * 왈멍멍: "Wal"
          */
         // 아마 고쳐야할 거임
-        GameObject go = Instantiate((GameObject)Resources.Load("CharacterPrefabs/"+name));
+        GameObject go = Instantiate((GameObject)Resources.Load("CharacterPrefabs/" + name));
         //go.GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
 
         // 생성만 해놓고 비활성화
@@ -744,7 +744,7 @@ public class GameManager : MonoBehaviour
         go.transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
         SpecialAdventurer tempSpAdv = go.GetComponent<SpecialAdventurer>();
         tempSpAdv.index = specialAdventurers.Count - 1;
-        string attackEffectFileName = "EffectPrefabs/" + name +"_AttackEffect";
+        string attackEffectFileName = "EffectPrefabs/" + name + "_AttackEffect";
         tempSpAdv.SetAttackEffect((GameObject)Instantiate(Resources.Load(attackEffectFileName)));
         tempSpAdv.SetDefaultEffects();
         // Debug.Log("character instantiate - " + i);
@@ -860,9 +860,9 @@ public class GameManager : MonoBehaviour
 
         int generated = 0;
 
-        for(int i = 0; i < tempArr.Count-1; i++)
+        for (int i = 0; i < tempArr.Count - 1; i++)
         {
-            while ( tempArr[i].curAdvNum < tempArr[i + 1].curAdvNum )
+            while (tempArr[i].curAdvNum < tempArr[i + 1].curAdvNum)
             {
                 for (int j = 0; j <= i; j++)
                 {
@@ -913,7 +913,7 @@ public class GameManager : MonoBehaviour
         GameObject pointTile;
 
         // 사냥터 건설
-        for (int i = 0; i<huntingAreaCount; i++)
+        for (int i = 0; i < huntingAreaCount; i++)
         {
             areaNum = aData["scene"][sceneNumber]["huntingArea"][i]["huntingAreaNum"].AsInt;
             tileX = aData["scene"][sceneNumber]["huntingArea"][i]["x"].AsInt;
@@ -996,9 +996,9 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    
 
-        // 입구 랜덤으로 찾기
+
+    // 입구 랜덤으로 찾기
     public Tile GetRandomEntrance()
     {
         int rand = Random.Range(0, mapEntranceCount);
@@ -1039,7 +1039,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-#region Save Load
+    #region Save Load
     // 현재 상황 Save
     public void Save()
     {
@@ -1156,9 +1156,9 @@ public class GameManager : MonoBehaviour
     {
         return tileMap.transform.GetChild(0).gameObject;
     }
-#endregion
+    #endregion
 
-#region Stage Progress
+    #region Stage Progress
     /// <summary>
     /// 일선 모험가 선택 메서드
     /// </summary>
@@ -1227,13 +1227,13 @@ public class GameManager : MonoBehaviour
     {
         float waitedTime = 0.0f;
 
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME);
             waitedTime += SkillConsts.TICK_TIME;
             // TODO: 남은 시간 UI에 띄워주기
 
-            if(waitedTime >= SceneConsts.BOSSRAID_PREP_TIME)
+            if (waitedTime >= SceneConsts.BOSSRAID_PREP_TIME)
                 bossRaidPrepTimeOver = true;
 
             if (IsBossRaidPrepEnded)
@@ -1266,7 +1266,7 @@ public class GameManager : MonoBehaviour
     {
         const int TICK_MULT = 2;
 
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(TICK_MULT * SkillConsts.TICK_TIME);
             retryTimesLeft += TICK_MULT * SkillConsts.TICK_TIME;
@@ -1319,6 +1319,57 @@ public class GameManager : MonoBehaviour
         curSkirmish.ReportMatchWon(winner);
     }
 
+    public void ReportBossBattleWon(SpecialAdventurer conquerer)
+    {
+        int remainBoss = bossAreaCount - CombatAreaManager.Instance.BossAreaIndex - 1; // 남은 보스 수
+        isBossPhase = false;
+
+        switch (remainBoss)
+        {
+            case 0: //최종 보스
+                if (conquerer.index == playerSpAdvIndex)
+                    PlayerWon();
+                else
+                    PlayerLose();
+                break;
+            case 1: //중간 보스
+                if (conquerer.index == playerSpAdvIndex)
+                    GivePlayerMidBossBonus();
+                break;
+            case 2: //수문장
+                if (conquerer.index == playerSpAdvIndex)
+                    GivePlayerGatekeeperBonus();
+                break;
+        }
+
+        CombatAreaManager.Instance.OnBossAreaConquered();
+    }
+
+    private void PlayerWon()
+    {
+        ShowStageClearUI();
+        SetTimeScale(0);
+    }
+
+    private void PlayerLose()
+    {
+        ShowStageRetryUI();
+        SetTimeScale(0);
+    }
+
+    private void GivePlayerMidBossBonus()
+    {
+        ShowMidBossClearUI();
+        AddGold(CombatAreaManager.Instance.FindBossArea().Bonus);
+    }
+
+    private void GivePlayerGatekeeperBonus()
+    {
+        ShowGatekeeperClearUI();
+        AddGold(CombatAreaManager.Instance.FindBossArea().Bonus);
+    }
+
+
     #region UI
     public void ShowBossRaidDecisionUI()
     {
@@ -1327,7 +1378,7 @@ public class GameManager : MonoBehaviour
 
     public void EnableBossRaidUI()
     {
-       
+
     }
 
     public void DisableBossRaidUI()
@@ -1338,6 +1389,26 @@ public class GameManager : MonoBehaviour
     public void ShowSpAdvSelectionUI()
     {
 
+    }
+
+    public void ShowMidBossClearUI()
+    {
+        Debug.Log("Player got MidBoss.");
+    }
+
+    public void ShowGatekeeperClearUI()
+    {
+        Debug.Log("Player got GateKeeper.");
+    }
+
+    private void ShowStageRetryUI()
+    {
+        Debug.Log("You lose.");
+    }
+
+    private void ShowStageClearUI()
+    {
+        Debug.Log("Victory!");
     }
     #endregion
 
@@ -1443,6 +1514,7 @@ public class GameManager : MonoBehaviour
         return tileMap.GetComponent<TileMap>().GetLayer(layerNum).GetComponent<TileLayer>();
     }
 
-    
+
+
     #endregion
 }

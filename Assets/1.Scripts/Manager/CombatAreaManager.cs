@@ -355,7 +355,8 @@ public class CombatAreaManager : MonoBehaviour
         // 보스 생성. 우선 번호부터.
         int bossNum = bossAreaJson[stageNum][bossAreaNum]["bossNum"].AsInt;
         int challengeLevel = bossAreaJson[stageNum][bossAreaNum]["challengeLevel"].AsInt;
-        Debug.Log("challengeLevel : " + challengeLevel);
+        int bonus = bossAreaJson[stageNum][bossAreaNum]["bonus"].AsInt;
+        //Debug.Log("bonus : " + bonus);
         GameObject boss = LoadMonsterFromJson("Boss", bossNum);
        
 
@@ -435,7 +436,7 @@ public class CombatAreaManager : MonoBehaviour
             //Debug.Log(debugStr);
         }
 
-        bossArea.InitBossArea(boss, challengeLevel);
+        bossArea.InitBossArea(boss, challengeLevel, bonus);
         boss.GetComponent<Monster>().SetHabitat(bossArea);
         constructing = null;
         #endregion
@@ -522,15 +523,20 @@ public class CombatAreaManager : MonoBehaviour
         }
     }
 
-    private void OnBossAreaConquered()
+    public void OnBossAreaConquered()
     {
-        PublicHuntingAreaIndex++;
-        HuntingAreaOpenToPublic();
+        if (ConqueringHuntingAreaIndex < huntingAreas.Count - 1)
+        {
+            PublicHuntingAreaIndex++;
+            HuntingAreaOpenToPublic();
+            HuntingAreaConquerStart();
+        }
 
-        BossAreaIndex++;
-        BossAreaOpenToPublic();
-
-        HuntingAreaConquerStart();
+        if (BossAreaIndex < bossAreas.Count - 1)
+        {
+            BossAreaOpenToPublic();
+            BossAreaIndex++;
+        }
     }
 
     public void StartConquer()

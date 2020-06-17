@@ -66,7 +66,7 @@
 					"y": 79
 				}
 			],
-			"huntingAreaCount": 3,
+			"huntingAreaCount": 4,
 			"huntingArea": [{
 					"huntingAreaNum": 0,
 					"x": 18,
@@ -106,6 +106,12 @@
 					"guestCapacity": 30,
 					"minLevel": 21,
 					"maxLevel": 25
+				},
+				{
+					"huntingAreaIndex": 3,
+					"guestCapacity": 30,
+					"minLevel": 26,
+					"maxLevel": 30
 				}
 			]
 		},
@@ -156,7 +162,7 @@
 					"y": 49
 				}
 			],
-			"huntingAreaCount": 3,
+			"huntingAreaCount": 6,
 			"huntingArea": [{
 					"huntingAreaNum": 0,
 					"x": 18,
@@ -171,14 +177,35 @@
 					"huntingAreaNum": 2,
 					"x": 13,
 					"y": 43
+				},
+				{
+					"huntingAreaNum": 3,
+					"x": 40,
+					"y": 43
+				},
+				{
+					"huntingAreaNum": 4,
+					"x": 45,
+					"y": 37
+				},
+				{
+					"huntingAreaNum": 5,
+					"x": 45,
+					"y": 30
 				}
 			],
-			"bossAreaCount": 1,
+			"bossAreaCount": 2,
 			"bossArea": [{
 				"bossAreaNum": 0,
 				"x": 13,
 				"y": 38
-			}],
+			},
+			{
+				"bossAreaNum": 1,
+				"x": 36,
+				"y": 23
+			}
+			],
 			"progressInformation": [{
 					"huntingAreaIndex": 0,
 					"guestCapacity": 150,
@@ -196,6 +223,24 @@
 					"guestCapacity": 30,
 					"minLevel": 21,
 					"maxLevel": 25
+				},
+				{
+					"huntingAreaIndex": 3,
+					"guestCapacity": 50,
+					"minLevel": 26,
+					"maxLevel": 30
+				},
+				{
+					"huntingAreaIndex": 4,
+					"guestCapacity": 50,
+					"minLevel": 31,
+					"maxLevel": 40
+				},
+				{
+					"huntingAreaIndex": 5,
+					"guestCapacity": 30,
+					"minLevel": 41,
+					"maxLevel": 45
 				}
 			]
 		},

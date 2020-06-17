@@ -162,8 +162,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c67855ef497864fa48e8a3ca606f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  superState: 0
   state: 0
   pathFinder: {fileID: 114873871216411288}
+  canWander: 1
   index: 0
   monsterNum: 0
   canvas: {fileID: 0}
