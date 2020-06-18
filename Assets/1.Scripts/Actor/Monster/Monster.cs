@@ -11,7 +11,7 @@ using System.Linq;
 
 public class Monster : Actor, ICombatant//:Actor, IDamagable {
 {
-    public State curState
+    public State curState //Save
     {
         get
         {
@@ -152,7 +152,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         //골드, 능력치 초기화...  // current , origin 따로둬야할까?
     }
 
-#region StateMachine
+    #region StateMachine
     protected void EnterState(State nextState)
     {
         switch (nextState)
@@ -258,9 +258,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 break;
         }
     }
-#endregion
+    #endregion
 
-#region moving
+    #region moving
     protected IEnumerator Wandering()
     {
         yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
@@ -348,10 +348,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         return tile.GetPassableMonster();
     }
 
-    
-#endregion
 
-#region Battle
+    #endregion
+
+    #region Battle
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         Direction dir = Direction.DownLeft;
@@ -497,7 +497,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat.CalDamage(out calculatedDamage, out isCrit);
 
         float actualDamage;
-        if(enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
+        if (enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
         {
             attackEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
             attackEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
@@ -600,7 +600,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
-        if(enemy != null)
+        if (enemy != null)
             enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
     }
 
@@ -637,7 +637,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         System.Delegate[] invocations = healthBelowZeroEvent.GetInvocationList();
 
         bool isNew = true;
-        for(int i = 0; i < invocations.Length; i++)
+        for (int i = 0; i < invocations.Length; i++)
         {
             if (invocations[i].Target == newEvent.Target)
                 isNew = false;
@@ -852,16 +852,17 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             healthBelowZeroEvent -= healthBelowZeroEventHandler;
     }
 
+    #region Skill
     public IEnumerator RefreshTemporaryEffects()
     {
         while (true)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME);
 
-            foreach(string key in temporaryEffects.Keys.ToList())
+            foreach (string key in temporaryEffects.Keys.ToList())
             {
-                if(temporaryEffects[key].Refresh())
-                      RemoveTemporaryEffect(temporaryEffects[key]);
+                if (temporaryEffects[key].Refresh())
+                    RemoveTemporaryEffect(temporaryEffects[key]);
             }
 
             //int idx = 0;
@@ -973,6 +974,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             item.Deactivate();
         }
     }
+    #endregion
 
     public void HealFullHealth(bool displayEffect)
     {
@@ -982,29 +984,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             battleStat.Heal(battleStat.HealthMax);
     }
 
-    //public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
-    //{
-    //    if (temporaryEffects.Contains(toBeRemoved))
-    //    {
-    //        toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
-    //        toBeRemoved.ResetStack(); // 스택도 여기서 리셋
-
-    //        toBeRemoved.RemoveEffect();
-    //        temporaryEffects.Remove(toBeRemoved);
-    //    }
-    //}
-
-    //public void AddTemporaryEffect(TemporaryEffect toBeAdded)
-    //{
-    //    if (!temporaryEffects.Contains(toBeAdded))
-    //    {
-    //        temporaryEffects.Add(toBeAdded);
-    //        toBeAdded.SetSubject(this);
-    //        toBeAdded.ApplyEffect();
-    //    }
-    //    else
-    //        toBeAdded.StackUp();
-    //}
+    public virtual CombatantType GetCombatantType()
+    {
+        return CombatantType.Monster;
+    }
     #endregion
 
     #region UI
@@ -1018,6 +1001,21 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         hpBar.SetActive(true);
         damageText.transform.SetParent(canvas.transform);
+    }
+    #endregion
+
+    #region SaveLoad
+    public int GetIndex()
+    {
+        return index;
+    }
+    public Dictionary<string, TemporaryEffect> GetTemporaryEffects()
+    {
+        return temporaryEffects;
+    }
+    public Dictionary<string, Skill> GetSkills()
+    {
+        return skills;
     }
     #endregion
 }

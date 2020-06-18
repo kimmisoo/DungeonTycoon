@@ -358,7 +358,11 @@ public class CombatAreaManager : MonoBehaviour
         int bonus = bossAreaJson[stageNum][bossAreaNum]["bonus"].AsInt;
         //Debug.Log("bonus : " + bonus);
         GameObject boss = LoadMonsterFromJson("Boss", bossNum);
-       
+
+        // 세이브 로드용
+        bossArea.stageNum = stageNum;
+        bossArea.bossAreaNum = areaNum;
+        bossArea.bossAreaIndex = areaIndex;
 
         //건설공간 지정
         int x = bossAreaJson[stageNum][bossAreaNum]["sitewidth"].AsInt;

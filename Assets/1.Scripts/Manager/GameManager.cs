@@ -37,17 +37,19 @@ public class GameManager : MonoBehaviour
 
     #region Characters
     #region 세이브!
+    public int activeSpAdvCnt;
+    public int playerSpAdvIndex = -1;
+
     public List<GameObject> travelers;
     public List<GameObject> adventurersEnabled;
     public List<GameObject> specialAdventurers;
-    public int activeSpAdvCnt;
+    
     public List<GameObject> inactiveTravelers;
     public List<GameObject> adventurersDisabled;
 
     public Queue<GameObject> advEnterQ;
     public Queue<GameObject> spAdvEnterQ;
 
-    public int playerSpAdvIndex = -1;
 
     public int corporateNum = 1;
     public List<float> popular;
@@ -294,9 +296,8 @@ public class GameManager : MonoBehaviour
 #if DEBUG_ADV
         //DebugHuntingArea();
 #endif
-        SaveLoadManager.Instance.InstantiateFromSave();
-
-        CombatAreaManager.Instance.InitCombatAreas();
+        if(SaveLoadManager.Instance.InstantiateFromSave() == false);
+            CombatAreaManager.Instance.InitCombatAreas();
     }
 
     private void ReadDatasFromJSON()
@@ -704,7 +705,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject temp = adventurersDisabled[adventurersDisabled.Count - 1];
         Adventurer tempAdventurer = temp.GetComponent<Adventurer>();
-        adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
+        //adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
 
         int advLevel = Random.Range(minLevel, maxLevel + 1);
         BattleStat tempBattleStat = GenBattleStat(advLevel);
@@ -715,6 +716,7 @@ public class GameManager : MonoBehaviour
 
         tempAdventurer.InitAdventurer(tempStat, tempBattleStat, tempRewardStat);
 
+        adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
         advEnterQ.Enqueue(temp);
     }
 

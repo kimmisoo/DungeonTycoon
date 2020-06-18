@@ -92,10 +92,14 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
 
-    public void InstantiateFromSave()
+    /// <summary>
+    /// 세이브 파일에서 정보 읽어서 로드
+    /// </summary>
+    /// <returns>로드 되었는지 아닌지</returns>
+    public bool InstantiateFromSave()
     {
         if (savedata == null)
-            return;
+            return false;
 
         // 세이브에서 받아서 결과값 대입
         if (savedata != null)
@@ -112,11 +116,14 @@ public class SaveLoadManager : MonoBehaviour
             Debug.Log("불러오기 성공");
 
             savedata = null;
+
+            return true;
         }
         // 실패 메시지 출력
         else
         {
             Debug.Log("불러오기 실패");
+            return false;
         }
     }
 
@@ -131,210 +138,210 @@ public class SaveLoadManager : MonoBehaviour
     }
 }
 
-[Serializable]
-public class GameSavedata
-{
-    public string sceneName;
+//[Serializable]
+//public class GameSavedata
+//{
+//    public string sceneName;
 
-    public int playerGold;
-    public int playerPopularity;
-    public Vector3Data cameraPosition;
-    public float cameraSize;
+//    public int playerGold;
+//    public int playerPopularity;
+//    public Vector3Data cameraPosition;
+//    public float cameraSize;
 
-    public List<TravelerData> travelerDatas;
-    public List<TileData> tileDatas;
-    public List<StructureData> structureDatas;
+//    public List<TravelerData> travelerDatas;
+//    public List<TileData> tileDatas;
+//    public List<StructureData> structureDatas;
 
-    public GameSavedata(string sceneNameInput)
-    {
-        GameManager gameManager = GameManager.Instance;
-        StructureManager structureManager = StructureManager.Instance;
+//    public GameSavedata(string sceneNameInput)
+//    {
+//        GameManager gameManager = GameManager.Instance;
+//        StructureManager structureManager = StructureManager.Instance;
 
-        sceneName = sceneNameInput;
-        playerGold = gameManager.playerGold;
-        playerPopularity = gameManager.playerPopularity;
+//        sceneName = sceneNameInput;
+//        playerGold = gameManager.playerGold;
+//        playerPopularity = gameManager.playerPopularity;
 
-        cameraPosition = new Vector3Data(Camera.main.transform.position);
-        cameraSize = Camera.main.orthographicSize;
-        Camera.main.GetComponent<InputManager>().isLoading = true;
+//        cameraPosition = new Vector3Data(Camera.main.transform.position);
+//        cameraSize = Camera.main.orthographicSize;
+//        Camera.main.GetComponent<InputManager>().isLoading = true;
 
-        travelerDatas = new List<TravelerData>();
-
-        // travelers 저장.
-        for (int i = 0; i < gameManager.travelers.Count; i++)
-        {
-            travelerDatas.Add(new TravelerData(gameManager.travelers[i]));
-        }
-
-        // 타일맵 저장.
-        tileDatas = new List<TileData>();
-        GameObject tileLayer = gameManager.GetTileLayer();
-
-        int tileCount = tileLayer.transform.childCount;
+//        travelerDatas = new List<TravelerData>();
         
-        for (int i = 0; i < tileCount; i++)
-        {
-            tileDatas.Add(new TileData(tileLayer.transform.GetChild(i).gameObject));
-        }
+//        // travelers 저장.
+//        for (int i = 0; i < gameManager.travelers.Count; i++)
+//        {
+//            travelerDatas.Add(new TravelerData(gameManager.travelers[i]));
+//        }
 
-        // 건물 저장.
-        structureDatas = new List<StructureData>();
+//        // 타일맵 저장.
+//        tileDatas = new List<TileData>();
+//        GameObject tileLayer = gameManager.GetTileLayer();
 
-        for(int i = 0; i< structureManager.structures.Count; i++)
-        {
-            structureDatas.Add(new StructureData(structureManager.structures[i]));
-        }
-    }
-}
+//        int tileCount = tileLayer.transform.childCount;
+        
+//        for (int i = 0; i < tileCount; i++)
+//        {
+//            tileDatas.Add(new TileData(tileLayer.transform.GetChild(i).gameObject));
+//        }
 
-[Serializable]
-public class Vector3Data
-{
-    public float x, y, z;
+//        // 건물 저장.
+//        structureDatas = new List<StructureData>();
 
-    public Vector3Data(Vector3 input)
-    {
-        x = input.x;
-        y = input.y;
-        z = input.z;
-    }
-}
+//        for(int i = 0; i< structureManager.structures.Count; i++)
+//        {
+//            structureDatas.Add(new StructureData(structureManager.structures[i]));
+//        }
+//    }
+//}
+
+//[Serializable]
+//public class Vector3Data
+//{
+//    public float x, y, z;
+
+//    public Vector3Data(Vector3 input)
+//    {
+//        x = input.x;
+//        y = input.y;
+//        z = input.z;
+//    }
+//}
 
 
-[Serializable]
-public class TravelerData
-{
-    public SuperState superState;
-    public State state;
-    public Vector3Data position;
-//    public Vector3Data rotation;
-    public int destinationStructure;
+//[Serializable]
+//public class TravelerData
+//{
+//    public SuperState superState;
+//    public State state;
+//    public Vector3Data position;
+////    public Vector3Data rotation;
+//    public int destinationStructure;
 
-    // String으로 고쳐야 할 수 있음. 물어보기.
-    // 혹은 레이어 번호를 같이 받아야할 수 있음.
-    public int destinationTile;
-    public int curTile;
-    // 임시
-    public int curTileForMove;
+//    // String으로 고쳐야 할 수 있음. 물어보기.
+//    // 혹은 레이어 번호를 같이 받아야할 수 있음.
+//    public int destinationTile;
+//    public int curTile;
+//    // 임시
+//    public int curTileForMove;
 
-    // inactive List가 있으니 거기 넣을건지 이야기해봐야함.
-    public bool isActive;
+//    // inactive List가 있으니 거기 넣을건지 이야기해봐야함.
+//    public bool isActive;
 
-    // 로드용(참조용) 인덱스
-    public int index;
+//    // 로드용(참조용) 인덱스
+//    public int index;
 
-    // 어떤 프리팹을 로드하는지는 아직 안 적어놨음.
+//    // 어떤 프리팹을 로드하는지는 아직 안 적어놨음.
 
-    public TravelerData(GameObject input)
-    {
-        Traveler inputTraveler = input.GetComponent<Traveler>();
-        isActive = input.activeSelf;
-        position = new Vector3Data(input.transform.position);
-        //        rotation = new Vector3Data(input.transform.rotation.eulerAngles);
-        //destinationStructure = destinationStructure;
-        superState = inputTraveler.GetSuperState();
-        state = inputTraveler.curState;
-        destinationTile = inputTraveler.GetDestinationTileSave();
-        curTile = inputTraveler.GetCurTileSave();
-        curTileForMove = inputTraveler.GetCurTileForMove().GetChildNum();
-        index = inputTraveler.index;
-    }
-}
+//    public TravelerData(GameObject input)
+//    {
+//        Traveler inputTraveler = input.GetComponent<Traveler>();
+//        isActive = input.activeSelf;
+//        position = new Vector3Data(input.transform.position);
+//        //        rotation = new Vector3Data(input.transform.rotation.eulerAngles);
+//        //destinationStructure = destinationStructure;
+//        superState = inputTraveler.GetSuperState();
+//        state = inputTraveler.curState;
+//        destinationTile = inputTraveler.GetDestinationTileSave();
+//        curTile = inputTraveler.GetCurTileSave();
+//        curTileForMove = inputTraveler.GetCurTileForMove().GetChildNum();
+//        index = inputTraveler.index;
+//    }
+//}
 
-[Serializable]
-public class TileData
-{
-    public Vector3Data position;
-    public int x, y;
-    public string tileName; // 이름.
-    public int prefabInfo;
-    public int layerNum;
+//[Serializable]
+//public class TileData
+//{
+//    public Vector3Data position;
+//    public int x, y;
+//    public string tileName; // 이름.
+//    public int prefabInfo;
+//    public int layerNum;
 
-    public bool isPassable;
-    public bool isStructed;
-    public bool isNonTile;
-    public bool isBuildable;
-    public bool isHuntingArea;
+//    public bool isPassable;
+//    public bool isStructed;
+//    public bool isNonTile;
+//    public bool isBuildable;
+//    public bool isHuntingArea;
 
-    public int structureIndex;
+//    public int structureIndex;
 
-    public TileData(GameObject input)
-    {
-        Tile inputTile = input.GetComponent<Tile>();
-        position = new Vector3Data(input.transform.position);
-        x = inputTile.x;
-        y = inputTile.y;
-        tileName = input.name;
-        prefabInfo = inputTile.prefabInfo;
-        layerNum = inputTile.GetLayerNum();
+//    public TileData(GameObject input)
+//    {
+//        Tile inputTile = input.GetComponent<Tile>();
+//        position = new Vector3Data(input.transform.position);
+//        x = inputTile.x;
+//        y = inputTile.y;
+//        tileName = input.name;
+//        prefabInfo = inputTile.prefabInfo;
+//        layerNum = inputTile.GetLayerNum();
 
-        isPassable = inputTile.GetPassable();
-        isStructed = inputTile.GetStructed();
-        isNonTile = inputTile.GetNonTile();
-        isBuildable = inputTile.GetBuildable();
-        isHuntingArea = inputTile.GetHuntingArea();
+//        isPassable = inputTile.GetPassable();
+//        isStructed = inputTile.GetStructed();
+//        isNonTile = inputTile.GetNonTile();
+//        isBuildable = inputTile.GetBuildable();
+//        isHuntingArea = inputTile.GetHuntingArea();
 
-        Structure tileStructure = inputTile.GetStructure();
-        if (tileStructure != null)
-            structureIndex = tileStructure.structureIndex;
-        else
-            structureIndex = -1;
-    }
-}
+//        Structure tileStructure = inputTile.GetStructure();
+//        if (tileStructure != null)
+//            structureIndex = tileStructure.structureIndex;
+//        else
+//            structureIndex = -1;
+//    }
+//}
 
-[Serializable]
-public class StructureData
-{
-    public Vector3Data position;
-    // 마찬가지로 바꿔야할 수 있음.
-    public int pointTile;
-    public int[,] extent;
-    public List<int> entranceList;
-    public int entCount;
-    public int sitInCount;
+//[Serializable]
+//public class StructureData
+//{
+//    public Vector3Data position;
+//    // 마찬가지로 바꿔야할 수 있음.
+//    public int pointTile;
+//    public int[,] extent;
+//    public List<int> entranceList;
+//    public int entCount;
+//    public int sitInCount;
 
-    public Queue<int> curUsingQueue;
-    public Queue<float> elapsedTimeQueue;
-    public Queue<int> curWaitingQueue;
+//    public Queue<int> curUsingQueue;
+//    public Queue<float> elapsedTimeQueue;
+//    public Queue<int> curWaitingQueue;
 
-    public string structureCategory;
-    public int structureNumber;
-    public int structureIndex;
+//    public string structureCategory;
+//    public int structureNumber;
+//    public int structureIndex;
 
-    public StructureData(Structure input)
-    {
-        position = new Vector3Data(input.gameObject.transform.position);
-        entranceList = new List<int>();
-        curUsingQueue = new Queue<int>();
-        elapsedTimeQueue = new Queue<float>();
-        curWaitingQueue = new Queue<int>();
+//    public StructureData(Structure input)
+//    {
+//        position = new Vector3Data(input.gameObject.transform.position);
+//        entranceList = new List<int>();
+//        curUsingQueue = new Queue<int>();
+//        elapsedTimeQueue = new Queue<float>();
+//        curWaitingQueue = new Queue<int>();
 
-        pointTile = int.Parse(input.point.gameObject.name);
-        extent = input.extent;
-        for (int i = 0; i < input.entrance.Count; i++)
-        {
-            Debug.Log("i : " + i + " entrance count : " + input.entrance.Count);
+//        pointTile = int.Parse(input.point.gameObject.name);
+//        extent = input.extent;
+//        for (int i = 0; i < input.entrance.Count; i++)
+//        {
+//            Debug.Log("i : " + i + " entrance count : " + input.entrance.Count);
             
-            entranceList.Add(int.Parse(input.entrance[i].gameObject.name));
-        }
-        entCount = input.entCount;
-        sitInCount = input.sitInCount;
+//            entranceList.Add(int.Parse(input.entrance[i].gameObject.name));
+//        }
+//        entCount = input.entCount;
+//        sitInCount = input.sitInCount;
 
-        // Queue에 집어넣는 순서가 맞는지 모르겠음. 아니라면, Arr에 Reverse()해주면 됨.
-        Traveler[] tempArr = input.GetCurUsingQueueAsArray();
-        for (int i = 0; i < tempArr.Length; i++)
-            curUsingQueue.Enqueue(tempArr[i].index);
-        tempArr = input.GetCurWatingQueueAsArray();
-        for (int i = 0; i < tempArr.Length; i++)
-            curWaitingQueue.Enqueue(tempArr[i].index);
+//        // Queue에 집어넣는 순서가 맞는지 모르겠음. 아니라면, Arr에 Reverse()해주면 됨.
+//        Traveler[] tempArr = input.GetCurUsingQueueAsArray();
+//        for (int i = 0; i < tempArr.Length; i++)
+//            curUsingQueue.Enqueue(tempArr[i].index);
+//        tempArr = input.GetCurWatingQueueAsArray();
+//        for (int i = 0; i < tempArr.Length; i++)
+//            curWaitingQueue.Enqueue(tempArr[i].index);
 
-        float timeNow = Time.fixedTime;
-        float[] timeArr = input.GetEnteredTimeQueueAsArray();
-        for (int i = 0; i < timeArr.Length; i++)
-            elapsedTimeQueue.Enqueue(timeNow - timeArr[i]);     
+//        float timeNow = Time.fixedTime;
+//        float[] timeArr = input.GetEnteredTimeQueueAsArray();
+//        for (int i = 0; i < timeArr.Length; i++)
+//            elapsedTimeQueue.Enqueue(timeNow - timeArr[i]);     
 
-        structureCategory = input.structureCategory;
-        structureNumber = input.structureNumber;
-        structureIndex = input.structureIndex;
-    }
-}
+//        structureCategory = input.structureCategory;
+//        structureNumber = input.structureNumber;
+//        structureIndex = input.structureIndex;
+//    }
+//}

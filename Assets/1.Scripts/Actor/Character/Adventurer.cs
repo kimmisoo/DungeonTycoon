@@ -469,7 +469,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         curState = State.PathFinding;
         yield return null;
     }
-    
+
     protected void ResetCurHuntingArea()
     {
         if (curHuntingArea != null)
@@ -1159,7 +1159,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         skills[key].SetOwner(this);
         skills[key].InitSkill();
 
-        if(isActiveAndEnabled == true)
+        if (isActiveAndEnabled == true)
             skills[key].Activate();
     }
 
@@ -1215,73 +1215,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             item.Deactivate();
         }
     }
-    //public void AddSkill(Skill skill)
-    //{
-    //    skills.Add(skill);
-    //    skill.SetOwner(this);
-    //    skill.InitSkill();
-    //    //skill.Activate();
-    //}
-
-    //public void RemoveSkill(Skill skill)
-    //{
-    //    skills.Remove(skill);
-    //    skill.Deactivate();
-    //}
-
-    //public void AddSKill(string skillName)
-    //{
-    //    AddSkill(SkillFactory.CreateSkill(gameObject, skillName));
-    //}
-
-    //public void RemoveSkill(string skillName)
-    //{
-
-    //}
-
-    //protected void SkillBeforeAttack()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        item.BeforeAttack();
-    //    }
-    //}
-    //protected void SkillAfterAttack()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        item.AfterAttack();
-    //    }
-    //}
-    //protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
-    //{
-    //    foreach(Skill item in skills)
-    //    {
-    //        item.OnAttack(actualDamage, isCrit, isDodged);
-    //    }
-    //}
-    //protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
-    //{
-    //    foreach(Skill item in skills)
-    //    {
-    //        item.OnStruck(actualDamage, isDodged, attacker);
-    //    }
-    //}
-    //protected void SkillActivate()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        if(!item.isActive)
-    //            item.Activate();
-    //    }
-    //}
-    //protected void SkillDeactivate()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        item.Deactivate();
-    //    }
-    //}
 
     /// <summary>
     /// 일시적 효과의 잔여시간을 갱신해주고, 시간이 다 된 효과는 삭제.
@@ -1349,6 +1282,26 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             DisplayHeal(battleStat.Heal(battleStat.HealthMax));
         else
             battleStat.Heal(battleStat.HealthMax);
+    }
+
+    public virtual CombatantType GetCombatantType()
+    {
+        return CombatantType.Adventurer;
+    }
+    #endregion
+
+    #region SaveLoad
+    public int GetIndex()
+    {
+        return index;
+    }
+    public Dictionary<string, TemporaryEffect> GetTemporaryEffects()
+    {
+        return temporaryEffects;
+    }
+    public Dictionary<string, Skill> GetSkills()
+    {
+        return skills;
     }
     #endregion
 }

@@ -28,6 +28,10 @@ public class Item
     public int DemandedLevel { get; set; }
     public string Explanation { get; set; }
 
+    // 세이브용
+    public int itemNum;
+    public string itemCategory;
+
     public Item()
     {
         continuousMods = new List<StatModContinuous>();

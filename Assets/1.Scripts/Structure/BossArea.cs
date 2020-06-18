@@ -5,6 +5,12 @@ using UnityEngine;
 public class BossArea : HuntingArea
 {
     private GameObject bossMonster;
+
+    #region SaveLoad
+    public int bossAreaNum;
+    public int bossAreaIndex;
+    #endregion
+
     public int Bonus
     {
         get; private set;
@@ -14,11 +20,6 @@ public class BossArea : HuntingArea
     {
         get; private set;
     }
-
-    #region Save
-    public int bossAreaNum;
-    public int bossAreaIndex;
-    #endregion
 
     public void InitBossArea(GameObject bossMonsterIn, int challengeLevel, int bonus)
     {

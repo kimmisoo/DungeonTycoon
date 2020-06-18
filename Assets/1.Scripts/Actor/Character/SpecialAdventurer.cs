@@ -1018,4 +1018,27 @@ public class SpecialAdventurer : Adventurer
         Destroy(effect2, SkillConsts.EFFECT_DESTROY_DELAY);
     }
     #endregion
+
+    #region SaveLoad
+    public override CombatantType GetCombatantType()
+    {
+        return CombatantType.SpecialAdventurer;
+    }
+    public Item GetWeapon()
+    {
+        return weapon;
+    }
+    public Item GetArmor()
+    {
+        return armor;
+    }
+    public Item GetAccessory1()
+    {
+        return accessory1;
+    }
+    public Item GetAccessory2()
+    {
+        return accessory2;
+    }
+    #endregion
 }

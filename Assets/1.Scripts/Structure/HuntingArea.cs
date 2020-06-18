@@ -29,7 +29,7 @@ public class HuntingArea : CombatArea
     private GameObject monsterSample2;
     
 
-    #region Save
+    #region SaveLoad
     public int huntingAreaNum;
     public int huntingAreaIndex;
     #endregion
@@ -194,6 +194,16 @@ public class HuntingArea : CombatArea
     public void OpenToPublic()
     {
 
+    }
+
+    public int GetKillCount()
+    {
+        return killCount;
+    }
+
+    public void SetKillCount(int killCountIn)
+    {
+        killCount = killCountIn;
     }
     #endregion
 }

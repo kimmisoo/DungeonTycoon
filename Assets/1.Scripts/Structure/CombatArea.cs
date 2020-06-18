@@ -31,6 +31,16 @@ public class CombatArea : Place
         return monstersEnabled;
     }
 
+    public Dictionary<int, GameObject> GetMonstersDisabled()
+    {
+        return monstersDisabled;
+    }
+
+    public List<GameObject> GetAdventurersInside()
+    {
+        return adventurersInside;
+    }
+
     // 빈 칸 판단을 위한 OccupiedTerritoy 최신화.
     protected void RefreshOccupiedTerritory()
     {

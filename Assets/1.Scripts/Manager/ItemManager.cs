@@ -106,6 +106,10 @@ public class ItemManager : MonoBehaviour
         tempItem.OptimalLevelLower = itemsJson[tempItemCategory][tempItemIndex]["OptimalLevelLower"].AsInt;
         tempItem.OptimalLevelUpper = itemsJson[tempItemCategory][tempItemIndex]["OptimalLevelUpper"].AsInt;
 
+        // 세이브용
+        tempItem.itemCategory = tempItemCategory;
+        tempItem.itemNum = tempItemIndex;
+
         return tempItem;
     }
 }
