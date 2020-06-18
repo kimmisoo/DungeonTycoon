@@ -229,13 +229,28 @@ public class Traveler : Actor {
     {
 		
 		yield return null;
+
 		if(structureListByPref == null) // List가 비어있을때 . // 건물 이용 후 List 비워줘야함.
 		{
-			structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
-			if (structureListByPref == null)
+			DesireType[] sortedTypeArray = stat.GetSortedDesireArray();
+			int index = 0;
+			while (index < sortedTypeArray.Length ||
+				structureListByPref == null ||
+				structureListByPref.Length > 0) // 모든 Type별로 건물 있는지 조사
+			{
+				yield return null;
+				structureListByPref = StructureManager.Instance.FindStructureByDesire(sortedTypeArray[index++], this);
+			}
+			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
+			if (structureListByPref == null) // 건물이 하나도 없다면
+			{
 				Debug.Log("--------------------------------------------------StructureList is Null");
+				curState = State.SolvingDesire_Wandering;
+				yield break;
+			}
 		}
-		if(structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때...
+
+		if(structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
 		{
 			Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
 			pathFindCount = 0;

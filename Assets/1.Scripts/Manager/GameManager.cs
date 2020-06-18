@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     #region 세이브!
     public int playerGold = 0;
     public int playerPopularity = 0;
+	private int stageIndex = 0;
+	private int stageMax = 0;
     #endregion
     #endregion
 
@@ -178,7 +180,7 @@ public class GameManager : MonoBehaviour
 
         // Scene 정보 세팅
         SetSceneData(sceneData);
-
+		stageMax = GetMap().GetLayerCount();
         travelersEnabled = new List<GameObject>();
         adventurersEnabled = new List<GameObject>();
         specialAdventurers = new List<GameObject>();
@@ -1211,7 +1213,23 @@ public class GameManager : MonoBehaviour
 		//인덱스 변수 하나 추가하고
 		//보스 잡히면 진행하는걸로 ----
 		//호출은 아마 HuntingArea에서 할듯?
-		
+		if (stageIndex >= stageMax)
+			return;
+		stageIndex += 1;
+		TileLayer layer = GetTileLayer(0);
+		for(int i = 0; i< layer.GetLayerHeight(); i++)
+		{
+			for(int j = 0; j<layer.GetLayerWidth(); j++)
+			{
+				Tile tile = layer.GetTileAsComponent(j, i);
+				if (!tile.GetNonTile())
+				{
+					if (tile.GetLayerNum() == stageIndex)
+						tile.SetIsActive(true);
+				}
+				
+			}
+		}
 	}
 
     public void OnHuntingAreaConquered()

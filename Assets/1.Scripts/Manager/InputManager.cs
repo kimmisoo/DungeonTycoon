@@ -201,11 +201,13 @@ public class InputManager : MonoBehaviour {
                         if (selectedObject == null)
                         {
 							UnselectTile();
+
                         }
 						else if(selectedObject.tag == "Tile" && selectedObject.GetComponent<Tile>().GetIsActive() == true)
                         {
 							SelectTile();
                         }
+						//캐릭터 선택 추가해야함...
                         else
                         {
 							UnselectTile();

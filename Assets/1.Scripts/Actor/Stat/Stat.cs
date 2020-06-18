@@ -99,11 +99,16 @@ public class Stat
 				maxVal = kvp.Value.desireValue;
 				max = kvp.Key;
 			}
-		}
-		
+		}		
 		return max;
 	}
-	
+	public DesireType[] GetSortedDesireArray()
+	{
+		int x = 0;
+		DesireType[] sortedList;
+		sortedList = (from pair in desireDict orderby pair.Value.desireValue descending select pair.Key).ToArray();
+		return sortedList;
+	}
 	public DesireBase GetSpecificDesire(DesireType desireType)
 	{
 		return desireDict[desireType];

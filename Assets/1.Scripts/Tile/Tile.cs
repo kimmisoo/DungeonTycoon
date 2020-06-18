@@ -45,18 +45,17 @@ public class Tile : MonoBehaviour
 
     TileLayer layer;
 	public TileForMove[] childs = new TileForMove[4];// up, right, left, down
-
+	Sprite unknown;
+	Sprite origin;
     public int prefabInfo;
 
-	public void Start()
+	public void Awake()
 	{
-        // 초기화
 		tile = this;
 		position = transform.position;
 		sr = GetComponent<SpriteRenderer>();
-        
-
-    }
+		origin = sr.sprite;
+	}
 
     // A*용 메서드
 	public void AddedOpenList()
@@ -137,9 +136,23 @@ public class Tile : MonoBehaviour
 	{
 		return isNonTile == false && isActive == true ? isRoad : false;
 	}
+	public void SetUnknownSprite(Sprite _unknown)
+	{
+		unknown = _unknown;
+	}
 	public void SetIsActive(bool _isActive)
 	{
 		isActive = _isActive;
+		if(isActive == false)
+		{
+			//sr.sprite = unknown;
+			sr.color = new Color(0.3f, 0.3f, 0.3f);
+		}
+		else
+		{
+			//sr.sprite = origin;
+			sr.color = new Color(1.0f, 1.0f, 1.0f);
+		}
 	}
 	public bool GetIsActive()
 	{
