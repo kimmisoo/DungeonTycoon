@@ -11,7 +11,7 @@ using System.Linq;
 
 public class Monster : Actor, ICombatant//:Actor, IDamagable {
 {
-    public State curState
+    public State curState //Save
     {
         get
         {
@@ -26,6 +26,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     }
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
+    // 대기시간에 움직이는지. 보스면 false
+    public bool canWander = true;
     protected Coroutine curCoroutine;
     protected Coroutine curSubCoroutine;
 
@@ -77,7 +79,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     #region 수정!
     // 몬스터 초기화
-    public void InitMonster(int monsterNum, BattleStat battleStat, RewardStat rewardStat)
+    public void InitMonster(int monsterNum, BattleStat battleStat, RewardStat rewardStat, bool canWanderIn = true)
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
@@ -86,6 +88,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         this.monsterNum = monsterNum;
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
+        this.canWander = canWanderIn;
         //stat 초기화
         //pathfinder 초기화 // delegate 그대로
         SetDefaultEffects();
@@ -97,6 +100,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public void InitMonster(Monster sample)
     {
         monsterNum = sample.monsterNum;
+        canWander = sample.canWander;
 
         battleStat = new BattleStat(sample.battleStat);
         rewardStat = new RewardStat(sample.rewardStat);
@@ -148,7 +152,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         //골드, 능력치 초기화...  // current , origin 따로둬야할까?
     }
 
-#region StateMachine
+    #region StateMachine
     protected void EnterState(State nextState)
     {
         switch (nextState)
@@ -254,9 +258,9 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 break;
         }
     }
-#endregion
+    #endregion
 
-#region moving
+    #region moving
     protected IEnumerator Wandering()
     {
         yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
@@ -264,17 +268,24 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 목적지(빈 타일) 찾기.
         //destinationTileForMove = habitat.FindBlanks(1)[0];
 
-        // WARNING 이거 부하 있을 수 있음.
-        destinationTileForMove = habitat.FindNearestBlank(curTileForMove);
-        
-        if(destinationTileForMove == null)
+        if (canWander)
         {
-            curState = State.Wandering;
-            yield break;
-        }
+            // WARNING 이거 부하 있을 수 있음.
+            destinationTileForMove = habitat.FindNearestBlank(curTileForMove);
 
-        destinationTile = destinationTileForMove.GetParent();
-        curState = State.PathFinding;
+            if (destinationTileForMove == null)
+            {
+                curState = State.Wandering;
+                yield break;
+            }
+
+            destinationTile = destinationTileForMove.GetParent();
+            curState = State.PathFinding;
+        }
+        else
+        {
+            curState = State.Idle;
+        }
     }
 
     protected IEnumerator PathFinding()
@@ -337,10 +348,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         return tile.GetPassableMonster();
     }
 
-    
-#endregion
 
-#region Battle
+    #endregion
+
+    #region Battle
     protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         Direction dir = Direction.DownLeft;
@@ -486,7 +497,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         battleStat.CalDamage(out calculatedDamage, out isCrit);
 
         float actualDamage;
-        if(enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
+        if (enemy.TakeDamage(this, calculatedDamage, battleStat.PenetrationFixed, battleStat.PenetrationMult, isCrit, out actualDamage))
         {
             attackEffect.transform.position = new Vector3(enemy.GetPosition().x * 0.9f + transform.position.x * 0.1f, enemy.GetPosition().y * 0.9f + transform.position.y * 0.1f, enemy.GetPosition().z * 0.5f + transform.position.z * 0.5f);
             attackEffect.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 180f));
@@ -589,7 +600,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
-        if(enemy != null)
+        if (enemy != null)
             enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
     }
 
@@ -626,7 +637,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         System.Delegate[] invocations = healthBelowZeroEvent.GetInvocationList();
 
         bool isNew = true;
-        for(int i = 0; i < invocations.Length; i++)
+        for (int i = 0; i < invocations.Length; i++)
         {
             if (invocations[i].Target == newEvent.Target)
                 isNew = false;
@@ -664,7 +675,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         SuperState enemySuperState = enemy.GetSuperState();
         // 적이 사냥터 내에 있으며 살아 있을 때.
         if (enemySuperState == SuperState.Battle || enemySuperState == SuperState.SearchingMonster
-            || enemySuperState == SuperState.AfterBattle || enemySuperState == SuperState.ExitingHuntingArea)
+            || enemySuperState == SuperState.AfterBattle || enemySuperState == SuperState.ExitingHuntingArea
+            || enemySuperState == SuperState.BossBattle)
             return true;
         else
             return false;
@@ -697,7 +709,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             HealthBelowZeroNotify(this, attacker);
             curState = State.Dead;
         }
-        else if (superState != SuperState.Battle)
+        else if (IsInBattle() == false)
         {
             StopCurActivities();
             animator.SetTrigger("DamageFlg");
@@ -707,6 +719,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         }
 
         return !isDodged;
+    }
+
+    public bool IsInBattle()
+    {
+        return superState == SuperState.Battle;
     }
 
     private void DisplayDamage(float damage)
@@ -835,16 +852,17 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             healthBelowZeroEvent -= healthBelowZeroEventHandler;
     }
 
+    #region Skill
     public IEnumerator RefreshTemporaryEffects()
     {
         while (true)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME);
 
-            foreach(string key in temporaryEffects.Keys.ToList())
+            foreach (string key in temporaryEffects.Keys.ToList())
             {
-                if(temporaryEffects[key].Refresh())
-                      RemoveTemporaryEffect(temporaryEffects[key]);
+                if (temporaryEffects[key].Refresh())
+                    RemoveTemporaryEffect(temporaryEffects[key]);
             }
 
             //int idx = 0;
@@ -956,30 +974,20 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             item.Deactivate();
         }
     }
+    #endregion
 
-    //public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
-    //{
-    //    if (temporaryEffects.Contains(toBeRemoved))
-    //    {
-    //        toBeRemoved.ResetTimer(); // 재활용할 수 있으니 리셋.
-    //        toBeRemoved.ResetStack(); // 스택도 여기서 리셋
+    public void HealFullHealth(bool displayEffect)
+    {
+        if (displayEffect)
+            DisplayHeal(battleStat.Heal(battleStat.HealthMax));
+        else
+            battleStat.Heal(battleStat.HealthMax);
+    }
 
-    //        toBeRemoved.RemoveEffect();
-    //        temporaryEffects.Remove(toBeRemoved);
-    //    }
-    //}
-
-    //public void AddTemporaryEffect(TemporaryEffect toBeAdded)
-    //{
-    //    if (!temporaryEffects.Contains(toBeAdded))
-    //    {
-    //        temporaryEffects.Add(toBeAdded);
-    //        toBeAdded.SetSubject(this);
-    //        toBeAdded.ApplyEffect();
-    //    }
-    //    else
-    //        toBeAdded.StackUp();
-    //}
+    public virtual CombatantType GetCombatantType()
+    {
+        return CombatantType.Monster;
+    }
     #endregion
 
     #region UI
@@ -993,6 +1001,21 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         hpBar.SetActive(true);
         damageText.transform.SetParent(canvas.transform);
+    }
+    #endregion
+
+    #region SaveLoad
+    public int GetIndex()
+    {
+        return index;
+    }
+    public Dictionary<string, TemporaryEffect> GetTemporaryEffects()
+    {
+        return temporaryEffects;
+    }
+    public Dictionary<string, Skill> GetSkills()
+    {
+        return skills;
     }
     #endregion
 }

@@ -92,10 +92,14 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
 
-    public void InstantiateFromSave()
+    /// <summary>
+    /// 세이브 파일에서 정보 읽어서 로드
+    /// </summary>
+    /// <returns>로드 되었는지 아닌지</returns>
+    public bool InstantiateFromSave()
     {
         if (savedata == null)
-            return;
+            return false;
 
         // 세이브에서 받아서 결과값 대입
         if (savedata != null)
@@ -112,11 +116,14 @@ public class SaveLoadManager : MonoBehaviour
             Debug.Log("불러오기 성공");
 
             savedata = null;
+
+            return true;
         }
         // 실패 메시지 출력
         else
         {
             Debug.Log("불러오기 실패");
+            return false;
         }
     }
 

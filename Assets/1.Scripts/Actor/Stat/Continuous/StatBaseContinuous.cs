@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class StatBaseContinuous
 {
 	protected List<StatModContinuous> modList = new List<StatModContinuous>();

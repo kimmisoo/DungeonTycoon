@@ -1,0 +1,88 @@
+{
+	"stage1": [{
+		"name": "FinalBossArea",
+		"bossNum": 0,
+		"challengeLevel": 25,
+		"sitewidth": 4,
+		"siteheight": 6,
+		"site": [1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1,
+			0, 2, 2, 0,
+			0, 2, 2, 0
+		]
+	}],
+	"stage2": [{
+			"name": "MidBossArea",
+			"bossNum": 3,
+			"challengeLevel": 25,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		},
+		{
+			"name": "FinalBossArea",
+			"bossNum": 1,
+			"challengeLevel": 45,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		}
+	],
+	"stage3": [{
+			"name": "GateKeeperArea",
+			"bossNum": 0,
+			"challengeLevel": 25,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		},
+		{
+			"name": "MidBossArea",
+			"bossNum": 4,
+			"challengeLevel": 45,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		},
+		{
+			"name": "FinalBossArea",
+			"bossNum": 5,
+			"challengeLevel": 65,
+			"sitewidth": 4,
+			"siteheight": 6,
+			"site": [1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				1, 1, 1, 1,
+				0, 2, 2, 0,
+				0, 2, 2, 0
+			]
+		}
+	]
+}

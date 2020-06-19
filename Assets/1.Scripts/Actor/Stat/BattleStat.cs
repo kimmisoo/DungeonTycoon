@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class BattleStat
 {
 	Dictionary<StatType, StatBaseContinuous> battleStatContinuous = new Dictionary<StatType, StatBaseContinuous>();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class StatModContinuous
 {
     public StatModContinuous(StatType statType, ModType modType, float value)

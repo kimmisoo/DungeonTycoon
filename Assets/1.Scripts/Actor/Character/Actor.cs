@@ -11,7 +11,7 @@ public enum SuperState
     None, Idle, Wandering, Battle, AfterBattle, Dead, // 몬스터
     ExitingDungeon, SolvingDesire, SolvingDesire_Wandering, // 트래블러
     SearchingHuntingArea, EnteringHuntingArea, SearchingMonster, SearchingMonster_Wandering, PassedOut, ExitingHuntingArea, // 어드벤처러
-    SearchingBossArea, WaitingOtherSpecialAdvs, Skirmish, SkirmishDefeated, SkirmishWon, EnteringBossArea, BossBattle, BailOut // 스페셜어드벤처러
+    TeleportToBossArea, WaitingOtherSpecialAdvs, Skirmish, SkirmishDefeated, SkirmishWon, EnteringBossArea, BossBattle, BailOut, BossBattleWon // 스페셜어드벤처러
 
 }
 
@@ -20,11 +20,11 @@ public enum State
     // SuperState의 입구가 되는 State
     None, Idle, AfterBattle, Dead,
     Wandering, SolvingDesire_Wandering, InitiatingBattle, SearchingStructure, SearchingExit, SearchingHuntingArea, EnteringHuntingArea, SearchingMonster, ExitingHuntingArea, PassedOut, SearchingMonster_Wandering,
-    SearchingBossArea, WaitingOtherSpecialAdvs, StartingSkirmish, SkirmishDefeated, SkirmishWon, EnteringBossArea, StartingBossBattle, BailOut,
+    TeleportToBossArea, WaitingOtherSpecialAdvs, StartingSkirmish, SkirmishDefeated, SkirmishWon, EnteringBossArea, StartingBossBattle, BailOut, BossBattleWon,
     // 그 외. 공용 State 포함.
     PathFinding, MovingToDestination, WaitingStructure, UsingStructure, Battle, Exit,
     ApproachingToEnemy, SearchRescueTeam, Rescued, SpontaneousRecovery,
-    AfterSkirmish
+    MatchWon
 }
 /*
  * Animator Tirggers
@@ -43,7 +43,7 @@ public enum State
 public abstract class Actor : MonoBehaviour
 {
     
-    protected SuperState superState;
+    public SuperState superState;
     public State state;
     /*public string actorName { get; set; }
 	public string explanation { get; set; }

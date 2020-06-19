@@ -29,7 +29,7 @@ public class HuntingArea : CombatArea
     private GameObject monsterSample2;
     
 
-    #region Save
+    #region SaveLoad
     public int huntingAreaNum;
     public int huntingAreaIndex;
     #endregion
@@ -131,7 +131,7 @@ public class HuntingArea : CombatArea
             if (killCount >= conquerCondition)
                 InvokeAreaConqueredEvent();
 
-            Debug.Log("killCount : " + killCount);
+            //Debug.Log("killCount : " + killCount);
         }
     }
 
@@ -188,5 +188,22 @@ public class HuntingArea : CombatArea
         get; private set;
     }
 
+    /// <summary>
+    /// 일선 모험가 말고도 일반 모험가와 관광객에게 개방
+    /// </summary>
+    public void OpenToPublic()
+    {
+
+    }
+
+    public int GetKillCount()
+    {
+        return killCount;
+    }
+
+    public void SetKillCount(int killCountIn)
+    {
+        killCount = killCountIn;
+    }
     #endregion
 }

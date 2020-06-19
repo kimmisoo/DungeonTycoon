@@ -385,11 +385,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //}
 
     // 수정요망
-    protected IEnumerator SearchingHuntingArea()
+    protected virtual IEnumerator SearchingHuntingArea()
     {
         yield return null;
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
-        destinationPlace = CombatAreaManager.Instance.FindHuntingArea(battleStat.Level);
+        destinationPlace = CombatAreaManager.Instance.FindHuntingAreaAdv(battleStat.Level);
 #if DEBUG_ADV
         if (destinationPlace == null)
             Debug.Log("dest is null");
@@ -441,9 +441,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         else
         {
             monsterSearchCnt = 0;
-            SetDestinationTowardEnemy();
+            //SetDestinationTowardEnemy();
 
-            curState = State.PathFinding;
+            curState = State.InitiatingBattle;
         }
     }
 
@@ -462,20 +462,28 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator ExitingHuntingArea()
     {
         destinationTile = curHuntingArea.GetEntrance();
-        curHuntingArea.ExitAdventurer(this.gameObject);
 
-        curHuntingArea = null;
-        ResetBattleEventHandlers();
+        ResetCurHuntingArea();
+        ResetBattleParams();
 
         curState = State.PathFinding;
         yield return null;
+    }
+
+    protected void ResetCurHuntingArea()
+    {
+        if (curHuntingArea != null)
+        {
+            curHuntingArea.ExitAdventurer(this.gameObject);
+            curHuntingArea = null;
+        }
     }
 
     protected virtual void PassedOut()
     {
         StopCurActivities();
         ClearTemporaryEffects();
-        ResetBattleEventHandlers();
+        ResetBattleParams();
 
         //Structure[] tempArr = StructureManager.Instance.FindRescue(this);
 
@@ -514,13 +522,22 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         curState = State.ExitingHuntingArea;
     }
 
-    protected void ResetBattleEventHandlers()
+    protected void ResetBattleParams()
     {
         // 이벤트 핸들러 초기화
         healthBelowZeroEvent = null;
         //moveStartedEvent = null;
         if (enemy != null)
             enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
+        enemy = null;
+
+    }
+
+    protected void ResetDestinations()
+    {
+        destinationTile = null;
+        destinationTileForMove = null;
+        destinationPlace = null;
     }
 
     #endregion
@@ -536,12 +553,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
 
     #region Battle
-    protected IEnumerator Charge(List<TileForMove> tileForMoveWay)
+    protected virtual IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
-        //enemy.AddMoveStartedEventHandler(OnEnemyMoveStarted);
-
         Direction dir = Direction.DownLeft;
-        //FlipX true == Left, false == Right
+
         Vector3 dirVector;
         float distance, sum = 0.0f;
         int walkCnt = 0;
@@ -559,26 +574,16 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
         if (CheckInRange())
         {
-            curState = State.InitiatingBattle;
+            curState = State.Battle;
             yield break;
         }
 
         // PathFinder에서 받은 경로대로 이동
         for (int i = 0; i < tileForMoveWay.Count - 1; i++)
         {
-            //tileForMoveWay[i].SetRecentActor(this);
-            //SetCurTile(tileForMoveWay[i].GetParent());
-            //SetCurTileForMove(tileForMoveWay[i]);
-
-
-
-            // curTileForMove.GetDirectionFromOtherTileForMove(enemy.GetCurTileForMove());
             // 방향에 따른 애니메이션 설정.
             SetAnimDirection(tileForMoveWay[i].GetDirectionFromOtherTileForMove(tileForMoveWay[i + 1]));
 
-            //SetCurTile(tileForMoveWay[tileForMoveWay.Count - 1].GetParent());
-            //SetCurTileForMove(tileForMoveWay[tileForMoveWay.Count - 1]);
-            //transform.position = tileForMoveWay[i].GetPosition();
             // 이동
             dirVector = tileForMoveWay[i + 1].GetPosition() - tileForMoveWay[i].GetPosition();
             distance = Vector3.Distance(tileForMoveWay[i].GetPosition(), tileForMoveWay[i + 1].GetPosition());
@@ -611,7 +616,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             // 레인지 검사. 적이 공격 범위 안으로 들어왔을 때.
             if (CheckInRange())
             {
-                curState = State.InitiatingBattle;
+                curState = State.Battle;
                 yield break;
             }
 
@@ -624,25 +629,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         SetDestinationTowardEnemy();
         curState = State.PathFinding;
-
-        //// 모험가가 이미 누웠다면.
-        //if (!ValidatingEnemy())
-        //{
-        //    curState = State.AfterBattle;
-        //    yield break;
-        //}
-
-        //// 레인지 검사
-        //if (CheckInRange())
-        //{
-        //    curState = State.Battle;
-        //    yield break;
-        //}
-        //else // 목적지 도착했지만 공격 범위 안에 안 들어올 때. 이게 틀림. 새 목적지를 설정해야하는데 하지않고 그냥 PathFinding
-        //{
-        //    SetDestinationTowardEnemy();
-        //    curState = State.PathFinding;
-        //}
     }
 
     protected IEnumerator ApproachingToEnemy()
@@ -666,7 +652,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             curState = State.PathFinding;
     }
 
-    protected IEnumerator Battle()
+    protected virtual IEnumerator Battle()
     {
         //enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
 
@@ -680,6 +666,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 yield break;
             }
         }
+
         curState = State.AfterBattle;
     }
 
@@ -788,13 +775,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
 
     // 수정요망
-    protected IEnumerator AfterBattle()
+    protected virtual IEnumerator AfterBattle()
     {
         yield return new WaitForSeconds(2.0f);
 
         // 포션 음용 넣어야한다면 여기에.
-        if (battleStat.Health < battleStat.HealthMax / 4) //체력이 25%미만이면 
-            curState = State.ExitingHuntingArea;
+        if (battleStat.Health < battleStat.HealthMax / 4 || //체력이 25%미만이거나
+            (Level > curHuntingArea.LevelMax)) // 사냥터의 LevelMax를 넘겼다면 
+            curState = State.ExitingHuntingArea; // 사냥터에서 퇴장
         else
             curState = State.SearchingMonster;
     }
@@ -866,17 +854,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     #endregion
 
     #region ICombatant
-    public bool ValidatingEnemy(ICombatant enemy)
+    public virtual bool ValidatingEnemy(ICombatant enemy)
     {
         SuperState enemySuperState = enemy.GetSuperState();
         // 적이 살아 있을 때.
-        if (enemySuperState != SuperState.Dead)
+        if (enemySuperState != SuperState.Dead && enemySuperState != SuperState.SkirmishDefeated && enemySuperState != SuperState.PassedOut)
             return true;
         else
             return false;
     }
 
-    public bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit, out float actualDamage) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
+    public virtual bool TakeDamage(ICombatant attacker, float damage, float penFixed, float penMult, bool isCrit, out float actualDamage) // 데미지 받기. 이펙트 처리를 위해 isCrit도 받음.
     {
         bool isDodged;
 
@@ -899,9 +887,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         {
             HealthBelowZeroNotify(this, attacker);
             StopCurActivities();
+
             curState = State.PassedOut;
         }
-        else if (superState != SuperState.Battle)
+        else if (IsInBattle() == false)
         {
             StopCurActivities();
             animator.SetTrigger("DamageFlg");
@@ -935,6 +924,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #endif
         }
         // curState = State.AfterBattle;
+    }
+
+    public virtual bool IsInBattle()
+    {
+        return (superState == SuperState.Battle) || (superState == SuperState.Skirmish) || (superState == SuperState.BossBattle);
     }
 
     private void LevelUp()
@@ -992,7 +986,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         debuffEffect.GetComponent<AttackEffect>().StartEffect();
     }
 
-    private void DisplayDodge()
+    protected void DisplayDodge()
     {
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
@@ -1165,7 +1159,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         skills[key].SetOwner(this);
         skills[key].InitSkill();
 
-        if(isActiveAndEnabled == true)
+        if (isActiveAndEnabled == true)
             skills[key].Activate();
     }
 
@@ -1221,74 +1215,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             item.Deactivate();
         }
     }
-    //public void AddSkill(Skill skill)
-    //{
-    //    skills.Add(skill);
-    //    skill.SetOwner(this);
-    //    skill.InitSkill();
-    //    //skill.Activate();
-    //}
 
-    //public void RemoveSkill(Skill skill)
-    //{
-    //    skills.Remove(skill);
-    //    skill.Deactivate();
-    //}
-
-    //public void AddSKill(string skillName)
-    //{
-    //    AddSkill(SkillFactory.CreateSkill(gameObject, skillName));
-    //}
-
-    //public void RemoveSkill(string skillName)
-    //{
-
-    //}
-
-    //protected void SkillBeforeAttack()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        item.BeforeAttack();
-    //    }
-    //}
-    //protected void SkillAfterAttack()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        item.AfterAttack();
-    //    }
-    //}
-    //protected void SkillOnAttack(float actualDamage, bool isCrit, bool isDodged)
-    //{
-    //    foreach(Skill item in skills)
-    //    {
-    //        item.OnAttack(actualDamage, isCrit, isDodged);
-    //    }
-    //}
-    //protected void SkillOnStruck(float actualDamage, bool isDodged, ICombatant attacker)
-    //{
-    //    foreach(Skill item in skills)
-    //    {
-    //        item.OnStruck(actualDamage, isDodged, attacker);
-    //    }
-    //}
-    //protected void SkillActivate()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        if(!item.isActive)
-    //            item.Activate();
-    //    }
-    //}
-    //protected void SkillDeactivate()
-    //{
-    //    foreach (Skill item in skills)
-    //    {
-    //        item.Deactivate();
-    //    }
-    //}
-
+    /// <summary>
+    /// 일시적 효과의 잔여시간을 갱신해주고, 시간이 다 된 효과는 삭제.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator RefreshTemporaryEffects()
     {
         while (true)
@@ -1303,6 +1234,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
     }
 
+    /// <summary>
+    /// 일시적 효과 컬렉션(dict) 초기화
+    /// </summary>
     public void ClearTemporaryEffects()
     {
         foreach (string key in temporaryEffects.Keys.ToList())
@@ -1310,6 +1244,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         temporaryEffects.Clear();
     }
 
+    /// <summary>
+    /// 일시적 효과 삭제
+    /// </summary>
+    /// <param name="toBeRemoved"></param>
     public void RemoveTemporaryEffect(TemporaryEffect toBeRemoved)
     {
         if (temporaryEffects.ContainsKey(toBeRemoved.name))
@@ -1322,6 +1260,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
     }
 
+    /// <summary>
+    /// 일시적 효과 추가
+    /// </summary>
+    /// <param name="toBeAdded"></param>
     public void AddTemporaryEffect(TemporaryEffect toBeAdded)
     {
         if (!temporaryEffects.ContainsKey(toBeAdded.name))
@@ -1332,6 +1274,34 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
         else
             toBeAdded.StackUp();
+    }
+
+    public void HealFullHealth(bool displayEffect)
+    {
+        if (displayEffect)
+            DisplayHeal(battleStat.Heal(battleStat.HealthMax));
+        else
+            battleStat.Heal(battleStat.HealthMax);
+    }
+
+    public virtual CombatantType GetCombatantType()
+    {
+        return CombatantType.Adventurer;
+    }
+    #endregion
+
+    #region SaveLoad
+    public int GetIndex()
+    {
+        return index;
+    }
+    public Dictionary<string, TemporaryEffect> GetTemporaryEffects()
+    {
+        return temporaryEffects;
+    }
+    public Dictionary<string, Skill> GetSkills()
+    {
+        return skills;
     }
     #endregion
 }

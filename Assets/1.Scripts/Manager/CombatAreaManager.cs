@@ -17,7 +17,7 @@ public class CombatAreaManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                Debug.Log("HuntingAreaManager is null");
+                Debug.Log("CombatAreaManager is null");
                 return null;
             }
             else
@@ -32,8 +32,9 @@ public class CombatAreaManager : MonoBehaviour
     public GameObject rootCombatAreaObject;
 
     // 사냥터 몇번까지 활성화됐는지.
-    public int ActiveIndex { get; private set; }
-    public int BossIndex { get; private set; }
+    public int PublicHuntingAreaIndex { get; private set; }
+    public int ConqueringHuntingAreaIndex { get { return PublicHuntingAreaIndex + 1; } }
+    public int BossAreaIndex { get; private set; }
 
 
     // 맵 내에서 maxLevel이 가장 높은 사냥터의 maxLevel
@@ -41,7 +42,7 @@ public class CombatAreaManager : MonoBehaviour
     {
         get
         {
-            return huntingAreas[ActiveIndex].LevelMax;
+            return huntingAreas[PublicHuntingAreaIndex].LevelMax;
         }
     }
 
@@ -66,22 +67,17 @@ public class CombatAreaManager : MonoBehaviour
     public List<BossArea> bossAreas;
 	#endregion
 
-	private void Awake()
-	{
-		_instance = this;
-	}
-
-	// Use this for initialization
-	void Start()
+    void Awake()
     {
-        
+        _instance = this;
         LoadHuntingAreaData();
         LoadBossAreaData();
         LoadMonsterData();
         huntingAreas = new List<HuntingArea>();
         bossAreas = new List<BossArea>();
-        ActiveIndex = -1;
-        BossIndex = 0;
+
+        PublicHuntingAreaIndex = -1;
+        BossAreaIndex = 0;
     }
 
     void LoadHuntingAreaData()
@@ -116,13 +112,18 @@ public class CombatAreaManager : MonoBehaviour
         return huntingAreas;
     }
 
-    // 사냥터 찾기. 캐릭터 레벨에 맞는 사냥터를 찾아줌.
-    public HuntingArea FindHuntingArea(int level)
+    /// <summary>
+    /// 모험가에게 레벨에 적합한 사냥터를 반환해주는 메서드
+    /// </summary>
+    /// <param name="level">모험가의 레벨</param>
+    /// <returns></returns>
+    public HuntingArea FindHuntingAreaAdv(int level)
     {
         HuntingArea searchResult = null;
 
+        Debug.Log("HA IDX : " + PublicHuntingAreaIndex);
         // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
-        for (int i = 0; i < huntingAreas.Count; i++)
+        for (int i = 0; i <= PublicHuntingAreaIndex; i++)
         {
             if (level <= huntingAreas[i].LevelMax)
             {
@@ -134,6 +135,40 @@ public class CombatAreaManager : MonoBehaviour
         }
 
         return searchResult;
+    }
+
+    /// <summary>
+    /// 일선 모험가에게 레벨에 적합한 사냥터를 반환해주는 메서드
+    /// </summary>
+    /// <param name="level">일선 모험가의 레벨</param>
+    /// <returns></returns>
+    public HuntingArea FindHuntingAreaSpAdv(int level)
+    {
+        HuntingArea searchResult = null;
+
+        Debug.Log("HA IDX : " + ConqueringHuntingAreaIndex);
+        // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
+        for (int i = 0; i <= ConqueringHuntingAreaIndex; i++)
+        {
+            if (level <= huntingAreas[i].LevelMax)
+            {
+                if (searchResult == null)
+                    searchResult = huntingAreas[i];
+                else if (searchResult.LevelMax >= huntingAreas[i].LevelMax)
+                    searchResult = huntingAreas[i];
+            }
+        }
+
+        // 일선 모험가는 나가면 안되므로 가장 높은 곳으로 그냥 찍어줌.
+        if (searchResult == null)
+            searchResult = huntingAreas[ConqueringHuntingAreaIndex];
+
+        return searchResult;
+    }
+
+    public BossArea FindBossArea()
+    {
+        return bossAreas[BossAreaIndex];
     }
 
     public void SetHuntingAreaPoint(Tile t)
@@ -266,7 +301,7 @@ public class CombatAreaManager : MonoBehaviour
                     thatTile.SetHuntingArea(true);
 
                     //디버깅용임시
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(180, 110, 0);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 40);
                     //
 #if DEBUG_CREATE_HA
                     Debug.Log(thatTile);
@@ -299,10 +334,6 @@ public class CombatAreaManager : MonoBehaviour
 
         constructing = null;
 #endregion
-
-#if DEBUG_ADV
-        ActivateNextHuntingArea();
-#endif
     }
 
     public void ConstructBossArea(int areaNum, int areaIndex, GameObject pointTile)
@@ -323,13 +354,15 @@ public class CombatAreaManager : MonoBehaviour
 
         // 보스 생성. 우선 번호부터.
         int bossNum = bossAreaJson[stageNum][bossAreaNum]["bossNum"].AsInt;
-
-        // 몬스터 샘플 instantiate
-        //GameObject monsterSample1, monsterSample2;
-        //LoadMonsterSamples(monsterSet, monsterSample1Num, monsterSample2Num, out monsterSample1, out monsterSample2);
+        int challengeLevel = bossAreaJson[stageNum][bossAreaNum]["challengeLevel"].AsInt;
+        int bonus = bossAreaJson[stageNum][bossAreaNum]["bonus"].AsInt;
+        //Debug.Log("bonus : " + bonus);
         GameObject boss = LoadMonsterFromJson("Boss", bossNum);
 
-        
+        // 세이브 로드용
+        bossArea.stageNum = stageNum;
+        bossArea.bossAreaNum = areaNum;
+        bossArea.bossAreaIndex = areaIndex;
 
         //건설공간 지정
         int x = bossAreaJson[stageNum][bossAreaNum]["sitewidth"].AsInt;
@@ -356,11 +389,6 @@ public class CombatAreaManager : MonoBehaviour
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
         SetBossAreaPoint(pointTile.GetComponent<Tile>());
-
-        // 보스몬스터 위치 지정
-        //Tile centerTile = tileLayer.GetTile(pointTile.GetComponent<Tile>().GetX() + x/2, pointTile.GetComponent<Tile>().GetY() + y/2).GetComponent<Tile>();
-        //boss.GetComponent<Monster>().SetCurTile(centerTile);
-        //boss.GetComponent<Monster>().SetCurTileForMove(centerTile.GetChild(0));
         #endregion
 
         #region ConstructStructure()
@@ -391,7 +419,7 @@ public class CombatAreaManager : MonoBehaviour
                     thatTile.SetHuntingArea(true);
 
                     //디버깅용임시
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(255, 110, 0);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
                     //
                     for (int k = 0; k < 4; k++)
                     {
@@ -412,7 +440,7 @@ public class CombatAreaManager : MonoBehaviour
             //Debug.Log(debugStr);
         }
 
-        bossArea.InitBossArea(boss);
+        bossArea.InitBossArea(boss, challengeLevel, bonus);
         boss.GetComponent<Monster>().SetHabitat(bossArea);
         constructing = null;
         #endregion
@@ -447,7 +475,10 @@ public class CombatAreaManager : MonoBehaviour
         #endregion
 
         Monster monsterComp = monster.GetComponent<Monster>();
-        monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat);
+        if(monsterSet == "Boss")
+            monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat, false);
+        else
+            monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat);
         monsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
         //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
         monsterComp.SetDefaultEffects();
@@ -455,91 +486,67 @@ public class CombatAreaManager : MonoBehaviour
         return monster;
     }
 
-//    // 몬스터 샘플 로드해서 instantiate해주는 함수.
-//    void LoadMonsterSamples(string monsterSet, int sample1Num, int sample2Num, out GameObject monsterSample1, out GameObject monsterSample2)
-//    {
-//        // 몬스터 샘플 1 할당
-//        //Debug.Log("MonsterPrefabs/" + monsterSet + "/" + sample1Num);
-//        monsterSample1 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample1Num));
-//        monsterSample1.SetActive(false);
-//        monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
-
-//#region 스탯로드
-//        BattleStat tempBattleStat = new BattleStat();
-
-//        //Debug.Log("num : " + sample1Num + ", " + sample2Num);
-//        //Debug.Log("level : " + monsterJson[monsterSet][sample1Num]["level"]);
-//        tempBattleStat.Level = monsterJson[monsterSet][sample1Num]["level"].AsInt;
-//        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample1Num]["hp"].AsFloat ;
-//        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample1Num]["def"].AsFloat;
-//        tempBattleStat.BaseAvoid = monsterJson[monsterSet][sample1Num]["avoid"].AsFloat;
-//        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample1Num]["atk"].AsFloat;
-//        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample1Num]["atkspeed"].AsFloat;
-//        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample1Num]["critical"].AsFloat;
-//        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample1Num]["atkcritical"].AsFloat;
-//        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample1Num]["penetration"].AsFloat;
-//        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample1Num]["movespeed"].AsFloat;
-//        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample1Num]["range"].AsInt;
-
-//        RewardStat tempRewardStat = new RewardStat();
-//        tempRewardStat.Exp = monsterJson[monsterSet][sample1Num]["exp"].AsInt;
-//        tempRewardStat.Gold = monsterJson[monsterSet][sample1Num]["gold"].AsInt;
-//#endregion
-
-//        Monster tempMonsterComp = monsterSample1.GetComponent<Monster>();
-//        tempMonsterComp.InitMonster(sample1Num, tempBattleStat, tempRewardStat);
-//        tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-//        //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-//        tempMonsterComp.SetDefaultEffects();
-
-//        // 몬스터 샘플 2 할당
-//        monsterSample2 = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + sample2Num));
-//        monsterSample2.SetActive(false);
-//        monsterSample2.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
-
-//#region 스탯 로드
-//        tempBattleStat = new BattleStat();
-
-//        tempBattleStat.Level = monsterJson[monsterSet][sample2Num]["level"].AsInt;
-//        tempBattleStat.BaseHealthMax = monsterJson[monsterSet][sample2Num]["hp"].AsFloat;
-//        tempBattleStat.BaseDefence = monsterJson[monsterSet][sample2Num]["def"].AsFloat;
-//        tempBattleStat.BaseAvoid = monsterJson[monsterSet][sample2Num]["avoid"].AsFloat;
-//        tempBattleStat.BaseAttack = monsterJson[monsterSet][sample2Num]["atk"].AsFloat;
-//        tempBattleStat.BaseAttackSpeed = monsterJson[monsterSet][sample2Num]["atkspeed"].AsFloat;
-//        tempBattleStat.BaseCriticalChance = monsterJson[monsterSet][sample2Num]["critical"].AsFloat;
-//        tempBattleStat.BaseCriticalDamage = monsterJson[monsterSet][sample2Num]["atkcritical"].AsFloat;
-//        tempBattleStat.BasePenetrationFixed = monsterJson[monsterSet][sample2Num]["penetration"].AsFloat;
-//        tempBattleStat.BaseMoveSpeed = monsterJson[monsterSet][sample2Num]["movespeed"].AsFloat;
-//        tempBattleStat.BaseAttackRange = monsterJson[monsterSet][sample2Num]["range"].AsInt;
-        
-//        tempRewardStat = new RewardStat();
-//        tempRewardStat.Exp = monsterJson[monsterSet][sample2Num]["exp"].AsInt;
-//        tempRewardStat.Gold = monsterJson[monsterSet][sample2Num]["gold"].AsInt;
-//#endregion
-
-//        tempMonsterComp = monsterSample2.GetComponent<Monster>();
-//        tempMonsterComp.InitMonster(sample2Num, tempBattleStat, tempRewardStat);
-//        tempMonsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-//        //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-//        tempMonsterComp.SetDefaultEffects();
-//        return;
-//    }
-
-    public void ActivateNextHuntingArea()
+    #region Stage Progress
+    public void InitCombatAreas()
     {
-        ActiveIndex++;
-        
-        // 활성화 관련된 거 더 구현할 것.
-        // Active는 항상 되어있고, 사냥터 검색에 걸리는 거랑 장애물 해체 관련된 거 들어가면 됨.
+        // 일단 하나 열어두고 시작.
+        OnHuntingAreaConquered();
     }
 
-    public void OnHuntingAreaConquered()
+    private void HuntingAreaOpenToPublic()
     {
-        ActivateNextHuntingArea();
+        huntingAreas[PublicHuntingAreaIndex].OpenToPublic();
+    }
+
+    private void HuntingAreaConquerStart()
+    {
+        // Active는 항상 되어있고, 장애물 해체 관련된 거 들어가면 됨.
+    }
+
+    private void BossAreaOpenToPublic()
+    {
+        bossAreas[BossAreaIndex].OpenToPublic();
+    }
+
+    private void BossAreaConquerStart()
+    {
+        GameManager.Instance.OnBossAreaConquerStarted();
+    }
+
+    private void OnHuntingAreaConquered()
+    {
+        PublicHuntingAreaIndex++;
+        HuntingAreaOpenToPublic();
+
+        HuntingAreaConquerStart();
         //Debug.Log("OnHuntingAreaConquered");
-        if(huntingAreas[ActiveIndex].IsBossArea)
+        if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea)
         {
             // 보스전 신청용 UI 띄우기
+            BossAreaConquerStart();
         }
     }
+
+    public void OnBossAreaConquered()
+    {
+        if (ConqueringHuntingAreaIndex < huntingAreas.Count - 1)
+        {
+            PublicHuntingAreaIndex++;
+            HuntingAreaOpenToPublic();
+            HuntingAreaConquerStart();
+        }
+
+        if (BossAreaIndex < bossAreas.Count - 1)
+        {
+            BossAreaOpenToPublic();
+            BossAreaIndex++;
+        }
+    }
+
+    public void StartConquer()
+    {
+        HuntingAreaOpenToPublic();
+        HuntingAreaConquerStart();
+    }
+    #endregion 
 }

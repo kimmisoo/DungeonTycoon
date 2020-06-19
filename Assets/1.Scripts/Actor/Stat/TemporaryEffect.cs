@@ -148,4 +148,15 @@ public class TemporaryEffect
     {
         return discreteMods;
     }
+
+    #region SaveLoad
+    public int GetStackCnt()
+    {
+        return stackCnt;
+    }
+    public int GetStackLimit()
+    {
+        return stackLimit;
+    }
+    #endregion
 }

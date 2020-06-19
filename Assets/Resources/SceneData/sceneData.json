@@ -3,8 +3,8 @@
 			"num": 0,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["OldMan"],
-			"specialadv_level":5,
+			"specialadventurers": ["OldMan"],
+			"specialadv_level": 5,
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -66,7 +66,29 @@
 					"y": 79
 				}
 			],
-			"huntingAreaCount": 3,
+			"huntingAreaCount": 4,
+			"huntingArea": [{
+					"huntingAreaNum": 0,
+					"x": 18,
+					"y": 37
+				},
+				{
+					"huntingAreaNum": 1,
+					"x": 22,
+					"y": 43
+				},
+				{
+					"huntingAreaNum": 1,
+					"x": 13,
+					"y": 43
+				}
+			],
+			"bossAreaCount": 1,
+			"bossArea": [{
+				"bossAreaNum": 0,
+				"x": 13,
+				"y": 38
+			}],
 			"progressInformation": [{
 					"huntingAreaIndex": 0,
 					"guestCapacity": 150,
@@ -84,6 +106,12 @@
 					"guestCapacity": 30,
 					"minLevel": 21,
 					"maxLevel": 25
+				},
+				{
+					"huntingAreaIndex": 3,
+					"guestCapacity": 30,
+					"minLevel": 26,
+					"maxLevel": 30
 				}
 			]
 		},
@@ -91,8 +119,8 @@
 			"num": 1,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "OldMan", "Yeonhwa", "Nyang", "Wal"],
-			"specialadv_level":15,
+			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat", "OldMan", "Yeonhwa", "Nyang", "Wal"],
+			"specialadv_level": 15,
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -134,7 +162,50 @@
 					"y": 49
 				}
 			],
-			"huntingAreaCount": 3,
+			"huntingAreaCount": 6,
+			"huntingArea": [{
+					"huntingAreaNum": 0,
+					"x": 18,
+					"y": 37
+				},
+				{
+					"huntingAreaNum": 1,
+					"x": 22,
+					"y": 43
+				},
+				{
+					"huntingAreaNum": 2,
+					"x": 13,
+					"y": 43
+				},
+				{
+					"huntingAreaNum": 3,
+					"x": 40,
+					"y": 43
+				},
+				{
+					"huntingAreaNum": 4,
+					"x": 45,
+					"y": 37
+				},
+				{
+					"huntingAreaNum": 5,
+					"x": 45,
+					"y": 30
+				}
+			],
+			"bossAreaCount": 2,
+			"bossArea": [{
+				"bossAreaNum": 0,
+				"x": 13,
+				"y": 38
+			},
+			{
+				"bossAreaNum": 1,
+				"x": 36,
+				"y": 23
+			}
+			],
 			"progressInformation": [{
 					"huntingAreaIndex": 0,
 					"guestCapacity": 150,
@@ -152,6 +223,24 @@
 					"guestCapacity": 30,
 					"minLevel": 21,
 					"maxLevel": 25
+				},
+				{
+					"huntingAreaIndex": 3,
+					"guestCapacity": 50,
+					"minLevel": 26,
+					"maxLevel": 30
+				},
+				{
+					"huntingAreaIndex": 4,
+					"guestCapacity": 50,
+					"minLevel": 31,
+					"maxLevel": 40
+				},
+				{
+					"huntingAreaIndex": 5,
+					"guestCapacity": 30,
+					"minLevel": 41,
+					"maxLevel": 45
 				}
 			]
 		},
@@ -159,8 +248,8 @@
 			"num": 2,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat"],
-			"specialadv_level":25,
+			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat"],
+			"specialadv_level": 25,
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -211,7 +300,7 @@
 			"num": 3,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
+			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -262,7 +351,7 @@
 			"num": 4,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
+			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -313,7 +402,7 @@
 			"num": 5,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
+			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -364,7 +453,7 @@
 			"num": 6,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
+			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,
@@ -415,7 +504,7 @@
 			"num": 7,
 			"traveler_Max": 50,
 			"adventurer_Max": 50,
-			"specialadventurers":["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
+			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat", "Yeonhwa", "dog", "Cat"],
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,

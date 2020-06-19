@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CombatantType
+{
+    Monster, Adventurer, SpecialAdventurer
+}
+
 public delegate void HealthBelowZeroEventHandler(ICombatant victim, ICombatant killer);
 //public delegate void MoveStartedEventHandler(TileForMove newDest);
 
@@ -38,4 +43,8 @@ public interface ICombatant
     void AddTemporaryEffect(TemporaryEffect toBeAdded);
     void AddSkill(string key);
     void RemoveSkill(string key);
+    bool IsInBattle();
+    void HealFullHealth(bool displayEffect);
+    CombatantType GetCombatantType();
+    int GetIndex();
 }
