@@ -29,6 +29,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected readonly float RecoveryTick = 5.0f;
     protected readonly int RecoveryTimes = 5;
     protected readonly float RecoveryMult = 0.02f;
+    protected readonly float RecoveryGoal = 0.1f;
 
     // 스킬들(아이템, 고유능력 등 모두)
     Dictionary<string, Skill> skills;
@@ -509,7 +510,16 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator SpontaneousRecovery()
     {
         float healAmount = 0;
-        for (int i = 0; i < RecoveryTimes; i++)
+        //for (int i = 0; i < RecoveryTimes; i++)
+        //{
+        //    yield return new WaitForSeconds(RecoveryTick);
+
+        //    healAmount = battleStat.HealthMax * RecoveryMult;
+        //    battleStat.Health += healAmount;
+        //    DisplayHeal(healAmount);
+        //    //StartCoroutine(RecoveryEffect(battleStat.HealthMax * RecoveryMult));
+        //}
+        while(battleStat.Health < battleStat.HealthMax * RecoveryGoal)
         {
             yield return new WaitForSeconds(RecoveryTick);
 

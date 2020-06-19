@@ -105,26 +105,20 @@ public class GameManager : MonoBehaviour
 
     JSONNode desireData;
 
+    // Save!
     #region BossPhase
     Skirmish curSkirmish;
-    //public List<SpecialAdventurer> skirmishParticipants;
-    //public List<SpecialAdventurer> skirmishSurvivors;
-    //public List<SpecialAdventurer> skirmishLosers;
-    //public List<SpecialAdventurer> skirmishBracket;
     //// 보스 페이즈인가?
     public bool isBossPhase;
     //// 응답한 일선 모험가 수
     public int responsedSpAdvCnt;
     //// 보스 레이드 준비 타이머 끝났나?
     public bool bossRaidPrepTimeOver;
+    public float waitedTime;
     //// 토너먼트 끝?
-    //public bool isSkirmishEnded;
-    //public int roundCnt;
-    //public int curRound;
-    //public int matchCntCurRound;
-    //public int curMatch;
     public float retryTimesLeft;
     public bool canCallBossRaid;
+    // Save!
 
     #endregion
 
@@ -1219,6 +1213,7 @@ public class GameManager : MonoBehaviour
         retryTimesLeft = 0.0f;
         canCallBossRaid = true;
         bossRaidPrepTimeOver = false;
+        waitedTime = 0.0f;
 
         // 전초전 하기 전에 리셋
         curSkirmish = new Skirmish();
@@ -1228,7 +1223,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator BossRaidPrepTimer()
     {
-        float waitedTime = 0.0f;
+        waitedTime = 0.0f;
 
         while (true)
         {

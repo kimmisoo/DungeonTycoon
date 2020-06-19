@@ -24,7 +24,7 @@ public enum State
     // 그 외. 공용 State 포함.
     PathFinding, MovingToDestination, WaitingStructure, UsingStructure, Battle, Exit,
     ApproachingToEnemy, SearchRescueTeam, Rescued, SpontaneousRecovery,
-    MatchWon
+    MatchWon, WaitingOtherMatch
 }
 /*
  * Animator Tirggers

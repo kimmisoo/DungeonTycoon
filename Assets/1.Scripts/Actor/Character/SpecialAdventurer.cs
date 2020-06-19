@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_ITEM
-#define DEBUG_SPADV_STATE
-#define DEBUG_BOSSPHASE
+//#define DEBUG_SPADV_STATE
+//#define DEBUG_BOSSPHASE
 
 using System.Collections;
 using System.Collections.Generic;
@@ -234,8 +234,11 @@ public class SpecialAdventurer : Adventurer
 #if DEBUG_SPADV_STATE
                     Debug.Log(name + " : " + "MatchWon");
 #endif
-                    //여기서 애니메이션 넣기
-                    StartCoroutine(MatchWon());
+                    MatchWon();
+                    break;
+                case State.WaitingOtherMatch:
+                    animator.SetBool("isCelebrating", true);
+                    //WaitingOtherMatch();
                     break;
                 case State.SkirmishDefeated:
 #if DEBUG_SPADV_STATE
@@ -249,6 +252,7 @@ public class SpecialAdventurer : Adventurer
 #if DEBUG_SPADV_STATE
                     Debug.Log(name + " : " + "SkirmishWon");
 #endif
+                    animator.SetBool("isCelebrating", true);
                     superState = SuperState.SkirmishWon;
                     curCoroutine = StartCoroutine(SkirmishWon());
                     break;
@@ -346,8 +350,14 @@ public class SpecialAdventurer : Adventurer
                 break;
             case State.MatchWon:
                 break;
+            case State.WaitingOtherMatch:
+                animator.SetBool("isCelebrating", false);
+                break;
             case State.SkirmishDefeated:
                 animator.SetTrigger("ResurrectionFlg");
+                break;
+            case State.SkirmishWon:
+                animator.SetBool("isCelebrating", false);
                 break;
             case State.EnteringBossArea:
                 break;
@@ -872,12 +882,16 @@ public class SpecialAdventurer : Adventurer
         }
     }
 
-    private IEnumerator MatchWon()
+    private void MatchWon()
     {
-        yield return new WaitForSeconds(0.2f);
-        animator.SetTrigger("WinFlg");
-        yield return new WaitForSeconds(0.8f);
         GameManager.Instance.ReportMatchWon(this);
+
+        curState = State.WaitingOtherMatch;
+    }
+
+    private void WaitingOtherMatch()
+    {
+        animator.SetTrigger("WinFlg");
     }
 
     private void SkirmishDefeated()
@@ -887,7 +901,7 @@ public class SpecialAdventurer : Adventurer
 
     private IEnumerator SkirmishWon()
     {
-        yield return null;
+        yield return new WaitForSeconds(1.0f);
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
         destinationPlace = CombatAreaManager.Instance.FindBossArea();
 
