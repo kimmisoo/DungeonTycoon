@@ -50,6 +50,20 @@ public class TemporaryEffect
         //Debug.Log("StatType: " + continuousMods[0].StatType + ", Value: " + continuousMods[0].ModValue);
     }
 
+    public TemporaryEffect(TemporaryEffectData tempEffectData)
+    {
+        continuousMods = tempEffectData.continuousMods;
+        discreteMods = tempEffectData.discreteMods;
+
+        stackCnt = tempEffectData.stackCnt;
+        stackLimit = tempEffectData.stackLimit;
+
+        name = tempEffectData.name;
+
+        duration = tempEffectData.duration;
+        elapsedTime = tempEffectData.elapsedTime;
+    }
+
     public void SetSubject(ICombatant subjectIn)
     {
         subject = subjectIn;

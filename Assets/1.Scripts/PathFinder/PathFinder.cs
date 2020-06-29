@@ -105,6 +105,9 @@ public class PathFinder : MonoBehaviour
     public IEnumerator Moves(Tile pcurPos, Tile pdestination)
     {
         yield return null;
+        //Debug.Log("[Moves] pcurPos[" + pcurPos.x + ", " + pcurPos.y + "]");
+        //Debug.Log("[Moves] pdestination[" + pdestination.x + ", " + pdestination.y + "]");
+        //Debug.Assert(pdestination != null);
         myCurPos = pcurPos;
 #if DEBUG_PF
         Debug.Log("pcurPos : [" + pcurPos.GetX() + ", " + pcurPos.GetY() + "]");

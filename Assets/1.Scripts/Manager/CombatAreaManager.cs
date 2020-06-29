@@ -107,10 +107,15 @@ public class CombatAreaManager : MonoBehaviour
 #endif
     }
 
-    public List<HuntingArea> GetHuntingAreas()
-    {
-        return huntingAreas;
-    }
+    //public List<HuntingArea> GetHuntingAreas()
+    //{
+    //    return huntingAreas;
+    //}
+
+    //public List<BossArea> GetBossAreas()
+    //{
+    //    return bossAreas;
+    //}
 
     /// <summary>
     /// 모험가에게 레벨에 적합한 사냥터를 반환해주는 메서드
@@ -146,7 +151,7 @@ public class CombatAreaManager : MonoBehaviour
     {
         HuntingArea searchResult = null;
 
-        Debug.Log("HA IDX : " + ConqueringHuntingAreaIndex);
+        //Debug.Log("HA IDX : " + ConqueringHuntingAreaIndex);
         // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
         for (int i = 0; i <= ConqueringHuntingAreaIndex; i++)
         {
@@ -204,7 +209,7 @@ public class CombatAreaManager : MonoBehaviour
     // 사냥터 건설
     public void ConstructHuntingArea(int areaNum, int areaIndex, GameObject pointTile)
     {
-#region InstantiateStructure()
+        #region InstantiateStructure()
         string stageNum = "stage" + SceneManager.GetActiveScene().name;
         int huntingAreaNum = areaNum;
         //Debug.Log("stageNum : " + stageNum + " areaNum : " + huntingAreaNum);
@@ -245,7 +250,7 @@ public class CombatAreaManager : MonoBehaviour
         // 저장용.
         huntingArea.stageNum = stageNum;
         huntingArea.huntingAreaNum = areaNum;
-        huntingArea.huntingAreaIndex = areaIndex;
+        huntingArea.index = areaIndex;
 
         //관광 수치 저장해야할 수도 있음. 수정요망.
 
@@ -265,25 +270,25 @@ public class CombatAreaManager : MonoBehaviour
         {
             huntingArea.extent[i % x, i / x] = huntingAreaJson[stageNum][huntingAreaNum]["site"][i].AsInt;
         }
-#endregion
+        #endregion
 
-#region AllocateStructure()
+        #region AllocateStructure()
         // 건설할 건물의 position 설정
         constructing.transform.position = pointTile.transform.position; // 문제 생길지도 모름. 수정요망
 
         TileLayer tileLayer = TileMapGenerator.Instance.tileMap_Object.transform.GetChild(0).GetComponent<TileLayer>();
 
         SetHuntingAreaPoint(pointTile.GetComponent<Tile>());
-#endregion
+        #endregion
 
-#region ConstructStructure()
+        #region ConstructStructure()
         Tile tile = huntingArea.point;
         int[,] extent = huntingArea.GetExtent();
 
         constructing.tag = "CombatArea";
 
         // 인덱스 값 넣어줌.
-        huntingArea.huntingAreaIndex = huntingAreas.Count;
+        huntingArea.index = huntingAreas.Count;
 
         // 리스트에 추가
         huntingAreas.Add(huntingArea);
@@ -313,7 +318,7 @@ public class CombatAreaManager : MonoBehaviour
                     //}
                     // 디버깅용임시
                     // thatTile.SetPassable(true);
-                    for (int k = 0; k<4; k++)
+                    for (int k = 0; k < 4; k++)
                     {
                         huntingArea.AddTerritory(thatTile.childs[k]);
                     }
@@ -326,14 +331,14 @@ public class CombatAreaManager : MonoBehaviour
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
                     //if (thatTile.GetBuildable())
                     //{
-                        huntingArea.addEntrance(thatTile);
+                    huntingArea.addEntrance(thatTile);
                     //}
                 }
             }
         }
 
         constructing = null;
-#endregion
+        #endregion
     }
 
     public void ConstructBossArea(int areaNum, int areaIndex, GameObject pointTile)
@@ -362,7 +367,7 @@ public class CombatAreaManager : MonoBehaviour
         // 세이브 로드용
         bossArea.stageNum = stageNum;
         bossArea.bossAreaNum = areaNum;
-        bossArea.bossAreaIndex = areaIndex;
+        bossArea.index = areaIndex;
 
         //건설공간 지정
         int x = bossAreaJson[stageNum][bossAreaNum]["sitewidth"].AsInt;
@@ -398,7 +403,7 @@ public class CombatAreaManager : MonoBehaviour
         constructing.tag = "CombatArea";
 
         // 인덱스 값 넣어줌.
-        bossArea.bossAreaIndex = bossAreas.Count;
+        bossArea.index = bossAreas.Count;
 
         // 리스트에 추가
         bossAreas.Add(bossArea);
@@ -475,15 +480,19 @@ public class CombatAreaManager : MonoBehaviour
         #endregion
 
         Monster monsterComp = monster.GetComponent<Monster>();
-        if(monsterSet == "Boss")
+        if (monsterSet == "Boss")
             monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat, false);
         else
             monsterComp.InitMonster(monsterNum, tempBattleStat, tempRewardStat);
-        monsterComp.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-        //tempMonsterComp.SetDamageText((GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/DamageText")));
-        monsterComp.SetDefaultEffects();
+        SetMonsterDefaultEffects(monsterComp);
 
         return monster;
+    }
+
+    public static void SetMonsterDefaultEffects(Monster monster)
+    {
+        monster.SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
+        monster.SetDefaultEffects();
     }
 
     #region Stage Progress
@@ -548,5 +557,69 @@ public class CombatAreaManager : MonoBehaviour
         HuntingAreaOpenToPublic();
         HuntingAreaConquerStart();
     }
-    #endregion 
+    #endregion
+
+    #region SaveLoad
+    public void LoadCombatAreasFromSave(GameSavedata savedata)
+    {
+        OpenCombatAreasToSavedIndex(savedata);
+        LoadCombatAreas(savedata);
+    }
+
+    public void LoadCombatAreas(GameSavedata savedata)
+    {
+
+        for (int i = 0; i <= savedata.combatAreaManager.publicHuntingAreaIndex + 1; i++)
+        {
+            //Debug.Log("LoadHA");
+            huntingAreas[i].InitFromSaveData(savedata.combatAreaManager.huntingAreas[i]);
+            huntingAreas[i].isNew = false;
+        }
+
+        for (int i = 0; i <= savedata.combatAreaManager.bossAreaIndex; i++)
+        {
+            bossAreas[i].InitFromSaveData(savedata.combatAreaManager.bossAreas[i]);
+            bossAreas[i].isNew = false;
+        }
+    }
+
+    private void OpenCombatAreasToSavedIndex(GameSavedata savedata)
+    {
+        while (PublicHuntingAreaIndex < savedata.combatAreaManager.publicHuntingAreaIndex)
+        {
+            if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea)
+                OnBossAreaConquered();
+            else
+                OnHuntingAreaConquered();
+        }
+    }
+
+    public void SetMonstersEnemy(GameSavedata savedata)
+    {
+        for (int i = 0; i <= ConqueringHuntingAreaIndex; i++)
+            foreach (int key in huntingAreas[i].monstersEnabled.Keys)
+            {
+                if(savedata.combatAreaManager.huntingAreas[i].monstersEnabled[key].enemy != null)
+                    GameManager.Instance.SetICombatantEnemy(huntingAreas[i].monstersEnabled[key].GetComponent<Monster>(), savedata.combatAreaManager.huntingAreas[i].monstersEnabled[key].enemy);
+            }
+        for (int i = 0; i <= BossAreaIndex; i++)
+        {
+            foreach (int key in bossAreas[i].monstersEnabled.Keys)
+            {
+                if (savedata.combatAreaManager.bossAreas[i].monstersEnabled[key].enemy != null)
+                    GameManager.Instance.SetICombatantEnemy(bossAreas[i].monstersEnabled[key].GetComponent<Monster>(), savedata.combatAreaManager.bossAreas[i].monstersEnabled[key].enemy);
+            }
+        }
+    }
+
+    public void ActivateMonsters()
+    {
+        for (int i = 0; i <= ConqueringHuntingAreaIndex; i++)
+            foreach (GameObject mob in huntingAreas[i].monstersEnabled.Values)
+                mob.SetActive(true);
+        for (int i = 0; i <= BossAreaIndex; i++)
+            foreach (GameObject mob in bossAreas[i].monstersEnabled.Values)
+                mob.SetActive(true);
+    }
+    #endregion
 }

@@ -10,7 +10,9 @@ public class DesireBase {
 	public const float tickMin = 0.0f;
 	
 	protected WaitForSeconds tickBetweenWait;
-	public float desireValue
+
+
+    public float desireValue
 	{
 		get
 		{
@@ -111,6 +113,16 @@ public class DesireBase {
         tickBetween = input.tickBetween;
         tickBetweenWait = new WaitForSeconds(tickBetween);
         owner = input.owner;
+    }
+
+    public DesireBase(DesireBaseData input)
+    {
+        _desireName = input.desireName;
+        desireValue = input.desireValue;
+        tickAmount = input.tickAmount;
+        tickAmountMult = input.tickAmountMult;
+        tickBetween = input.tickBetween;
+        //tickBetweenWait = new WaitForSeconds(tickBetween);
     }
 	
 	public virtual IEnumerator Tick()

@@ -17,8 +17,25 @@ public class SpecialAdventurer : Adventurer
     private int bossRaidCallCnt = 0;
     public bool willBossRaid = false;
 
+    #region SaveLoad
+    public string nameKey;
+    #endregion
+
+    ////Skill uniqueSkill;
+    //public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, string name)
+    //{
+    //    base.InitAdventurer(stat, battleStat, rewardStat);
+    //    AddSkill(name);
+    //}
     //Skill uniqueSkill;
-    public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, string name)
+    public void InitSpecialAdventurer(BattleStat battleStat, RewardStat rewardStat, string name)
+    {
+        base.InitAdventurer(battleStat, rewardStat);
+        AddSkill(name);
+    }
+
+    //Skill uniqueSkill;
+    public void InitSpecialAdventurer(StatData stat, BattleStat battleStat, RewardStat rewardStat, string name)
     {
         base.InitAdventurer(stat, battleStat, rewardStat);
         AddSkill(name);
@@ -813,7 +830,7 @@ public class SpecialAdventurer : Adventurer
             Level >= CombatAreaManager.Instance.FindBossArea().ChallengeLevel) // 적정 레벨을 만족할 때
             GameManager.Instance.AICalledBossRaid(); // 보스레이드 신청
         else if (curHuntingArea != null && ((battleStat.Health < battleStat.HealthMax / 4) || // 체력이 25%미만이거나
-            (Level > curHuntingArea.LevelMax && curHuntingArea.huntingAreaIndex < CombatAreaManager.Instance.ConqueringHuntingAreaIndex))) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
+            (Level > curHuntingArea.LevelMax && curHuntingArea.index < CombatAreaManager.Instance.ConqueringHuntingAreaIndex))) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
             curState = State.ExitingHuntingArea; // 사냥터에서 퇴장
         else
             curState = State.SearchingMonster;
@@ -1034,10 +1051,10 @@ public class SpecialAdventurer : Adventurer
     #endregion
 
     #region SaveLoad
-    public override CombatantType GetCombatantType()
-    {
-        return CombatantType.SpecialAdventurer;
-    }
+    //public override CombatantType GetCombatantType()
+    //{
+    //    return CombatantType.SpecialAdventurer;
+    //}
     public Item GetWeapon()
     {
         return weapon;
@@ -1053,6 +1070,14 @@ public class SpecialAdventurer : Adventurer
     public Item GetAccessory2()
     {
         return accessory2;
+    }
+    //public override ActorType GetActorType()
+    //{
+    //    return ActorType.SpecialAdventurer;
+    //}
+    public override CombatantType GetCombatantType()
+    {
+        return CombatantType.SpecialAdventurer;
     }
     #endregion
 }

@@ -1,5 +1,6 @@
 ﻿//#define DEBUG_ADV
-//#define DEBUG_ADV_STATE
+#define DEBUG_ADV_STATE
+#define DEBUG_LOAD
 //#define DEBUG_ADV_BATTLE
 //#define DEBUG_CHARGE
 
@@ -40,7 +41,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected int monsterSearchCnt;
     protected readonly int MonsterSearchMax = 5;
 
-    protected HuntingArea curHuntingArea;
+    public HuntingArea curHuntingArea;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;
     //public event MoveStartedEventHandler moveStartedEvent;
@@ -59,7 +60,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
     #endregion
 
-    public void InitAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat) //
+    public void InitAdventurer(BattleStat battleStat, RewardStat rewardStat) //
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
@@ -68,7 +69,45 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
         //stat 초기화
-        this.stat = new Stat(stat, this);
+        this.stat = gameObject.AddComponent<Stat>();
+        //pathfinder 초기화 // delegate 그대로
+
+        skills = new Dictionary<string, Skill>();
+        temporaryEffects = new Dictionary<string, TemporaryEffect>();
+    }
+
+    public void InitAdventurer(Stat statIn, BattleStat battleStat, RewardStat rewardStat) //
+    {
+        // 이동가능한 타일인지 확인할 delegate 설정.
+        pathFinder.SetValidateTile(ValidateNextTile);
+        SetPathFindEvent();
+
+        this.battleStat = new BattleStat(battleStat);
+        this.rewardStat = new RewardStat(rewardStat);
+        //stat 초기화
+        this.stat = gameObject.AddComponent<Stat>();
+        stat.InitStat(statIn, this);
+        if (statIn == null)
+            Debug.Log("[InitAdv] stat is null");
+        //pathfinder 초기화 // delegate 그대로
+
+        skills = new Dictionary<string, Skill>();
+        temporaryEffects = new Dictionary<string, TemporaryEffect>();
+    }
+
+    public void InitAdventurer(StatData statIn, BattleStat battleStat, RewardStat rewardStat) //
+    {
+        // 이동가능한 타일인지 확인할 delegate 설정.
+        pathFinder.SetValidateTile(ValidateNextTile);
+        SetPathFindEvent();
+
+        this.battleStat = new BattleStat(battleStat);
+        this.rewardStat = new RewardStat(rewardStat);
+        //stat 초기화
+        this.stat = gameObject.AddComponent<Stat>();
+        stat.InitStat(statIn, this);
+        if (statIn == null)
+            Debug.Log("[InitAdv] stat is null");
         //pathfinder 초기화 // delegate 그대로
 
         skills = new Dictionary<string, Skill>();
@@ -89,6 +128,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         base.OnDisable();
         SkillDeactivate();
         StopCoroutine(refreshingTempEffectCoroutine);
+    }
+
+    public void OnDestroy()
+    {
+        DestroyUI();
     }
 
     #region StateMachine
@@ -304,6 +348,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected override IEnumerator PathFinding()
     {
+#if DEBUG_LOAD
+        //Debug.Log("curTile : [" + curTile.x + ", " + curTile.y + "]");
+        //Debug.Log("destTile : [" + destinationTile.x + ", " + destinationTile.y + "]");
+        //if (curTile == null)
+        //    Debug.Log("curTile == null!");
+        Debug.Assert(destinationTile != null);
+#endif
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
         switch (superState)
@@ -361,7 +412,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         }
     }
 
-    #region StateMachine
+#region StateMachine
     public void Idle()
     {
         //Debug.Log("GetSpecificDesire() : " + stat.GetHighestDesire());
@@ -550,7 +601,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         destinationPlace = null;
     }
 
-    #endregion
+#endregion
 
     public override bool ValidateNextTile(Tile tile)
     {
@@ -562,7 +613,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         yield return null;
     }
 
-    #region Battle
+#region Battle
     protected virtual IEnumerator Charge(List<TileForMove> tileForMoveWay)
     {
         Direction dir = Direction.DownLeft;
@@ -861,9 +912,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //    if (isNew)
     //        moveStartedEvent += newEvent;
     //}
-    #endregion
+#endregion
 
-    #region ICombatant
+#region ICombatant
     public virtual bool ValidatingEnemy(ICombatant enemy)
     {
         SuperState enemySuperState = enemy.GetSuperState();
@@ -1054,6 +1105,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         return battleStat;
     }
 
+    public void SetEnemy(ICombatant enemyIn)
+    {
+        enemy = enemyIn;
+    }
+
     public ICombatant GetEnemy()
     {
         return enemy;
@@ -1073,9 +1129,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         return gameObject;
     }
-    #endregion
+#endregion
 
-    #region UI
+#region UI
     public void SetUI()
     {
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
@@ -1091,6 +1147,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         hpBar.SetActive(true);
         shieldBar.SetActive(true);
+    }
+    public void DestroyUI()
+    {
+        Destroy(hpBar);
+        Destroy(shieldBar);
     }
     public void ShowBattleUI()
     {
@@ -1156,9 +1217,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //        toBeAdded.StackUp();
     //    }
     //}
-    #endregion
+#endregion
 
-    #region Skill
+#region Skill
     public void AddSkill(string key)
     {
         if (skills.ContainsKey(key))
@@ -1294,13 +1355,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
             battleStat.Heal(battleStat.HealthMax);
     }
 
-    public virtual CombatantType GetCombatantType()
-    {
-        return CombatantType.Adventurer;
-    }
-    #endregion
+    //public virtual CombatantType GetCombatantType()
+    //{
+    //    return CombatantType.Adventurer;
+    //}
+#endregion
 
-    #region SaveLoad
+#region SaveLoad
     public int GetIndex()
     {
         return index;
@@ -1313,5 +1374,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         return skills;
     }
-    #endregion
+    //public override ActorType GetActorType()
+    //{
+    //    return ActorType.Adventurer;
+    //}
+    public virtual CombatantType GetCombatantType()
+    {
+        return CombatantType.Adventurer;
+    }
+    public void SetBattleStat(BattleStat battleStat)
+    {
+
+    }
+#endregion
 }

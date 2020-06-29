@@ -26,6 +26,11 @@ public enum State
     ApproachingToEnemy, SearchRescueTeam, Rescued, SpontaneousRecovery,
     MatchWon, WaitingOtherMatch
 }
+
+public enum ActorType
+{
+    Traveler, Monster, Adventurer, SpecialAdventurer
+}
 /*
  * Animator Tirggers
  * MoveFlg
@@ -42,9 +47,8 @@ public enum State
 
 public abstract class Actor : MonoBehaviour
 {
-    
     public SuperState superState;
-    public State state;
+    public State state = State.Idle;
     /*public string actorName { get; set; }
 	public string explanation { get; set; }
 	public int gold { get; set; }*/
@@ -55,10 +59,31 @@ public abstract class Actor : MonoBehaviour
     protected SpriteRenderer[] spriteRenderers;
 
     protected Tile curTile;
-    public TileForMove curTileForMove;
+    protected TileForMove curTileForMove;
     protected TileLayer tileLayer;
     protected Tile destinationTile;
     protected TileForMove destinationTileForMove;
+
+    //SaveLoad용. 컬렉션에서 몇번째인지 저장함.
+    //public int index;
+    public string prefabPath;
+    public bool isNew = true;
+
+    //acting 구성
+    public State curState
+    {
+        get
+        {
+            return state;
+        }
+        set
+        {
+            ExitState();
+            state = value;
+            //Debug.Log(gameObject.name + " Enters: " + state);
+            EnterState(state);
+        }
+    }
 
 
     protected void Awake()
@@ -67,8 +92,10 @@ public abstract class Actor : MonoBehaviour
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
         pathFinder = GetComponent<PathFinder>();
         wayForMove = new List<TileForMove>();
-        state = new State();
+        //state = new State();
         direction = new Direction();
+
+        //Debug.Log("[Actor.Awake] pathFinder is null : " + (pathFinder == null));
     }
 
     //public Actor[] GetAdjacentActor(int range)
@@ -97,6 +124,9 @@ public abstract class Actor : MonoBehaviour
     //    }
     //    return adjacentActors.ToArray();
     //}
+
+    protected abstract void EnterState(State nextState);
+    protected abstract void ExitState();
 
     public void SetCurTile(Tile _tile)
     {
@@ -566,7 +596,10 @@ public abstract class Actor : MonoBehaviour
     public bool SetCurTileLoad(int tileNum)
     {
         if (tileNum == -1)
+        {
+            curTile = null;
             return false;
+        }
 
         GameObject tileLayer = GameManager.Instance.GetTileLayer();
         if (tileLayer == null)
@@ -588,13 +621,44 @@ public abstract class Actor : MonoBehaviour
         }
     }
 
+    public void SetCurTileLoad(TileCoordinates input)
+    {
+        if (input != null)
+        {
+            curTile = tileLayer.GetTileAsComponent(input.x, input.y);
+            //if (curTile == null)
+            //    Debug.Log("[" + input.x + ", " + input.y + "] curTile 로드 실패!");
+            //else
+            //    Debug.Log("[" + curTile.x + ", " + curTile.y + "] curTile 로드 성공");
+        }
+        else
+            curTile = null;
+    }
+
     public bool SetCurTileForMoveLoad(int childNum)
     {
         if (childNum == -1)
+        {
+            curTileForMove = null;
             return false;
+        }
 
         SetCurTileForMove(curTile.GetChild(childNum));
         return true;
+    }
+
+    public void SetCurTileForMoveLoad(TileForMoveCoordinates input)
+    {
+        if (input != null)
+        {
+            curTileForMove = tileLayer.GetTileForMove(input.x, input.y);
+            //if (curTileForMove == null)
+            //    Debug.Log("[" + input.x + ", " + input.y + "] curTFM 로드 실패!");
+            //else
+            //    Debug.Log("[" + curTileForMove.GetX() + ", " + curTileForMove.GetY() + "] curTFM 로드 성공");
+        }
+        else
+            curTileForMove = null;
     }
     #endregion
 
@@ -602,4 +666,31 @@ public abstract class Actor : MonoBehaviour
     {
         return Mathf.Abs(pos1.GetX() - pos2.GetX()) + Mathf.Abs(pos1.GetY() - pos2.GetY());
     }
+
+    #region SaveLoad
+    public void SetDestinationTileLoad(TileCoordinates input)
+    {
+        tileLayer = GameManager.Instance.GetTileLayer(0);
+        if (input != null)
+            destinationTile = tileLayer.GetTileAsComponent(input.x, input.y);
+        else
+            destinationTile = null;
+    }
+    public Tile GetDestinationTile()
+    {
+        return destinationTile;
+    }
+    public void SetDetinationTileForMoveLoad(TileForMoveCoordinates input)
+    {
+        if (input != null)
+            destinationTileForMove = tileLayer.GetTileForMove(input.x, input.y);
+        else
+            destinationTile = null;
+    }
+    public TileForMove GetDestinationTileForMove()
+    {
+        return destinationTileForMove;
+    }
+    #endregion
+    //public abstract ActorType GetActorType();
 }

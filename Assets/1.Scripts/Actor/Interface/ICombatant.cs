@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum CombatantType
 {
-    Monster, Adventurer, SpecialAdventurer
+    Monster, BossMonster, Adventurer, SpecialAdventurer
 }
 
 public delegate void HealthBelowZeroEventHandler(ICombatant victim, ICombatant killer);
@@ -31,6 +31,7 @@ public interface ICombatant
     Vector3 GetPosition();
     Transform GetTransform();
     //GameObject GetGameObject();
+    void SetEnemy(ICombatant enemy);
     ICombatant GetEnemy();
     bool ValidatingEnemy(ICombatant enemy);
     void DisplayHeal(float healAmount);

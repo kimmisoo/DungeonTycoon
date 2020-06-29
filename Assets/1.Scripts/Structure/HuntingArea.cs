@@ -22,16 +22,13 @@ public class HuntingArea : CombatArea
     private int conquerCondition;
     private int killCount;
 
-
-    private int index;
-
     private GameObject monsterSample1;
     private GameObject monsterSample2;
     
 
     #region SaveLoad
     public int huntingAreaNum;
-    public int huntingAreaIndex;
+    //public int index;
     #endregion
 
     public HuntingArea()
@@ -116,11 +113,14 @@ public class HuntingArea : CombatArea
     }
 
     
+    
 
     public override void OnMonsterCorpseDecay(int index)
     {
         // 몬스터 제거 및 다시 객체풀에 넣어주기
         monstersEnabled[index].SetActive(false);
+        // 스테이트 재설정
+        monstersEnabled[index].GetComponent<Monster>().ResetState();
         monstersDisabled.Add(index, monstersEnabled[index]);
         monstersEnabled.Remove(index);
 
@@ -139,13 +139,20 @@ public class HuntingArea : CombatArea
 #region 수정!
     void Start()
     {
+        if (isNew)
+            GenDisabledMonsters();
+    }
+
+    private void GenDisabledMonsters()
+    {
         GameObject tempMonster;
 
+        //Debug.Log("[Start] mobDisabled : " + monstersDisabled.Count + ", monsterEnabled : " + monstersEnabled.Count );
         // 몬스터 초기화
         for (int i = 0; i < monsterMax + monsterPerRegen; i++)
         {
-            // 생성만 해놓고 비활성화
-            monsterSample1.SetActive(false);
+            //// 생성만 해놓고 비활성화
+            //monsterSample1.SetActive(false);
 
             // List에 추가
             if (Random.Range(0.0f, 1.0f) < monsterRatio)
@@ -165,13 +172,14 @@ public class HuntingArea : CombatArea
             tempMonster.GetComponent<Monster>().corpseDecayEvent += OnMonsterCorpseDecay;
             tempMonster.transform.parent = this.gameObject.transform;
 
+            //Debug.Log("monsterDisabled Cnt : " + monstersDisabled.Count + ", i : " + i);
             monstersDisabled.Add(i, tempMonster);
 
             //monsterSample1.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
             //monstersDisabled[i].transform.parent = this.gameObject.transform;
             //monstersDisabled[i].GetComponent<Monster>().SetHabitat(this);
             //monstersDisabled[i].GetComponent<Monster>().index = i;
-           
+
             // Debug.Log("character instantiate - " + i);
         }
     }
@@ -204,6 +212,90 @@ public class HuntingArea : CombatArea
     public void SetKillCount(int killCountIn)
     {
         killCount = killCountIn;
+    }
+    #endregion
+
+    #region SaveLoad
+    public override void InitFromSaveData(CombatAreaData input)
+    {
+        //base.InitFromSaveData(input);
+        
+        HuntingAreaData tempData = input as HuntingAreaData;
+
+        killCount = tempData.killCount;
+
+        #region monsterEnabled
+        foreach(int key in monstersEnabled.Keys.ToList())
+        {
+            monstersEnabled[key].GetComponent<Monster>().StopAllCoroutines();
+            Destroy(monstersEnabled[key]);
+        }
+        monstersEnabled.Clear();
+
+        foreach(KeyValuePair<int, MonsterData> kvp in input.monstersEnabled)
+        {
+            GameObject newObject;
+            GameObject sample;
+            if (kvp.Value.monsterNum == monsterSample1.GetComponent<Monster>().monsterNum)
+            {
+                sample = monsterSample1;
+                newObject = Instantiate(monsterSample1);
+            }
+            else
+            {
+                sample = monsterSample2;
+                newObject = Instantiate(monsterSample2);
+            }
+            GameManager.InitLoadedMonster(newObject, sample, kvp.Value, true);
+            Monster monsterComp = newObject.GetComponent<Monster>();
+            monsterComp.isNew = false;
+            monsterComp.SetHabitat(this);
+            monsterComp.corpseDecayEvent += OnMonsterCorpseDecay;
+            CombatAreaManager.SetMonsterDefaultEffects(monsterComp);
+            //newObject.SetActive(true);
+            newObject.transform.parent = this.gameObject.transform;
+
+            monstersEnabled.Add(kvp.Key, newObject);
+        }
+        #endregion
+
+        #region monsterDisabled
+        foreach (int key in monstersDisabled.Keys.ToList())
+        {
+            Destroy(monstersDisabled[key]);
+        }
+        monstersDisabled.Clear();
+
+        //Debug.Log("data disabled : " + input.monstersDisabled.Count);
+        foreach (KeyValuePair<int, MonsterData> kvp in input.monstersDisabled)
+        {
+            GameObject newObject;
+            GameObject sample;
+            if (kvp.Value.monsterNum == monsterSample1.GetComponent<Monster>().monsterNum)
+            {
+                sample = monsterSample1;
+                newObject = Instantiate(monsterSample1);
+            }
+            else
+            {
+                sample = monsterSample2;
+                newObject = Instantiate(monsterSample2);
+            }
+            //GameManager.Instance.InitLoadedMonster(newObject, sample, kvp.Value, true);
+            Monster monsterComp = newObject.GetComponent<Monster>();
+            monsterComp.InitMonster(sample.GetComponent<Monster>());
+            monsterComp.SetHabitat(this);
+            monsterComp.corpseDecayEvent += OnMonsterCorpseDecay;
+            CombatAreaManager.SetMonsterDefaultEffects(monsterComp);
+            monstersDisabled.Add(kvp.Key, newObject);
+            newObject.transform.parent = this.gameObject.transform;
+        }
+        #endregion
+    }
+
+    public override PlaceType GetPlaceType()
+    {
+        return PlaceType.HuntingArea;
     }
     #endregion
 }

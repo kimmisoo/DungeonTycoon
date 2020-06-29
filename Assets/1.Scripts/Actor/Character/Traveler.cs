@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define DEBUG_LOAD
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,55 +23,61 @@ using UnityEngine;
 
 public class Traveler : Actor
 {
-    //acting 구성
-    public State curState
-    {
-        get
-        {
-            return state;
-        }
-        set
-        {
-            ExitState();
-            state = value;
-            //Debug.Log(gameObject.name + " Enters: " + state);
-            EnterState(state);
-        }
-    }
     //useStructure ~ 구현
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
     protected Coroutine curCoroutine;
     protected Coroutine curSubCoroutine;
     //protected Tile destinationTile;
-    protected Place destinationPlace;
+    public Place destinationPlace;
     protected Structure[] structureListByPref;
 
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
 
-    protected void Awake()
-    {
-        base.Awake();
-    }
     // Use this for initialization
 
-    public void InitTraveler(Stat stat) //
+    //public void InitTraveler(Stat inputStat) //
+    //{
+    //    // 이동가능한 타일인지 확인할 delegate 설정.
+    //    pathFinder.SetValidateTile(ValidateNextTile);
+    //    SetPathFindEvent();
+    //    //stat 초기화
+    //    //stat = new Stat(inputStat, this);
+    //    stat = gameObject.AddComponent<Stat>();
+    //    stat.InitStat(inputStat, this);
+    //    //pathfinder 초기화 // delegate 그대로
+    //}
+
+    public void InitTraveler() //
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         SetPathFindEvent();
         //stat 초기화
-        stat = new Stat(stat, this);
+        //stat = new Stat(inputStat, this);
+        stat = gameObject.AddComponent<Stat>();
+        //stat.InitStat(inputStat, this);
+        //pathfinder 초기화 // delegate 그대로
+    }
+
+    public void InitTraveler(StatData inputData) //
+    {
+        // 이동가능한 타일인지 확인할 delegate 설정.
+        pathFinder = GetComponent<PathFinder>();
+        pathFinder.SetValidateTile(ValidateNextTile);
+        SetPathFindEvent();
+        //stat 초기화
+        //stat = new Stat(inputStat, this);
+        stat = gameObject.AddComponent<Stat>();
+        stat.InitStat(inputData, this);
         //pathfinder 초기화 // delegate 그대로
     }
 
     public void OnEnable()
     {
-        // 입구 타일 랜덤으로 받아오기.
-        SetCurTile(GameManager.Instance.GetRandomEntrance()); // 여기서 가끔 터짐. 수정요망. nullpointer 뜸
-        SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
-        AlignPositionToCurTileForMove();
+        if (isNew)
+            StartOnEntrance();
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         // PathFind 성공/실패에 따라 호출할 delegate 설정.
@@ -90,10 +98,18 @@ public class Traveler : Actor
 
         StartCoroutine(LateStart());
     }
+    public void StartOnEntrance()
+    {
+        // 입구 타일 랜덤으로 받아오기.
+        SetCurTile(GameManager.Instance.GetRandomEntrance()); // 여기서 가끔 터짐. 수정요망. nullpointer 뜸
+        SetCurTileForMove(GetCurTile().GetChild(Random.Range(0, 3)));
+        AlignPositionToCurTileForMove();
+    }
     IEnumerator LateStart()
     {
         yield return null;
-        curState = State.Idle;
+        //State temp = state;
+        curState = state;
     }
     public void OnDisable()
     {
@@ -101,20 +117,17 @@ public class Traveler : Actor
         //골드, 능력치 초기화...  // current , origin 따로둬야할까?
     }
 
-    public Stat stat
-    {
-        get;
-        set;
-    }
-    private Stat _stat;
+    public Stat stat;
 
     //FSM Pattern...
-    protected virtual void EnterState(State nextState)
+    protected override void EnterState(State nextState)
     {
         switch (nextState)
         {
             case State.Idle:
+#if DEBUG_TRAVELER
                 Debug.Log("Idle");
+#endif
                 if (structureListByPref == null)
                 {
                     //Do something at first move...
@@ -125,47 +138,63 @@ public class Traveler : Actor
                 //이외에 체크할거 있으면 여기서
                 break;
             case State.SolvingDesire_Wandering:
+#if DEBUG_TRAVELER
                 Debug.Log("SolvingDesire_Wandering");
+#endif
                 superState = SuperState.SolvingDesire_Wandering;
                 curCoroutine = StartCoroutine(SolvingDesire_Wandering());
                 break;
             case State.SearchingStructure:
+#if DEBUG_TRAVELER
                 Debug.Log("SS");
+#endif
                 superState = SuperState.SolvingDesire;
                 curCoroutine = StartCoroutine(SearchingStructure());
                 break;
             case State.PathFinding:
+#if DEBUG_TRAVELER
                 Debug.Log("PF");
+#endif
                 curCoroutine = StartCoroutine(PathFinding());
                 break;
             case State.MovingToDestination:
+#if DEBUG_TRAVELER
                 Debug.Log("MTS");
+#endif
                 curCoroutine = StartCoroutine(MoveToDestination());
                 break;
             case State.WaitingStructure:
+#if DEBUG_TRAVELER
                 Debug.Log("WS");
+#endif
                 destinationPlace.Visit(this);
                 break;
             case State.UsingStructure:
+#if DEBUG_TRAVELER
                 Debug.Log("US");
+#endif
                 //욕구 감소
                 //소지 골드 감소
                 UsingStructure();
                 break;
             case State.SearchingExit:
+#if DEBUG_TRAVELER
                 Debug.Log("SE");
+#endif
                 superState = SuperState.ExitingDungeon;
                 //Going to outside 
                 break;
             case State.Exit:
+#if DEBUG_TRAVELER
                 Debug.Log("EXIT");
+#endif
                 break;
             case State.None:
                 curState = State.Idle;
                 break;
         }
     }
-    protected virtual void ExitState()
+    protected override void ExitState()
     {
         switch (curState)
         {
@@ -376,6 +405,12 @@ public class Traveler : Actor
 		}
 	}
 
+#region SaveLoad
+    //public override ActorType GetActorType()
+    //{
+    //    return ActorType.Traveler;
+    //}
+#endregion
 
     //protected override List<TileForMove> GetWay(List<PathVertex> path) // Pathvertex -> TileForMove
     //{
