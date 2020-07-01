@@ -52,6 +52,7 @@ public class Traveler : Actor
     public void InitTraveler() //
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
+        pathFinder = GetComponent<PathFinder>();
         pathFinder.SetValidateTile(ValidateNextTile);
         SetPathFindEvent();
         //stat 초기화
@@ -181,6 +182,7 @@ public class Traveler : Actor
 #if DEBUG_TRAVELER
                 Debug.Log("SE");
 #endif
+                SearchingExit();
                 superState = SuperState.ExitingDungeon;
                 //Going to outside 
                 break;
@@ -188,6 +190,7 @@ public class Traveler : Actor
 #if DEBUG_TRAVELER
                 Debug.Log("EXIT");
 #endif
+                Exit();
                 break;
             case State.None:
                 curState = State.Idle;
@@ -327,6 +330,9 @@ public class Traveler : Actor
                 wanderCount++;
                 curState = State.SearchingStructure; // 수정요망
                 break;
+            case SuperState.ExitingDungeon:
+                curState = State.Exit;
+                break;
         }
     }
 
@@ -356,8 +362,20 @@ public class Traveler : Actor
         destinationPlace = null;
         wanderCount = 0;
     }
-	
-	public override void SetPathFindEvent() // Pathfinder Delegate 설정
+
+    protected void SearchingExit()
+    {
+        destinationTile = GameManager.Instance.GetRandomEntrance();
+
+        curState = State.PathFinding;
+    }
+
+    protected virtual void Exit()
+    {
+        GameManager.Instance.TravelersExit(this);
+    }
+
+    public override void SetPathFindEvent() // Pathfinder Delegate 설정
     {
 		pathFinder.SetNotifyEvent(PathFindSuccess, PathFindFail);
 	}

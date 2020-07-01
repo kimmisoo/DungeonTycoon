@@ -126,7 +126,7 @@ public class CombatAreaManager : MonoBehaviour
     {
         HuntingArea searchResult = null;
 
-        Debug.Log("HA IDX : " + PublicHuntingAreaIndex);
+        //Debug.Log("HA IDX : " + PublicHuntingAreaIndex);
         // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
         for (int i = 0; i <= PublicHuntingAreaIndex; i++)
         {
@@ -522,10 +522,12 @@ public class CombatAreaManager : MonoBehaviour
         GameManager.Instance.OnBossAreaConquerStarted();
     }
 
-    private void OnHuntingAreaConquered()
+    private void OnHuntingAreaConquered(bool isLoaded = false)
     {
         PublicHuntingAreaIndex++;
         HuntingAreaOpenToPublic();
+        if(isLoaded == false)
+            GameManager.Instance.OnHuntingAreaOpenToPublic();
 
         HuntingAreaConquerStart();
         //Debug.Log("OnHuntingAreaConquered");
@@ -536,12 +538,14 @@ public class CombatAreaManager : MonoBehaviour
         }
     }
 
-    public void OnBossAreaConquered()
+    public void OnBossAreaConquered(bool isLoaded = false)
     {
         if (ConqueringHuntingAreaIndex < huntingAreas.Count - 1)
         {
             PublicHuntingAreaIndex++;
             HuntingAreaOpenToPublic();
+            if(isLoaded == false)
+                GameManager.Instance.OnHuntingAreaOpenToPublic();
             HuntingAreaConquerStart();
         }
 
@@ -588,9 +592,9 @@ public class CombatAreaManager : MonoBehaviour
         while (PublicHuntingAreaIndex < savedata.combatAreaManager.publicHuntingAreaIndex)
         {
             if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea)
-                OnBossAreaConquered();
+                OnBossAreaConquered(true);
             else
-                OnHuntingAreaConquered();
+                OnHuntingAreaConquered(true);
         }
     }
 

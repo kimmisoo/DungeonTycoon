@@ -652,6 +652,7 @@ public abstract class Actor : MonoBehaviour
         if (input != null)
         {
             curTileForMove = tileLayer.GetTileForMove(input.x, input.y);
+            curTileForMove.AddRecentActor(this);
             //if (curTileForMove == null)
             //    Debug.Log("[" + input.x + ", " + input.y + "] curTFM 로드 실패!");
             //else
@@ -690,6 +691,13 @@ public abstract class Actor : MonoBehaviour
     public TileForMove GetDestinationTileForMove()
     {
         return destinationTileForMove;
+    }
+
+    public void ResetToReuse()
+    {
+        superState = SuperState.Idle;
+        state = State.Idle;
+        isNew = true;
     }
     #endregion
     //public abstract ActorType GetActorType();

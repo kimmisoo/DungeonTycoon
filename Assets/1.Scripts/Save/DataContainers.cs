@@ -25,11 +25,13 @@ public class GameSavedata
     #endregion
 
     #region Actors
-    public List<TravelerData> travelers;
+    public List<TravelerData> travelersDisabled;
+    public List<TravelerData> travelersEnabled;
     public List<AdventurerData> adventurersEnabled;
     public List<AdventurerData> adventurersDisabled;
     public List<SpecialAdventurerData> specialAdventurers;
 
+    public Queue<TravelerData> trvEnterQ;
     public Queue<AdventurerData> advEnterQ;
     public Queue<int> spAdvEnterQ; // 이미 specialAdventurers에 있던 걸 활성화해주니 인덱스만 저장.
     #endregion
@@ -66,9 +68,19 @@ public class GameSavedata
 
         #region Actors
         // travelers 저장.
-        travelers = new List<TravelerData>();
-        for (int i = 0; i < gameManager.travelers.Count; i++)
-            travelers.Add(new TravelerData(gameManager.travelers[i]));
+        travelersDisabled = new List<TravelerData>();
+        for (int i = 0; i < gameManager.travelersDisabled.Count; i++)
+            travelersDisabled.Add(new TravelerData(gameManager.travelersDisabled[i]));
+
+        travelersEnabled = new List<TravelerData>();
+        for (int i = 0; i < gameManager.travelersEnabled.Count; i++)
+            travelersEnabled.Add(new TravelerData(gameManager.travelersEnabled[i]));
+
+        trvEnterQ = new Queue<TravelerData>();
+        List<GameObject> trvEnterQConverted = gameManager.trvEnterQ.ToList();
+        for (int i = 0; i < trvEnterQConverted.Count; i++)
+            trvEnterQ.Enqueue(new TravelerData(trvEnterQConverted[i]));
+
 
         adventurersEnabled = new List<AdventurerData>();
         for (int i = 0; i < gameManager.adventurersEnabled.Count; i++)

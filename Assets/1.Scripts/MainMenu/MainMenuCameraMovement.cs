@@ -43,12 +43,12 @@ public class MainMenuCameraMovement : MonoBehaviour
         {
             yield return null;
             // 수정요망. null이 아니라 Count를 체크해야하지 않나?
-            if (GameManager.Instance != null && GameManager.Instance.travelers != null && GameManager.Instance.adventurersEnabled != null)
+            if (GameManager.Instance != null && GameManager.Instance.travelersDisabled != null && GameManager.Instance.adventurersEnabled != null)
             {
                 int t = 0;
-                if (GameManager.Instance.travelers[t = UnityEngine.Random.Range(0, GameManager.Instance.travelers.Count)] != null)
+                if (GameManager.Instance.travelersDisabled[t = UnityEngine.Random.Range(0, GameManager.Instance.travelersDisabled.Count)] != null)
                 {
-                    yield return StartCoroutine("ChasingCharacter", GameManager.Instance.travelers[t]);
+                    yield return StartCoroutine("ChasingCharacter", GameManager.Instance.travelersDisabled[t]);
                 }
             }
         }

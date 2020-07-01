@@ -120,7 +120,10 @@ public class HuntingArea : CombatArea
         // 몬스터 제거 및 다시 객체풀에 넣어주기
         monstersEnabled[index].SetActive(false);
         // 스테이트 재설정
-        monstersEnabled[index].GetComponent<Monster>().ResetState();
+        Monster tempMonster = monstersEnabled[index].GetComponent<Monster>();
+        tempMonster.ResetToReuse();
+        // 타일에서 제거해주기.
+        tempMonster.GetCurTileForMove().RemoveRecentActor(tempMonster);
         monstersDisabled.Add(index, monstersEnabled[index]);
         monstersEnabled.Remove(index);
 
@@ -284,6 +287,8 @@ public class HuntingArea : CombatArea
             //GameManager.Instance.InitLoadedMonster(newObject, sample, kvp.Value, true);
             Monster monsterComp = newObject.GetComponent<Monster>();
             monsterComp.InitMonster(sample.GetComponent<Monster>());
+            monsterComp.index = input.monstersDisabled[kvp.Key].index;
+            monsterComp.prefabPath = input.monstersDisabled[kvp.Key].prefabPath;
             monsterComp.SetHabitat(this);
             monsterComp.corpseDecayEvent += OnMonsterCorpseDecay;
             CombatAreaManager.SetMonsterDefaultEffects(monsterComp);

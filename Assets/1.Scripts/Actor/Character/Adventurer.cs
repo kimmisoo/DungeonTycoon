@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_ADV
-#define DEBUG_ADV_STATE
-#define DEBUG_LOAD
+//#define DEBUG_ADV_STATE
+//#define DEBUG_LOAD
 //#define DEBUG_ADV_BATTLE
 //#define DEBUG_CHARGE
 
@@ -199,15 +199,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 break;
             case State.SearchingExit:
 #if DEBUG_ADV_STATE
-                Debug.Log("SearchingExit");
+                Debug.Log("SE");
 #endif
+                SearchingExit();
                 superState = SuperState.ExitingDungeon;
-                //Traveler에서 구현
-                //curCoroutine = StartCoroutine(SearchingExit()); 
+                //Going to outside 
                 break;
             case State.Exit:
-                //Treaveler에서 구현
-                //Exit();
+#if DEBUG_ADV_STATE
+                Debug.Log("EXIT");
+#endif
+                Exit();
                 break;
             // 모험가 전투관련
             case State.SearchingHuntingArea:
@@ -404,7 +406,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 curState = State.SearchingMonster;
                 break;
             case SuperState.ExitingDungeon:
-                curState = State.SearchingExit;
+                curState = State.Exit;
                 break;
             case SuperState.SearchingMonster_Wandering:
                 curState = State.SearchingMonster;
@@ -423,6 +425,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV
         Debug.Log("Adv.EnterState()");
 #endif
+    }
+
+    protected override void Exit()
+    {
+        GameManager.Instance.AdventurerExit(this);
     }
 
 

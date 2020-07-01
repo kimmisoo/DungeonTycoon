@@ -152,7 +152,7 @@ public class TileLayer : MonoBehaviour  {
 			return tilesforMove[x, y];
 		else
 		{
-			Debug.Log("GetTileForMove Returns Null!! // " + x + " , " + y);
+			//Debug.Log("GetTileForMove Returns Null!! // " + x + " , " + y);
 			return null;			
 		}
 	}

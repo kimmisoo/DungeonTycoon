@@ -17,7 +17,7 @@ public abstract class CombatArea : Place
     public Dictionary<string, bool> occupiedTerritory;
 
     // 스테이지 진행/공략 용
-    public delegate void AreaConqueredEventHandler();
+    public delegate void AreaConqueredEventHandler(bool isLoaded);
     public event AreaConqueredEventHandler areaConquered;
 
 
@@ -219,7 +219,7 @@ public abstract class CombatArea : Place
 
     public void InvokeAreaConqueredEvent()
     {
-        areaConquered?.Invoke();
+        areaConquered?.Invoke(false);
     }
     #region SaveLoad
     public virtual void InitFromSaveData(CombatAreaData input)

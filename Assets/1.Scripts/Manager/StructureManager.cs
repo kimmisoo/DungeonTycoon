@@ -550,12 +550,12 @@ public class StructureManager : MonoBehaviour
         // 사용중 모험가, 대기중 모험가 큐에 넣어줌.
         while (input.curUsingQueue.Count()>0)
         {
-            structure.LoadEnterdTraveler(GameManager.Instance.travelers[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
+            structure.LoadEnterdTraveler(GameManager.Instance.travelersDisabled[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
         }
 
         while(input.curWaitingQueue.Count()>0)
         {
-            structure.AddWaitTraveler(GameManager.Instance.travelers[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
+            structure.AddWaitTraveler(GameManager.Instance.travelersDisabled[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
         }
     }
 }
