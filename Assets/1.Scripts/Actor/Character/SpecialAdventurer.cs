@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_ITEM
-#define DEBUG_SPADV_STATE
-#define DEBUG_BOSSPHASE
+//#define DEBUG_SPADV_STATE
+//#define DEBUG_BOSSPHASE
 
 using System.Collections;
 using System.Collections.Generic;
@@ -17,8 +17,25 @@ public class SpecialAdventurer : Adventurer
     private int bossRaidCallCnt = 0;
     public bool willBossRaid = false;
 
+    #region SaveLoad
+    public string nameKey;
+    #endregion
+
+    ////Skill uniqueSkill;
+    //public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, string name)
+    //{
+    //    base.InitAdventurer(stat, battleStat, rewardStat);
+    //    AddSkill(name);
+    //}
     //Skill uniqueSkill;
-    public void InitSpecialAdventurer(Stat stat, BattleStat battleStat, RewardStat rewardStat, string name)
+    public void InitSpecialAdventurer(BattleStat battleStat, RewardStat rewardStat, string name)
+    {
+        base.InitAdventurer(battleStat, rewardStat);
+        AddSkill(name);
+    }
+
+    //Skill uniqueSkill;
+    public void InitSpecialAdventurer(StatData stat, BattleStat battleStat, RewardStat rewardStat, string name)
     {
         base.InitAdventurer(stat, battleStat, rewardStat);
         AddSkill(name);
@@ -234,8 +251,11 @@ public class SpecialAdventurer : Adventurer
 #if DEBUG_SPADV_STATE
                     Debug.Log(name + " : " + "MatchWon");
 #endif
-                    //여기서 애니메이션 넣기
-                    StartCoroutine(MatchWon());
+                    MatchWon();
+                    break;
+                case State.WaitingOtherMatch:
+                    animator.SetBool("isCelebrating", true);
+                    //WaitingOtherMatch();
                     break;
                 case State.SkirmishDefeated:
 #if DEBUG_SPADV_STATE
@@ -249,6 +269,7 @@ public class SpecialAdventurer : Adventurer
 #if DEBUG_SPADV_STATE
                     Debug.Log(name + " : " + "SkirmishWon");
 #endif
+                    animator.SetBool("isCelebrating", true);
                     superState = SuperState.SkirmishWon;
                     curCoroutine = StartCoroutine(SkirmishWon());
                     break;
@@ -346,8 +367,14 @@ public class SpecialAdventurer : Adventurer
                 break;
             case State.MatchWon:
                 break;
+            case State.WaitingOtherMatch:
+                animator.SetBool("isCelebrating", false);
+                break;
             case State.SkirmishDefeated:
                 animator.SetTrigger("ResurrectionFlg");
+                break;
+            case State.SkirmishWon:
+                animator.SetBool("isCelebrating", false);
                 break;
             case State.EnteringBossArea:
                 break;
@@ -803,7 +830,7 @@ public class SpecialAdventurer : Adventurer
             Level >= CombatAreaManager.Instance.FindBossArea().ChallengeLevel) // 적정 레벨을 만족할 때
             GameManager.Instance.AICalledBossRaid(); // 보스레이드 신청
         else if (curHuntingArea != null && ((battleStat.Health < battleStat.HealthMax / 4) || // 체력이 25%미만이거나
-            (Level > curHuntingArea.LevelMax && curHuntingArea.huntingAreaIndex < CombatAreaManager.Instance.ConqueringHuntingAreaIndex))) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
+            (Level > curHuntingArea.LevelMax && curHuntingArea.index < CombatAreaManager.Instance.ConqueringHuntingAreaIndex))) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
             curState = State.ExitingHuntingArea; // 사냥터에서 퇴장
         else
             curState = State.SearchingMonster;
@@ -872,12 +899,16 @@ public class SpecialAdventurer : Adventurer
         }
     }
 
-    private IEnumerator MatchWon()
+    private void MatchWon()
     {
-        yield return new WaitForSeconds(0.2f);
-        animator.SetTrigger("WinFlg");
-        yield return new WaitForSeconds(0.8f);
         GameManager.Instance.ReportMatchWon(this);
+
+        curState = State.WaitingOtherMatch;
+    }
+
+    private void WaitingOtherMatch()
+    {
+        animator.SetTrigger("WinFlg");
     }
 
     private void SkirmishDefeated()
@@ -887,7 +918,7 @@ public class SpecialAdventurer : Adventurer
 
     private IEnumerator SkirmishWon()
     {
-        yield return null;
+        yield return new WaitForSeconds(1.0f);
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
         destinationPlace = CombatAreaManager.Instance.FindBossArea();
 
@@ -1020,10 +1051,10 @@ public class SpecialAdventurer : Adventurer
     #endregion
 
     #region SaveLoad
-    public override CombatantType GetCombatantType()
-    {
-        return CombatantType.SpecialAdventurer;
-    }
+    //public override CombatantType GetCombatantType()
+    //{
+    //    return CombatantType.SpecialAdventurer;
+    //}
     public Item GetWeapon()
     {
         return weapon;
@@ -1039,6 +1070,14 @@ public class SpecialAdventurer : Adventurer
     public Item GetAccessory2()
     {
         return accessory2;
+    }
+    //public override ActorType GetActorType()
+    //{
+    //    return ActorType.SpecialAdventurer;
+    //}
+    public override CombatantType GetCombatantType()
+    {
+        return CombatantType.SpecialAdventurer;
     }
     #endregion
 }

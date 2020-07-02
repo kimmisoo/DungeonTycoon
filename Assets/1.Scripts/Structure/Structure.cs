@@ -44,7 +44,6 @@ public class Structure : Place
     // 세이브, 로드용
     public string structureCategory;
     public int structureNumber;
-    public int structureIndex;
     //
 
 	public string path
@@ -226,7 +225,13 @@ public class Structure : Place
 
 		return waitTime;
 	}
-    
+
+    #region SaveLoad
+    public override PlaceType GetPlaceType()
+    {
+        return PlaceType.Structure;
+    }
+    #endregion
 }
 
 

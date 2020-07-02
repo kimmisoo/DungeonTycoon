@@ -73,7 +73,6 @@ public class BattleStat
         BaseMoveSpeed = input.BaseMoveSpeed;
         BaseAttackRange = input.BaseAttackRange;
 
-
         battleStatContinuous[StatType.Health].BaseValue = HealthMax;
         
         // TODO 수정요망

@@ -30,12 +30,16 @@ public class SaveLoadManager : MonoBehaviour
     }
     string savedataPath;
     GameSavedata savedata;
+    public bool isLoadedGame
+    {
+        get { return savedata != null; }
+    }
 
     private void Start()
     {
         if (_instance != null && _instance != this)
         {
-            Debug.Log("이미 있음." + this.gameObject.GetInstanceID());
+            //Debug.Log("이미 있음." + this.gameObject.GetInstanceID());
             Destroy(this.gameObject);
         }
         else
@@ -98,18 +102,27 @@ public class SaveLoadManager : MonoBehaviour
     /// <returns>로드 되었는지 아닌지</returns>
     public bool InstantiateFromSave()
     {
-        if (savedata == null)
-            return false;
-
         // 세이브에서 받아서 결과값 대입
-        if (savedata != null)
+        if (isLoadedGame)
         {
             GameManager.Instance.LoadPlayerData(savedata);
-
+            
             GameManager.Instance.LoadTileMap(savedata);
-            GameManager.Instance.LoadTravelerList(savedata);
+            GameManager.Instance.SetCombatAreas();
+
+            GameManager.Instance.LoadTravelers(savedata);
+            GameManager.Instance.LoadAdventurers(savedata);
+            GameManager.Instance.LoadSpecialAdventurers(savedata);
 
             StructureManager.Instance.LoadStructuresFromSave(savedata);
+            CombatAreaManager.Instance.LoadCombatAreasFromSave(savedata); //순서 바꿔야할 수도?
+            GameManager.Instance.LoadBossPhaseData(savedata);
+
+            GameManager.Instance.SetAdvsEnemy(savedata);
+            CombatAreaManager.Instance.SetMonstersEnemy(savedata);
+
+            GameManager.Instance.ActivatedLoadedActors(savedata);
+            //CombatAreaManager.Instance.ActivateMonsters();
 
             TileMapGenerator.Instance.SetTileStructure(savedata);
 
@@ -119,12 +132,8 @@ public class SaveLoadManager : MonoBehaviour
 
             return true;
         }
-        // 실패 메시지 출력
         else
-        {
-            Debug.Log("불러오기 실패");
             return false;
-        }
     }
 
     // Scene 로드
@@ -137,4 +146,3 @@ public class SaveLoadManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 }
-

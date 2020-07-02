@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CombatArea : Place
+
+public abstract class CombatArea : Place
 {
     // 사냥터 안의 몬스터, 모험가들
     public Dictionary<int, GameObject> monstersEnabled;
@@ -16,7 +17,7 @@ public class CombatArea : Place
     public Dictionary<string, bool> occupiedTerritory;
 
     // 스테이지 진행/공략 용
-    public delegate void AreaConqueredEventHandler();
+    public delegate void AreaConqueredEventHandler(bool isLoaded);
     public event AreaConqueredEventHandler areaConquered;
 
 
@@ -201,7 +202,8 @@ public class CombatArea : Place
     // 모험가 입장시 해당 모험가를 리스트에 등록
     public void EnterAdventurer(GameObject adventurer)
     {
-        adventurersInside.Add(adventurer);
+        if(adventurersInside.Contains(adventurer) == false)
+            adventurersInside.Add(adventurer);
     }
 
     // 모험가 퇴장시 리스트에서 제거
@@ -217,6 +219,12 @@ public class CombatArea : Place
 
     public void InvokeAreaConqueredEvent()
     {
-        areaConquered?.Invoke();
+        areaConquered?.Invoke(false);
     }
+    #region SaveLoad
+    public virtual void InitFromSaveData(CombatAreaData input)
+    {
+        
+    }
+    #endregion
 }

@@ -3,8 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Place : MonoBehaviour
+public enum PlaceType
 {
+    Structure, HuntingArea, BossArea
+}
+
+public abstract class Place : MonoBehaviour
+{
+    // 세이브 로드용
+    public int index;
+    public bool isNew = true;
+
     public Tile point //extent 기준 0,0의 타일
     {
         get; set;
@@ -53,6 +62,10 @@ public class Place : MonoBehaviour
 
     public virtual void Visit(Actor visitor)
     {    }
+
+    #region SaveLoad
+    public abstract PlaceType GetPlaceType();
+    #endregion
 }
 
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BossArea : HuntingArea
@@ -8,7 +9,7 @@ public class BossArea : HuntingArea
 
     #region SaveLoad
     public int bossAreaNum;
-    public int bossAreaIndex;
+    //public int index;
     #endregion
 
     public int Bonus
@@ -24,6 +25,7 @@ public class BossArea : HuntingArea
     public void InitBossArea(GameObject bossMonsterIn, int challengeLevel, int bonus)
     {
         bossMonster = bossMonsterIn;
+        
         //bossMonster.GetComponent<Monster>().corpseDecayEvent += OnBossKilled;
         ChallengeLevel = challengeLevel;
         Bonus = bonus;
@@ -43,6 +45,7 @@ public class BossArea : HuntingArea
 
         bossMonster.GetComponent<Monster>().AlignPositionToCurTileForMove();
         bossMonster.SetActive(true);
+        bossMonster.transform.parent = this.gameObject.transform;
 
         monstersEnabled.Add(0, bossMonster);
     }
@@ -61,4 +64,22 @@ public class BossArea : HuntingArea
     {
 
     }
+
+    #region SaveLoad
+    public override void InitFromSaveData(CombatAreaData input)
+    {
+        //base.InitFromSaveData(input);
+        GameManager.InitLoadedMonster(bossMonster, bossMonster, input.monstersEnabled[0], false);
+        bossMonster.transform.parent = this.gameObject.transform;
+        bossMonster.GetComponent<Monster>().SetHabitat(this);
+
+        int key = monstersEnabled.Keys.ToList()[0];
+        bossMonster = monstersEnabled[key];
+    }
+
+    public override PlaceType GetPlaceType()
+    {
+        return PlaceType.HuntingArea;
+    }
+    #endregion
 }

@@ -132,18 +132,27 @@ public class TileLayer : MonoBehaviour  {
 	}
 	public Tile GetTileAsComponent(int x, int y)
 	{
-		if ((0 <= x && x < layer_Width) && (0 <= y && y < layer_Height) && tiles[x, y] != null)
-			return tilesComponent[x, y];
-		else
-			return null;
+        if ((0 <= x && x < layer_Width) && (0 <= y && y < layer_Height) && tiles[x, y] != null)
+            return tilesComponent[x, y];
+        else
+        {
+            //Debug.Log("GetTileAsComponent Returns Null!! // " + x + " , " + y);
+            //Debug.Log("layer_Width : " + layer_Width + " , layer_Height : " + layer_Height);
+            return null;
+        }
 	}
+    public Tile GetTileDebug()
+    {
+        return GetComponentInChildren<Tile>();
+    }
+
 	public TileForMove GetTileForMove(int x, int y)
 	{
 		if ((0 <= x && x < layer_Width * 2) && (0 <= y && y < layer_Height * 2) && tilesforMove[x, y] != null)
 			return tilesforMove[x, y];
 		else
 		{
-			Debug.Log("GetTileForMove Returns Null!! // " + x + " , " + y);
+			//Debug.Log("GetTileForMove Returns Null!! // " + x + " , " + y);
 			return null;			
 		}
 	}
@@ -164,5 +173,4 @@ public class TileLayer : MonoBehaviour  {
 	{
 		return opacity;
 	}
-
 }

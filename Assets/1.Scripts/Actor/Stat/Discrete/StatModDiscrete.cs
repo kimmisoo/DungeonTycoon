@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class StatModDiscrete
 {
     public StatModDiscrete(StatType statType, ModType modType, int value)

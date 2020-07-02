@@ -24,7 +24,7 @@ public class StageProgressTest : MonoBehaviour
         if(GameManager.Instance.isBossPhase)
             curArea = CombatAreaManager.Instance.FindBossArea();
         else
-            curArea = CombatAreaManager.Instance.GetHuntingAreas()[CombatAreaManager.Instance.ConqueringHuntingAreaIndex];
+            curArea = CombatAreaManager.Instance.huntingAreas[CombatAreaManager.Instance.ConqueringHuntingAreaIndex];
 
         curArea.InvokeAreaConqueredEvent();
     }

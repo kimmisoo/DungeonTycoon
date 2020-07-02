@@ -15,7 +15,7 @@ public class Skirmish
     // 보스 레이드 준비 타이머 끝났나?
     //public bool bossRaidPrepTimeOver;
     // 토너먼트 끝?
-    public bool isSkirmishEnded;
+    //public bool isSkirmishEnded;
     public int roundCnt;
     public int curRound;
     public int matchCntCurRound;
@@ -139,6 +139,7 @@ public class Skirmish
         skirmishBracket[0].curState = State.EnteringBossArea;
 
         // 그 외 인터페이스 보여주려면 여기서.
+        GameManager.Instance.OnSkirmishEnd();
     }
 
     /// <summary>
@@ -158,4 +159,26 @@ public class Skirmish
         if (curMatch == matchCntCurRound)
             NextRound();
     }
+
+    #region SaveLoad
+    public void LoadSkirmishData(SkirmishData data)
+    {
+        skirmishParticipants.Clear();
+        for (int i = 0; i < data.skirmishParticipants.Count; i++)
+            skirmishParticipants.Add(GameManager.Instance.specialAdventurers[data.skirmishParticipants[i]].GetComponent<SpecialAdventurer>());
+
+        skirmishLosers.Clear();
+        for (int i = 0; i < data.skirmishLosers.Count; i++)
+            skirmishLosers.Add(GameManager.Instance.specialAdventurers[data.skirmishLosers[i]].GetComponent<SpecialAdventurer>());
+
+        skirmishBracket.Clear();
+        for (int i = 0; i < data.skirmishBracket.Count; i++)
+            skirmishBracket.Add(GameManager.Instance.specialAdventurers[data.skirmishBracket[i]].GetComponent<SpecialAdventurer>());
+
+        roundCnt = data.roundCnt;
+        curRound = data.curRound;
+        matchCntCurRound = data.matchCntCurRound;
+        curMatch = data.curMatch;
+    }
+    #endregion
 }

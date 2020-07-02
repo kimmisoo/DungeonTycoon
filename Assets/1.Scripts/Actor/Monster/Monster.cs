@@ -11,19 +11,6 @@ using System.Linq;
 
 public class Monster : Actor, ICombatant//:Actor, IDamagable {
 {
-    public State curState //Save
-    {
-        get
-        {
-            return state;
-        }
-        set
-        {
-            ExitState();
-            state = value;
-            EnterState(state);
-        }
-    }
     protected int pathFindCount = 0;
     protected int wanderCount = 0;
     // 대기시간에 움직이는지. 보스면 false
@@ -128,7 +115,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>();
         // 기본은 Idle.
         StartCoroutine(LateStart());
-        refreshingTempEffectCoroutine = StartCoroutine(RefreshTemporaryEffects());
+        if(isNew)
+            refreshingTempEffectCoroutine = StartCoroutine(RefreshTemporaryEffects());
 
         SetUI();
     }
@@ -142,7 +130,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     IEnumerator LateStart()
     {
         yield return null;
-        curState = State.Idle;
+        curState = state;
     }
     #endregion
 
@@ -153,7 +141,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     }
 
     #region StateMachine
-    protected void EnterState(State nextState)
+    protected override void EnterState(State nextState)
     {
         switch (nextState)
         {
@@ -229,7 +217,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
                 break;
         }
     }
-    protected void ExitState()
+    protected override void ExitState()
     {
         switch (curState)
         {
@@ -604,6 +592,12 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             enemy.RemoveHealthBelowZeroEventHandler(OnEnemyHealthBelowZero);
     }
 
+    public void ResetState()
+    {
+        state = State.Idle;
+        superState = SuperState.Idle;
+    }
+
     // 죽을 때 호출. 이 몬스터를 공격대상으로 하고있는 모험가들에게 알려줌.
     public void HealthBelowZeroNotify(ICombatant victim, ICombatant attacker)
     {
@@ -831,6 +825,11 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         return battleStat;
     }
 
+    public void SetEnemy(ICombatant enemyIn)
+    {
+        enemy = enemyIn;
+    }
+
     public ICombatant GetEnemy()
     {
         return enemy;
@@ -984,10 +983,10 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             battleStat.Heal(battleStat.HealthMax);
     }
 
-    public virtual CombatantType GetCombatantType()
-    {
-        return CombatantType.Monster;
-    }
+    //public virtual CombatantType GetCombatantType()
+    //{
+    //    return CombatantType.Monster;
+    //}
     #endregion
 
     #region UI
@@ -1016,6 +1015,21 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     public Dictionary<string, Skill> GetSkills()
     {
         return skills;
+    }
+    //public override ActorType GetActorType()
+    //{
+    //    return ActorType.Monster;
+    //}
+    public RewardStat GetRewardStat()
+    {
+        return rewardStat;
+    }
+    public virtual CombatantType GetCombatantType()
+    {
+        if (canWander)
+            return CombatantType.Monster;
+        else
+            return CombatantType.BossMonster;
     }
     #endregion
 }
