@@ -37,21 +37,22 @@ public class Traveler : Actor
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
 
-    // Use this for initialization
+	public Stat stat;
+	// Use this for initialization
 
-    //public void InitTraveler(Stat inputStat) //
-    //{
-    //    // 이동가능한 타일인지 확인할 delegate 설정.
-    //    pathFinder.SetValidateTile(ValidateNextTile);
-    //    SetPathFindEvent();
-    //    //stat 초기화
-    //    //stat = new Stat(inputStat, this);
-    //    stat = gameObject.AddComponent<Stat>();
-    //    stat.InitStat(inputStat, this);
-    //    //pathfinder 초기화 // delegate 그대로
-    //}
+	//public void InitTraveler(Stat inputStat) //
+	//{
+	//    // 이동가능한 타일인지 확인할 delegate 설정.
+	//    pathFinder.SetValidateTile(ValidateNextTile);
+	//    SetPathFindEvent();
+	//    //stat 초기화
+	//    //stat = new Stat(inputStat, this);
+	//    stat = gameObject.AddComponent<Stat>();
+	//    stat.InitStat(inputStat, this);
+	//    //pathfinder 초기화 // delegate 그대로
+	//}
 
-    public void InitTraveler() //
+	public void InitTraveler() //
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder = GetComponent<PathFinder>();
@@ -96,12 +97,12 @@ public class Traveler : Actor
 
         // 기본은 Idle.
         StartCoroutine(LateStart());
-    }
 		foreach (KeyValuePair<DesireType, DesireBase> kvp in stat.GetDesireDict())
 		{
 			StartCoroutine(kvp.Value.Tick()); //Traveler SetActive = false 시 코루틴 종료됨.
 		}
-    }
+	}
+	
     public void StartOnEntrance()
     {
         // 입구 타일 랜덤으로 받아오기.
@@ -121,7 +122,7 @@ public class Traveler : Actor
         //골드, 능력치 초기화...  // current , origin 따로둬야할까?
     }
 
-    public Stat stat;
+    
 
     //FSM Pattern...
     protected override void EnterState(State nextState)
@@ -178,7 +179,7 @@ public class Traveler : Actor
                 break;
             case State.Exit:
                 Debug.Log("----------------------------------------------EXIT");
-				curCoroutine = StartCoroutine(Exit());
+				Exit();
                 break;
             case State.None: // Idle과 동일
 				//curState = State.Idle;
@@ -375,10 +376,9 @@ public class Traveler : Actor
 		yield return null;
 	}
     
-	protected virtual IEnumerator Exit()
+	protected virtual void Exit()
 	{
 		GameManager.Instance.TravelersExit(this);
-		yield return null;
 	}
 
 	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
@@ -524,3 +524,4 @@ public class Traveler : Actor
 	}
 
 }
+#endregion
