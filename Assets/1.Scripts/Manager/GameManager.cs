@@ -1,4 +1,4 @@
-﻿#define DEBUG_ADV
+﻿//#define DEBUG_ADV
 //#define DEBUG_GEN_ADV
 
 using UnityEngine;
@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
 
 		
 #if DEBUG_ADV
-        GenAndEnqueueSingleAdventurer(1, 10);
+        //GenAndEnqueueSingleAdventurer(1, 10);
         //GenAndEnqueueSpecialAdvenuturer("Hana", 85);
         //GenAndEnqueueSpecialAdvenuturer("Iris", 26);
         //GenAndEnqueueSpecialAdvenuturer("Maxi", 25);
@@ -997,8 +997,8 @@ public class GameManager : MonoBehaviour
         tempArr.Sort(CompareByCurHuntingAreaAsc);
 
         // PublicHuntingAreaIndex 기준으로 새 모험가 생성
-        //int totalAdv = CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.PublicHuntingAreaIndex + 1);
-        //tempArr.Add(new ProgressInformation(CurAdvMaxPerHuntingArea)); // 왜 필요함?
+        int totalAdv = CurAdvMaxPerHuntingArea * (CombatAreaManager.Instance.PublicHuntingAreaIndex + 1);
+        tempArr.Add(new ProgressInformation(CurAdvMaxPerHuntingArea)); // 왜 필요함?
 
         tempArr.Add(new ProgressInformation(CurAdvMax));
         Debug.Log("Before");
@@ -1884,8 +1884,8 @@ public class GameManager : MonoBehaviour
     
     public void FillTrvAdvVacancies()
     {
-        //GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
-        //GenerateAdventurers(CurAdvMax - adventurersEnabled.Count - advEnterQ.Count);
+        GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
+        GenerateAdventurers(CurAdvMax - adventurersEnabled.Count - advEnterQ.Count);
 		
     }
 

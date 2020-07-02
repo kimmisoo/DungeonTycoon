@@ -174,11 +174,11 @@ public class PathFinder : MonoBehaviour
 		if (isNoPath)
 		{
 			isNoPath = false;
-			//pathFindFail();
+			pathFindFail();
 		}
 		else
 		{
-			//pathFindSuccess();
+			pathFindSuccess();
 		}
     }
 

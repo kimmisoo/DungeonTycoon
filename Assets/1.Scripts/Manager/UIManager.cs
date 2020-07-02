@@ -86,6 +86,7 @@ public class UIManager : MonoBehaviour {
 
     public Material grayScaleMaterial;
 
+	public SpecificationPanel specPanel;
 	void Awake()
 	{
 		_instance = this;
@@ -98,8 +99,14 @@ public class UIManager : MonoBehaviour {
     {
         StartCoroutine("UIUpdate");
     }
-
-
+	public void CharacterSelected(Traveler trv)
+	{
+		specPanel.OnCharacterSelected(trv);
+	}
+	public void CharacterDeselected()
+	{
+		specPanel.OnCharacterDeselected();
+	}
     IEnumerator UIUpdate()
     {
         bool isInterpolatingGold = false;

@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114837406444899398}
   m_Layer: 0
   m_Name: OldMan
-  m_TagString: Untagged
+  m_TagString: SelectableCharacter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -179,12 +179,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc489fd22dd513242a5fc2a1419adc1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  superState: 0
   state: 0
   pathFinder: {fileID: 114191157935963910}
+  prefabPath: 
+  isNew: 1
+  destinationPlace: {fileID: 0}
   index: 0
+  stat: {fileID: 0}
+  curHuntingArea: {fileID: 0}
   canvas: {fileID: 0}
   hpBar: {fileID: 0}
   hpSlider: {fileID: 0}
+  shieldBar: {fileID: 0}
+  shieldSlider: {fileID: 0}
+  curBossArea: {fileID: 0}
+  willBossRaid: 0
+  nameKey: 
 --- !u!212 &212069200146370996
 SpriteRenderer:
   m_ObjectHideFlags: 1

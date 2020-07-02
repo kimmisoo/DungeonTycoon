@@ -20,6 +20,7 @@ TagManager:
   - skipButton
   - CombatArea
   - ConstructingArea
+  - SelectableCharacter
   layers:
   - Default
   - TransparentFX

@@ -186,8 +186,6 @@ public class InputManager : MonoBehaviour {
 						if (scrollVelocity >= 5000)
 							scrollVelocity = 5000;
 					}
-
-
 				}
 				else if (touches[0].phase == TouchPhase.Ended) // 터치가 끝났을때
 				{
@@ -201,16 +199,21 @@ public class InputManager : MonoBehaviour {
                         if (selectedObject == null)
                         {
 							UnselectTile();
-
-                        }
+							UIManager.Instance.CharacterDeselected();
+						}
 						else if(selectedObject.tag == "Tile" && selectedObject.GetComponent<Tile>().GetIsActive() == true)
                         {
 							SelectTile();
                         }
 						//캐릭터 선택 추가해야함...
+						else if(selectedObject.tag == "SelectableCharacter")
+						{
+							UIManager.Instance.CharacterSelected(selectedObject.GetComponent<Traveler>());
+						}
                         else
                         {
 							UnselectTile();
+							UIManager.Instance.CharacterDeselected();
 						}
                         
                     }

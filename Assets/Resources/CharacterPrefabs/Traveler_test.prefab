@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114221652466524428}
   m_Layer: 0
   m_Name: Traveler_test
-  m_TagString: Untagged
+  m_TagString: SelectableCharacter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -179,6 +179,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6b84caed386934cae69e82754c2f54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  superState: 0
+  state: 1
+  pathFinder: {fileID: 0}
+  prefabPath: 
+  isNew: 1
+  destinationPlace: {fileID: 0}
+  index: 0
+  stat: {fileID: 0}
 --- !u!212 &212354283700025392
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -65,7 +65,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        //SetPathFindEventAdventurer();
+        SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -100,7 +100,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        //SetPathFindEventAdventurer();
+        SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -358,10 +358,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //if (curTile == null)
         //    Debug.Log("curTile == null!");
         Debug.Assert(destinationTile != null);
-#endif	
-        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+#endif
+		yield return null;
+		Debug.Log("Pathfinding...Coroutine");
+		StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+		
 		//
-		switch (superState)
+		/*switch (superState)
 		{
 			case SuperState.SearchingMonster:
 				curState = State.ApproachingToEnemy;
@@ -375,7 +378,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 			default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
 				curState = State.MovingToDestination;
 				break;
-		}
+		}*/
 	}
 	
 	// 수정요망
