@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     public int activeSpAdvCnt;
     public int playerSpAdvIndex = -1;
 
-    public List<GameObject> travelers;
+    public List<GameObject> travelersEnabled;
     public List<GameObject> adventurersEnabled;
     public List<GameObject> specialAdventurers;
     
@@ -75,6 +75,9 @@ public class GameManager : MonoBehaviour
     int santuary_Max = 0;
     int rescue_Max = 0;
     int complete_Popularity = 0;
+
+	int stageIndex = 0;
+	int stageMax = 0;
 
     // 모험가, 관광객 생성용 비율 저장 리스트
     List<KeyValuePair<string, float>> raceRatios;
@@ -1381,7 +1384,7 @@ public class GameManager : MonoBehaviour
                     GivePlayerGatekeeperBonus();
                 break;
         }
-
+		OpenNextStage();
         CombatAreaManager.Instance.OnBossAreaConquered();
     }
 
@@ -1561,6 +1564,7 @@ public class GameManager : MonoBehaviour
 		//호출은 아마 HuntingArea에서 할듯?
 		if (stageIndex >= stageMax)
 			return;
+			//or call OpenNextScene();
 		stageIndex += 1;
 		TileLayer layer = GetTileLayer(0);
 		for(int i = 0; i< layer.GetLayerHeight(); i++)
@@ -1577,6 +1581,12 @@ public class GameManager : MonoBehaviour
 			}
 		}
 	}
+
+	public void OpenNextScene()
+	{
+		//다음 씬으로 ...
+	}
+
 
 
 #endregion    

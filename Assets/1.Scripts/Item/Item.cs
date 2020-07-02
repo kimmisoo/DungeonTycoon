@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Text;
 public enum ItemType
 {
     Weapon, Armor, Accessory
@@ -27,7 +27,7 @@ public class Item
     public int OptimalLevelUpper { get; set; }
     public int DemandedLevel { get; set; }
     public string Explanation { get; set; }
-
+	Sprite itemImage=null;
     // 세이브용
     public int itemNum;
     public string itemCategory;
@@ -36,6 +36,7 @@ public class Item
     {
         continuousMods = new List<StatModContinuous>();
         discreteMods = new List<StatModDiscrete>();
+		itemImage = Resources.Load<Sprite>("Items/weapons_image/001");
     }
 
     public string SkillName
@@ -102,4 +103,31 @@ public class Item
     {
         discreteMods.Add(statMod);
     }
+	public string GetItemStatAsString()
+	{
+		StringBuilder sb = new StringBuilder();
+		foreach(StatModContinuous smc in continuousMods)
+		{
+
+			sb.Append(smc.StatType.ToString());
+			sb.Append(" : ");
+			sb.Append(smc.ModValue.ToString());
+			sb.Append("\n");
+		}
+		foreach(StatModDiscrete sdc in discreteMods)
+		{
+			sb.Append(sdc.StatType.ToString());
+			sb.Append(" : ");
+			sb.Append(sdc.ModValue.ToString());
+			sb.Append("\n");
+		}
+		sb.Append(SkillName);
+		sb.Append(" : ");
+		sb.Append(SkillExplanation);
+		return sb.ToString();
+	}
+	public Sprite GetItemImage()
+	{
+		return itemImage;
+	}
 }

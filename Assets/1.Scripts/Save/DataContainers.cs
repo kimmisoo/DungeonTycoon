@@ -44,9 +44,9 @@ public class GameSavedata
         travelerDatas = new List<TravelerData>();
 
         // travelers 저장.
-        for (int i = 0; i < gameManager.travelers.Count; i++)
+        for (int i = 0; i < gameManager.travelersEnabled.Count; i++)
         {
-            travelerDatas.Add(new TravelerData(gameManager.travelers[i]));
+            travelerDatas.Add(new TravelerData(gameManager.travelersEnabled[i]));
         }
 
         // 타일맵 저장.
@@ -151,10 +151,10 @@ public class TileData
         prefabInfo = inputTile.prefabInfo;
         layerNum = inputTile.GetLayerNum();
 
-        isPassable = inputTile.GetPassable();
+        isPassable = inputTile.GetRoad();
         isStructed = inputTile.GetStructed();
         isNonTile = inputTile.GetNonTile();
-        isBuildable = inputTile.GetBuildable();
+        isBuildable = inputTile.GetBuildingArea();
         isHuntingArea = inputTile.GetHuntingArea();
 
         Structure tileStructure = inputTile.GetStructure();
@@ -207,14 +207,14 @@ public class StructureData
         Traveler[] tempArr = input.GetCurUsingQueueAsArray();
         for (int i = 0; i < tempArr.Length; i++)
             curUsingQueue.Enqueue(tempArr[i].index);
-        tempArr = input.GetCurWatingQueueAsArray();
+		tempArr = input.GetCurWaitingQueueAsArray();
         for (int i = 0; i < tempArr.Length; i++)
             curWaitingQueue.Enqueue(tempArr[i].index);
 
-        float timeNow = Time.fixedTime;
-        float[] timeArr = input.GetEnteredTimeQueueAsArray();
+        //float timeNow = Time.fixedTime;
+        float[] timeArr = input.GetElapsedTimeQueueAsArray();
         for (int i = 0; i < timeArr.Length; i++)
-            elapsedTimeQueue.Enqueue(timeNow - timeArr[i]);
+            elapsedTimeQueue.Enqueue(timeArr[i]);
 
         structureCategory = input.structureCategory;
         structureNumber = input.structureNumber;

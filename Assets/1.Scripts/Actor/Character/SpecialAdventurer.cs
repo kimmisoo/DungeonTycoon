@@ -565,7 +565,7 @@ public class SpecialAdventurer : Adventurer
         switch (superState)
         {
             case SuperState.SolvingDesire:
-                VisitStructure();
+				StartCoroutine(CheckStructure());
                 break;
             case SuperState.SolvingDesire_Wandering:
                 wanderCount++;

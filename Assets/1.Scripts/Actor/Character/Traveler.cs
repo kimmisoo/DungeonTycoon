@@ -283,7 +283,7 @@ public class Traveler : Actor {
         wayForMove = GetWay(pathFinder.GetPath()); // TileForMove로 변환
         animator.SetBool("MoveFlg", true); // animation 이동으로
         yield return curCoroutine = StartCoroutine(MoveAnimation(wayForMove)); // 이동 한번에 코루틴으로 처리 // 이동 중지할 일 있으면 StopCoroutine moveAnimation // traveler니까 없을듯?																//순번 or 대기 여부 결정
-
+		
         switch(superState)
         {
             case SuperState.SolvingDesire: // 건물로 이동했을때
@@ -502,5 +502,11 @@ public class Traveler : Actor {
 			s.color = new Color(s.color.r, s.color.g, s.color.b, 1.0f);
 		}
 	}
-   
+   public Sprite GetChracterSprite()
+	{
+		return spriteRenderers[1].sprite;
+		//순서 보장x
+		//캐릭터 스프라이트 변수 새로 만들거나 해야할듯?
+	}
+
 }

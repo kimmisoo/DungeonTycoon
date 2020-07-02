@@ -53,7 +53,7 @@ public abstract class Actor : MonoBehaviour
     protected Direction direction;
     protected Animator animator;
     protected SpriteRenderer[] spriteRenderers;
-
+	
     protected Tile curTile;
     public TileForMove curTileForMove;
     protected TileLayer tileLayer;

@@ -345,8 +345,8 @@ public class TileMapGenerator : MonoBehaviour
                 tile.prefabInfo = tileDatas[i].prefabInfo;
 
 				// 프로퍼티 세팅.
-				/////////////////tile.SetPassable(tileDatas[i].isPassable);
-				tile.SetRoad(tileDatas[i].isRoad);
+				
+				tile.SetRoad(tileDatas[i].isPassable);
                 tile.SetStructed(tileDatas[i].isStructed);
                 tile.SetNonTile(tileDatas[i].isNonTile);
                 tile.SetBuildingArea(tileDatas[i].isBuildable);

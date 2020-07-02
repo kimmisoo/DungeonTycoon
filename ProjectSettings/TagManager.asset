@@ -19,6 +19,7 @@ TagManager:
   - guard
   - skipButton
   - CombatArea
+  - ConstructingArea
   layers:
   - Default
   - TransparentFX
