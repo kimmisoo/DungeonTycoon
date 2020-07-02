@@ -70,7 +70,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEvent();
+        SetPathFindEventMonster();
 
         this.monsterNum = monsterNum;
         this.battleStat = new BattleStat(battleStat);
@@ -105,7 +105,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         // PathFind 성공/실패에 따라 호출할 delegate 설정.
-        SetPathFindEvent();
+        SetPathFindEventMonster();
         // 아마 실패 횟수인 듯.
         pathFindCount = 0;
         curCoroutine = null;
@@ -305,18 +305,18 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     }
 
 
-    public override void SetPathFindEvent() // Pathfinder Delegate 설정
+    public void SetPathFindEventMonster() // Pathfinder Delegate 설정
     {
-        pathFinder.SetNotifyEvent(PathFindSuccess, PathFindFail);
+        pathFinder.SetNotifyEvent(PathFindSuccessMonster, PathFindFailMonster);
     }
 
-    public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
+    public void PathFindSuccessMonster() // Pathfinder 길찾기 성공 Delegate
     {
         pathFindCount = 0;
         if (destinationStructure != null)
             curState = State.MovingToDestination;
     }
-    public void PathFindFail() // PathFinder 길찾기 실패 Delegate
+    public void PathFindFailMonster() // PathFinder 길찾기 실패 Delegate
     {
         pathFindCount++;
         if (curState == State.Exit)

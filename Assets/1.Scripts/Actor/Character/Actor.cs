@@ -320,7 +320,10 @@ public abstract class Actor : MonoBehaviour
                 cur = next;
             }
             count++;
-            dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos); // TODO: 이부분에서 종종 터짐. 
+
+			
+			dir = cur.GetParent().GetDirectionFromOtherTile(path[count].myTilePos); // TODO: 이부분에서 종종 터짐. 
+			
             //ArgumentOutOfRangeException: Index was out of range. Must be non - negative and less than the size of the collection.
             //Parameter name: index
             //System.ThrowHelper.ThrowArgumentOutOfRangeException(System.ExceptionArgument argument, System.ExceptionResource resource)(at<e1a80661d61443feb3dbdaac88eeb776>:0)
@@ -557,7 +560,6 @@ public abstract class Actor : MonoBehaviour
     }
 
     public abstract bool ValidateNextTile(Tile tile);
-    public abstract void SetPathFindEvent();
 
     #region Save Load
     public int GetDestinationTileSave()

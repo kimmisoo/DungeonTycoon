@@ -174,10 +174,12 @@ public class PathFinder : MonoBehaviour
 		if (isNoPath)
 		{
 			isNoPath = false;
-			pathFindFail();
+			//pathFindFail();
 		}
 		else
-			pathFindSuccess();
+		{
+			//pathFindSuccess();
+		}
     }
 
     public void Simulate(System.Object threadContext)
@@ -362,6 +364,7 @@ public class PathFinder : MonoBehaviour
 	}
 	public void SetNotifyEvent(NotifyToActor success, NotifyToActor fail)
 	{
+		
 		pathFindSuccess = success;
 		pathFindFail = fail;
 	}

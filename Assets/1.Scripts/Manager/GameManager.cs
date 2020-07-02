@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
 
 		
 #if DEBUG_ADV
-        //GenAndEnqueueSingleAdventurer(25, 25);
+        GenAndEnqueueSingleAdventurer(1, 10);
         //GenAndEnqueueSpecialAdvenuturer("Hana", 85);
         //GenAndEnqueueSpecialAdvenuturer("Iris", 26);
         //GenAndEnqueueSpecialAdvenuturer("Maxi", 25);
@@ -295,7 +295,7 @@ public class GameManager : MonoBehaviour
         //GenAndEnqueueSpecialAdvenuturer("OldMan", 5);
 #endif
         //StartCoroutine(GCcall())
-        GenSpecialAdventurers(sceneData);
+        //GenSpecialAdventurers(sceneData);
         StartCoroutine(LateStart());
     }
 
@@ -786,6 +786,7 @@ public class GameManager : MonoBehaviour
 
         tempTraveler.InitTraveler();
         GenStat(tempTraveler);
+		tempTraveler.stat.SetOwner(tempTraveler);
         tempTraveler.ResetToReuse();
         travelersDisabled.RemoveAt(travelersDisabled.Count - 1);
 
@@ -809,10 +810,11 @@ public class GameManager : MonoBehaviour
         tempAdventurer.InitAdventurer(tempBattleStat, tempRewardStat);
         tempAdventurer.ResetToReuse();
         GenStat(tempAdventurer, advLevel);
-        //if (tempAdventurer.stat == null)
-        //    Debug.Log("Genned adv's stat is null!");
+		tempAdventurer.stat.SetOwner(tempAdventurer);
+		//if (tempAdventurer.stat == null)
+		//    Debug.Log("Genned adv's stat is null!");
 
-        adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
+		adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
         advEnterQ.Enqueue(temp);
     }
 
@@ -870,9 +872,10 @@ public class GameManager : MonoBehaviour
 
         //Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
-        tempSpAdv.InitSpecialAdventurer(tempBattleStat, tempRewardStat, name);
+        tempSpAdv.InitSpecialAdventurer(tempBattleStat, tempRewardStat, name);		
         GenStat(tempSpAdv, name, level);
-        spAdvEnterQ.Enqueue(go);
+		tempSpAdv.stat.SetOwner(tempSpAdv);
+		spAdvEnterQ.Enqueue(go);
     }
 
     public void SetSpAdvEffects(SpecialAdventurer spAdv, string name)
@@ -1881,8 +1884,9 @@ public class GameManager : MonoBehaviour
     
     public void FillTrvAdvVacancies()
     {
-        GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
-        GenerateAdventurers(CurAdvMax - adventurersEnabled.Count - advEnterQ.Count);
+        //GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
+        //GenerateAdventurers(CurAdvMax - adventurersEnabled.Count - advEnterQ.Count);
+		
     }
 
 

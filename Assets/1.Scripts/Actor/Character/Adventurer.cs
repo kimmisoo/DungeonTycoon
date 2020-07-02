@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_ADV
-//#define DEBUG_ADV_STATE
+#define DEBUG_ADV_STATE
 //#define DEBUG_LOAD
 //#define DEBUG_ADV_BATTLE
 //#define DEBUG_CHARGE
@@ -10,6 +10,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text;
 
 public class Adventurer : Traveler, ICombatant//, IDamagable {
 {
@@ -64,7 +65,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEvent();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -80,7 +81,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEvent();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -99,7 +100,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEvent();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -113,14 +114,15 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         skills = new Dictionary<string, Skill>();
         temporaryEffects = new Dictionary<string, TemporaryEffect>();
     }
-
-    public void OnEnable()
+	
+	public void OnEnable()
     {
         base.OnEnable();
         monsterSearchCnt = 0;
         SetUI();
         SkillActivate();
         refreshingTempEffectCoroutine = StartCoroutine(RefreshTemporaryEffects());
+		
     }
 
     public void OnDisable()
@@ -145,7 +147,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 Debug.Log("Idle");
 #endif
                 superState = SuperState.Idle;
-                Idle();
+                StartCoroutine(Idle());
                 //Traveler이므로 무조건 SearchingStructure 부터
                 //이외에 체크할거 있으면 여기서
                 break;
@@ -356,30 +358,42 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //if (curTile == null)
         //    Debug.Log("curTile == null!");
         Debug.Assert(destinationTile != null);
-#endif
+#endif	
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-
-        switch (superState)
-        {
-            case SuperState.SearchingMonster:
-                curState = State.ApproachingToEnemy;
-                break;
-            case SuperState.PassedOut:
-                curState = State.Rescued;
-                break;
-            case SuperState.Battle:
-                curState = State.ApproachingToEnemy;
-                break;
-            default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
-                curState = State.MovingToDestination;
-                break;
-        }
-    }
-
-    // 수정요망
-    protected override IEnumerator MoveToDestination()
+		//
+		switch (superState)
+		{
+			case SuperState.SearchingMonster:
+				curState = State.ApproachingToEnemy;
+				break;
+			case SuperState.PassedOut:
+				curState = State.Rescued;
+				break;
+			case SuperState.Battle:
+				curState = State.ApproachingToEnemy;
+				break;
+			default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
+				curState = State.MovingToDestination;
+				break;
+		}
+	}
+	
+	// 수정요망
+	protected override IEnumerator MoveToDestination()
     {
         //길찾기 성공
+		Debug.Log("pathfindSuccess");
+		Debug.Log("destination = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+		StringBuilder sb = new StringBuilder();
+		foreach(PathVertex pv in pathFinder.GetPath())
+		{
+			sb.Append(pv.myTilePos.GetX().ToString());
+			sb.Append(" , ");
+			sb.Append(pv.myTilePos.GetY().ToString());
+			sb.Append("\n");
+		}
+		Debug.Log(sb.ToString());
+		//Debug.Log("path Last = " + pathFinder.GetPath()[pathFinder.GetPath().Count - 1].myTilePos.GetX() + " , " + pathFinder.GetPath()[pathFinder.GetPath().Count - 1].myTilePos.GetY());
         destinationTileForMove = destinationTile.childs[Random.Range(0, 4)];
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
         // TODO: GetWayForMove로 고치기
@@ -390,7 +404,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         switch (superState)
         {
             case SuperState.SolvingDesire:
-                CheckStructure();
+				StartCoroutine(CheckStructure());
                 break;
             case SuperState.SolvingDesire_Wandering:
                 wanderCount++;
@@ -413,10 +427,11 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 break;
         }
     }
-
+	
 #region StateMachine
-    public void Idle()
+    public IEnumerator Idle()
     {
+		yield return null;
         //Debug.Log("GetSpecificDesire() : " + stat.GetHighestDesire());
         if (stat.GetSpecificDesire(stat.GetHighestDesire()).desireValue < 50.0f)
             curState = State.SearchingHuntingArea;
@@ -432,19 +447,54 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         GameManager.Instance.AdventurerExit(this);
     }
 
+	public void PathFindSuccessAdventurer()
+	{
+		Debug.Log("PAthfindSuccessEvenet!!!");
+		StartCoroutine(CoroutinePathFindSuccessAdventurer());
+	}
+	IEnumerator CoroutinePathFindSuccessAdventurer()
+	{
+		yield return null;
+		switch (superState)
+		{
+			case SuperState.SearchingMonster:
+				curState = State.ApproachingToEnemy;
+				break;
+			case SuperState.PassedOut:
+				curState = State.Rescued;
+				break;
+			case SuperState.Battle:
+				curState = State.ApproachingToEnemy;
+				break;
+			default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
+				curState = State.MovingToDestination;
+				break;
+		}
+	}
+	public void PathFindFailAdventurer()
+	{
+		StartCoroutine(CoroutinePathFindFailAdventurer());
+	}
+	IEnumerator CoroutinePathFindFailAdventurer()
+	{
+		yield return null;
+	}
+	public void SetPathFindEventAdventurer()
+	{
+		//Debug.Log(gameObject.GetInstanceID());
+		pathFinder.SetNotifyEvent(PathFindSuccessAdventurer, PathFindFailAdventurer);
+	}
+	//protected void VisitHuntingGround()
+	//{
+	//    curHuntingArea = destinationPlace as HuntingArea;
+	//    curHuntingArea.EnterAdventurer(this.gameObject);
 
+	//    destinationPlace = null; // 사용 후에는 비워주기.
+	//    curState = State.EnteringHuntingArea;
+	//}
 
-    //protected void VisitHuntingGround()
-    //{
-    //    curHuntingArea = destinationPlace as HuntingArea;
-    //    curHuntingArea.EnterAdventurer(this.gameObject);
-
-    //    destinationPlace = null; // 사용 후에는 비워주기.
-    //    curState = State.EnteringHuntingArea;
-    //}
-
-    // 수정요망
-    protected virtual IEnumerator SearchingHuntingArea()
+	// 수정요망
+	protected virtual IEnumerator SearchingHuntingArea()
     {
         yield return null;
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.

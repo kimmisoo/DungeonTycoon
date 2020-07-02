@@ -57,7 +57,7 @@ public class Traveler : Actor
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder = GetComponent<PathFinder>();
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEvent();
+        SetPathFindEventTraveler();
         //stat 초기화
         //stat = new Stat(inputStat, this);
         stat = gameObject.AddComponent<Stat>();
@@ -70,7 +70,7 @@ public class Traveler : Actor
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder = GetComponent<PathFinder>();
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEvent();
+        SetPathFindEventTraveler();
         //stat 초기화
         //stat = new Stat(inputStat, this);
         stat = gameObject.AddComponent<Stat>();
@@ -84,8 +84,8 @@ public class Traveler : Actor
             StartOnEntrance();
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        // PathFind 성공/실패에 따라 호출할 delegate 설정.
-        SetPathFindEvent();
+        
+        
         // 아마 실패 횟수인 듯.
         pathFindCount = 0;
 		wanderCount = 0;
@@ -97,10 +97,7 @@ public class Traveler : Actor
 
         // 기본은 Idle.
         StartCoroutine(LateStart());
-		foreach (KeyValuePair<DesireType, DesireBase> kvp in stat.GetDesireDict())
-		{
-			StartCoroutine(kvp.Value.Tick()); //Traveler SetActive = false 시 코루틴 종료됨.
-		}
+		
 	}
 	
     public void StartOnEntrance()
@@ -381,7 +378,7 @@ public class Traveler : Actor
 		GameManager.Instance.TravelersExit(this);
 	}
 
-	public void PathFindSuccess() // Pathfinder 길찾기 성공 Delegate
+	public void PathFindSuccessTraveler() // Pathfinder 길찾기 성공 Delegate
 	{
 		/*pathFindCount = 0;
 		Debug.Log("Success!!");
@@ -416,7 +413,7 @@ public class Traveler : Actor
 		}
 		yield return null;
 	}
-	public void PathFindFail() // PathFinder 길찾기 실패 Delegate
+	public void PathFindFailTraveler() // PathFinder 길찾기 실패 Delegate
 	{
 		/*pathFindCount++;
 		//pathfindcount 일정 이상 초과하면 SearchingExit...
@@ -448,9 +445,9 @@ public class Traveler : Actor
 		yield return null;
 	}
 
-	public override void SetPathFindEvent() // Pathfinder Delegate 설정
+	public void SetPathFindEventTraveler() // Pathfinder Delegate 설정
     {
-		pathFinder.SetNotifyEvent(PathFindSuccess, PathFindFail);
+		pathFinder.SetNotifyEvent(PathFindSuccessTraveler, PathFindFailTraveler);
 	}
 
 	public override bool ValidateNextTile(Tile tile) // Pathfinder delegate

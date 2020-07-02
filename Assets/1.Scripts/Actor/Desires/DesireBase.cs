@@ -85,17 +85,6 @@ public class DesireBase {
 	protected Coroutine tickCoroutine;
 	protected Traveler owner;
 	
-	/*
-	public void Init(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
-	{
-		_desireName = name;
-		desireValue = initDesireValue;
-		tickAmount = initTickAmount;
-		tickAmountMult = initTickMult;
-		tickBetween = initTickBetween;
-		tickBetweenWait = new WaitForSeconds(tickBetween);
-		owner = _owner;
-	}*/
 	public DesireBase(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
 	{
 		_desireName = name;
@@ -133,7 +122,7 @@ public class DesireBase {
 		while(true)
 		{
 			yield return tickBetweenWait;
-			if(owner.GetState() != State.UsingStructure)
+			if (owner.GetState() != State.UsingStructure)
 				desireValue += tickAmount * tickAmountMult;
 		}
 	}

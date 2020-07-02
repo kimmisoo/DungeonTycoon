@@ -53,6 +53,7 @@ public class Stat : MonoBehaviour
 
     public void InitStat(Stat inputStat, Traveler owner)
     {
+		Debug.Log("InitStat");
         id = inputStat.id;
         race = inputStat.race;
         wealth = inputStat.wealth;
@@ -67,13 +68,13 @@ public class Stat : MonoBehaviour
         {
             desireDict[desireDict.Keys.ToArray()[i]].SetOwner(owner);
         }
-        //StartDesireTick();
     }
 
     public void InitStat(StatData statData, Traveler owner)
     {
-        //Debug.Log(statData == null);
-        id = statData.id;
+		Debug.Log("InitStat_StatData");
+		//Debug.Log(statData == null);
+		id = statData.id;
         race = statData.race;
         wealth = statData.wealth;
         actorName = statData.actorName;
@@ -85,38 +86,6 @@ public class Stat : MonoBehaviour
         foreach (DesireType key in statData.desireDict.Keys.ToArray())
             desireDict.Add(key, new DesireBase(statData.desireDict[key]));
         SetOwner(owner);
-    }
-
-	public void Init(int _id, RaceType _race, WealthType _wealth, string _name, string _explanation, Gender _gender, int _gold, Dictionary<DesireType, DesireBase> _desireDict, Traveler _owner)
-	{
-		id = _id;
-		race = _race;
-		wealth = _wealth;
-		actorName = _name;
-		explanation = _explanation;
-		gender = _gender;
-		gold = _gold;
-		desireDict = _desireDict;
-		owner = _owner;
-		
-	}
-
-    public void Init(Stat inputStat, Traveler owner)
-    {
-        id = inputStat.id;
-        race = inputStat.race;
-        wealth = inputStat.wealth;
-        actorName = inputStat.actorName;
-        explanation = inputStat.explanation;
-        gender = inputStat.gender;
-        gold = inputStat.gold;
-        desireDict = new Dictionary<DesireType, DesireBase>(inputStat.GetDesireDict());
-
-        this.owner = owner;
-        for (int i = 0; i < desireDict.Count; i++)
-        {
-            desireDict[desireDict.Keys.ToArray()[i]].SetOwner(owner);
-        }
     }
 
     #region Desire Tick메소드
