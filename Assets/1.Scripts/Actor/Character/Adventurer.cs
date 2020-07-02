@@ -1205,8 +1205,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         shieldBar.transform.SetParent(canvas.transform);
         shieldBar.GetComponent<ShieldBar>().SetSubject(this);
 
-        hpBar.SetActive(true);
-        shieldBar.SetActive(true);
+        hpBar.SetActive(false);
+        shieldBar.SetActive(false);
     }
     public void DestroyUI()
     {
@@ -1215,13 +1215,18 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
     public void ShowBattleUI()
     {
+        hpBar.SetActive(true);
+        shieldBar.SetActive(true);
         hpBar.GetComponent<HPBar>().Show();
         shieldBar.GetComponent<ShieldBar>().Show();
     }
     public void HideBattleUI()
     {
-        hpBar.GetComponent<HPBar>().Hide();
-        shieldBar.GetComponent<ShieldBar>().Hide();
+        if (hpBar.activeSelf)
+        {
+            hpBar.GetComponent<HPBar>().Hide();
+            shieldBar.GetComponent<ShieldBar>().Hide();
+        }
     }
 
 

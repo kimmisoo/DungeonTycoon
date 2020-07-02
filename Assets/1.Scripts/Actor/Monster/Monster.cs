@@ -186,7 +186,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 #if DEBUG_MOB_STATE
                 Debug.Log("Initiating Battle");
 #endif
-                hpBar.GetComponent<HPBar>().Show();
+                ShowBattleUI();
                 superState = SuperState.Battle;
                 InitiatingBattle();
                 break;
@@ -236,7 +236,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
             case State.InitiatingBattle:
                 break;
             case State.Battle:
-                hpBar.GetComponent<HPBar>().Hide();
+                HideBattleUI();
                 break;
             case State.AfterBattle:
                 break;
@@ -998,8 +998,20 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         hpBar.transform.SetParent(canvas.transform);
         hpBar.GetComponent<HPBar>().SetSubject(this);
 
-        hpBar.SetActive(true);
+        hpBar.SetActive(false);
         damageText.transform.SetParent(canvas.transform);
+    }
+
+    public void ShowBattleUI()
+    {
+        hpBar.SetActive(true);
+        hpBar.GetComponent<HPBar>().Show();
+    }
+
+    public void HideBattleUI()
+    {
+        if(hpBar.activeSelf)
+            hpBar.GetComponent<HPBar>().Hide();
     }
     #endregion
 

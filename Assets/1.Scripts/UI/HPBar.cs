@@ -75,5 +75,7 @@ public class HPBar : MonoBehaviour
                 item.color = new Color(item.color.r, item.color.g, item.color.b, curAlpha);
             yield return null;
         }
+
+        gameObject.SetActive(false);
     }
 }
