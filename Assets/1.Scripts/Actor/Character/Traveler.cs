@@ -140,42 +140,42 @@ public class Traveler : Actor
                 //이외에 체크할거 있으면 여기서
                 break;
             case State.SolvingDesire_Wandering:
-                Debug.Log("----------------------------------------------SolvingDesire_Wandering");
+                //Debug.Log("----------------------------------------------SolvingDesire_Wandering");
                 superState = SuperState.SolvingDesire_Wandering;
                 curCoroutine = StartCoroutine(SolvingDesire_Wandering()); // State -> SearchingExit(if wanderCount exceeded) or PathFinding(normal)
                 break;
             case State.SearchingStructure:
-                Debug.Log("----------------------------------------------SS");
+                //Debug.Log("----------------------------------------------SS");
                 superState = SuperState.SolvingDesire;
                 curCoroutine = StartCoroutine(SearchingStructure()); // State -> SolvingDesrie_Wandering(if no structure) or PathFinding or SearchingExit
                 break;
             case State.PathFinding:
-                Debug.Log("----------------------------------------------PF");
+                //Debug.Log("----------------------------------------------PF");
                 curCoroutine = StartCoroutine(PathFinding()); // State -> MovingToDestination(if Succeed) or SearchingExit(if pathfindCount Exceeded) or SearchingStructure(if pathfindCount under maxValue)
                 break;
             case State.MovingToDestination:
-                Debug.Log("----------------------------------------------MTS");
+                //Debug.Log("----------------------------------------------MTS");
                 curCoroutine = StartCoroutine(MoveToDestination()); // State -> SearchingStructure(if
                 break;
             case State.WaitingStructure:
-                Debug.Log("----------------------------------------------WS");
+                //Debug.Log("----------------------------------------------WS");
                 //destinationPlace.Visit(this);
 				curCoroutine = StartCoroutine(WaitingStructure());
                 break;
             case State.UsingStructure:
-                Debug.Log("----------------------------------------------US");
+                //Debug.Log("----------------------------------------------US");
                 //욕구 감소
                 //소지 골드 감소
                 curCoroutine = StartCoroutine(UsingStructure());
                 break;
             case State.SearchingExit:
-                Debug.Log("----------------------------------------------SE");
+                //Debug.Log("----------------------------------------------SE");
                 superState = SuperState.ExitingDungeon;
 				curCoroutine = StartCoroutine(SearchingExit());
                 //Going to outside 
                 break;
             case State.Exit:
-                Debug.Log("----------------------------------------------EXIT");
+                //Debug.Log("----------------------------------------------EXIT");
 				Exit();
                 break;
             case State.None: // Idle과 동일
@@ -258,7 +258,7 @@ public class Traveler : Actor
 			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
 			if (structureListByPref == null) // 건물이 하나도 없다면
 			{
-				Debug.Log("--------------------------------------------------StructureList is Null");
+				//Debug.Log("--------------------------------------------------StructureList is Null");
 				curState = State.SolvingDesire_Wandering;
 				yield break;
 			}
@@ -266,13 +266,13 @@ public class Traveler : Actor
 
 		if(structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
 		{
-			Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
+			//Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
 			pathFindCount = 0;
 			curState = State.SolvingDesire_Wandering;
 		}
 		else // 검색 결과 건물로 길찾기진행.
 		{
-			Debug.Log("------------------------------------------------------------Found Structure!");
+			//Debug.Log("------------------------------------------------------------Found Structure!");
 			destinationTile = structureListByPref[pathFindCount].GetEntrance();
 			destinationPlace = structureListByPref[pathFindCount];
 			curState = State.PathFinding;
@@ -398,7 +398,7 @@ public class Traveler : Actor
 		}
 		if(destinationPlace != null) // superState == SolvingDesire;
 		{
-			Debug.Log("-----------------------------------PF Success");
+			//Debug.Log("-----------------------------------PF Success");
 			pathFindCount = 0;
 			curState = State.MovingToDestination;
 		}
@@ -432,7 +432,7 @@ public class Traveler : Actor
 	}
 	IEnumerator CoroutinePathFindFail()
 	{
-		Debug.Log("----------------------------------------------------------PF Fail." + destinationPlace is Structure ? (destinationPlace as Structure).name : "Tile..");
+		//Debug.Log("----------------------------------------------------------PF Fail." + destinationPlace is Structure ? (destinationPlace as Structure).name : "Tile..");
 
 		if(superState == SuperState.ExitingDungeon)
 		{

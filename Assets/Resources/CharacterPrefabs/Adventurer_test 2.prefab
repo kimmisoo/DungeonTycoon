@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9511060}
   - component: {fileID: 11413246}
   - component: {fileID: 11413338}
+  - component: {fileID: 70243426608459322}
   m_Layer: 0
   m_Name: Adventurer_test 2
   m_TagString: SelectableCharacter
@@ -130,3 +131,18 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 124568}
   m_IsPrefabParent: 1
+--- !u!70 &70243426608459322
+CapsuleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 124568}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.25, y: 0.52}
+  m_Direction: 0

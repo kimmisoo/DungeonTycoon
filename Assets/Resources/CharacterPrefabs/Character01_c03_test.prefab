@@ -70,6 +70,7 @@ GameObject:
   - component: {fileID: 95735935028945672}
   - component: {fileID: 114284056660364312}
   - component: {fileID: 114793622980200886}
+  - component: {fileID: 70167717830985782}
   m_Layer: 0
   m_Name: Character01_c03_test
   m_TagString: SelectableCharacter
@@ -132,6 +133,21 @@ Transform:
   m_Father: {fileID: 4755959067236592}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &70167717830985782
+CapsuleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1936923962854566}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1}
+  m_Direction: 0
 --- !u!95 &95735935028945672
 Animator:
   serializedVersion: 3

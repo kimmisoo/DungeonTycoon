@@ -295,7 +295,7 @@ public class GameManager : MonoBehaviour
         //GenAndEnqueueSpecialAdvenuturer("OldMan", 5);
 #endif
         //StartCoroutine(GCcall())
-        //GenSpecialAdventurers(sceneData);
+        GenSpecialAdventurers(sceneData);
         StartCoroutine(LateStart());
     }
 

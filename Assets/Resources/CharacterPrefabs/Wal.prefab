@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 95543977377792148}
   - component: {fileID: 114850988344999720}
   - component: {fileID: 114230628987483016}
+  - component: {fileID: 70861157768799642}
   m_Layer: 0
   m_Name: Wal
   m_TagString: SelectableCharacter
@@ -132,6 +133,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &70861157768799642
+CapsuleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1137184357497014}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1}
+  m_Direction: 0
 --- !u!95 &95543977377792148
 Animator:
   serializedVersion: 3

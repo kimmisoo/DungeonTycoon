@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 95500145098812664}
   - component: {fileID: 114496638918021688}
   - component: {fileID: 114221652466524428}
+  - component: {fileID: 70979525825446252}
   m_Layer: 0
   m_Name: Traveler_test
   m_TagString: SelectableCharacter
@@ -132,6 +133,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &70979525825446252
+CapsuleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1083337244626922}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1}
+  m_Direction: 0
 --- !u!95 &95500145098812664
 Animator:
   serializedVersion: 3

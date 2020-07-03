@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_ITEM
-//#define DEBUG_SPADV_STATE
+#define DEBUG_SPADV_STATE
 //#define DEBUG_BOSSPHASE
 
 using System.Collections;
@@ -32,14 +32,18 @@ public class SpecialAdventurer : Adventurer
     {
         base.InitAdventurer(battleStat, rewardStat);
         AddSkill(name);
-    }
+		SetPathFindEventSpecialAdventurer();
+
+	}
 
     //Skill uniqueSkill;
     public void InitSpecialAdventurer(StatData stat, BattleStat battleStat, RewardStat rewardStat, string name)
     {
         base.InitAdventurer(stat, battleStat, rewardStat);
         AddSkill(name);
-    }
+		SetPathFindEventSpecialAdventurer();
+
+	}
 
     public void OnEnable()
     {
@@ -84,10 +88,10 @@ public class SpecialAdventurer : Adventurer
             {
                 case State.Idle:
 #if DEBUG_SPADV_STATE
-                    Debug.Log("Idle");
+                    Debug.Log(name + " : " + "Idle");
 #endif
                     superState = SuperState.Idle;
-                    Idle();
+                    curCoroutine = StartCoroutine(Idle());
                     //Traveler이므로 무조건 SearchingStructure 부터
                     //이외에 체크할거 있으면 여기서
                     break;
@@ -554,32 +558,52 @@ public class SpecialAdventurer : Adventurer
     #region State Implements
     protected override IEnumerator PathFinding()
     {
-        yield return curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-
-        switch (superState)
-        {
-            case SuperState.SearchingMonster:
-                curState = State.ApproachingToEnemy;
-                break;
-            case SuperState.PassedOut:
-                curState = State.Rescued;
-                break;
-            case SuperState.Battle:
-                curState = State.ApproachingToEnemy;
-                break;
-            case SuperState.BossBattle:
-                curState = State.ApproachingToEnemy;
-                break;
-            case SuperState.Skirmish:
-                curState = State.ApproachingToEnemy;
-                break;
-            default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire, EnteringBossArea
-                curState = State.MovingToDestination;
-                break;
-        }
+		yield return null;
+        curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
     }
-
-    protected override IEnumerator MoveToDestination()
+	public void PathFindSuccessSpecialAdventurer()
+	{
+		StartCoroutine(CoroutinePathFindSuccessSpecialAdventurer());
+	}
+	IEnumerator CoroutinePathFindSuccessSpecialAdventurer()
+	{
+		yield return null;
+		switch (superState)
+		{
+			case SuperState.SearchingMonster:
+				curState = State.ApproachingToEnemy;
+				break;
+			case SuperState.PassedOut:
+				curState = State.Rescued;
+				break;
+			case SuperState.Battle:
+				curState = State.ApproachingToEnemy;
+				break;
+			case SuperState.BossBattle:
+				curState = State.ApproachingToEnemy;
+				break;
+			case SuperState.Skirmish:
+				curState = State.ApproachingToEnemy;
+				break;
+			default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire, EnteringBossArea
+				curState = State.MovingToDestination;
+				break;
+		}
+	}
+	public void PathFindFailSpecialAdventurer()
+	{
+		StartCoroutine(CoroutinePathFindFailSpecialAdventurer());
+	}
+	IEnumerator CoroutinePathFindFailSpecialAdventurer()
+	{
+		yield return null;
+	}
+	public void SetPathFindEventSpecialAdventurer()
+	{
+		//Debug.Log(gameObject.GetInstanceID());
+		pathFinder.SetNotifyEvent(PathFindSuccessSpecialAdventurer, PathFindFailSpecialAdventurer);
+	}
+	protected override IEnumerator MoveToDestination()
     {
         //길찾기 성공
         destinationTileForMove = destinationTile.childs[Random.Range(0, 4)];

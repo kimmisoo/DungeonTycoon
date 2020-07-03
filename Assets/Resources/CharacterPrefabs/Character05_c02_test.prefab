@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 95036266060524492}
   - component: {fileID: 114439013971721338}
   - component: {fileID: 114301479776266796}
+  - component: {fileID: 70816886831254240}
   m_Layer: 0
   m_Name: Character05_c02_test
   m_TagString: SelectableCharacter
@@ -132,6 +133,21 @@ Transform:
   m_Father: {fileID: 4737826877673678}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &70816886831254240
+CapsuleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1529037064127566}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1}
+  m_Direction: 0
 --- !u!95 &95036266060524492
 Animator:
   serializedVersion: 3

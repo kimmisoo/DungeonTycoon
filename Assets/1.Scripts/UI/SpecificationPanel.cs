@@ -63,17 +63,13 @@ public class SpecificationPanel : UIObject {
 	WaitForSeconds updateTick = new WaitForSeconds(2.0f);
 	//캐릭터 클릭할떄 -> InputManager -> UIManager -> SpecificationPanel 로 캐릭터 오브젝트 전달
 	//캐릭터 유형에 따라 탭 활성화
-	
+	Coroutine tracing;
 	public Traveler curCharacter;
 	public void Awake()
 	{
 		specPanelBase = gameObject;
 		rectTransform = GetComponent<RectTransform>();
 		far = new Vector3(5000f, 5000f, 0.0f);
-	}
-	public void Start()
-	{
-		
 	}
 
 	public void OnCharacterSelected(Traveler traveler)
@@ -106,10 +102,12 @@ public class SpecificationPanel : UIObject {
 	}
 	public void OnCharacterDeselected()
 	{
+		StopCoroutine(tracing);
 		rectTransform.position = far;
 		nextButton.SetActive(false);
 		prevButton.SetActive(false);
 		StopCoroutine(statUpdateCoroutine);
+		ClearUI();
 		foreach (GameObject go in viewablePanels)
 		{
 			go.SetActive(false);
@@ -117,6 +115,7 @@ public class SpecificationPanel : UIObject {
 		viewablePanels = null;
 		viewingIndex = 0;
 		curCharacter = null;
+		
 		
 	}
 	public void ClearUI()
@@ -153,6 +152,7 @@ public class SpecificationPanel : UIObject {
 		characterEquipedItemImage_4.sprite = null;
 		itemStatText.text = string.Empty;
 		itemExplanationText.text = string.Empty;
+
 	}
 	public void OpenNextPanel()
 	{
@@ -175,6 +175,20 @@ public class SpecificationPanel : UIObject {
 	{
 		viewablePanels[viewingIndex].SetActive(true);
 		statUpdateCoroutine = StartCoroutine(UpdateCharacterSpec());
+		//StopCoroutine(tracing);
+		tracing = StartCoroutine(TraceCharacter());
+	}
+	IEnumerator TraceCharacter()
+	{
+		Vector3 curPos;
+		if (curCharacter == null)
+			yield break;
+		while(curCharacter != null)
+		{
+			yield return null;
+			curPos = Camera.main.WorldToScreenPoint(curCharacter.gameObject.transform.position);
+			rectTransform.localPosition = curPos;
+		}
 	}
 	IEnumerator UpdateCharacterSpec()
 	{

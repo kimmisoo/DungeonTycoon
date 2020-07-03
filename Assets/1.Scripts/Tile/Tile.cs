@@ -106,7 +106,7 @@ public class Tile : MonoBehaviour
 	//Traveler - Road, 
     public bool GetPassableTraveler() 
     {
-		return isNonTile == false && isActive == true;// && isStructed == false && isHuntingArea == false;//isStructed == false ? isRoad || isBuildingArea : false;
+		return isNonTile == false && isActive == true && isStructed == false && isHuntingArea == false;// && isStructed == false && isHuntingArea == false;//isStructed == false ? isRoad || isBuildingArea : false;
     }
     public bool GetPassableAdventurer()
     {
@@ -114,7 +114,7 @@ public class Tile : MonoBehaviour
     }
     public bool GetPassableMonster()
     {
-        return isNonTile == false && isActive == true ? isHuntingArea : false;
+		return isNonTile == false && isActive == true;// ? isHuntingArea : false;
 	}
 	public void SetBuildingArea(bool _isBuildingArea)
 	{

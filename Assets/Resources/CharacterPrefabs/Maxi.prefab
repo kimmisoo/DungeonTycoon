@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 95299802196746100}
   - component: {fileID: 114077188617194816}
   - component: {fileID: 114974989204379048}
+  - component: {fileID: 70521530708246072}
   m_Layer: 0
   m_Name: Maxi
   m_TagString: SelectableCharacter
@@ -132,6 +133,21 @@ Transform:
   m_Father: {fileID: 4568711149760420}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &70521530708246072
+CapsuleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1278113487111178}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1}
+  m_Direction: 0
 --- !u!95 &95299802196746100
 Animator:
   serializedVersion: 3

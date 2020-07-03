@@ -81,7 +81,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        //SetPathFindEventAdventurer();
+        SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
