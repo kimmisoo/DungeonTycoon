@@ -70,7 +70,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventMonster();
+        //SetPathFindEventMonster();
 
         this.monsterNum = monsterNum;
         this.battleStat = new BattleStat(battleStat);
@@ -105,7 +105,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         // PathFind 성공/실패에 따라 호출할 delegate 설정.
-        SetPathFindEventMonster();
+        //SetPathFindEventMonster();
         // 아마 실패 횟수인 듯.
         pathFindCount = 0;
         curCoroutine = null;
@@ -252,7 +252,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     protected IEnumerator Wandering()
     {
         yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
-
+        
         // 목적지(빈 타일) 찾기.
         //destinationTileForMove = habitat.FindBlanks(1)[0];
 
@@ -278,16 +278,28 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     protected IEnumerator PathFinding()
     {
-        yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+        yield return curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
-        switch (superState)
+        if (pathFinder.PathFinded)
         {
-            case SuperState.Wandering:
-                curState = State.MovingToDestination;
-                break;
-            case SuperState.Battle:
-                curState = State.ApproachingToEnemy;
-                break;
+            switch (superState)
+            {
+                case SuperState.Wandering:
+                    curState = State.MovingToDestination;
+                    break;
+                case SuperState.Battle:
+                    curState = State.ApproachingToEnemy;
+                    break;
+            }
+        }
+        else
+        {
+            switch(superState)
+            {
+                case SuperState.Wandering:
+                    curState = State.Wandering;
+                    break;
+            }
         }
     }
 

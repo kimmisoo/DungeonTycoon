@@ -72,7 +72,7 @@ public class Stat : MonoBehaviour
 
     public void InitStat(StatData statData, Traveler owner)
     {
-		Debug.Log("InitStat_StatData");
+		//Debug.Log("InitStat_StatData");
 		//Debug.Log(statData == null);
 		id = statData.id;
         race = statData.race;

@@ -80,7 +80,6 @@ public abstract class Actor : MonoBehaviour
         {
             ExitState();
             state = value;
-            //Debug.Log(gameObject.name + " Enters: " + state);
             EnterState(state);
         }
     }

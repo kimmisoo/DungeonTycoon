@@ -57,7 +57,7 @@ public class Traveler : Actor
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder = GetComponent<PathFinder>();
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventTraveler();
+        //SetPathFindEventTraveler();
         //stat 초기화
         //stat = new Stat(inputStat, this);
         stat = gameObject.AddComponent<Stat>();
@@ -70,7 +70,7 @@ public class Traveler : Actor
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder = GetComponent<PathFinder>();
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventTraveler();
+        //SetPathFindEventTraveler();
         //stat 초기화
         //stat = new Stat(inputStat, this);
         stat = gameObject.AddComponent<Stat>();
@@ -286,7 +286,45 @@ public class Traveler : Actor
 	protected virtual IEnumerator PathFinding()
     {
         //yield return null;
+        Debug.Log("PF");
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        if(pathFinder.PathFinded)
+        {
+            if (GetSuperState() == SuperState.ExitingDungeon)
+            {
+                //퇴장처리
+                pathFindCount = 0;
+                curState = State.MovingToDestination;
+                yield break;
+            }
+            if (destinationPlace != null) // superState == SolvingDesire;
+            {
+                //Debug.Log("-----------------------------------PF Success");
+                pathFindCount = 0;
+                curState = State.MovingToDestination;
+            }
+            else if (destinationTile != null) // superState == SolvingDesire_Wandering
+            {
+                pathFindCount = 0;
+                curState = State.MovingToDestination;
+            }
+            else
+            {
+                StartCoroutine(CoroutinePathFindFail());
+            }
+        }
+        else
+        {
+            if (superState == SuperState.ExitingDungeon)
+            {
+                //즉시탈출
+                //평판 --
+                yield break;
+            }
+            pathFindCount++;
+            curState = State.SearchingStructure;
+        }
         //curState = State.MovingToDestination;
 		//Delegate 이벤트에서 State 변경처리.
     }
@@ -358,7 +396,6 @@ public class Traveler : Actor
         {
 			structureListByPref = null;
 			curState = State.SearchingStructure;
-			
         }
         else
         {
@@ -380,10 +417,11 @@ public class Traveler : Actor
 
 	public void PathFindSuccessTraveler() // Pathfinder 길찾기 성공 Delegate
 	{
-		/*pathFindCount = 0;
+        /*pathFindCount = 0;
 		Debug.Log("Success!!");
 		//if (destinationPlace != null)
 			//curState = State.MovingToDestination;*/
+        Debug.Log("[PathFindSuccessTraveler]");
 		StartCoroutine(CoroutinePathFindSuccess());
 	}
 	IEnumerator CoroutinePathFindSuccess()

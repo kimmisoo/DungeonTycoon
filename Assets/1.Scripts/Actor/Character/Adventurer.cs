@@ -65,7 +65,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventAdventurer();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -81,7 +81,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventAdventurer();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -100,7 +100,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventAdventurer();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -118,6 +118,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 	public void OnEnable()
     {
         base.OnEnable();
+
+        //SetPathFindEventAdventurer();
         monsterSearchCnt = 0;
         SetUI();
         SkillActivate();
@@ -361,27 +363,43 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #endif
 		yield return null;
 		Debug.Log("Pathfinding...Coroutine");
-		StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-		
-		//
-		/*switch (superState)
-		{
-			case SuperState.SearchingMonster:
-				curState = State.ApproachingToEnemy;
-				break;
-			case SuperState.PassedOut:
-				curState = State.Rescued;
-				break;
-			case SuperState.Battle:
-				curState = State.ApproachingToEnemy;
-				break;
-			default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
-				curState = State.MovingToDestination;
-				break;
-		}*/
+		yield return curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        if (pathFinder.PathFinded)
+        {
+            switch (superState)
+            {
+                case SuperState.SearchingMonster:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                case SuperState.PassedOut:
+                    curState = State.Rescued;
+                    break;
+                case SuperState.Battle:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
+                    curState = State.MovingToDestination;
+                    break;
+            }
+        }
+        else
+        {
+            switch (superState)
+            {
+                case SuperState.SearchingMonster:
+                    curState = State.SearchingMonster;
+                    break;
+                case SuperState.Battle:
+                    curState = State.PathFinding;
+                    break;
+                default:
+                    curState = State.Idle;
+                    break;
+            }
+        }
 	}
 	
-	// 수정요망
 	protected override IEnumerator MoveToDestination()
     {
         //길찾기 성공
@@ -452,7 +470,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
 	public void PathFindSuccessAdventurer()
 	{
-		Debug.Log("PAthfindSuccessEvenet!!!");
+		Debug.Log("PathfindSuccessEvent!!!");
 		StartCoroutine(CoroutinePathFindSuccessAdventurer());
 	}
 	IEnumerator CoroutinePathFindSuccessAdventurer()
@@ -484,8 +502,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 	}
 	public void SetPathFindEventAdventurer()
 	{
-		//Debug.Log(gameObject.GetInstanceID());
-		pathFinder.SetNotifyEvent(PathFindSuccessAdventurer, PathFindFailAdventurer);
+        //Debug.Log(gameObject.GetInstanceID());
+        Debug.Log("[SetPathFindEventAdventurer]");
+
+        pathFinder.SetNotifyEvent(PathFindSuccessAdventurer, PathFindFailAdventurer);
 	}
 	//protected void VisitHuntingGround()
 	//{

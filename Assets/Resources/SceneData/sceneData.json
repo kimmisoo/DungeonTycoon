@@ -162,7 +162,7 @@
 					"y": 49
 				}
 			],
-			"huntingAreaCount": 6,
+			"huntingAreaCount": 3,
 			"huntingArea": [{
 					"huntingAreaNum": 0,
 					"x": 18,
@@ -194,7 +194,7 @@
 					"y": 30
 				}
 			],
-			"bossAreaCount": 2,
+			"bossAreaCount": 1,
 			"bossArea": [{
 				"bossAreaNum": 0,
 				"x": 13,
