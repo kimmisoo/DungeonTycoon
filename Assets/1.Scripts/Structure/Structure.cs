@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Structure : Place
 {
-	public class TravelerTimer : MonoBehaviour
+	public class TravelerTimer
 	{
 		public Traveler traveler;
 		public delegate void NotifyStateChange();

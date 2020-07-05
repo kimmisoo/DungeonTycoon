@@ -102,6 +102,8 @@ public class SpecificationPanel : UIObject {
 	}
 	public void OnCharacterDeselected()
 	{
+		if (tracing == null)
+			return;
 		StopCoroutine(tracing);
 		rectTransform.position = far;
 		nextButton.SetActive(false);

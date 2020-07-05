@@ -2148,8 +2148,7 @@ public class GameManager : MonoBehaviour
 				{
 					if (tile.GetLayerNum() == stageIndex)
 						tile.SetIsActive(true);
-				}
-				
+				}			
 			}
 		}
 	}
@@ -2158,8 +2157,5 @@ public class GameManager : MonoBehaviour
 	{
 		//다음 씬으로 ...
 	}
-
-
-
 #endregion    
 }
