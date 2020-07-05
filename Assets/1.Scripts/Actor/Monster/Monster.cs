@@ -1048,12 +1048,12 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     {
         return rewardStat;
     }
-    public virtual CombatantType GetCombatantType()
+    public override ActorType GetActorType()
     {
         if (canWander)
-            return CombatantType.Monster;
+            return ActorType.Monster;
         else
-            return CombatantType.BossMonster;
+            return ActorType.BossMonster;
     }
     #endregion
 }

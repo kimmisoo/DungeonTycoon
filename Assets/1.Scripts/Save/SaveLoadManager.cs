@@ -121,7 +121,7 @@ public class SaveLoadManager : MonoBehaviour
             GameManager.Instance.SetAdvsEnemy(savedata);
             CombatAreaManager.Instance.SetMonstersEnemy(savedata);
 
-            GameManager.Instance.ActivatedLoadedActors(savedata);
+            GameManager.Instance.ActivateLoadedActors(savedata);
             //CombatAreaManager.Instance.ActivateMonsters();
 
             TileMapGenerator.Instance.SetTileStructure(savedata);

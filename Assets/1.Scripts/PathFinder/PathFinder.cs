@@ -117,7 +117,7 @@ public class PathFinder : MonoBehaviour
         Debug.Log("pcurPos : [" + pcurPos.GetX() + ", " + pcurPos.GetY() + "]");
 #endif
         destination = pdestination;
-
+        //Debug.Log("pdestination : [" + pdestination.GetX() + ", " + pdestination.GetY() + "]");
         PathFinded = false;
 
         // 리스트 및 큐들 초기화
@@ -180,14 +180,14 @@ public class PathFinder : MonoBehaviour
 		if (isNoPath)
 		{
 			isNoPath = false;
-            Debug.Log("hasNoPath");
+            //Debug.Log("hasNoPath");
             PathFinded = false;
 			//pathFindFail();
 		}
 		else
 		{
             PathFinded = true;
-            Debug.Log("hasPath");
+            //Debug.Log("hasPath");
             //pathFindSuccess();
 		}
     }

@@ -310,11 +310,15 @@ public class TileData
     public int prefabInfo;
     public int layerNum;
 
-    public bool isPassable;
     public bool isStructed;
     public bool isNonTile;
-    public bool isBuildable;
+
+    public bool isBuildingArea;
     public bool isHuntingArea;
+    public bool isRoad;
+    public bool isActive;
+    
+    
 
     public int structureIndex;
 
@@ -328,11 +332,13 @@ public class TileData
         prefabInfo = inputTile.prefabInfo;
         layerNum = inputTile.GetLayerNum();
 
-        isPassable = inputTile.GetRoad();
         isStructed = inputTile.GetStructed();
         isNonTile = inputTile.GetNonTile();
-        isBuildable = inputTile.GetBuildingArea();
-        isHuntingArea = inputTile.GetHuntingArea();
+
+        isBuildingArea = inputTile.GetBuildingAreaSave();
+        isHuntingArea = inputTile.GetHuntingAreaSave();
+        isRoad = inputTile.GetRoadSave();
+        isActive = inputTile.GetIsActive();
 
         Structure tileStructure = inputTile.GetStructure();
         if (tileStructure != null)
@@ -353,9 +359,9 @@ public class StructureData
     public int entCount;
     public int sitInCount;
 
-    public Queue<int> curUsingQueue;
-    public Queue<float> elapsedTimeQueue;
-    public Queue<int> curWaitingQueue;
+    public Queue<TravelerTimerData> curUsingQueue;
+    public Queue<TravelerTimerData> curWaitingQueue;
+    //public Queue<float> elapsedTimeQueue;
 
     public string structureCategory;
     public int structureNumber;
@@ -365,9 +371,9 @@ public class StructureData
     {
         position = new Vector3Data(input.gameObject.transform.position);
         entranceList = new List<int>();
-        curUsingQueue = new Queue<int>();
-        elapsedTimeQueue = new Queue<float>();
-        curWaitingQueue = new Queue<int>();
+        curUsingQueue = new Queue<TravelerTimerData>();
+        curWaitingQueue = new Queue<TravelerTimerData>();
+        //elapsedTimeQueue = new Queue<float>();
 
         pointTile = int.Parse(input.point.gameObject.name);
         extent = input.extent;
@@ -380,24 +386,41 @@ public class StructureData
         entCount = input.entCount;
         sitInCount = input.sitInCount;
 
-        // Queue에 집어넣는 순서가 맞는지 모르겠음. 아니라면, Arr에 Reverse()해주면 됨.
-        Traveler[] tempArr = input.GetCurUsingQueueAsArray();
-        for (int i = 0; i < tempArr.Length; i++)
-            curUsingQueue.Enqueue(tempArr[i].index);
-		tempArr = input.GetCurWaitingQueueAsArray();
-        for (int i = 0; i < tempArr.Length; i++)
-            curWaitingQueue.Enqueue(tempArr[i].index);
+        List<Structure.TravelerTimer> tempList = input.GetCurUsingQueueAsList();
+        for (int i = 0; i < tempList.Count; i++)
+            curUsingQueue.Enqueue(new TravelerTimerData(tempList[i]));
+        tempList = input.GetCurWaitingQueueAsList();
+        for (int i = 0; i < tempList.Count; i++)
+            curWaitingQueue.Enqueue(new TravelerTimerData(tempList[i]));
 
-        //float timeNow = Time.fixedTime;
-        float[] timeArr = input.GetElapsedTimeQueueAsArray();
-        for (int i = 0; i < timeArr.Length; i++)
-            elapsedTimeQueue.Enqueue(timeArr[i]);
+        ////float timeNow = Time.fixedTime;
+        //float[] timeArr = input.GetElapsedTimeQueueAsArray();
+        //for (int i = 0; i < timeArr.Length; i++)
+        //    elapsedTimeQueue.Enqueue(timeArr[i]);
 
         structureCategory = input.structureCategory;
         structureNumber = input.structureNumber;
         structureIndex = input.index;
     }
 }
+
+[System.Serializable]
+public class TravelerTimerData
+{
+    public int travelerIndex;
+    public ActorType travelerType;
+
+    public int elapsedTime;
+
+    public TravelerTimerData(Structure.TravelerTimer trvTimer)
+    {
+        travelerIndex = trvTimer.traveler.index;
+        travelerType = trvTimer.traveler.GetActorType();
+
+        elapsedTime = trvTimer.elapsedTime;
+    }
+}
+
 
 [System.Serializable]
 public class CombatAreaData
@@ -666,12 +689,12 @@ public class ItemData
 public class CombatantPtr
 {
     public int index;
-    public CombatantType combatantType;
+    public ActorType combatantType;
 
     public CombatantPtr(ICombatant combatant)
     {
         this.index = combatant.GetIndex();
-        combatantType = combatant.GetCombatantType();
+        combatantType = combatant.GetActorType();
     }
 }
 

@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_ADV
-#define DEBUG_ADV_STATE
+//#define DEBUG_ADV_STATE
 //#define DEBUG_LOAD
 //#define DEBUG_ADV_BATTLE
 //#define DEBUG_CHARGE
@@ -362,7 +362,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         Debug.Assert(destinationTile != null);
 #endif
 		yield return null;
-		Debug.Log("Pathfinding...Coroutine");
+		//Debug.Log("Pathfinding...Coroutine");
 		yield return curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
 
         if (pathFinder.PathFinded)
@@ -403,8 +403,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 	protected override IEnumerator MoveToDestination()
     {
         //길찾기 성공
-		Debug.Log("pathfindSuccess");
-		Debug.Log("destination = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+		//Debug.Log("pathfindSuccess");
+		//Debug.Log("destination = " + destinationTile.GetX() + " , " + destinationTile.GetY());
 		StringBuilder sb = new StringBuilder();
 		foreach(PathVertex pv in pathFinder.GetPath())
 		{
@@ -413,7 +413,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 			sb.Append(pv.myTilePos.GetY().ToString());
 			sb.Append("\n");
 		}
-		Debug.Log(sb.ToString());
+		//Debug.Log(sb.ToString());
 		//Debug.Log("path Last = " + pathFinder.GetPath()[pathFinder.GetPath().Count - 1].myTilePos.GetX() + " , " + pathFinder.GetPath()[pathFinder.GetPath().Count - 1].myTilePos.GetY());
         destinationTileForMove = destinationTile.childs[Random.Range(0, 4)];
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
@@ -1463,9 +1463,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //{
     //    return ActorType.Adventurer;
     //}
-    public virtual CombatantType GetCombatantType()
+    public override ActorType GetActorType()
     {
-        return CombatantType.Adventurer;
+        return ActorType.Adventurer;
     }
     public void SetBattleStat(BattleStat battleStat)
     {

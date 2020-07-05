@@ -1,44 +1,63 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 
 public class Structure : Place
 {
-	public class TravelerTimer : MonoBehaviour
-	{
-		public Traveler traveler;
-		public delegate void NotifyStateChange();
-		public NotifyStateChange OnUsingStructure, OnExitStructure;
-		WaitForSeconds Tick;
-		public int elapsedTime = 0;
-		public TravelerTimer(Traveler t, NotifyStateChange onUsing, NotifyStateChange onExit)
-		{
-			traveler = t;
-			OnUsingStructure = onUsing;
-			OnExitStructure = onExit;
-			Tick = new WaitForSeconds(1.0f);
-		}
-		public IEnumerator UsingStructure(int duration)
-		{
-			Debug.Log("--------------------Traveler Entered!!!!!!");
-			for(int i = 0; i<duration; i++)
-			{
-				yield return Tick;
-				elapsedTime++;
-			}
-			//call ExitTraveler
-			OnExitStructure();
-			Debug.Log("---------------------Traveler Exit!!!!!!");
-		}
-		public int GetRemainTime(int duration) // queue라 쓸모가 ..?
-		{
-			return Mathf.Abs(duration - elapsedTime);
-		}
-		
-	}
+    public class TravelerTimer
+    {
+        public Traveler traveler;
+        public delegate void NotifyStateChange();
+        public NotifyStateChange OnUsingStructure, OnExitStructure;
+        WaitForSeconds Tick;
+        public int elapsedTime = 0;
+        public TravelerTimer(Traveler t, NotifyStateChange onUsing, NotifyStateChange onExit)
+        {
+            traveler = t;
+            OnUsingStructure = onUsing;
+            OnExitStructure = onExit;
+            Tick = new WaitForSeconds(1.0f);
+        }
+        public TravelerTimer(TravelerTimerData timerData)
+        {
+            switch(timerData.travelerType)
+            {
+                case ActorType.Traveler:
+                    traveler = GameManager.Instance.travelersEnabled[timerData.travelerIndex].GetComponent<Traveler>();
+                    break;
+                case ActorType.Adventurer:
+                    traveler = GameManager.Instance.adventurersEnabled[timerData.travelerIndex].GetComponent<Adventurer>();
+                    break;
+                case ActorType.SpecialAdventurer:
+                    traveler = GameManager.Instance.specialAdventurers[timerData.travelerIndex].GetComponent<SpecialAdventurer>();
+                    break;
+            }
+
+            OnUsingStructure = traveler.OnUsingStructure;
+            OnExitStructure = traveler.OnExitStructure;
+            Tick = new WaitForSeconds(1.0f);
+        }
+        public IEnumerator UsingStructure(int duration)
+        {
+            Debug.Log("--------------------Traveler Entered!!!!!!");
+            for (int i = 0; i < duration; i++)
+            {
+                yield return Tick;
+                elapsedTime++;
+            }
+            //call ExitTraveler
+            OnExitStructure();
+            Debug.Log("---------------------Traveler Exit!!!!!!");
+        }
+        public int GetRemainTime(int duration) // queue라 쓸모가 ..?
+        {
+            return Mathf.Abs(duration - elapsedTime);
+        }
+
+    }
     public int entCount = 0;
-	private bool isConstructable = true; //건설 가능한 위치에 배치 되어있는가 아닌가
+    private bool isConstructable = true; //건설 가능한 위치에 배치 되어있는가 아닌가
     public int sitInCount = 0;
 
     // 세이브, 로드용
@@ -46,70 +65,78 @@ public class Structure : Place
     public int structureNumber;
     //
 
-	public string path
-	{
-		get; set;
-	}
-	public string type
-	{
-		get; set;
-	}
-	public DesireType resolveType
-	{
-		get; set;
-	}
-	public int duration
-	{
-		get; set;
-	}
-	public int charge
-	{
-		get; set;
-	}
+    public string path
+    {
+        get; set;
+    }
+    public string type
+    {
+        get; set;
+    }
+    public DesireType resolveType
+    {
+        get; set;
+    }
+    public int duration
+    {
+        get; set;
+    }
+    public int charge
+    {
+        get; set;
+    }
 
-	public float resolveAmount = 0.0f;
+    public float resolveAmount = 0.0f;
     public Preference preference = new Preference();
 
-	//Queue<Traveler> curUsingQueue = new Queue<Traveler>();  
-	//Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
-	Queue<TravelerTimer> curUsingQueue = new Queue<TravelerTimer>();
-	Queue<TravelerTimer> curWaitingQueue = new Queue<TravelerTimer>();
-	
-    public Traveler[] GetCurUsingQueueAsArray()
+    //Queue<Traveler> curUsingQueue = new Queue<Traveler>();  
+    //Queue<Traveler> curWaitingQueue = new Queue<Traveler>();
+    Queue<TravelerTimer> curUsingQueue = new Queue<TravelerTimer>();
+    Queue<TravelerTimer> curWaitingQueue = new Queue<TravelerTimer>();
+
+    //public Traveler[] GetCurUsingQueueAsArray()
+    //{
+    //    //return curUsingQueue.ToArray();
+    //    List<Traveler> travelers = new List<Traveler>();
+    //    foreach (TravelerTimer t in curUsingQueue)
+    //    {
+    //        travelers.Add(t.traveler);
+    //    }
+    //    return travelers.ToArray();
+    //}
+    public List<TravelerTimer> GetCurUsingQueueAsList()
     {
-		//return curUsingQueue.ToArray();
-		List<Traveler> travelers = new List<Traveler>();
-		foreach(TravelerTimer t in curUsingQueue)
-		{
-			travelers.Add(t.traveler);
-		}
-		return travelers.ToArray();
+        return curUsingQueue.ToList();
     }
-	/*public float[] GetEnteredTimeQueueAsArray()
+    public List<TravelerTimer> GetCurWaitingQueueAsList()
+    {
+        return curWaitingQueue.ToList();
+    }
+    /*public float[] GetEnteredTimeQueueAsArray()
     {
 		//return EnteredTimeQueue.ToArray();
 		List<float> enteredTimeList = new List<float>();
 
     }*///ElapsedTime을 반환하는 함수로 변경
-	public float[] GetElapsedTimeQueueAsArray()
-	{
-		List<float> elapsedTimeList = new List<float>();
-		foreach(TravelerTimer t in curUsingQueue)
-		{
-			elapsedTimeList.Add(t.elapsedTime);
-		}
-		return elapsedTimeList.ToArray();
-	}
+ //   public float[] GetElapsedTimeQueueAsArray()
+	//{
+	//	List<float> elapsedTimeList = new List<float>();
+	//	foreach(TravelerTimer t in curUsingQueue)
+	//	{
+	//		elapsedTimeList.Add(t.elapsedTime);
+	//	}
+	//	return elapsedTimeList.ToArray();
+	//}
 
-	public Traveler[] GetCurWaitingQueueAsArray()
-    {
-		List<Traveler> travelers = new List<Traveler>();
-		foreach (TravelerTimer t in curWaitingQueue)
-		{
-			travelers.Add(t.traveler);
-		}
-		return travelers.ToArray();
-	}
+	//public Traveler[] GetCurWaitingQueueAsArray()
+ //   {
+	//	List<Traveler> travelers = new List<Traveler>();
+	//	foreach (TravelerTimer t in curWaitingQueue)
+	//	{
+	//		travelers.Add(t.traveler);
+	//	}
+	//	return travelers.ToArray();
+	//}
 
 	public string genre
 	{
@@ -183,13 +210,23 @@ public class Structure : Place
 		Debug.Log(names+"-----------------------Current Using Queue Size = " + curUsingQueue.Count + "/" + capacity);
 	}
     // data에 있던 잔여시간을 보고 관광객 입장시킴
-    public void LoadEnterdTraveler(Traveler t, float elapsedTime)
+    //   public void LoadEnteredTraveler(Traveler t, float elapsedTime)
+    //   {
+    //	TravelerTimer timer = new TravelerTimer(t, t.OnUsingStructure, t.OnExitStructure);
+    //	timer.elapsedTime = (int)elapsedTime;
+    //       curUsingQueue.Enqueue(timer);
+    //	StartCoroutine(timer.UsingStructure(duration-timer.elapsedTime));
+    //}
+
+    public void LoadEnteredTraveler(TravelerTimerData timerData)
     {
-		TravelerTimer timer = new TravelerTimer(t, t.OnUsingStructure, t.OnExitStructure);
-		timer.elapsedTime = (int)elapsedTime;
-        curUsingQueue.Enqueue(timer);
-		StartCoroutine(timer.UsingStructure(duration-timer.elapsedTime));
-	}
+        curUsingQueue.Enqueue(new TravelerTimer(timerData));
+    }
+
+    public void LoadWaitingTraveler(TravelerTimerData timerData)
+    {
+        curWaitingQueue.Enqueue(new TravelerTimer(timerData));
+    }
 
     public override void Visit(Actor visitor)
     {

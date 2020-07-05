@@ -159,22 +159,22 @@ public class TileMapGenerator : MonoBehaviour
 						if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 227 && mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt <= 238)//~238 //길
                         {//Road
                             tile.SetRoad(true);
-                            tile.SetBuildingArea(false);
-                            tile.SetHuntingArea(false);
+                            tile.SetIsBuildingArea(false);
+                            tile.SetIsHuntingArea(false);
                             tile.SetNonTile(false);
                         }
                         else if (mapData["layers"][i]["data"][y * layer.GetLayerWidth() + x].AsInt >= 239) // 몬스터
                         {//HundingArea
                             tile.SetRoad(false);
-                            tile.SetBuildingArea(false);
-                            tile.SetHuntingArea(true);
+                            tile.SetIsBuildingArea(false);
+                            tile.SetIsHuntingArea(true);
                             tile.SetNonTile(false);
                         }
                         else // 건설
                         {//BuildingArea
                             tile.SetRoad(false);
-                            tile.SetBuildingArea(true);
-                            tile.SetHuntingArea(false);
+                            tile.SetIsBuildingArea(true);
+                            tile.SetIsHuntingArea(false);
                             tile.SetNonTile(false);
                         }
                         tile.SetX(x);
@@ -346,11 +346,12 @@ public class TileMapGenerator : MonoBehaviour
 
 				// 프로퍼티 세팅.
 				
-				tile.SetRoad(tileDatas[i].isPassable);
-                tile.SetStructed(tileDatas[i].isStructed);
+				tile.SetRoad(tileDatas[i].isRoad);
+                tile.SetIsStructed(tileDatas[i].isStructed);
                 tile.SetNonTile(tileDatas[i].isNonTile);
-                tile.SetBuildingArea(tileDatas[i].isBuildable);
-                tile.SetHuntingArea(tileDatas[i].isHuntingArea);
+                tile.SetIsBuildingArea(tileDatas[i].isBuildingArea);
+                tile.SetIsHuntingArea(tileDatas[i].isHuntingArea);
+                tile.SetIsActive(tileDatas[i].isActive);
 
                 // structure는 structure 로드 후에 따로 해줘야.
 

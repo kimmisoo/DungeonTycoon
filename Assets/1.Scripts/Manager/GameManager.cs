@@ -293,7 +293,7 @@ public class GameManager : MonoBehaviour
         //GenAndEnqueueSpecialAdvenuturer("Wal", 25);
         //GenAndEnqueueSpecialAdvenuturer("Yeonhwa", 25);
         //GenAndEnqueueSpecialAdvenuturer("OldMan", 5);
-        GenAndEnqueueSingleTraveler();
+        //GenAndEnqueueSingleTraveler();
 #endif
         //StartCoroutine(GCcall())
         GenerateSpecialAdventurers(sceneData);
@@ -1002,11 +1002,11 @@ public class GameManager : MonoBehaviour
         tempArr.Add(new ProgressInformation(CurAdvMaxPerHuntingArea)); // 왜 필요함?
 
         tempArr.Add(new ProgressInformation(CurAdvMax));
-        Debug.Log("Before");
-        for (int i = 0; i <= CombatAreaManager.Instance.PublicHuntingAreaIndex + 1; i++)
-        {
-            Debug.Log(i + " curAdvNum : " + tempArr[i].curAdvNum + ", min : " + tempArr[i].minLevel + " max : " +tempArr[i].maxLevel);
-        }
+        //Debug.Log("Before");
+        //for (int i = 0; i <= CombatAreaManager.Instance.PublicHuntingAreaIndex + 1; i++)
+        //{
+        //    Debug.Log(i + " curAdvNum : " + tempArr[i].curAdvNum + ", min : " + tempArr[i].minLevel + " max : " +tempArr[i].maxLevel);
+        //}
 
         int generated = 0;
 
@@ -1346,6 +1346,7 @@ public class GameManager : MonoBehaviour
             tempObject.transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
 
             InitLoadedTraveler(tempObject, inputTrvData);
+            newTraveler.InitTraveler(inputTrvData.stat);
             //SetLoadedAdventurerState(tempObject, inputAdvData);
         }
         #endregion
@@ -1527,26 +1528,27 @@ public class GameManager : MonoBehaviour
     {
         switch (data.combatantType)
         {
-            case CombatantType.Monster: // Mob vs Mob는 없음.
+            case ActorType.Monster: // Mob vs Mob는 없음.
                 Adventurer tempAdv = input as Adventurer;
                 tempAdv.SetEnemy(tempAdv.curHuntingArea.monstersEnabled[data.index].GetComponent<Monster>());
                 break;
-            case CombatantType.BossMonster:
+            case ActorType.BossMonster:
                 SpecialAdventurer tempSpAdv = input as SpecialAdventurer;
                 tempSpAdv.SetEnemy(tempSpAdv.curBossArea.monstersEnabled[data.index].GetComponent<Monster>());
                 break;
-            case CombatantType.Adventurer:
+            case ActorType.Adventurer:
                 input.SetEnemy(adventurersEnabled[data.index].GetComponent<Adventurer>());
                 break;
-            case CombatantType.SpecialAdventurer:
+            case ActorType.SpecialAdventurer:
                 input.SetEnemy(specialAdventurers[data.index].GetComponent<SpecialAdventurer>());
                 break;
         }
     }
 
-    public void ActivatedLoadedActors(GameSavedata savedata)
+    public void ActivateLoadedActors(GameSavedata savedata)
     {
         for (int i = 0; i < travelersEnabled.Count; i++)
+            //travelersEnabled[i].SetActive(false);
             travelersEnabled[i].SetActive(savedata.travelersEnabled[i].isActive);
         for (int i = 0; i < adventurersEnabled.Count; i++)
             adventurersEnabled[i].SetActive(true);
@@ -1568,11 +1570,14 @@ public class GameManager : MonoBehaviour
 
         if (data.isActive)
         {
+            
             newActor.SetDestinationTileLoad(data.destinationTile);
             newActor.SetDetinationTileForMoveLoad(data.destinationTileForMove);
             newActor.SetCurTileLoad(data.curTile);
             newActor.SetCurTileForMoveLoad(data.curTileForMove);
 
+            //if(newActor.GetDestinationTile() != null)
+            //    Debug.Log(newActor.GetDestinationTile().x + ", " + newActor.GetDestinationTile().y);
             input.transform.position = new Vector3(data.position.x, data.position.y, data.position.z);
             //Debug.Log("loadedPos : [" + input.transform.position.x + ", " + input.transform.position.y + ", " + input.transform.position.z);
             //newActor.StopAllCoroutines();
@@ -1884,9 +1889,8 @@ public class GameManager : MonoBehaviour
     
     public void FillTrvAdvVacancies()
     {
-        //GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
+        GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
         GenerateAdventurers(CurAdvMax - adventurersEnabled.Count - advEnterQ.Count);
-		
     }
 
 

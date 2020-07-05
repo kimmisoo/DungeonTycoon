@@ -269,13 +269,13 @@ public class StructureManager : MonoBehaviour
 
                 if (extent[j,i] == 1)
 				{
-					tempTile.SetBuildingArea(false);
-                    tempTile.SetStructed(true);
+					tempTile.SetIsBuildingArea(false);
+                    tempTile.SetIsStructed(true);
                     tempTile.SetStructure(structure);
                 }
                 else if(extent[j, i] == 2)
                 {
-                    tempTile.SetStructed(true);
+                    tempTile.SetIsStructed(true);
                     if(tempTile.GetBuildingArea())
                     {
                         structure.addEntrance(tempTile);
@@ -435,12 +435,12 @@ public class StructureManager : MonoBehaviour
                     Tile t = s.point.GetLayer().GetTileAsComponent(s.point.GetX() + j, s.point.GetY() + i);
                     if (t.GetBuildingArea() && ex[j,i] == 2 && !t.GetStructed())
                     {
-                        t.SetStructed(true);
+                        t.SetIsStructed(true);
                         s.entrance.Add(t);
                     }
                     else if(!t.GetBuildingArea() && ex[j,i] == 2 && t.GetStructed())
                     {
-                        t.SetStructed(false);
+                        t.SetIsStructed(false);
                         s.entrance.Remove(t);
                     }
                     
@@ -471,8 +471,8 @@ public class StructureManager : MonoBehaviour
                 if (ex[i, j] == 1)
                 {
                     s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetStructure(null);
-                    s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetStructed(false);
-                    s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetBuildingArea(true);
+                    s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetIsStructed(false);
+                    s.point.GetLayer().GetTileAsComponent(s.point.GetX() + i, s.point.GetY() + j).SetIsBuildingArea(true);
                 }
             }
         }
@@ -612,16 +612,19 @@ public class StructureManager : MonoBehaviour
         constructing = null;
         isConstructing = false;
         #endregion
+
         
         // 사용중 모험가, 대기중 모험가 큐에 넣어줌.
         while (input.curUsingQueue.Count()>0)
         {
-            structure.LoadEnterdTraveler(GameManager.Instance.travelersEnabled[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
+            //structure.LoadEnteredTraveler(GameManager.Instance.travelersEnabled[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
+            structure.LoadEnteredTraveler(input.curUsingQueue.Dequeue());
         }
 
         while(input.curWaitingQueue.Count()>0)
         {
-            structure.AddWaitTraveler(GameManager.Instance.travelersEnabled[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
+            //structure.AddWaitTraveler(GameManager.Instance.travelersEnabled[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
+            structure.LoadWaitingTraveler(input.curWaitingQueue.Dequeue());
         }
     }
 }

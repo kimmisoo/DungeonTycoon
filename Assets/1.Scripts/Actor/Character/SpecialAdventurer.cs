@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_ITEM
-#define DEBUG_SPADV_STATE
+//#define DEBUG_SPADV_STATE
 //#define DEBUG_BOSSPHASE
 
 using System.Collections;
@@ -1147,9 +1147,9 @@ public class SpecialAdventurer : Adventurer
     //{
     //    return ActorType.SpecialAdventurer;
     //}
-    public override CombatantType GetCombatantType()
+    public override ActorType GetActorType()
     {
-        return CombatantType.SpecialAdventurer;
+        return ActorType.SpecialAdventurer;
     }
     #endregion
 }

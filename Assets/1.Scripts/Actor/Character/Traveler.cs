@@ -246,6 +246,8 @@ public class Traveler : Actor
 
 		if(structureListByPref == null) // List가 비어있을때 . // 건물 이용 후 List 비워줘야함.
 		{
+            if (stat == null)
+                Debug.Log(name + " : Stat is null");
 			DesireType[] sortedTypeArray = stat.GetSortedDesireArray();
 			int index = 0;
 			while (index < sortedTypeArray.Length ||
@@ -286,9 +288,8 @@ public class Traveler : Actor
 	protected virtual IEnumerator PathFinding()
     {
         //yield return null;
-        Debug.Log("PF");
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-
+        
         if(pathFinder.PathFinded)
         {
             if (GetSuperState() == SuperState.ExitingDungeon)
@@ -557,6 +558,12 @@ public class Traveler : Actor
 		//순서 보장x
 		//캐릭터 스프라이트 변수 새로 만들거나 해야할듯?
 	}
+    #endregion
 
+    #region SaveLoad   
+    public override ActorType GetActorType()
+    {
+        return ActorType.Traveler;
+    }
+    #endregion
 }
-#endregion
