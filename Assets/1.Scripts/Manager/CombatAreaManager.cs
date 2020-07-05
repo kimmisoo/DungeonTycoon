@@ -301,9 +301,9 @@ public class CombatAreaManager : MonoBehaviour
 
                 if (extent[j, i] == 1)
                 {
-                    thatTile.SetBuildingArea(false);
-                    thatTile.SetStructed(false);
-                    thatTile.SetHuntingArea(true);
+                    thatTile.SetIsBuildingArea(false);
+                    thatTile.SetIsStructed(false);
+                    thatTile.SetIsHuntingArea(true);
 
                     //디버깅용임시
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 40);
@@ -327,7 +327,7 @@ public class CombatAreaManager : MonoBehaviour
                 }
                 else if (extent[j, i] == 2)
                 {
-                    thatTile.SetStructed(true);
+                    thatTile.SetIsStructed(true);
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
                     //if (thatTile.GetBuildable())
                     //{
@@ -419,9 +419,9 @@ public class CombatAreaManager : MonoBehaviour
                 //debugStr += extent[j, i];
                 if (extent[j, i] == 1)
                 {
-                    thatTile.SetBuildingArea(false);
-                    thatTile.SetStructed(false);
-                    thatTile.SetHuntingArea(true);
+                    thatTile.SetIsBuildingArea(false);
+                    thatTile.SetIsStructed(false);
+                    thatTile.SetIsHuntingArea(true);
 
                     //디버깅용임시
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
@@ -433,7 +433,7 @@ public class CombatAreaManager : MonoBehaviour
                 }
                 else if (extent[j, i] == 2)
                 {
-                    thatTile.SetStructed(true);
+                    thatTile.SetIsStructed(true);
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
                     //if (thatTile.GetBuildable())
                     //{

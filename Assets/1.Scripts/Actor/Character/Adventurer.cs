@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_ADV
-#define DEBUG_ADV_STATE
+//#define DEBUG_ADV_STATE
 //#define DEBUG_LOAD
 //#define DEBUG_ADV_BATTLE
 //#define DEBUG_CHARGE
@@ -65,7 +65,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventAdventurer();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -81,7 +81,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventAdventurer();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -100,7 +100,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     {
         // 이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
-        SetPathFindEventAdventurer();
+        //SetPathFindEventAdventurer();
 
         this.battleStat = new BattleStat(battleStat);
         this.rewardStat = new RewardStat(rewardStat);
@@ -118,6 +118,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 	public void OnEnable()
     {
         base.OnEnable();
+
+        //SetPathFindEventAdventurer();
         monsterSearchCnt = 0;
         SetUI();
         SkillActivate();
@@ -360,33 +362,49 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         Debug.Assert(destinationTile != null);
 #endif
 		yield return null;
-		Debug.Log("Pathfinding...Coroutine");
-		StartCoroutine(pathFinder.Moves(curTile, destinationTile));
-		
-		//
-		/*switch (superState)
-		{
-			case SuperState.SearchingMonster:
-				curState = State.ApproachingToEnemy;
-				break;
-			case SuperState.PassedOut:
-				curState = State.Rescued;
-				break;
-			case SuperState.Battle:
-				curState = State.ApproachingToEnemy;
-				break;
-			default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
-				curState = State.MovingToDestination;
-				break;
-		}*/
+		//Debug.Log("Pathfinding...Coroutine");
+		yield return curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        if (pathFinder.PathFinded)
+        {
+            switch (superState)
+            {
+                case SuperState.SearchingMonster:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                case SuperState.PassedOut:
+                    curState = State.Rescued;
+                    break;
+                case SuperState.Battle:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
+                    curState = State.MovingToDestination;
+                    break;
+            }
+        }
+        else
+        {
+            switch (superState)
+            {
+                case SuperState.SearchingMonster:
+                    curState = State.SearchingMonster;
+                    break;
+                case SuperState.Battle:
+                    curState = State.PathFinding;
+                    break;
+                default:
+                    curState = State.Idle;
+                    break;
+            }
+        }
 	}
 	
-	// 수정요망
 	protected override IEnumerator MoveToDestination()
     {
         //길찾기 성공
-		Debug.Log("pathfindSuccess");
-		Debug.Log("destination = " + destinationTile.GetX() + " , " + destinationTile.GetY());
+		//Debug.Log("pathfindSuccess");
+		//Debug.Log("destination = " + destinationTile.GetX() + " , " + destinationTile.GetY());
 		StringBuilder sb = new StringBuilder();
 		foreach(PathVertex pv in pathFinder.GetPath())
 		{
@@ -395,7 +413,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 			sb.Append(pv.myTilePos.GetY().ToString());
 			sb.Append("\n");
 		}
-		Debug.Log(sb.ToString());
+		//Debug.Log(sb.ToString());
 		//Debug.Log("path Last = " + pathFinder.GetPath()[pathFinder.GetPath().Count - 1].myTilePos.GetX() + " , " + pathFinder.GetPath()[pathFinder.GetPath().Count - 1].myTilePos.GetY());
         destinationTileForMove = destinationTile.childs[Random.Range(0, 4)];
         wayForMove = GetWayTileForMove(pathFinder.GetPath(), destinationTileForMove); // TileForMove로 변환
@@ -452,7 +470,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
 	public void PathFindSuccessAdventurer()
 	{
-		Debug.Log("PAthfindSuccessEvenet!!!");
+		Debug.Log("PathfindSuccessEvent!!!");
 		StartCoroutine(CoroutinePathFindSuccessAdventurer());
 	}
 	IEnumerator CoroutinePathFindSuccessAdventurer()
@@ -484,8 +502,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 	}
 	public void SetPathFindEventAdventurer()
 	{
-		//Debug.Log(gameObject.GetInstanceID());
-		pathFinder.SetNotifyEvent(PathFindSuccessAdventurer, PathFindFailAdventurer);
+        //Debug.Log(gameObject.GetInstanceID());
+        Debug.Log("[SetPathFindEventAdventurer]");
+
+        pathFinder.SetNotifyEvent(PathFindSuccessAdventurer, PathFindFailAdventurer);
 	}
 	//protected void VisitHuntingGround()
 	//{
@@ -1443,9 +1463,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     //{
     //    return ActorType.Adventurer;
     //}
-    public virtual CombatantType GetCombatantType()
+    public override ActorType GetActorType()
     {
-        return CombatantType.Adventurer;
+        return ActorType.Adventurer;
     }
     public void SetBattleStat(BattleStat battleStat)
     {

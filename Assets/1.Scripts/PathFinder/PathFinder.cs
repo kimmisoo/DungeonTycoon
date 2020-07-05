@@ -31,6 +31,11 @@ public class PathFinder : MonoBehaviour
     }
 
     public bool isNoPath = false;
+    public bool PathFinded
+    {
+        get; private set;
+    }
+
 
     // 방향 체크용
     enum Direction { left, right, up, down };
@@ -101,7 +106,6 @@ public class PathFinder : MonoBehaviour
         }
     }
 
-    // 이 부분에서 에러가 남.
     public IEnumerator Moves(Tile pcurPos, Tile pdestination)
     {
         yield return null;
@@ -113,6 +117,8 @@ public class PathFinder : MonoBehaviour
         Debug.Log("pcurPos : [" + pcurPos.GetX() + ", " + pcurPos.GetY() + "]");
 #endif
         destination = pdestination;
+        //Debug.Log("pdestination : [" + pdestination.GetX() + ", " + pdestination.GetY() + "]");
+        PathFinded = false;
 
         // 리스트 및 큐들 초기화
         for (int i = 0; i < path.Count; i++)
@@ -155,30 +161,34 @@ public class PathFinder : MonoBehaviour
         //         openList[i].ClearReference(); // NullPointerException 이 나는 곳.
         //     }
         openList.Clear();
-		/*for (int i = 0; i < closeList.Count; i++)
+        /*for (int i = 0; i < closeList.Count; i++)
         {
             closeList[i].ClearReference();
         }*/
-		//delegate call
+        //delegate call
 
-		// 이 부분 때문에 코루틴 증식하는 거 같아서 일단 빼놓음. #CorutineDebug
-		//if (isNoPath)
-		//{
-		//    isNoPath = false;
-		//    pathFindFail();
-		//}
-		//else
-		//{
-		//    pathFindSuccess();
-		//}
+        // 이 부분 때문에 코루틴 증식하는 거 같아서 일단 빼놓음. #CorutineDebug
+        //if (isNoPath)
+        //{
+        //    isNoPath = false;
+        //    pathFindFail();
+        //}
+        //else
+        //{
+        //    pathFindSuccess();
+        //}
 		if (isNoPath)
 		{
 			isNoPath = false;
-			pathFindFail();
+            //Debug.Log("hasNoPath");
+            PathFinded = false;
+			//pathFindFail();
 		}
 		else
 		{
-			pathFindSuccess();
+            PathFinded = true;
+            //Debug.Log("hasPath");
+            //pathFindSuccess();
 		}
     }
 

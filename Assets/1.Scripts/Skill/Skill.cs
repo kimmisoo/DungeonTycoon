@@ -87,7 +87,7 @@ public abstract class Skill : MonoBehaviour
         isActive = true;
     }
     /// <summary>
-    /// Activate()에서 실행한 코루틴 정지시키는 메서드. 모험가 사망 혹은 아이템 해제시마다 실항.
+    /// Activate()에서 실행한 코루틴 정지시키는 메서드. 모험가 사망 혹은 아이템 해제시마다 실행.
     /// </summary>
     public void Deactivate()
     {

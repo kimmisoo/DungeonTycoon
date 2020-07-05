@@ -27,10 +27,16 @@ public enum State
     MatchWon, WaitingOtherMatch
 }
 
+
 public enum ActorType
 {
-    Traveler, Monster, Adventurer, SpecialAdventurer
+    Traveler, Monster, BossMonster, Adventurer, SpecialAdventurer
 }
+
+//public enum ActorType
+//{
+//    Traveler, Monster, Adventurer, SpecialAdventurer
+//}
 /*
  * Animator Tirggers
  * MoveFlg
@@ -62,6 +68,19 @@ public abstract class Actor : MonoBehaviour
     protected TileForMove curTileForMove;
     protected TileLayer tileLayer;
     protected Tile destinationTile;
+    //protected Tile destinationTile
+    //{
+    //    get
+    //    {
+    //        return _destinationTile;
+    //    }
+    //    set
+    //    {
+    //        _destinationTile = value;
+    //        if (value == null)
+    //            Debug.Log("dest is null");
+    //    }
+    //}
     protected TileForMove destinationTileForMove;
 
     //SaveLoad용. 컬렉션에서 몇번째인지 저장함.
@@ -80,7 +99,6 @@ public abstract class Actor : MonoBehaviour
         {
             ExitState();
             state = value;
-            //Debug.Log(gameObject.name + " Enters: " + state);
             EnterState(state);
         }
     }
@@ -673,11 +691,14 @@ public abstract class Actor : MonoBehaviour
     #region SaveLoad
     public void SetDestinationTileLoad(TileCoordinates input)
     {
+        //Debug.Log("[SetDestinationTileLoad] input is null : " + (input == null));
         tileLayer = GameManager.Instance.GetTileLayer(0);
         if (input != null)
             destinationTile = tileLayer.GetTileAsComponent(input.x, input.y);
         else
             destinationTile = null;
+
+        //Debug.Log("[SetDestinationTileLoad] destTile is null: " + (destinationTile == null));
     }
     public Tile GetDestinationTile()
     {
@@ -688,7 +709,7 @@ public abstract class Actor : MonoBehaviour
         if (input != null)
             destinationTileForMove = tileLayer.GetTileForMove(input.x, input.y);
         else
-            destinationTile = null;
+            destinationTileForMove = null;
     }
     public TileForMove GetDestinationTileForMove()
     {
@@ -701,6 +722,8 @@ public abstract class Actor : MonoBehaviour
         state = State.Idle;
         isNew = true;
     }
+
+    public abstract ActorType GetActorType();
     #endregion
     //public abstract ActorType GetActorType();
 }

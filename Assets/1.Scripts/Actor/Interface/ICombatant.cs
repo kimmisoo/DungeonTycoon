@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CombatantType
-{
-    Monster, BossMonster, Adventurer, SpecialAdventurer
-}
-
 public delegate void HealthBelowZeroEventHandler(ICombatant victim, ICombatant killer);
 //public delegate void MoveStartedEventHandler(TileForMove newDest);
 
@@ -46,6 +41,6 @@ public interface ICombatant
     void RemoveSkill(string key);
     bool IsInBattle();
     void HealFullHealth(bool displayEffect);
-    CombatantType GetCombatantType();
+    ActorType GetActorType();
     int GetIndex();
 }

@@ -84,7 +84,7 @@ public class Tile : MonoBehaviour
     {
         return isStructed;
     }
-    public void SetStructed(bool _isStructed)
+    public void SetIsStructed(bool _isStructed)
     {
         isStructed = _isStructed;
     }
@@ -102,6 +102,10 @@ public class Tile : MonoBehaviour
 	{
 		return isNonTile==false && isActive == true ? isBuildingArea : false;
 	}
+    public bool GetBuildingAreaSave()
+    {
+        return isBuildingArea;
+    }
 	//Validate Tile 기본 조건 - 활성화된 타일 && 존재하는 타일 && 건설 되지 않음!
 	//Traveler - Road, 
     public bool GetPassableTraveler() 
@@ -116,11 +120,11 @@ public class Tile : MonoBehaviour
     {
 		return isNonTile == false && isActive == true;// ? isHuntingArea : false;
 	}
-	public void SetBuildingArea(bool _isBuildingArea)
+	public void SetIsBuildingArea(bool _isBuildingArea)
 	{
 		isBuildingArea = _isBuildingArea;
 	}
-	public void SetHuntingArea(bool _huntingArea)
+	public void SetIsHuntingArea(bool _huntingArea)
 	{
         isHuntingArea = _huntingArea;
 	}
@@ -128,6 +132,10 @@ public class Tile : MonoBehaviour
 	{
 		return isNonTile == false && isActive == true ? isHuntingArea : false;
 	}
+    public bool GetHuntingAreaSave()
+    {
+        return isHuntingArea;
+    }
 	public void SetRoad(bool _isRoad)
 	{
 		isRoad = _isRoad;
@@ -136,7 +144,11 @@ public class Tile : MonoBehaviour
 	{
 		return isNonTile == false && isActive == true ? isRoad : false;
 	}
-	public void SetUnknownSprite(Sprite _unknown)
+    public bool GetRoadSave()
+    {
+        return isRoad; 
+    }
+    public void SetUnknownSprite(Sprite _unknown)
 	{
 		unknown = _unknown;
 	}

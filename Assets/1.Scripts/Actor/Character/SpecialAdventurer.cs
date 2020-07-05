@@ -1,5 +1,5 @@
 ﻿//#define DEBUG_ITEM
-#define DEBUG_SPADV_STATE
+//#define DEBUG_SPADV_STATE
 //#define DEBUG_BOSSPHASE
 
 using System.Collections;
@@ -32,7 +32,7 @@ public class SpecialAdventurer : Adventurer
     {
         base.InitAdventurer(battleStat, rewardStat);
         AddSkill(name);
-		SetPathFindEventSpecialAdventurer();
+		//SetPathFindEventSpecialAdventurer();
 
 	}
 
@@ -41,7 +41,7 @@ public class SpecialAdventurer : Adventurer
     {
         base.InitAdventurer(stat, battleStat, rewardStat);
         AddSkill(name);
-		SetPathFindEventSpecialAdventurer();
+		//SetPathFindEventSpecialAdventurer();
 
 	}
 
@@ -49,6 +49,7 @@ public class SpecialAdventurer : Adventurer
     {
         base.OnEnable();
         monsterSearchCnt = 0;
+        //SetPathFindEventSpecialAdventurer();
 
         // 플레이어가 선택하기 전에는 공용이벤트 일단 구독해놓음.
         GameManager.Instance.BossRaidCallEventHandler += OnBossRaidCall;
@@ -558,8 +559,53 @@ public class SpecialAdventurer : Adventurer
     #region State Implements
     protected override IEnumerator PathFinding()
     {
-		yield return null;
-        curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+        yield return curSubCoroutine = StartCoroutine(pathFinder.Moves(curTile, destinationTile));
+
+        if(pathFinder.PathFinded)
+        {
+            switch (superState)
+            {
+                case SuperState.SearchingMonster:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                case SuperState.PassedOut:
+                    curState = State.Rescued;
+                    break;
+                case SuperState.Battle:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                case SuperState.BossBattle:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                case SuperState.Skirmish:
+                    curState = State.ApproachingToEnemy;
+                    break;
+                default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire, EnteringBossArea
+                    curState = State.MovingToDestination;
+                    break;
+            }
+        }
+        else
+        {
+            switch (superState)
+            {
+                case SuperState.SearchingMonster:
+                    curState = State.SearchingMonster;
+                    break;
+                case SuperState.Battle:
+                    curState = State.PathFinding;
+                    break;
+                case SuperState.BossBattle:
+                    curState = State.PathFinding;
+                    break;
+                case SuperState.Skirmish:
+                    curState = State.PathFinding;
+                    break;
+                default:
+                    curState = State.Idle;
+                    break;
+            }
+        }
     }
 	public void PathFindSuccessSpecialAdventurer()
 	{
@@ -567,6 +613,7 @@ public class SpecialAdventurer : Adventurer
 	}
 	IEnumerator CoroutinePathFindSuccessSpecialAdventurer()
 	{
+        Debug.Log("PFSuccess Coroutine Start : " + stat.actorName);
 		yield return null;
 		switch (superState)
 		{
@@ -600,8 +647,9 @@ public class SpecialAdventurer : Adventurer
 	}
 	public void SetPathFindEventSpecialAdventurer()
 	{
-		//Debug.Log(gameObject.GetInstanceID());
-		pathFinder.SetNotifyEvent(PathFindSuccessSpecialAdventurer, PathFindFailSpecialAdventurer);
+        //Debug.Log(gameObject.GetInstanceID());
+        Debug.Log("[SetPathFindEventSpecialAdventurer]");
+        pathFinder.SetNotifyEvent(PathFindSuccessSpecialAdventurer, PathFindFailSpecialAdventurer);
 	}
 	protected override IEnumerator MoveToDestination()
     {
@@ -1099,9 +1147,9 @@ public class SpecialAdventurer : Adventurer
     //{
     //    return ActorType.SpecialAdventurer;
     //}
-    public override CombatantType GetCombatantType()
+    public override ActorType GetActorType()
     {
-        return CombatantType.SpecialAdventurer;
+        return ActorType.SpecialAdventurer;
     }
     #endregion
 }
