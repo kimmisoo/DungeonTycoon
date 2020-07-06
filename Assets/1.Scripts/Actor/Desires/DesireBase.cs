@@ -122,6 +122,7 @@ public class DesireBase {
 		while(true)
 		{
 			yield return tickBetweenWait;
+			
 			if (owner.GetState() != State.UsingStructure)
 				desireValue += tickAmount * tickAmountMult;
 		}
@@ -135,4 +136,12 @@ public class DesireBase {
     {
         this.owner = owner;
     }
+	public void SetTickCoroutine(Coroutine c)
+	{
+		tickCoroutine = c;
+	}
+	public Coroutine GetTickCoroutine()
+	{
+		return tickCoroutine;
+	}
 }

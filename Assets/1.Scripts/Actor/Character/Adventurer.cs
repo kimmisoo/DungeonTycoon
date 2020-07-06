@@ -453,8 +453,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     public IEnumerator Idle()
     {
 		yield return null;
-        //Debug.Log("GetSpecificDesire() : " + stat.GetHighestDesire());
-        if (stat.GetSpecificDesire(stat.GetHighestDesire()).desireValue < 50.0f)
+		//Debug.Log("GetSpecificDesire() : " + stat.GetHighestDesire());
+		foreach (KeyValuePair<DesireType, DesireBase> kvp in stat.GetDesireDict())
+		{
+			StartCoroutine(kvp.Value.Tick());
+		}
+		if (stat.GetSpecificDesire(stat.GetHighestDesire()).desireValue < 50.0f)
             curState = State.SearchingHuntingArea;
         else
             curState = State.SearchingStructure;

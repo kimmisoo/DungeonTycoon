@@ -210,6 +210,10 @@ public class InputManager : MonoBehaviour {
 						{
 							UIManager.Instance.CharacterSelected(selectedObject.GetComponent<Traveler>());
 						}
+						else if(selectedObject.tag == "guard")
+						{
+							//do nothing
+						}
                         else
                         {
 							UnselectTile();

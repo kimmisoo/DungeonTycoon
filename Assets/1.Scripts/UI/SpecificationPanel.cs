@@ -79,7 +79,7 @@ public class SpecificationPanel : UIObject {
 		{
 			//desire, stat, item 오픈
 			viewablePanels = new GameObject[3];
-			viewablePanels[0] = statPanelBase;
+			viewablePanels[0] = desirePanelBase;
 			viewablePanels[1] = battleStatPanelBase;
 			viewablePanels[2] = itemPanelBase;
 		}
@@ -87,7 +87,7 @@ public class SpecificationPanel : UIObject {
 		{
 			//desire, stat 오픈
 			viewablePanels = new GameObject[2];
-			viewablePanels[0] = statPanelBase;
+			viewablePanels[0] = desirePanelBase;
 			viewablePanels[1] = battleStatPanelBase;
 			
 		}
@@ -95,25 +95,22 @@ public class SpecificationPanel : UIObject {
 		{
 			//desire 오픈
 			viewablePanels = new GameObject[1];
-			viewablePanels[0] = statPanelBase;
+			viewablePanels[0] = desirePanelBase;
 		}
 		curCharacter = traveler;
 		OnOpenPanel();
 	}
 	public void OnCharacterDeselected()
 	{
-		if (tracing == null)
-			return;
-		StopCoroutine(tracing);
+
+		if (tracing != null)
+			StopCoroutine(tracing);
 		rectTransform.position = far;
-		nextButton.SetActive(false);
-		prevButton.SetActive(false);
-		StopCoroutine(statUpdateCoroutine);
+		//nextButton.SetActive(false);
+		//prevButton.SetActive(false);
+		if(statUpdateCoroutine != null)
+			StopCoroutine(statUpdateCoroutine);
 		ClearUI();
-		foreach (GameObject go in viewablePanels)
-		{
-			go.SetActive(false);
-		}
 		viewablePanels = null;
 		viewingIndex = 0;
 		curCharacter = null;
@@ -262,7 +259,7 @@ public class SpecificationPanel : UIObject {
 	}
 	public void UpdateStat()
 	{
-		characterCurrentStateText.text = curCharacter.GetState().ToString();
+		characterCurrentStateText.text = curCharacter.GetSuperState().ToString() + "\n" + curCharacter.GetState().ToString() + " \n" + (curCharacter.GetSuperState().Equals(SuperState.SolvingDesire) ? curCharacter.destinationPlace.names : string.Empty); 
 		characterGoldText.text = curCharacter.stat.gold.ToString();
 	}
 	public void UpdateDesireFirst()
@@ -289,16 +286,16 @@ public class SpecificationPanel : UIObject {
 			return;
 		Adventurer adv = (Adventurer)curCharacter;
 		BattleStat bs = adv.GetBattleStat();
-		characterLevelText.text = bs.ToString();
-		characterHealthText.text = bs.ToString() + " / " + bs.HealthMax.ToString();
-		characterAttackText.text = bs.ToString();
-		characterAttackSpeedText.text = bs.AttackSpeed.ToString();
-		characterDefenseText.text = bs.Defence.ToString();
-		characterPenetrationText.text = bs.PenetrationFixed.ToString() + " / " + bs.PenetrationMult.ToString();
-		characterCriticalChanceText.text = bs.CriticalChance.ToString();
-		characterCriticalAttackText.text = bs.CriticalDamage.ToString();
-		characterAvoidText.text = bs.BaseAvoid.ToString();
-		characterAttackRangeText.text = bs.Range.ToString();
+		characterLevelText.text = bs.Level.ToString();
+		characterHealthText.text = bs.Health.ToString("F0") + " / " + bs.HealthMax.ToString("F0");
+		characterAttackText.text = bs.Attack.ToString("F0");
+		characterAttackSpeedText.text = bs.AttackSpeed.ToString("F0");
+		characterDefenseText.text = bs.Defence.ToString("F0");
+		characterPenetrationText.text = bs.PenetrationFixed.ToString("F0") + " / " + bs.PenetrationMult.ToString("F0");
+		characterCriticalChanceText.text = bs.CriticalChance.ToString("F0");
+		characterCriticalAttackText.text = bs.CriticalDamage.ToString("F0");
+		characterAvoidText.text = bs.BaseAvoid.ToString("F0");
+		characterAttackRangeText.text = bs.Range.ToString("F0");
 	}
 	public void UpdateItemFirst()
 	{

@@ -218,7 +218,13 @@ public class Traveler : Actor
 	protected IEnumerator Idle()
 	{
 		yield return null;
+		foreach(KeyValuePair<DesireType, DesireBase> kvp in stat.GetDesireDict())
+		{
+
+			kvp.Value.SetTickCoroutine(StartCoroutine(kvp.Value.Tick()));
+		}
 		curState = State.SearchingStructure;
+		
 	}
     protected IEnumerator SolvingDesire_Wandering()
     {
@@ -250,17 +256,15 @@ public class Traveler : Actor
                 Debug.Log(name + " : Stat is null");
 			DesireType[] sortedTypeArray = stat.GetSortedDesireArray();
 			int index = 0;
-			while (index < sortedTypeArray.Length ||
-				structureListByPref == null ||
-				structureListByPref.Length > 0) // 모든 Type별로 건물 있는지 조사
+			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Length <= 0)) // 모든 Type별로 건물 있는지 조사
 			{
 				yield return null;
 				structureListByPref = StructureManager.Instance.FindStructureByDesire(sortedTypeArray[index++], this);
 			}
 			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
-			if (structureListByPref == null) // 건물이 하나도 없다면
+			if (structureListByPref == null || structureListByPref.Length == 0) // 건물이 하나도 없다면
 			{
-				//Debug.Log("--------------------------------------------------StructureList is Null");
+				Debug.Log("--------------------------------------------------StructureList is Null");
 				curState = State.SolvingDesire_Wandering;
 				yield break;
 			}
@@ -268,13 +272,13 @@ public class Traveler : Actor
 
 		if(structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
 		{
-			//Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
+			Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
 			pathFindCount = 0;
 			curState = State.SolvingDesire_Wandering;
 		}
 		else // 검색 결과 건물로 길찾기진행.
 		{
-			//Debug.Log("------------------------------------------------------------Found Structure!");
+			Debug.Log("------------------------------------------------------------Found Structure!");
 			destinationTile = structureListByPref[pathFindCount].GetEntrance();
 			destinationPlace = structureListByPref[pathFindCount];
 			curState = State.PathFinding;
