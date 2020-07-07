@@ -20,8 +20,7 @@ public class DesireBase {
 		}
 		set
 		{
-			if (value > desireMin && value < desireMax)
-				_desireValue = value;
+			_desireValue = Mathf.Clamp(value, desireMin, desireMax);
 		}
 	}
     public void SetHighestPriority()

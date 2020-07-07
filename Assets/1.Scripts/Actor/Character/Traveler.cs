@@ -264,7 +264,7 @@ public class Traveler : Actor
 			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
 			if (structureListByPref == null || structureListByPref.Length == 0) // 건물이 하나도 없다면
 			{
-				Debug.Log("--------------------------------------------------StructureList is Null");
+				//Debug.Log("--------------------------------------------------StructureList is Null");
 				curState = State.SolvingDesire_Wandering;
 				yield break;
 			}
@@ -272,13 +272,13 @@ public class Traveler : Actor
 
 		if(structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
 		{
-			Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
+			//Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
 			pathFindCount = 0;
 			curState = State.SolvingDesire_Wandering;
 		}
 		else // 검색 결과 건물로 길찾기진행.
 		{
-			Debug.Log("------------------------------------------------------------Found Structure!");
+			//Debug.Log("------------------------------------------------------------Found Structure!");
 			destinationTile = structureListByPref[pathFindCount].GetEntrance();
 			destinationPlace = structureListByPref[pathFindCount];
 			curState = State.PathFinding;
@@ -372,12 +372,11 @@ public class Traveler : Actor
 	protected IEnumerator UsingStructure()
 	{
 		yield return null;
+		/*yield return null;
 		Structure destinationStructure = destinationPlace as Structure;
 		stat.gold -= destinationStructure.charge;
 		stat.GetSpecificDesire(destinationStructure.resolveType).desireValue -= destinationStructure.resolveAmount; // 욕구 해소 처리.
-
-		
-		wanderCount = 0;
+		wanderCount = 0;*/
 	}
 
 	protected virtual IEnumerator CheckStructure() // 해당 건물로 이동하고 입장 가능한지 검사.
@@ -518,6 +517,7 @@ public class Traveler : Actor
 	IEnumerator _OnUsingStructure()
 	{
 		yield return null;
+		SetInvisible();
 		curState = State.UsingStructure;
 		//스탯 처리
 		stat.gold -= (destinationPlace as Structure).charge;
@@ -540,6 +540,7 @@ public class Traveler : Actor
 		// 사용 후에는 비워주기.
 		destinationPlace = null;
 		destinationTile = null;
+		structureListByPref = null;
 		curState = State.SearchingStructure;
 	}
 	protected void SetInvisible()
