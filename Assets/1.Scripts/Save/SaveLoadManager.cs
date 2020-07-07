@@ -118,11 +118,14 @@ public class SaveLoadManager : MonoBehaviour
             CombatAreaManager.Instance.LoadCombatAreasFromSave(savedata); //순서 바꿔야할 수도?
             GameManager.Instance.LoadBossPhaseData(savedata);
 
+            GameManager.Instance.SetEveryTrvDestPlace(savedata);
+
             GameManager.Instance.SetAdvsEnemy(savedata);
             CombatAreaManager.Instance.SetMonstersEnemy(savedata);
 
             GameManager.Instance.ActivateLoadedActors(savedata);
             //CombatAreaManager.Instance.ActivateMonsters();
+            StructureManager.Instance.SetStructuresGuest(savedata);
 
             TileMapGenerator.Instance.SetTileStructure(savedata);
 

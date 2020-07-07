@@ -41,7 +41,7 @@ public class Structure : Place
         public IEnumerator UsingStructure(int duration)
         {
             Debug.Log("--------------------Traveler Entered!!!!!!");
-            for (int i = 0; i < duration; i++)
+            while(elapsedTime < duration)
             {
                 yield return Tick;
                 elapsedTime++;
@@ -218,15 +218,7 @@ public class Structure : Place
     //	StartCoroutine(timer.UsingStructure(duration-timer.elapsedTime));
     //}
 
-    public void LoadEnteredTraveler(TravelerTimerData timerData)
-    {
-        curUsingQueue.Enqueue(new TravelerTimer(timerData));
-    }
-
-    public void LoadWaitingTraveler(TravelerTimerData timerData)
-    {
-        curWaitingQueue.Enqueue(new TravelerTimer(timerData));
-    }
+    
 
     public override void Visit(Actor visitor)
     {
@@ -267,6 +259,19 @@ public class Structure : Place
     public override PlaceType GetPlaceType()
     {
         return PlaceType.Structure;
+    }
+
+    public void LoadEnteredTraveler(TravelerTimerData timerData)
+    {
+        TravelerTimer timer = new TravelerTimer(timerData);
+        timer.OnUsingStructure();
+        curUsingQueue.Enqueue(timer);
+        StartCoroutine(timer.UsingStructure(duration));
+    }
+
+    public void LoadWaitingTraveler(TravelerTimerData timerData)
+    {
+        curWaitingQueue.Enqueue(new TravelerTimer(timerData));
     }
     #endregion
 }

@@ -41,15 +41,15 @@ public class GameManager : MonoBehaviour
     public int activeSpAdvCnt;
     public int playerSpAdvIndex = -1;
 
-     public List<GameObject> travelersDisabled;
+    public List<GameObject> travelersDisabled;
     public List<GameObject> travelersEnabled;
 
     public List<GameObject> adventurersEnabled;
     public List<GameObject> adventurersDisabled;
 
     public List<GameObject> specialAdventurers;
-   
-	public Queue<GameObject> trvEnterQ;
+
+    public Queue<GameObject> trvEnterQ;
     public Queue<GameObject> advEnterQ;
     public Queue<GameObject> spAdvEnterQ;
 
@@ -78,8 +78,8 @@ public class GameManager : MonoBehaviour
     int rescue_Max = 0;
     int complete_Popularity = 0;
 
-	int stageIndex = 0;
-	int stageMax = 0;
+    int stageIndex = 0;
+    int stageMax = 0;
 
     // 모험가, 관광객 생성용 비율 저장 리스트
     List<KeyValuePair<string, float>> raceRatios;
@@ -204,8 +204,8 @@ public class GameManager : MonoBehaviour
         wait = new WaitForSeconds(0.11f);
         countLogWait = new WaitForSeconds(3.0f);
 
-		//게임 해상도 설정
-		Screen.SetResolution(1920, 1080, true);
+        //게임 해상도 설정
+        Screen.SetResolution(1920, 1080, true);
         //isBossPhase = false;
         //skirmishSurvivors = new List<SpecialAdventurer>();
         //skirmishLosers = new List<SpecialAdventurer>();
@@ -218,7 +218,7 @@ public class GameManager : MonoBehaviour
 
         // Scene 정보 세팅
         SetSceneData(sceneData);
-		stageMax = GetMap().GetLayerCount();
+        stageMax = GetMap().GetLayerCount();
         if (SaveLoadManager.Instance.isLoadedGame == false)
             SetCombatAreas(sceneData);
 
@@ -282,7 +282,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(AdvEnter());
         StartCoroutine(SpAdvEnter());
 
-		
+
 #if DEBUG_ADV
         //GenAndEnqueueSingleAdventurer(1, 10);
         //GenAndEnqueueSpecialAdvenuturer("Hana", 85);
@@ -370,7 +370,7 @@ public class GameManager : MonoBehaviour
     #region Generate Characters
     // 모험가 입장 코루틴
     // 이거에 i 값을 던져주면 활성화 문제는 해결됨.
-    
+
     IEnumerator TEnter()
     {
         for (int i = 0; i < travelerMax; i++)
@@ -595,8 +595,8 @@ public class GameManager : MonoBehaviour
         }
 
 
-		if (i >= trvWealthRatios.Count)
-			i = trvWealthRatios.Count - 1;
+        if (i >= trvWealthRatios.Count)
+            i = trvWealthRatios.Count - 1;
 
         //Debug.Log("final idx : " + i);
         switch (trvWealthRatios[i].Key)
@@ -787,7 +787,7 @@ public class GameManager : MonoBehaviour
 
         tempTraveler.InitTraveler();
         GenStat(tempTraveler);
-		tempTraveler.stat.SetOwner(tempTraveler);
+        tempTraveler.stat.SetOwner(tempTraveler);
         tempTraveler.ResetToReuse();
         travelersDisabled.RemoveAt(travelersDisabled.Count - 1);
 
@@ -811,11 +811,11 @@ public class GameManager : MonoBehaviour
         tempAdventurer.InitAdventurer(tempBattleStat, tempRewardStat);
         tempAdventurer.ResetToReuse();
         GenStat(tempAdventurer, advLevel);
-		tempAdventurer.stat.SetOwner(tempAdventurer);
-		//if (tempAdventurer.stat == null)
-		//    Debug.Log("Genned adv's stat is null!");
+        tempAdventurer.stat.SetOwner(tempAdventurer);
+        //if (tempAdventurer.stat == null)
+        //    Debug.Log("Genned adv's stat is null!");
 
-		adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
+        adventurersDisabled.RemoveAt(adventurersDisabled.Count - 1); // 객체 풀에서 빼서 씀.
         advEnterQ.Enqueue(temp);
     }
 
@@ -873,10 +873,10 @@ public class GameManager : MonoBehaviour
 
         //Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
 
-        tempSpAdv.InitSpecialAdventurer(tempBattleStat, tempRewardStat, name);		
+        tempSpAdv.InitSpecialAdventurer(tempBattleStat, tempRewardStat, name);
         GenStat(tempSpAdv, name, level);
-		tempSpAdv.stat.SetOwner(tempSpAdv);
-		spAdvEnterQ.Enqueue(go);
+        tempSpAdv.stat.SetOwner(tempSpAdv);
+        spAdvEnterQ.Enqueue(go);
     }
 
     public void SetSpAdvEffects(SpecialAdventurer spAdv, string name)
@@ -944,7 +944,7 @@ public class GameManager : MonoBehaviour
 
     private void GenerateTravelers(int needed)
     {
-        for(int i = 0; i < needed; i++)
+        for (int i = 0; i < needed; i++)
         {
             GenAndEnqueueSingleTraveler();
         }
@@ -984,7 +984,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
     private void GenerateAdventurers(int needed)
     {
         //List<ProgressInformation> tempList = progressInformations.CopyTo()
@@ -1283,8 +1283,8 @@ public class GameManager : MonoBehaviour
             //}
             //else
             //{
-                tempTraveler.index = tempData.index;
-                tempTraveler.prefabPath = tempData.prefabPath;
+            tempTraveler.index = tempData.index;
+            tempTraveler.prefabPath = tempData.prefabPath;
             //}
             //SetLoadedTravelerState(travelers[i], savedata.travelers[i]);
         }
@@ -1509,6 +1509,30 @@ public class GameManager : MonoBehaviour
         #endregion
     }
 
+    public void SetEveryTrvDestPlace(GameSavedata savedata)
+    {
+        #region Travelers
+        for (int i = 0; i < travelersEnabled.Count; i++)
+        {
+            SetTrvDestPlace(travelersEnabled[i], savedata.travelersEnabled[i]);
+        }
+        #endregion
+
+        #region Adventruers
+        for (int i = 0; i < adventurersEnabled.Count; i++)
+        {
+            SetTrvDestPlace(adventurersEnabled[i], savedata.adventurersEnabled[i]);
+        }
+        #endregion
+
+        #region SpecialAdventurers
+        for (int i = 0; i < specialAdventurers.Count; i++)
+        {
+            SetTrvDestPlace(specialAdventurers[i], savedata.specialAdventurers[i]);
+        }
+        #endregion
+    }
+
     public void SetAdvsEnemy(GameSavedata savedata)
     {
         for (int i = 0; i < adventurersEnabled.Count; i++)
@@ -1593,6 +1617,13 @@ public class GameManager : MonoBehaviour
         newTraveler.index = data.index;
         //TileLayer tileLayer = GetTileLayer(0);
 
+        SetLoadedActorState(input, data);
+    }
+
+    private void SetTrvDestPlace(GameObject input, TravelerData data)
+    {
+        Traveler newTraveler = input.GetComponent<Traveler>();
+
         if (data.destPlaceIndex != -1)
         {
             switch (data.destPlaceType)
@@ -1608,8 +1639,6 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
-
-        SetLoadedActorState(input, data);
     }
 
     // State 로드해서 넣는 메서드

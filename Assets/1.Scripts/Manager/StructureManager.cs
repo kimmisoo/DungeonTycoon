@@ -43,15 +43,15 @@ public class StructureManager : MonoBehaviour
     #region 세이브!
     public List<Structure> structures;
 	#endregion
-	private void Awake()
+	void Awake()
 	{
-		structures = new List<Structure>();
-	}
+        _instance = this;
+        structures = new List<Structure>();
+        LoadStructureData();
+    }
 	// Use this for initialization
 	void Start ()
     {
-		_instance = this;
-		LoadStructureData();
 		GameObject constructingAreaParent = GameObject.FindGameObjectWithTag("ConstructingArea");
 		
 		for(int i=0; i<constructingAreaParent.transform.childCount; i++)
@@ -91,63 +91,76 @@ public class StructureManager : MonoBehaviour
 		constructing.transform.parent = rootStructureObject.transform;
 		constructing.tag = "Movable";
 
-		DesireType tempType = DesireType.Base;
-		int tempResolveAmount = 0;
-		switch(tempStructureCategory)
+
+        SetStructureDataFromJSON(constructing.GetComponent<Structure>(), tempStructureCategory, tempStructureNumber);
+        /*for(int i =0; i< x*y; i++)
 		{
-			case "Drink":
-				tempType = DesireType.Thirsty;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["thirsty"].AsInt;
-				break;
+			structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
+			Debug.Log(structure.extent[i % x, i / x]);
+        }*/
 
-			case "Food":
-				tempType = DesireType.Hungry;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["hungry"].AsInt;
-				break;
+        AllocateStructure();
+	}
 
-			case "Lodge":
-				tempType = DesireType.Sleep;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["sleepy"].AsInt;
-				break;
+    // JSON 파일에서 건물 정보 읽어서 structure에 저장.
+    public void SetStructureDataFromJSON(Structure structure, string category, int num)
+    {
+        DesireType tempType = DesireType.Base;
+        int tempResolveAmount = 0;
+        switch (tempStructureCategory)
+        {
+            case "Drink":
+                tempType = DesireType.Thirsty;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["thirsty"].AsInt;
+                break;
 
-			case "Equipment":
-				tempType = DesireType.Equipment;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["equipment"].AsInt;
-				break;
+            case "Food":
+                tempType = DesireType.Hungry;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["hungry"].AsInt;
+                break;
 
-			case "Tour":
-				tempType = DesireType.Tour;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["tour"].AsInt;
-				break;
+            case "Lodge":
+                tempType = DesireType.Sleep;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["sleepy"].AsInt;
+                break;
 
-			case "Convenience":
-				tempType = DesireType.Convenience;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["convenience"].AsInt;
-				break;
+            case "Equipment":
+                tempType = DesireType.Equipment;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["equipment"].AsInt;
+                break;
 
-			case "Fun":
-				tempType = DesireType.Fun;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["fun"].AsInt;
-				break;
+            case "Tour":
+                tempType = DesireType.Tour;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["tour"].AsInt;
+                break;
 
-			case "Santuary":
-				tempType = DesireType.Health;
-				tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["health"].AsInt;
-				break;
-				
-			case "Rescue":
-				tempType = DesireType.Rescue;
-				break;
-		}
-		//임시
-		Structure structure = constructing.GetComponent<Structure>();
-		structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
-		structure.type = structureJson[tempStructureCategory][tempStructureNumber]["type"];
-		structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
-		structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
-		structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
-		structure.resolveType = tempType;
-		structure.resolveAmount = tempResolveAmount;
+            case "Convenience":
+                tempType = DesireType.Convenience;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["convenience"].AsInt;
+                break;
+
+            case "Fun":
+                tempType = DesireType.Fun;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["fun"].AsInt;
+                break;
+
+            case "Santuary":
+                tempType = DesireType.Health;
+                tempResolveAmount = structureJson[tempStructureCategory][tempStructureNumber]["desire"]["health"].AsInt;
+                break;
+
+            case "Rescue":
+                tempType = DesireType.Rescue;
+                break;
+        }
+
+        structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
+        structure.type = structureJson[tempStructureCategory][tempStructureNumber]["type"];
+        structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
+        structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
+        structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
+        structure.resolveType = tempType;
+        structure.resolveAmount = tempResolveAmount;
         // 저장용.
         structure.structureCategory = tempStructureCategory;
         structure.structureNumber = tempStructureNumber;
@@ -164,33 +177,27 @@ public class StructureManager : MonoBehaviour
         structure.preference.SetPrefMiddleclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["middleclass"].AsFloat);
         structure.preference.SetPrefLowerclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["lowerclass"].AsFloat);
         //desire
-		
+
 
         structure.genre = structureJson[tempStructureCategory][tempStructureNumber]["genre"];
-		structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
+        structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
 
-		int x = structureJson[tempStructureCategory][tempStructureNumber]["sitewidth"].AsInt;
-		structure.extentWidth = x;
-		
-		int y = structureJson[tempStructureCategory][tempStructureNumber]["sitelheight"].AsInt;
-		structure.extentHeight = y;
+        int x = structureJson[tempStructureCategory][tempStructureNumber]["sitewidth"].AsInt;
+        structure.extentWidth = x;
 
-		structure.extent = new int[x, y];
-		/*for(int i =0; i< x*y; i++)
-		{
-			structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
-			Debug.Log(structure.extent[i % x, i / x]);
-        }*/
-		Debug.Log(x + " , " + y);
-		for(int i=0; i<y; i++)
-		{
-			for(int j=0; j<x; j++)
-			{
-				structure.extent[j , i] = structureJson[tempStructureCategory][tempStructureNumber]["site"][j + (i * x)].AsInt;
-			}
-		}
-		AllocateStructure();
-	}
+        int y = structureJson[tempStructureCategory][tempStructureNumber]["sitelheight"].AsInt;
+        structure.extentHeight = y;
+
+        structure.extent = new int[x, y];
+        //Debug.Log(x + " , " + y);
+        for (int i = 0; i < y; i++)
+        {
+            for (int j = 0; j < x; j++)
+            {
+                structure.extent[j, i] = structureJson[tempStructureCategory][tempStructureNumber]["site"][j + (i * x)].AsInt;
+            }
+        }
+    }
 	
 	public void AllocateStructure()
 	{
@@ -518,6 +525,14 @@ public class StructureManager : MonoBehaviour
         }
     }
 
+    public void SetStructuresGuest(GameSavedata savedata)
+    {
+        for (int i = 0; i < savedata.structureDatas.Count; i++)
+        {
+            SetSingleStructureGuest(structures[i], savedata.structureDatas[i]);
+        }
+    }
+
     public void ClearStructureManager()
     {
         ResetConstructingAreas();
@@ -542,46 +557,48 @@ public class StructureManager : MonoBehaviour
         constructing = (GameObject)Instantiate(Resources.Load("Structure/StructurePrefabs/" + tempStructureCategory + "/" + tempStructureCategory + tempStructureNumber.ToString()));
         constructing.transform.parent = rootStructureObject.transform;
 
-        //임시
         Structure structure = constructing.GetComponent<Structure>();
-        structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
-        structure.type = structureJson[tempStructureCategory][tempStructureNumber]["type"];
-        structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
-        structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
-        structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
+        SetStructureDataFromJSON(structure, tempStructureCategory, tempStructureNumber);
+        //임시
+        
+        //structure.name = structureJson[tempStructureCategory][tempStructureNumber]["name"];
+        //structure.type = structureJson[tempStructureCategory][tempStructureNumber]["type"];
+        //structure.capacity = structureJson[tempStructureCategory][tempStructureNumber]["capacity"].AsInt;
+        //structure.duration = structureJson[tempStructureCategory][tempStructureNumber]["duration"].AsInt;
+        //structure.charge = structureJson[tempStructureCategory][tempStructureNumber]["charge"].AsInt;
 
-        // 저장용.
-        structure.structureCategory = tempStructureCategory;
-        structure.structureNumber = tempStructureNumber;
+        //// 저장용.
+        //structure.structureCategory = tempStructureCategory;
+        //structure.structureNumber = tempStructureNumber;
 
-        //preference
-        structure.preference.SetPrefAdventurer(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["adventurer"].AsFloat);
-        structure.preference.SetPrefTourist(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["tourist"].AsFloat);
-        structure.preference.SetPrefHuman(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["human"].AsFloat);
-        structure.preference.SetPrefElf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["elf"].AsFloat);
-        structure.preference.SetPrefDwarf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["dwarf"].AsFloat);
-        structure.preference.SetPrefOrc(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["orc"].AsFloat);
-        structure.preference.SetPrefDog(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["cat"].AsFloat);
-        structure.preference.SetPrefUpperclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["upperclass"].AsFloat);
-        structure.preference.SetPrefMiddleclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["middleclass"].AsFloat);
-        structure.preference.SetPrefLowerclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["lowerclass"].AsFloat);
-        //desire
+        ////preference
+        //structure.preference.SetPrefAdventurer(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["adventurer"].AsFloat);
+        //structure.preference.SetPrefTourist(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["tourist"].AsFloat);
+        //structure.preference.SetPrefHuman(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["human"].AsFloat);
+        //structure.preference.SetPrefElf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["elf"].AsFloat);
+        //structure.preference.SetPrefDwarf(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["dwarf"].AsFloat);
+        //structure.preference.SetPrefOrc(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["orc"].AsFloat);
+        //structure.preference.SetPrefDog(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["cat"].AsFloat);
+        //structure.preference.SetPrefUpperclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["upperclass"].AsFloat);
+        //structure.preference.SetPrefMiddleclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["middleclass"].AsFloat);
+        //structure.preference.SetPrefLowerclass(structureJson[tempStructureCategory][tempStructureNumber]["preference"]["lowerclass"].AsFloat);
+        ////desire
 
-        structure.genre = structureJson[tempStructureCategory][tempStructureNumber]["genre"];
-        structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
+        //structure.genre = structureJson[tempStructureCategory][tempStructureNumber]["genre"];
+        //structure.expenses = structureJson[tempStructureCategory][tempStructureNumber]["expenses"].AsInt;
 
-        int x = structureJson[tempStructureCategory][tempStructureNumber]["sitewidth"].AsInt;
-        structure.extentWidth = x;
+        //int x = structureJson[tempStructureCategory][tempStructureNumber]["sitewidth"].AsInt;
+        //structure.extentWidth = x;
 
-        int y = structureJson[tempStructureCategory][tempStructureNumber]["sitelheight"].AsInt;
-        structure.extentHeight = y;
+        //int y = structureJson[tempStructureCategory][tempStructureNumber]["sitelheight"].AsInt;
+        //structure.extentHeight = y;
 
-        structure.extent = new int[x, y];
-        for (int i = 0; i < x * y; i++)
-        {
-            structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
-        }
-        #endregion
+        //structure.extent = new int[x, y];
+        //for (int i = 0; i < x * y; i++)
+        //{
+        //    structure.extent[i % x, i / x] = structureJson[tempStructureCategory][tempStructureNumber]["site"][i].AsInt;
+        //}
+        //#endregion
 
         #region AllocateStructure()
         // 건설할 건물의 position 설정
@@ -614,17 +631,34 @@ public class StructureManager : MonoBehaviour
         #endregion
 
         
+        //// 사용중 모험가, 대기중 모험가 큐에 넣어줌.
+        //while (input.curUsingQueue.Count()>0)
+        //{
+        //    //structure.LoadEnteredTraveler(GameManager.Instance.travelersEnabled[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
+        //    structure.LoadEnteredTraveler(input.curUsingQueue.Dequeue());
+        //}
+
+        //while(input.curWaitingQueue.Count()>0)
+        //{
+        //    //structure.AddWaitTraveler(GameManager.Instance.travelersEnabled[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
+        //    structure.LoadWaitingTraveler(input.curWaitingQueue.Dequeue());
+        //}
+    }
+
+    private void SetSingleStructureGuest(Structure structure, StructureData data)
+    {
         // 사용중 모험가, 대기중 모험가 큐에 넣어줌.
-        while (input.curUsingQueue.Count()>0)
+        while (data.curUsingQueue.Count() > 0)
         {
             //structure.LoadEnteredTraveler(GameManager.Instance.travelersEnabled[input.curUsingQueue.Dequeue()].GetComponent<Traveler>(), input.elapsedTimeQueue.Dequeue());
-            structure.LoadEnteredTraveler(input.curUsingQueue.Dequeue());
+            structure.LoadEnteredTraveler(data.curUsingQueue.Dequeue());
         }
 
-        while(input.curWaitingQueue.Count()>0)
+        while (data.curWaitingQueue.Count() > 0)
         {
             //structure.AddWaitTraveler(GameManager.Instance.travelersEnabled[input.curWaitingQueue.Dequeue()].GetComponent<Traveler>());
-            structure.LoadWaitingTraveler(input.curWaitingQueue.Dequeue());
+            structure.LoadWaitingTraveler(data.curWaitingQueue.Dequeue());
         }
     }
+    #endregion
 }
