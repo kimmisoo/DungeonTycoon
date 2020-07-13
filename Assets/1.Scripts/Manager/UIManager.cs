@@ -90,6 +90,8 @@ public class UIManager : MonoBehaviour {
 
     #region RPG UI
     public BossRaidUI bossRaidUI;
+    public GameObject hpBarRoot;
+    public MessageUI messageUI;
     #endregion
 
     void Awake()

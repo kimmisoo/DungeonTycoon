@@ -1821,6 +1821,7 @@ public class GameManager : MonoBehaviour
         PlayerAcceptedRaidEventHandler?.Invoke();
         if(canCallBossRaid)
             SomeoneCalledBossRaid();
+        UIManager.Instance.messageUI.ShowMessage("플레이어가 보스에 도전했습니다.");
         UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.PlayerParticipating;
         //DisableBossRaidUI();
     }
@@ -1834,6 +1835,7 @@ public class GameManager : MonoBehaviour
     public void AICalledBossRaid()
     {
         SomeoneCalledBossRaid();
+        UIManager.Instance.messageUI.ShowMessage("다른 모험가가 보스에 도전했습니다.");
         UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.WaitingPlayerResponse;
         //ShowBossRaidDecisionUI();
     }
@@ -1872,6 +1874,7 @@ public class GameManager : MonoBehaviour
         // 전초전 하기 전에 리셋
         curSkirmish = new Skirmish();
 
+        UIManager.Instance.messageUI.ShowMessage("보스지역 공략 시작");
         UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.BeforeApplication;
         //StartCoroutine(BossRaidPrepTimer());
     }
@@ -1898,12 +1901,14 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.bossRaidUI.SetRaidStateText("-전초전-");
 
         bossRaidPrepWaitedTime = 00.0f;
+        UIManager.Instance.messageUI.ShowMessage("전초전 시작");
         curSkirmish.StartSkirmish();
     }
 
     public void OnSkirmishEnd(int spAdvIdx)
     {
         curSkirmish = null;
+        UIManager.Instance.messageUI.ShowMessage("보스전 시작");
         UIManager.Instance.bossRaidUI.SetRaidStateText("-보스전-");
     }
 
@@ -1933,7 +1938,7 @@ public class GameManager : MonoBehaviour
     
     public void FillTrvAdvVacancies()
     {
-        Debug.Log("Trv needed : " + (CurTrvMax - travelersEnabled.Count - trvEnterQ.Count) + ", Adv needed : " + (CurAdvMax - adventurersEnabled.Count - advEnterQ.Count));
+        //Debug.Log("Trv needed : " + (CurTrvMax - travelersEnabled.Count - trvEnterQ.Count) + ", Adv needed : " + (CurAdvMax - adventurersEnabled.Count - advEnterQ.Count));
         GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
         GenerateAdventurers(CurAdvMax - adventurersEnabled.Count - advEnterQ.Count);
     }
@@ -1974,7 +1979,10 @@ public class GameManager : MonoBehaviour
     {
         curSkirmish.ReportMatchDefeated(loser);
         if (loser.index == playerSpAdvIndex)
+        {
+            UIManager.Instance.messageUI.ShowMessage("플레이어 모험가가 탈락했습니다.");
             UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.PlayerNotParticipating;
+        }
     }
 
     public void ReportMatchWon(SpecialAdventurer winner)
@@ -2006,11 +2014,13 @@ public class GameManager : MonoBehaviour
         }
 		OpenNextStage();
         UIManager.Instance.bossRaidUI.NotBossPhase();
+        UIManager.Instance.messageUI.ShowMessage("보스 공략 성공!");
         CombatAreaManager.Instance.OnBossAreaConquered();
     }
 
     public void ReportBossBattleDefeat()
     {
+        UIManager.Instance.messageUI.ShowMessage("보스 공략 실패");
         UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.WaitingRetryTimer;
         StartRetryTimer();
     }
