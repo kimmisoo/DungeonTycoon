@@ -87,13 +87,17 @@ public class UIManager : MonoBehaviour {
     public Material grayScaleMaterial;
 
 	public SpecificationPanel specPanel;
-	void Awake()
+
+    #region RPG UI
+    public BossRaidUI bossRaidUI;
+    #endregion
+
+    void Awake()
 	{
 		_instance = this;
         uiStack = new Stack();
 	}
-    
-    
+
     
     void Start()
     {

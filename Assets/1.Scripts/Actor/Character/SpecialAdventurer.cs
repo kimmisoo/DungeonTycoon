@@ -13,7 +13,7 @@ public class SpecialAdventurer : Adventurer
     public BossArea curBossArea;
 
     private const int ACCESSORY_CAPACITY = 2;
-    private const int BOSSRAID_CALL_PERIOD = 20;
+    private const int BOSSRAID_CALL_PERIOD = 15;
     private int bossRaidCallCnt = 0;
     public bool willBossRaid = false;
 
@@ -81,6 +81,7 @@ public class SpecialAdventurer : Adventurer
         if (willBossRaid)
         {
             superState = SuperState.TeleportToBossArea;
+            state = State.TeleportToBossArea;
             curCoroutine = StartCoroutine(TeleportToBossArea());
         }
         else
@@ -465,7 +466,8 @@ public class SpecialAdventurer : Adventurer
     {
         // 공통 이벤트에서 구독 해제
         GameManager.Instance.BossRaidCallEventHandler -= OnBossRaidCall;
-        GameManager.Instance.PlayerOrderedRaidEventHandler += OnPlayerRaidOrder;
+        GameManager.Instance.PlayerAcceptedRaidEventHandler += OnPlayerRaidOrder;
+        GameManager.Instance.PlayerRefusedRaidEventHandler += OnPlayerRaidRefusal;
     }
     #endregion
 
@@ -479,9 +481,7 @@ public class SpecialAdventurer : Adventurer
                 //StopCurActivities();
                 //curState = State.TeleportToBossArea;
                 //StartCoroutine(ParticipateInRaid());
-                willBossRaid = true;
-                if (curState == State.MovingToDestination)
-                    InterruptMoving();
+                ScheduleToBossRaid();
             }
             else
                 GameManager.Instance.SpAdvResponsed(false, this);
@@ -493,6 +493,11 @@ public class SpecialAdventurer : Adventurer
         //StopCurActivities();
         //curState = State.TeleportToBossArea;
         //StartCoroutine(ParticipateInRaid());
+        ScheduleToBossRaid();
+    }
+
+    public void ScheduleToBossRaid()
+    {
         willBossRaid = true;
         if (curState == State.MovingToDestination)
             InterruptMoving();
@@ -552,7 +557,7 @@ public class SpecialAdventurer : Adventurer
     private bool IsParticipatedBossRaid()
     {
         // 그 외의 SuperState는 이후 상황에서만 나오니 제외.
-        return superState == SuperState.TeleportToBossArea || superState == SuperState.WaitingOtherSpecialAdvs;
+        return willBossRaid || superState == SuperState.TeleportToBossArea || superState == SuperState.WaitingOtherSpecialAdvs;
     }
     #endregion
 
@@ -900,7 +905,12 @@ public class SpecialAdventurer : Adventurer
             GameManager.Instance.isBossPhase && GameManager.Instance.canCallBossRaid && // 보스페이즈이며, 보스레이드 콜 할 수 있는 상태이며
             GameManager.Instance.playerSpAdvIndex != index && // 플레이어 캐릭터가 아니며
             Level >= CombatAreaManager.Instance.FindBossArea().ChallengeLevel) // 적정 레벨을 만족할 때
+        {
+            ScheduleToBossRaid();
+            //Debug.Log("bossRaidCall : " + stat.actorName);
             GameManager.Instance.AICalledBossRaid(); // 보스레이드 신청
+            curState = State.SearchingMonster;
+        }
         else if (curHuntingArea != null && ((battleStat.Health < battleStat.HealthMax / 4) || // 체력이 25%미만이거나
             (Level > curHuntingArea.LevelMax && curHuntingArea.index < CombatAreaManager.Instance.ConqueringHuntingAreaIndex))) // 레벨 제한을 넘겼고, 갈 수 있는 다른 사냥터가 열렸다면
             curState = State.ExitingHuntingArea; // 사냥터에서 퇴장
@@ -945,6 +955,7 @@ public class SpecialAdventurer : Adventurer
     {
         // 일단 체력 회복
         HealFullHealth(false);
+        willBossRaid = false;
         
         // 도착하면 응답 완료했다고 매니저에 알림
         GameManager.Instance.SpAdvResponsed(true, this);
@@ -1102,6 +1113,7 @@ public class SpecialAdventurer : Adventurer
 
         DisplayTeleportEffect(originPos, destPos);
 
+        GameManager.Instance.ReportBossBattleDefeat();
 
         yield return new WaitForSeconds(SceneConsts.BAILOUT_RESURRECT_TIME);
 

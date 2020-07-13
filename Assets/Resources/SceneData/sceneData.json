@@ -117,10 +117,10 @@
 		},
 		{
 			"num": 1,
-			"traveler_Max": 50,
-			"adventurer_Max": 50,
+			"traveler_Max": 180,
+			"adventurer_Max": 180,
 			"specialadventurers": ["Hana", "Iris", "Maxi", "Murat", "OldMan", "Yeonhwa", "Nyang", "Wal"],
-			"specialadv_level": 15,
+			"specialadv_level": 26,
 			"complete_Popularity": 10000,
 			"buildable": {
 				"drink": 2,

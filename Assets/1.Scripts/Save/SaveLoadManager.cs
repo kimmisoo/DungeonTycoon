@@ -128,6 +128,7 @@ public class SaveLoadManager : MonoBehaviour
             StructureManager.Instance.SetStructuresGuest(savedata);
 
             TileMapGenerator.Instance.SetTileStructure(savedata);
+            GameManager.Instance.LoadUI(savedata);
 
             Debug.Log("불러오기 성공");
 

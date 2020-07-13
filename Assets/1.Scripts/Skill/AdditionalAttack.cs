@@ -57,7 +57,7 @@ public class YeonhwaUniqueSkill : Skill
 {
     const float ATTACK_RATE = 1.55f;
     GameObject skillEffect;
-    BattleStat myBattleStat;
+    //BattleStat myBattleStat;
 
     public override void InitSkill()
     {

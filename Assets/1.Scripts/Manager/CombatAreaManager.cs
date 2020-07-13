@@ -306,7 +306,7 @@ public class CombatAreaManager : MonoBehaviour
                     thatTile.SetIsHuntingArea(true);
 
                     //디버깅용임시
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 40);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 1.0f, 1.0f);
                     //
 #if DEBUG_CREATE_HA
                     Debug.Log(thatTile);
@@ -328,7 +328,7 @@ public class CombatAreaManager : MonoBehaviour
                 else if (extent[j, i] == 2)
                 {
                     thatTile.SetIsStructed(true);
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 0);
                     //if (thatTile.GetBuildable())
                     //{
                     huntingArea.addEntrance(thatTile);
@@ -424,7 +424,7 @@ public class CombatAreaManager : MonoBehaviour
                     thatTile.SetIsHuntingArea(true);
 
                     //디버깅용임시
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f);
                     //
                     for (int k = 0; k < 4; k++)
                     {
@@ -434,7 +434,7 @@ public class CombatAreaManager : MonoBehaviour
                 else if (extent[j, i] == 2)
                 {
                     thatTile.SetIsStructed(true);
-                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 140, 0);
+                    thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 1.0f);
                     //if (thatTile.GetBuildable())
                     //{
                     bossArea.addEntrance(thatTile);
