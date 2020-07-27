@@ -63,8 +63,23 @@ public abstract class Actor : MonoBehaviour
     protected Direction direction;
     protected Animator animator;
     protected SpriteRenderer[] spriteRenderers;
-	
-    protected Tile curTile;
+
+    //protected Tile curTile;
+    private Tile _curTile;
+    protected Tile curTile
+    {
+        get
+        {
+            return _curTile;
+        }
+        set
+        {
+            _curTile = value;
+            if (value == null)
+                Debug.Log("curTile is null");
+        }
+    }
+
     protected TileForMove curTileForMove;
     protected TileLayer tileLayer;
     protected Tile destinationTile;
@@ -392,17 +407,45 @@ public abstract class Actor : MonoBehaviour
         Debug.Log("xDiff : " + xDiff + ", xSeq : " + xSeq);
         Debug.Log("xDiff : " + yDiff + ", xSeq : " + ySeq);
 #endif
-
-        for (int i = 0; i != xDiff; i += xSeq)
+        //for (int i = 0; i != xDiff; i += xSeq)
+        //{
+        //    moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX() + xSeq + i, lastTFM.GetY()));
+        //}
+        float randNum = Random.Range(0.0f, 1.0f);
+        if (randNum >= 0.5f)
         {
-            moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX() + xSeq + i, lastTFM.GetY()));
+            for (int i = 0; i != xDiff; i += xSeq)
+            {
+                moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX() + xSeq + i, lastTFM.GetY()));
+            }
+        }
+        else
+        {
+            for (int i = 0; i != yDiff; i += ySeq)
+            {
+                moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX(), lastTFM.GetY() + ySeq + i));
+            }
         }
 
         lastTFM = moveWayTFM[moveWayTFM.Count - 1];
 
-        for (int i = 0; i != yDiff; i += ySeq)
+        //for (int i = 0; i != yDiff; i += ySeq)
+        //{
+        //    moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX(), lastTFM.GetY() + ySeq + i));
+        //}
+        if (randNum >= 0.5f)
         {
-            moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX(), lastTFM.GetY() + ySeq + i));
+            for (int i = 0; i != yDiff; i += ySeq)
+            {
+                moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX(), lastTFM.GetY() + ySeq + i));
+            }
+        }
+        else
+        {
+            for (int i = 0; i != xDiff; i += xSeq)
+            {
+                moveWayTFM.Add(tileLayer.GetTileForMove(lastTFM.GetX() + xSeq + i, lastTFM.GetY()));
+            }
         }
 
 #if DEBUG_GETWAY

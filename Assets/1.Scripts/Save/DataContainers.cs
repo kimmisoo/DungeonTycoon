@@ -49,6 +49,11 @@ public class GameSavedata
     public bool canCallBossRaid;
     #endregion
 
+    #region UI
+    public BossRaidUI.BossRaidUIState bossRaidUIState;
+    public string bossRaidStateText;
+    #endregion
+
     public GameSavedata(string sceneNameInput)
     {
         GameManager gameManager = GameManager.Instance;
@@ -70,11 +75,17 @@ public class GameSavedata
         // travelers 저장.
         travelersDisabled = new List<TravelerData>();
         for (int i = 0; i < gameManager.travelersDisabled.Count; i++)
+        {
             travelersDisabled.Add(new TravelerData(gameManager.travelersDisabled[i]));
+            travelersDisabled[i].index = i;
+        }
 
         travelersEnabled = new List<TravelerData>();
         for (int i = 0; i < gameManager.travelersEnabled.Count; i++)
+        {
             travelersEnabled.Add(new TravelerData(gameManager.travelersEnabled[i]));
+            travelersEnabled[i].index = i;
+        }
 
         trvEnterQ = new Queue<TravelerData>();
         List<GameObject> trvEnterQConverted = gameManager.trvEnterQ.ToList();
@@ -88,15 +99,14 @@ public class GameSavedata
             adventurersEnabled.Add(new AdventurerData(gameManager.adventurersEnabled[i]));
             // 인덱스 수정해서 넣어주기
             adventurersEnabled[i].index = i;
-            //if (adventurersEnabled[i].stat == null)
-            //    Debug.Log("[adventurersEnabled] : stat is null");
-            //if (gameManager.adventurersEnabled[i].GetComponent<Adventurer>().stat == null)
-            //    Debug.Log("[adventurersEnabled] : origin stat is null");
         }
 
         adventurersDisabled = new List<AdventurerData>();
         for (int i = 0; i < gameManager.adventurersDisabled.Count; i++)
+        {
             adventurersDisabled.Add(new AdventurerData(gameManager.adventurersDisabled[i]));
+            adventurersDisabled[i].index = i;
+        }
 
         advEnterQ = new Queue<AdventurerData>();
         List<GameObject> advEnterQConverted = gameManager.advEnterQ.ToList();
@@ -122,6 +132,11 @@ public class GameSavedata
         bossRaidPrepWatiedTime = gameManager.bossRaidPrepWaitedTime;
         retryTimeLeft = gameManager.retryTimeLeft;
         canCallBossRaid = gameManager.canCallBossRaid;
+        #endregion
+
+        #region UI
+        bossRaidUIState = UIManager.Instance.bossRaidUI.State;
+        bossRaidStateText = UIManager.Instance.bossRaidUI.GetRaidStateText();
         #endregion
 
         // 타일맵 저장.

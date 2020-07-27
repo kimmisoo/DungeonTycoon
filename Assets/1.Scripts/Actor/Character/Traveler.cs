@@ -296,6 +296,7 @@ public class Traveler : Actor
 	protected virtual IEnumerator PathFinding()
     {
         //yield return null;
+        Debug.Assert(curTile != null, index);
         yield return StartCoroutine(pathFinder.Moves(curTile, destinationTile));
         
         if(pathFinder.PathFinded)

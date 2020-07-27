@@ -1221,12 +1221,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         hpBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HPSlider"));
         hpSlider = hpBar.GetComponentInChildren<Slider>();
-        hpBar.transform.SetParent(canvas.transform);
+        //hpBar.transform.SetParent(canvas.transform);
+        hpBar.transform.SetParent(UIManager.Instance.hpBarRoot.transform);
         hpBar.GetComponent<HPBar>().SetSubject(this);
 
         shieldBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/ShieldSlider"));
         shieldSlider = shieldBar.GetComponentInChildren<Slider>();
-        shieldBar.transform.SetParent(canvas.transform);
+        //shieldBar.transform.SetParent(canvas.transform);
+        shieldBar.transform.SetParent(UIManager.Instance.hpBarRoot.transform);
         shieldBar.GetComponent<ShieldBar>().SetSubject(this);
 
         hpBar.SetActive(false);

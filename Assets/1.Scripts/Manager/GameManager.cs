@@ -89,8 +89,8 @@ public class GameManager : MonoBehaviour
     // 보스 사냥 이벤트
     public delegate void BossRaidEvent();
     public BossRaidEvent BossRaidCallEventHandler;
-    public BossRaidEvent PlayerOrderedRaidEventHandler;
-
+    public BossRaidEvent PlayerAcceptedRaidEventHandler;
+    public BossRaidEvent PlayerRefusedRaidEventHandler;
 
     // 사냥터 정보
     int huntingAreaCount = 0;
@@ -237,7 +237,7 @@ public class GameManager : MonoBehaviour
         spAdvEnterQ = new Queue<GameObject>();
         //Debug.Log("traveler_max : " + travelerMax);
         // Scene별로 미리 정의된 관광객의 최대 수에 따라 생성
-        for (int i = 0; i < travelerMax; i++)
+        for (int i = 0; i < travelerMax + SceneConsts.OBJ_POOL_RESERVE; i++)
         {
             string prefabPath = "CharacterPrefabs/Traveler_test";
             GameObject go = (GameObject)Resources.Load(prefabPath);
@@ -256,7 +256,7 @@ public class GameManager : MonoBehaviour
             // Debug.Log("character instantiate - " + i);
         }
 
-        for (int i = 0; i < adventurerMax; i++)
+        for (int i = 0; i < adventurerMax + SceneConsts.OBJ_POOL_RESERVE; i++)
         {
             string prefabPath = "CharacterPrefabs/Adventurer_test";
             GameObject go = (GameObject)Resources.Load(prefabPath);
@@ -987,6 +987,8 @@ public class GameManager : MonoBehaviour
 
     private void GenerateAdventurers(int needed)
     {
+        if (needed == 0)
+            return;
         //List<ProgressInformation> tempList = progressInformations.CopyTo()
         CompileAdvStatistics();
 
@@ -1165,8 +1167,8 @@ public class GameManager : MonoBehaviour
 
     public void TravelersExit(Traveler trv)
     {
-        travelersEnabled.RemoveAt(trv.index);
         travelersDisabled.Add(trv.gameObject);
+        travelersEnabled.Remove(trv.gameObject);
         trv.ResetToReuse();
         trv.gameObject.SetActive(false);
 
@@ -1175,8 +1177,8 @@ public class GameManager : MonoBehaviour
 
     public void AdventurerExit(Adventurer adv)
     {
-        adventurersEnabled.RemoveAt(adv.index);
         adventurersDisabled.Add(adv.gameObject);
+        adventurersEnabled.Remove(adv.gameObject);
         adv.ResetToReuse();
         adv.gameObject.SetActive(false);
 
@@ -1217,7 +1219,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    #region Save Load
+    #region SaveLoad
     // 현재 상황 Save
     public void Save()
     {
@@ -1285,6 +1287,7 @@ public class GameManager : MonoBehaviour
             //{
             tempTraveler.index = tempData.index;
             tempTraveler.prefabPath = tempData.prefabPath;
+            tempTraveler.isNew = true;
             //}
             //SetLoadedTravelerState(travelers[i], savedata.travelers[i]);
         }
@@ -1347,6 +1350,7 @@ public class GameManager : MonoBehaviour
 
             InitLoadedTraveler(tempObject, inputTrvData);
             newTraveler.InitTraveler(inputTrvData.stat);
+            newTraveler.isNew = true;
             //SetLoadedAdventurerState(tempObject, inputAdvData);
         }
         #endregion
@@ -1447,6 +1451,7 @@ public class GameManager : MonoBehaviour
             tempObject.transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
 
             InitLoadedAdventurer(tempObject, inputAdvData);
+            newAdventurer.isNew = true;
             //SetLoadedAdventurerState(tempObject, inputAdvData);
         }
         #endregion
@@ -1686,20 +1691,8 @@ public class GameManager : MonoBehaviour
                 newAdventurer.curHuntingArea.EnterAdventurer(input);
             }
         }
-        //}
     }
 
-    //private void SetLoadedAdventurerState(GameObject input, TravelerData data)
-    //{
-    //    Adventurer newAdv = input.GetComponent<Adventurer>();
-
-    //    newAdv.SetSuperState(data.superState);
-
-    //    if (data.state == State.MovingToDestination || data.state == State.ApproachingToEnemy)
-    //        newAdv.curState = State.PathFinding;
-    //    else
-    //        newAdv.curState = data.state;
-    //}
 
     private void InitLoadedSpecialAdventurer(GameObject input, SpecialAdventurerData data)
     {
@@ -1713,8 +1706,6 @@ public class GameManager : MonoBehaviour
         newSpecialAdventurer.nameKey = data.nameKey;
 
         newSpecialAdventurer.willBossRaid = data.willBossRaid;
-
-        //newSpecialAdventurer.InitSpecialAdventurer(new Stat(data.stat, newSpecialAdventurer), data.battleStat, GenRewardStat(data.battleStat.Level), data.nameKey);
 
         if (data.weapon != null)
             newSpecialAdventurer.EquipWeapon(ItemManager.Instance.CreateItem(data.weapon.itemCategory, data.weapon.itemNum));
@@ -1761,6 +1752,7 @@ public class GameManager : MonoBehaviour
         // 일단 Layer 없이 구현.
         tmg.ClearTileMap();
         tileMap = tmg.GenerateMapFromSave("TileMap/" + sceneName, savedata);
+        ReloadSceneEntrances();
     }
 
     private void SetTileStructure(GameSavedata savedata)
@@ -1786,17 +1778,28 @@ public class GameManager : MonoBehaviour
         }
 
         isBossPhase = savedata.isBossPhase;
-        responsedSpAdvCnt = savedata.responsedSpAdvCnt;
+        //responsedSpAdvCnt = savedata.responsedSpAdvCnt;
         isBossRaidPrepTimeOver = savedata.isBossRaidPrepTimeOver;
         bossRaidPrepWaitedTime = savedata.bossRaidPrepWatiedTime;
-        retryTimeLeft = savedata.retryTimeLeft;
+        if (bossRaidPrepWaitedTime >= SkillConsts.TICK_TIME - Mathf.Epsilon)
+            StartCoroutine(BossRaidPrepTimer(bossRaidPrepWaitedTime));
         canCallBossRaid = savedata.canCallBossRaid;
+        retryTimeLeft = savedata.retryTimeLeft;
+        if (retryTimeLeft > SkillConsts.TICK_TIME)
+            StartRetryTimer();
     }
 
     public Skirmish GetCurSkirmish()
     {
         return curSkirmish;
     }
+
+    public void LoadUI(GameSavedata savedata)
+    {
+        UIManager.Instance.bossRaidUI.State = savedata.bossRaidUIState;
+        UIManager.Instance.bossRaidUI.SetRaidStateText(savedata.bossRaidStateText);
+    }
+
     #endregion
 
     #region Stage Progress
@@ -1815,20 +1818,26 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void PlayerCalledBossRaid()
     {
-        PlayerOrderedRaidEventHandler?.Invoke();
-        SomeoneCalledBossRaid();
-        DisableBossRaidUI();
+        PlayerAcceptedRaidEventHandler?.Invoke();
+        if(canCallBossRaid)
+            SomeoneCalledBossRaid();
+        UIManager.Instance.messageUI.ShowMessage("플레이어가 보스에 도전했습니다.");
+        UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.PlayerParticipating;
+        //DisableBossRaidUI();
     }
 
-    public void PlayerRejectedBossRaid()
+    public void PlayerRefusedBossRaid()
     {
-        DisableBossRaidUI();
+        PlayerRefusedRaidEventHandler?.Invoke();
+        UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.PlayerNotParticipating;
     }
 
     public void AICalledBossRaid()
     {
         SomeoneCalledBossRaid();
-        ShowBossRaidDecisionUI();
+        UIManager.Instance.messageUI.ShowMessage("다른 모험가가 보스에 도전했습니다.");
+        UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.WaitingPlayerResponse;
+        //ShowBossRaidDecisionUI();
     }
 
     public void SpAdvResponsed(bool isAccepted, SpecialAdventurer respondent)
@@ -1843,8 +1852,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void SomeoneCalledBossRaid()
     {
+        canCallBossRaid = false;
         BossRaidCallEventHandler?.Invoke();
-        StartCoroutine(BossRaidPrepTimer());
+        UIManager.Instance.bossRaidUI.SetRaidStateText("-대기-");
+        StartCoroutine(BossRaidPrepTimer(0.0f));
     }
 
     /// <summary>
@@ -1863,12 +1874,14 @@ public class GameManager : MonoBehaviour
         // 전초전 하기 전에 리셋
         curSkirmish = new Skirmish();
 
+        UIManager.Instance.messageUI.ShowMessage("보스지역 공략 시작");
+        UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.BeforeApplication;
         //StartCoroutine(BossRaidPrepTimer());
     }
 
-    public IEnumerator BossRaidPrepTimer()
+    public IEnumerator BossRaidPrepTimer(float startTime)
     {
-        bossRaidPrepWaitedTime = 0.0f;
+        bossRaidPrepWaitedTime = startTime;
 
         while (true)
         {
@@ -1883,13 +1896,20 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        DisableBossRaidUI();
+        if (responsedSpAdvCnt != specialAdventurers.Count)
+            UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.PlayerNotParticipating;
+        UIManager.Instance.bossRaidUI.SetRaidStateText("-전초전-");
+
+        bossRaidPrepWaitedTime = 00.0f;
+        UIManager.Instance.messageUI.ShowMessage("전초전 시작");
         curSkirmish.StartSkirmish();
     }
 
-    public void OnSkirmishEnd()
+    public void OnSkirmishEnd(int spAdvIdx)
     {
         curSkirmish = null;
+        UIManager.Instance.messageUI.ShowMessage("보스전 시작");
+        UIManager.Instance.bossRaidUI.SetRaidStateText("-보스전-");
     }
 
     /// <summary>
@@ -1918,6 +1938,7 @@ public class GameManager : MonoBehaviour
     
     public void FillTrvAdvVacancies()
     {
+        //Debug.Log("Trv needed : " + (CurTrvMax - travelersEnabled.Count - trvEnterQ.Count) + ", Adv needed : " + (CurAdvMax - adventurersEnabled.Count - advEnterQ.Count));
         GenerateTravelers(CurTrvMax - travelersEnabled.Count - trvEnterQ.Count);
         GenerateAdventurers(CurAdvMax - adventurersEnabled.Count - advEnterQ.Count);
     }
@@ -1944,7 +1965,10 @@ public class GameManager : MonoBehaviour
         }
 
         retryTimeLeft = 0;
-        EnableBossRaidUI();
+        curSkirmish = new Skirmish();
+        canCallBossRaid = true;
+        UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.BeforeApplication;
+        //EnableBossRaidUI();
     }
 
     /// <summary>
@@ -1954,6 +1978,11 @@ public class GameManager : MonoBehaviour
     public void ReportMatchDefeated(SpecialAdventurer loser)
     {
         curSkirmish.ReportMatchDefeated(loser);
+        if (loser.index == playerSpAdvIndex)
+        {
+            UIManager.Instance.messageUI.ShowMessage("플레이어 모험가가 탈락했습니다.");
+            UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.PlayerNotParticipating;
+        }
     }
 
     public void ReportMatchWon(SpecialAdventurer winner)
@@ -1965,7 +1994,7 @@ public class GameManager : MonoBehaviour
     {
         int remainBoss = bossAreaCount - CombatAreaManager.Instance.BossAreaIndex - 1; // 남은 보스 수
         isBossPhase = false;
-
+        
         switch (remainBoss)
         {
             case 0: //최종 보스
@@ -1984,7 +2013,16 @@ public class GameManager : MonoBehaviour
                 break;
         }
 		OpenNextStage();
+        UIManager.Instance.bossRaidUI.NotBossPhase();
+        UIManager.Instance.messageUI.ShowMessage("보스 공략 성공!");
         CombatAreaManager.Instance.OnBossAreaConquered();
+    }
+
+    public void ReportBossBattleDefeat()
+    {
+        UIManager.Instance.messageUI.ShowMessage("보스 공략 실패");
+        UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.WaitingRetryTimer;
+        StartRetryTimer();
     }
 
     private void PlayerWon()
@@ -2013,25 +2051,25 @@ public class GameManager : MonoBehaviour
 
 
     #region UI
-    public void ShowBossRaidDecisionUI()
-    {
+    //public void ShowBossRaidDecisionUI()
+    //{
 
-    }
+    //}
 
-    public void EnableBossRaidUI()
-    {
+    //public void EnableBossRaidUI()
+    //{
 
-    }
+    //}
 
-    public void DisableBossRaidUI()
-    {
+    //public void DisableBossRaidUI()
+    //{
 
-    }
+    //}
 
-    public void ShowSpAdvSelectionUI()
-    {
+    //public void ShowSpAdvSelectionUI()
+    //{
 
-    }
+    //}
 
     public void ShowMidBossClearUI()
     {
@@ -2132,6 +2170,13 @@ public class GameManager : MonoBehaviour
             mapEntrance.Add(layer.GetTileForMove(x * 2, (y * 2) + 1));
             mapEntrance.Add(layer.GetTileForMove((x * 2) + 1, (y * 2) + 1));
         }
+    }
+
+    public void ReloadSceneEntrances()
+    {
+        int sceneNumber = int.Parse(SceneManager.GetActiveScene().name);
+        mapEntrance.Clear();
+        SetSceneEntrances(sceneData, sceneNumber);
     }
 
     private void SetSceneProgressInfos(JSONNode aData, int sceneNumber)

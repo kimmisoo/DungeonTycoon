@@ -34,12 +34,22 @@ public class Skirmish
 
     public void AddSkirmishParticipant(SpecialAdventurer participant)
     {
-        skirmishParticipants.Add(participant);
+        if(skirmishParticipants.Contains(participant) == false)
+            skirmishParticipants.Add(participant);
         //skirmishSurvivors.Add(participant);
     }
 
     public void StartSkirmish()
     {
+        string tempStr = "Participants : ";
+        foreach (SpecialAdventurer spAdv in skirmishParticipants)
+        {
+            tempStr += spAdv.index;
+            tempStr += " ";
+        }
+        Debug.Log(tempStr);
+
+
         MakeBracket();
 
         int temp = skirmishParticipants.Count;
@@ -64,15 +74,15 @@ public class Skirmish
             tempList.RemoveAt(index);
         }
 
-        string Temp = "Bracket :";
+        string temp = "Bracket :";
 
         foreach (SpecialAdventurer spAdv in skirmishBracket)
         {
-            Temp += " ";
-            Temp += spAdv.index;
+            temp += " ";
+            temp += spAdv.index;
         }
 
-        Debug.Log(Temp);
+        Debug.Log(temp);
     }
 
     //public SpecialAdventurer GetNextSkirmishOpponent(SpecialAdventurer requester)
@@ -92,7 +102,7 @@ public class Skirmish
         curMatch = 0;
         curRound++;
 
-        Debug.Log("roundCnt : " + roundCnt + ", curRound : " + curRound + ", matchesCurRound : " + matchCntCurRound);
+        //Debug.Log("roundCnt : " + roundCnt + ", curRound : " + curRound + ", matchesCurRound : " + matchCntCurRound);
 
         // 라운드 다 진행했으면 스커미시 종료
         if (curRound > roundCnt)
@@ -105,7 +115,7 @@ public class Skirmish
         {
             if (i * 2 + 1 < skirmishBracket.Count)
             {
-                Debug.Log("Match " + i + ", " + skirmishBracket[i * 2].name + " vs " + skirmishBracket[i * 2 + 1].name);
+                //Debug.Log("Match " + i + ", " + skirmishBracket[i * 2].name + " vs " + skirmishBracket[i * 2 + 1].name);
                 skirmishBracket[i * 2].enemy = skirmishBracket[i * 2 + 1];
                 skirmishBracket[i * 2 + 1].enemy = skirmishBracket[i * 2];
 
@@ -139,7 +149,7 @@ public class Skirmish
         skirmishBracket[0].curState = State.EnteringBossArea;
 
         // 그 외 인터페이스 보여주려면 여기서.
-        GameManager.Instance.OnSkirmishEnd();
+        GameManager.Instance.OnSkirmishEnd(skirmishBracket[0].index);
     }
 
     /// <summary>
@@ -179,6 +189,14 @@ public class Skirmish
         curRound = data.curRound;
         matchCntCurRound = data.matchCntCurRound;
         curMatch = data.curMatch;
+
+        //string tempStr = "Loaded Participants : ";
+        //foreach (SpecialAdventurer spAdv in skirmishParticipants)
+        //{
+        //    tempStr += spAdv.index;
+        //    tempStr += " ";
+        //}
+        //Debug.Log(tempStr);
     }
     #endregion
 }

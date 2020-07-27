@@ -1007,7 +1007,8 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         hpBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HPSlider_Mob"));
         hpSlider = hpBar.GetComponentInChildren<Slider>();
-        hpBar.transform.SetParent(canvas.transform);
+        //hpBar.transform.SetParent(canvas.transform);
+        hpBar.transform.SetParent(UIManager.Instance.hpBarRoot.transform);
         hpBar.GetComponent<HPBar>().SetSubject(this);
 
         hpBar.SetActive(false);
