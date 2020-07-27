@@ -56,20 +56,22 @@ public class SpecificationPanel : UIObject {
 
 	GameObject curOpenPanel = null;
 	RectTransform rectTransform;
-	Vector3 far;
+	RectTransform itemStatPanelRectTransform;
+	Vector3 far = new Vector3(50000.0f, 50000.0f, 0.0f);
+	Vector3 pos = new Vector3(-760.0f, 200.0f, 0.0f);
+	Vector3 itemStatPos = new Vector3(200.0f, -150.0f, 0.0f);
 	GameObject[] viewablePanels;
 	int viewingIndex = 0;
 	Coroutine statUpdateCoroutine;
 	WaitForSeconds updateTick = new WaitForSeconds(2.0f);
 	//캐릭터 클릭할떄 -> InputManager -> UIManager -> SpecificationPanel 로 캐릭터 오브젝트 전달
 	//캐릭터 유형에 따라 탭 활성화
-	Coroutine tracing;
 	public Traveler curCharacter;
 	public void Awake()
 	{
 		specPanelBase = gameObject;
 		rectTransform = GetComponent<RectTransform>();
-		far = new Vector3(5000f, 5000f, 0.0f);
+		itemStatPanelRectTransform = itemExplanationPanelBase.GetComponent<RectTransform>();
 	}
 
 	public void OnCharacterSelected(Traveler traveler)
@@ -103,14 +105,16 @@ public class SpecificationPanel : UIObject {
 	public void OnCharacterDeselected()
 	{
 
-		if (tracing != null)
-			StopCoroutine(tracing);
-		rectTransform.position = far;
-		//nextButton.SetActive(false);
-		//prevButton.SetActive(false);
+		
+		rectTransform.localPosition = far;
+
 		if(statUpdateCoroutine != null)
 			StopCoroutine(statUpdateCoroutine);
 		ClearUI();
+		foreach(GameObject go in viewablePanels)
+		{
+			go.SetActive(false);
+		}
 		viewablePanels = null;
 		viewingIndex = 0;
 		curCharacter = null;
@@ -172,23 +176,12 @@ public class SpecificationPanel : UIObject {
 	}
 	public void OnOpenPanel() // StatPanel관련 초기화할것들
 	{
-		viewablePanels[viewingIndex].SetActive(true);
+		viewablePanels[viewingIndex = 0].SetActive(true);
 		statUpdateCoroutine = StartCoroutine(UpdateCharacterSpec());
-		//StopCoroutine(tracing);
-		tracing = StartCoroutine(TraceCharacter());
+		itemStatPanelRectTransform.localPosition += far;
+		rectTransform.localPosition = pos;
 	}
-	IEnumerator TraceCharacter()
-	{
-		Vector3 curPos;
-		if (curCharacter == null)
-			yield break;
-		while(curCharacter != null)
-		{
-			yield return null;
-			curPos = Camera.main.WorldToScreenPoint(curCharacter.gameObject.transform.position);
-			rectTransform.localPosition = curPos;
-		}
-	}
+	
 	IEnumerator UpdateCharacterSpec()
 	{
 		if(curCharacter != null)
@@ -302,10 +295,14 @@ public class SpecificationPanel : UIObject {
 		if (!(curCharacter is SpecialAdventurer))
 			return;
 		SpecialAdventurer sadv = (SpecialAdventurer)curCharacter;
-		characterEquipedItemImage_1.sprite = sadv.GetWeapon().GetItemImage();
-		characterEquipedItemImage_2.sprite = sadv.GetArmor().GetItemImage();
-		characterEquipedItemImage_3.sprite = sadv.GetAccessory1().GetItemImage();
-		characterEquipedItemImage_4.sprite = sadv.GetAccessory2().GetItemImage();
+		if(sadv.GetWeapon() != null)
+			characterEquipedItemImage_1.sprite = sadv.GetWeapon().GetItemImage();
+		if(sadv.GetArmor() != null)
+			characterEquipedItemImage_2.sprite = sadv.GetArmor().GetItemImage();
+		if(sadv.GetAccessory1() != null)
+			characterEquipedItemImage_3.sprite = sadv.GetAccessory1().GetItemImage();
+		if(sadv.GetAccessory2() != null)
+			characterEquipedItemImage_4.sprite = sadv.GetAccessory2().GetItemImage();
 	}
 	//아이템 클릭시 OnClick 처리랑 끄기 어떻게??
 	public void UpdateItem()
@@ -315,10 +312,11 @@ public class SpecificationPanel : UIObject {
 	public void OnClickItem(int ClickNum)
 	{
 		UpdateItemStat(ClickNum);
+		itemStatPanelRectTransform.localPosition = itemStatPos;
 	}
 	public void HideItemExplanationPanel()
 	{
-		itemExplanationPanelBase.GetComponent<RectTransform>().localPosition = new Vector2(5000.0f, 5000.0f);
+		itemStatPanelRectTransform.localPosition = far;
 	}
 	public void UpdateItemStat(int itemNum) // button onclick
 	{

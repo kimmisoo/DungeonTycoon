@@ -208,6 +208,8 @@ public class InputManager : MonoBehaviour {
 						//캐릭터 선택 추가해야함...
 						else if(selectedObject.tag == "SelectableCharacter")
 						{
+							if(UIManager.Instance.specPanel.curCharacter != null)
+								UIManager.Instance.CharacterDeselected();
 							UIManager.Instance.CharacterSelected(selectedObject.GetComponent<Traveler>());
 						}
 						else if(selectedObject.tag == "guard")
