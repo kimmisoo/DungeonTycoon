@@ -87,7 +87,7 @@ public class InputManager : MonoBehaviour {
 
         //esc key 입력시 --
 
-        test.GetComponent<Text>().text = "X =" + _camera.transform.position.x.ToString() + "  XSize = "+Screen.width.ToString()+"\nY =" + _camera.transform.position.y.ToString() + "  YSize = "+Screen.height.ToString()+"\nZ =" + _camera.transform.position.z.ToString() + "\nv =" + scrollVelocity.ToString();
+        //test.GetComponent<Text>().text = "X =" + _camera.transform.position.x.ToString() + "  XSize = "+Screen.width.ToString()+"\nY =" + _camera.transform.position.y.ToString() + "  YSize = "+Screen.height.ToString()+"\nZ =" + _camera.transform.position.z.ToString() + "\nv =" + scrollVelocity.ToString();
 		//테스트용
 
         if (updateZoomSensitivity)

@@ -111,9 +111,12 @@ public class SpecificationPanel : UIObject {
 		if(statUpdateCoroutine != null)
 			StopCoroutine(statUpdateCoroutine);
 		ClearUI();
-		foreach(GameObject go in viewablePanels)
+		if (viewablePanels != null)
 		{
-			go.SetActive(false);
+			foreach (GameObject go in viewablePanels)
+			{
+				go.SetActive(false);
+			}
 		}
 		viewablePanels = null;
 		viewingIndex = 0;
