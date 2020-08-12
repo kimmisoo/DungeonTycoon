@@ -18,16 +18,16 @@ public class DialogActor{
 		nameColor = Color.black;
 
 	}
-	public DialogActor(string _name, Sprite _portrait, Color _color)
-	{
-		customName = _name;
-		portrait = _portrait;
-		nameColor = _color;
-	}
+	//public DialogActor(string _name, Sprite _portrait, Color _color)
+	//{
+	//	customName = _name;
+	//	portrait = _portrait;
+	//	nameColor = _color;
+	//}
 
-	public string GetName()
-	{
-		switch()
-	}
+	//public string GetName()
+	//{
+	//	switch()
+	//}
 
 }
