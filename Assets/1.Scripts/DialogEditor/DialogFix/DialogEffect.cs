@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum DialogEffectName {Shake, FadeIn, FadeOut, DialogStart, DialogEnd, GrayScaleOn, GrayScaleOff, BackGroundChange, IllustrationChangeL, IllustrationChangeR}
+public enum DialogEffectName {Shake, FadeIn, FadeOut, DialogStart, DialogEnd, GrayScaleOn, GrayScaleOff, BackgroundChange, IllustrationChangeL, IllustrationChangeR,
+BigImageChange, SmallImageChange}
 
 public class DialogEffect{
 
-	public virtual void Paly()
+	public DialogEffectName effectName;
+	public virtual IEnumerator PlayEffect()
 	{
-
+		yield return null;
 	}
 
 	

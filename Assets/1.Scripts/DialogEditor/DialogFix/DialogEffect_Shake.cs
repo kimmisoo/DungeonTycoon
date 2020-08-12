@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogEffect_Shake : MonoBehaviour {
+public class DialogEffect_Shake : DialogEffect {
 
-	// Use this for initialization
-	void Start () {
+	float duration = 1.0f;
+
+	public DialogEffect_Shake()
+	{
+		effectName = DialogEffectName.Shake;
+	}
+	public DialogEffect_Shake(float _duration)
+	{
+		duration = _duration;
+		effectName = DialogEffectName.Shake;
+	}
+	public override IEnumerator PlayEffect()
+	{
+		yield return null;
 		
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
