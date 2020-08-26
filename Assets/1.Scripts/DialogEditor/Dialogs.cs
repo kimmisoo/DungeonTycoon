@@ -80,6 +80,13 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 	{
 		return fullText;
 	}
+	public void SetFullText(string _t, bool isEditor)
+	{
+		if (isEditor == false)
+			fullText = _t;
+		else
+			SetFullText(_t);
+	}
 	public void SetFullText(string _t)
 	{
 		if(!_t.EndsWith("　"))

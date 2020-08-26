@@ -45,7 +45,9 @@ public class DialogManager : MonoBehaviour
 	public int illustrationPosition = 0; // 일러스트 추가시 or 
 										 // 버튼 이미지 바꾸는 방식으로 변경함. 18.06.26 김미수
 										 //
-	public float tempTimeBetween = 0.08f; // 대화시작 이펙트 연출 시 이동 시간 간격
+	public float typeWriteBetween = 0.055f;//글자 (character) 출력 시간 간격
+	public float panelMoveBetween = 0.08f; // 대화시작 이펙트 연출 시 이동 시간 간격
+	public float skipTimeBetween = 0.18f; // 스킵 버튼 누를때 스킵 시간 간격
 	public RectTransform dialogContentTransform; // Shake 이펙트 시 대화창 위치
 	public Image fadePanel; // fade 효과시 패널
 	public Grayscale grayscale; // 화면 전체 흑백효과용
@@ -82,7 +84,12 @@ public class DialogManager : MonoBehaviour
 
 	public Coroutine waitForTouch;
 	public Coroutine doPlay;
-	public float typeWriteBetween = 0.055f;
+	
+	WaitForSecondsRealtime typeWriteBetweenWait;
+	WaitForSecondsRealtime panelMoveBetweenWait;
+	WaitForSecondsRealtime skipWait;
+	WaitForSecondsRealtime shakeWait;
+	WaitForSecondsRealtime fadeWait;
 	RaycastHit2D hit;
 	Touch[] touches;
 	Vector3 touchPos;
@@ -93,14 +100,17 @@ public class DialogManager : MonoBehaviour
 	public GameObject nextButton;
 	public Vector3 nextButtonPosition;
 	public int emotionOffset = 0;
-	public Image[] emotionButtons;
 	public Image backGroundImage;
 
 
 	// Use this for initialization 
 	void Start()
 	{
-
+		typeWriteBetweenWait = new WaitForSecondsRealtime(typeWriteBetween);
+		skipWait = new WaitForSecondsRealtime(skipTimeBetween);
+		shakeWait = new WaitForSecondsRealtime(typeWriteBetween / 1.8f);
+		fadeWait = new WaitForSecondsRealtime(typeWriteBetween / 3.6f);
+		panelMoveBetweenWait = new WaitForSecondsRealtime(panelMoveBetween);
 		monologueTextColor = new Color(0.647f, 0.647f, 1.0f);
 		dialogTextColor = Color.white;
 		narrationTextColor = new Color(1.0f, 1.0f, 0.647f);
@@ -112,7 +122,7 @@ public class DialogManager : MonoBehaviour
 		grayscale = Camera.main.gameObject.GetComponent<Grayscale>();
 
 		dialogList = new List<Dialogs>();
-		dialogUIOriginPosition = dialogUI.GetComponent<RectTransform>().anchoredPosition3D;
+		dialogUIOriginPosition = dialogPanel.GetComponent<RectTransform>().anchoredPosition3D;
 		preLoadedIllustrations = new List<Sprite>();
 		preLoadedSmallIllustrations = new List<Sprite>();
 		preLoadedBigIllustrations = new List<Sprite>();
@@ -166,7 +176,11 @@ public class DialogManager : MonoBehaviour
 
 		}
 	}
-
+	public void StartDialog(string dialogNum)
+	{
+		LoadDialogs(dialogNum);
+		DoPlay();
+	}
 	public void MoveDialogList()
 	{
 		if (dialogUIHide == false)
@@ -183,9 +197,9 @@ public class DialogManager : MonoBehaviour
 
 	public void DoPlay()
 	{
+
 		if (selectedDialogs == null)
 			return;
-
 		showingNameBox.text = "";
 		showingTextBox.text = "";
 		DoIllustrationChangeL(0);
@@ -196,20 +210,21 @@ public class DialogManager : MonoBehaviour
 			StopCoroutine(doPlay);
 		selectedDialogs.GetComponent<Image>().color = new Color32(0xFF, 0xFF, 0xFF, 0x84);
 		doPlay = StartCoroutine(_DoPlay());
-		
-
 	}
 
 	IEnumerator _DoPlay()
 	{
+		dialogPanel.SetActive(true);
+		float timeScaleOrigin = Time.timeScale;
+		Time.timeScale = 0.0f;
 		List<string> playText = new List<string>();
 		playText.Add(string.Empty); //출력될
 		playText.Add("<color=#00000000>"); // 태그
 		playText.Add(string.Empty);//원본텍스트
 		playText.Add("</color>");//태그
 
-		int dialogsIndex = selectedDialogs.GetIndex();
-		for (int i = dialogsIndex; i < dialogList.Count; i++) // dialog
+		
+		for (int i = 0; i < dialogList.Count; i++) // dialog
 		{
 			selectedDialogs = dialogList[i];
 			playText[0] = string.Empty;
@@ -349,7 +364,7 @@ public class DialogManager : MonoBehaviour
 				playText[2] = playText[2].Remove(0, 1);
 				showingTextBox.text = playText[0] + playText[1] + playText[2] + playText[3];
 				progress++;
-				yield return new WaitForSeconds(typeWriteBetween);
+				yield return typeWriteBetweenWait;
 
 
 			}//--한칸
@@ -357,7 +372,7 @@ public class DialogManager : MonoBehaviour
 			if (i <= dialogList.Count - 1 && !isSkipDown)
 				yield return waitForTouch = StartCoroutine(_Wait());
 			if (isSkipDown)
-				yield return new WaitForSeconds(0.18f);
+				yield return skipWait;
 			//bigIllustrationObject.SetActive(false);
 
 
@@ -366,8 +381,8 @@ public class DialogManager : MonoBehaviour
 		//yield return waitForTouch = StartCoroutine(_Wait());
 		isPlaying = false;
 
-
-
+		dialogPanel.SetActive(false);
+		Time.timeScale = timeScaleOrigin;
 	}
 
 	IEnumerator _Wait()
@@ -383,8 +398,6 @@ public class DialogManager : MonoBehaviour
 			}
 			yield return null;
 		}
-
-		Debug.Log("WaitOut");
 	}
 	IEnumerator GiveMovementNextButton()
 	{
@@ -400,7 +413,7 @@ public class DialogManager : MonoBehaviour
 			{
 				coeff = 1;
 			}
-			nextButton.transform.localPosition += new Vector3(55.0f, 0.0f, 0.0f) * Time.deltaTime * coeff;
+			nextButton.transform.localPosition += new Vector3(55.0f, 0.0f, 0.0f) * Time.unscaledDeltaTime * coeff;
 			//nextButton.transform.Translate(1.0f, 0.0f, 0.0f);
 			yield return null;
 		}
@@ -546,7 +559,7 @@ public class DialogManager : MonoBehaviour
 		TextAsset dialogText;
 		List<DialogSaveData> loadedDataList = new List<DialogSaveData>();
 		Dialogs tempDialog = null; ;
-
+		dialogList.Clear();
 		if((dialogText = Resources.Load<TextAsset>("Dialogs/"+fileName)) != null)
 		{
 			MemoryStream ms = new MemoryStream(dialogText.bytes);
@@ -603,9 +616,8 @@ public class DialogManager : MonoBehaviour
 					}
 					cCount++;
 				}
-				tempDialog.SetFullText(loadedDataList[i].fullText);
+				tempDialog.SetFullText(loadedDataList[i].fullText, false);
 				tempDialog.SetIsRecorded();
-				//dialogList.Insert(dialogSelectIndex <= 0 ? 0 : dialogSelectIndex, tempDialog);
 				dialogList.Add(tempDialog);
 				tempDialog.SetIndex(i);
 			}
@@ -623,20 +635,20 @@ public class DialogManager : MonoBehaviour
 		while (shakeAmount > 0)
 		{
 			tr.localPosition = originLocal + (Vector3)(UnityEngine.Random.insideUnitCircle * shakeAmount * 60);
-			yield return new WaitForSeconds(typeWriteBetween / 1.8f);
+			yield return shakeWait;
 			shakeAmount -= 0.1f;
 		}
 		tr.position = origin;
-		//yield return null;
+		
 	}
 	IEnumerator _FadeIn()
 	{
-		//yield return null;
+
 		float Alpha = 1.0f;
 		fadePanel.color = new Color(fadePanel.color.r, fadePanel.color.g, fadePanel.color.b, 1.0f);
 		while (fadePanel.color.a > 0.0f)
 		{
-			yield return new WaitForSeconds(typeWriteBetween / 3.6f);
+			yield return fadeWait;
 			fadePanel.color = new Color(fadePanel.color.r, fadePanel.color.g, fadePanel.color.b, Alpha);
 			Alpha -= 0.01f;
 		}
@@ -644,13 +656,13 @@ public class DialogManager : MonoBehaviour
 
 	IEnumerator _FadeOut()
 	{
-		//yield return null;
-		Debug.Log("Ha");
+
+		
 		float Alpha = 0.0f;
 		fadePanel.color = new Color(fadePanel.color.r, fadePanel.color.g, fadePanel.color.b, 0.0f);
 		while (fadePanel.color.a < 1.0f)
 		{
-			yield return new WaitForSeconds(typeWriteBetween / 3.6f);
+			yield return fadeWait;
 			fadePanel.color = new Color(fadePanel.color.r, fadePanel.color.g, fadePanel.color.b, Alpha);
 			Alpha += 0.01f;
 		}
@@ -658,14 +670,14 @@ public class DialogManager : MonoBehaviour
 
 	IEnumerator _StartDialog()
 	{
-		//yield return null;
+
 		Vector2 origin;
 		float distance = 0.0f;
 		origin = dialogContentTransform.anchoredPosition;
 		dialogContentTransform.anchoredPosition = new Vector2(origin.x, origin.y - 320.0f);
 		while (dialogContentTransform.anchoredPosition.y < origin.y - 5.0f)
 		{
-			yield return new WaitForSeconds(tempTimeBetween);
+			yield return panelMoveBetweenWait;
 			dialogContentTransform.anchoredPosition = Vector2.Lerp(origin, dialogContentTransform.anchoredPosition, 0.9f);
 		}
 		dialogContentTransform.anchoredPosition = origin;
@@ -682,14 +694,7 @@ public class DialogManager : MonoBehaviour
 		bigIllustrationImage.sprite = preLoadedBigIllustrations[idx];
 		bigIllustrationObject.SetActive(true);
 		yield return null;
-		/*while(true)
-		{
-			yield return null;
-			if (Input.touches.Length > 0 || Input.GetMouseButtonUp(0))
-				break;
-		}*/
-		//yield return StartCoroutine(_Wait()); 
-		//bigIllustrationObject.SetActive(false);
+		
 
 	}
 	IEnumerator ShowSmallIllustration(int idx)
@@ -697,20 +702,12 @@ public class DialogManager : MonoBehaviour
 		smallIllustrationImage.sprite = preLoadedSmallIllustrations[idx];
 		smallIllustrationObject.SetActive(true);
 		yield return null;
-		/*while(true)
-		{
-			yield return null;
-			if(Input.touches.Length > 0 || Input.GetMouseButtonUp(0))
-			{
-				break;
-			}
-		}*/
-		//yield return StartCoroutine(_Wait());
-		//smallIllustrationObject.SetActive(false);
+		
 	}
 	IEnumerator HideSmallIllustration()
 	{
 		yield return null;
+		
 		smallIllustrationObject.SetActive(false);
 	}
 	IEnumerator HideBigIllustration()
@@ -779,12 +776,5 @@ public class DialogManager : MonoBehaviour
 		yield return null;
 	}
 
-	public void SetEmotionOffset(int _offset)
-	{
-		emotionButtons[emotionOffset].color = new Color32(0xCC, 0xD5, 0xF5, 0xFF);
-		emotionOffset = _offset;
-		emotionButtons[emotionOffset].color = new Color32(0xFF, 0xAF, 0xAF, 0xFF);
-
-	}
 
 }
