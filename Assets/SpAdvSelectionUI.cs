@@ -8,11 +8,18 @@ public class SpAdvSelectionUI : MonoBehaviour
     public int curSelected = -1;
     public Button determineBtn;
     public Button moreInfoBtn;
+    public TrainPanel trainPanel;
 
     public void DetermineSpAdv()
     {
-        if(curSelected != -1)
+        //Debug.Log("Determined");
+        if (curSelected != -1)
+        {
             GameManager.Instance.ChooseSpAdv(curSelected);
+            trainPanel.SpAdvSelected();
+
+            trainPanel.OpenSpAdvPanel();
+        }
     }
 
     public void SetCurSelected(string nameKeyIn)

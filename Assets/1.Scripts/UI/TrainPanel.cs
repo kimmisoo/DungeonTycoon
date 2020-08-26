@@ -7,6 +7,7 @@ using SimpleJSON;
 public class TrainPanel : UIObject {
 
     public GameObject informationPanel;
+    public GameObject spAdvSelectionPanel;
     public GameObject itemPanel;
     public GameObject bossPanel;
     GameObject currentShowingPanel;
@@ -78,19 +79,25 @@ public class TrainPanel : UIObject {
 
     //Dungeon Panel's
 
-
-
+    // 일선 모험가 선택 관련
+    private bool isSelected = false;
 
 
     public override void Show()
     {
-        informationPanel.SetActive(true);
-        itemPanel.SetActive(false);
-        bossPanel.SetActive(false);
+        GameObject spAdvPanel;
 
+        if (isSelected)
+            spAdvPanel = itemPanel;
+        else
+            spAdvPanel = spAdvSelectionPanel;
+
+        spAdvPanel.SetActive(true);
+        informationPanel.SetActive(false);
+        bossPanel.SetActive(false);
         
         base.Show();
-        currentShowingPanel = informationPanel;
+        currentShowingPanel = spAdvPanel;
     }
 
     public override void Hide()
@@ -107,8 +114,22 @@ public class TrainPanel : UIObject {
         currentShowingPanel.SetActive(false);
         currentShowingPanel = panel;
         currentShowingPanel.SetActive(true);
-
     }
+
+    public void OpenSpAdvPanel()
+    {
+        GameObject spAdvPanel;
+
+        if (isSelected)
+            spAdvPanel = itemPanel;
+        else
+            spAdvPanel = spAdvSelectionPanel;
+
+        currentShowingPanel.SetActive(false);
+        currentShowingPanel = spAdvPanel;
+        currentShowingPanel.SetActive(true);
+    }
+
     public void SwitchStoryStatusPanel(int cat)
     {
         if(cat == 0) // story -> status
@@ -136,4 +157,8 @@ public class TrainPanel : UIObject {
 
     }
 
+    public void SpAdvSelected()
+    {
+        isSelected = true;
+    }
 }
