@@ -59,7 +59,7 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 	{
 		if(de.selectedDialogs != null)
 		{
-			de.selectedDialogs.GetComponent<Image>().color = new Color32(0xFF, 0xFF, 0xFF, 0x84);
+			de.selectedDialogs.GetComponent<Image>().color  = new Color32(0xFF, 0xFF, 0xFF, 0x84);
 		}
 		GetComponent<Image>().color = new Color32(0x70, 0xFF, 0x7A, 0xD8);
 		de.SetDialogSelectIndex(index);
@@ -176,6 +176,10 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 		smallMarker.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 0.5f); //bg => white
 
 	}
+	public void AddBackground(int key, int bgNum)
+	{
+		backgrounds[key] = bgNum;
+	}
 	public void AddSmallIllustration(int key, int illustNum, Vector2 markerPosition)
 	{
 		//markerPositionList.Add(new Vector3(markerPosition.x, markerPosition.y));
@@ -202,6 +206,10 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 		smallMarker.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 0.5f); //bg => white
 
 	}
+	public void AddSmallIllustration(int key, int illustNum)
+	{
+		smallIllustrations[key] = illustNum;
+	}
 	public void AddBigIllustration(int key, int illustNum, Vector2 markerPosition)
 	{
 		//markerPositionList.Add(new Vector3(markerPosition.x, markerPosition.y));
@@ -227,6 +235,10 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 		clonem.SetSmallMarker(smallMarker);
 		smallMarker.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 0.5f); //bg => white
 
+	}
+	public void AddBigIllustration(int key, int illustNum)
+	{
+		bigIllustrations[key] = illustNum;
 	}
 	public void AddEffect(int key, int effectNum)
 	{

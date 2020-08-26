@@ -572,34 +572,34 @@ public class DialogManager : MonoBehaviour
 					{
 						foreach (int a in loadedDataList[i].illustrationsL[cCount])
 						{
-							tempDialog.AddIllustrationL(cCount, a, new Vector2(loadedDataList[i].markerPositionList[posCount].x, loadedDataList[i].markerPositionList[posCount++].y + 20));
+							tempDialog.AddIllustrationL(cCount, a);
 						}
 					}
 					if (loadedDataList[i].illustrationsR.ContainsKey(cCount))
 					{
 						foreach (int a in loadedDataList[i].illustrationsR[cCount])
 						{
-							tempDialog.AddIllustrationR(cCount, a, new Vector2(loadedDataList[i].markerPositionList[posCount].x, loadedDataList[i].markerPositionList[posCount++].y + 20));
+							tempDialog.AddIllustrationR(cCount, a);
 						}
 					}
 					if (loadedDataList[i].names.ContainsKey(cCount))
 					{
 						foreach (string a in loadedDataList[i].names[cCount])
 						{
-							tempDialog.AddName(cCount, a, new Vector2(loadedDataList[i].markerPositionList[posCount].x, loadedDataList[i].markerPositionList[posCount++].y + 20));
+							tempDialog.AddName(cCount, a);
 						}
 					}
 					if (loadedDataList[i].backgrounds.ContainsKey(cCount))
 					{
-						tempDialog.AddBackground(cCount, loadedDataList[i].backgrounds[cCount], new Vector2(loadedDataList[i].markerPositionList[posCount].x, loadedDataList[i].markerPositionList[posCount++].y + 20));
+						tempDialog.AddBackground(cCount, loadedDataList[i].backgrounds[cCount]);
 					}
 					if (loadedDataList[i].smallIllustrations.ContainsKey(cCount))
 					{
-						tempDialog.AddSmallIllustration(cCount, loadedDataList[i].smallIllustrations[cCount], new Vector2(loadedDataList[i].markerPositionList[posCount].x, loadedDataList[i].markerPositionList[posCount++].y + 20));
+						tempDialog.AddSmallIllustration(cCount, loadedDataList[i].smallIllustrations[cCount]);
 					}
 					if (loadedDataList[i].bigIllustrations.ContainsKey(cCount))
 					{
-						tempDialog.AddBigIllustration(cCount, loadedDataList[i].bigIllustrations[cCount], new Vector2(loadedDataList[i].markerPositionList[posCount].x, loadedDataList[i].markerPositionList[posCount++].y + 20));
+						tempDialog.AddBigIllustration(cCount, loadedDataList[i].bigIllustrations[cCount]);
 					}
 					cCount++;
 				}
@@ -608,18 +608,6 @@ public class DialogManager : MonoBehaviour
 				//dialogList.Insert(dialogSelectIndex <= 0 ? 0 : dialogSelectIndex, tempDialog);
 				dialogList.Add(tempDialog);
 				tempDialog.SetIndex(i);
-
-
-				CreatetempDialog();
-
-
-				editorsTextInputField.text = "";
-				caretPositionRecord = 0;
-				caretPositionVector = new Vector3(-465.0f, 95.0f);
-				DoRemap();
-				SetDialogSelectIndex(clonedObjects.Count);
-				tempDialog.Start();
-
 			}
 		}
 		else
@@ -627,98 +615,6 @@ public class DialogManager : MonoBehaviour
 			Debug.Log("Dialog" + fileName + " does not exist");
 		}
 	}
-	/*
-	public void DoLoad()
-	{
-		if (File.Exists(Application.persistentDataPath + "/" + loadFileName.text + ".json"))
-		{
-			List<DialogSaveData> sdList = new List<DialogSaveData>();
-			FileStream fs = new FileStream(Application.persistentDataPath + "/" + loadFileName.text + ".json", FileMode.OpenOrCreate);
-			DataContractJsonSerializer serializer = new DataContractJsonSerializer(sdList.GetType());
-			sdList = (List<DialogSaveData>)serializer.ReadObject(fs);
-			for (int i = 0; i < sdList.Count; i++)
-			{
-				currentDialogs.type = sdList[i].textType;
-
-				int cCount = 0;
-				int posCount = 0;
-				foreach (char c in sdList[i].fullText)
-				{
-					if (sdList[i].effects.ContainsKey(cCount))
-					{
-						foreach (int a in sdList[i].effects[cCount])
-						{
-							currentDialogs.AddEffect(cCount, a, new Vector2(sdList[i].markerPositionList[posCount].x, sdList[i].markerPositionList[posCount++].y + 20));
-						}
-					}
-					if (sdList[i].illustrationsL.ContainsKey(cCount))
-					{
-						foreach (int a in sdList[i].illustrationsL[cCount])
-						{
-							currentDialogs.AddIllustrationL(cCount, a, new Vector2(sdList[i].markerPositionList[posCount].x, sdList[i].markerPositionList[posCount++].y + 20));
-						}
-					}
-					if (sdList[i].illustrationsR.ContainsKey(cCount))
-					{
-						foreach (int a in sdList[i].illustrationsR[cCount])
-						{
-							currentDialogs.AddIllustrationR(cCount, a, new Vector2(sdList[i].markerPositionList[posCount].x, sdList[i].markerPositionList[posCount++].y + 20));
-						}
-					}
-					if (sdList[i].names.ContainsKey(cCount))
-					{
-						foreach (string a in sdList[i].names[cCount])
-						{
-							currentDialogs.AddName(cCount, a, new Vector2(sdList[i].markerPositionList[posCount].x, sdList[i].markerPositionList[posCount++].y + 20));
-						}
-					}
-					if (sdList[i].backgrounds.ContainsKey(cCount))
-					{
-						currentDialogs.AddBackground(cCount, sdList[i].backgrounds[cCount], new Vector2(sdList[i].markerPositionList[posCount].x, sdList[i].markerPositionList[posCount++].y + 20));
-					}
-					if (sdList[i].smallIllustrations.ContainsKey(cCount))
-					{
-						currentDialogs.AddSmallIllustration(cCount, sdList[i].smallIllustrations[cCount], new Vector2(sdList[i].markerPositionList[posCount].x, sdList[i].markerPositionList[posCount++].y + 20));
-					}
-					if (sdList[i].bigIllustrations.ContainsKey(cCount))
-					{
-						currentDialogs.AddBigIllustration(cCount, sdList[i].bigIllustrations[cCount], new Vector2(sdList[i].markerPositionList[posCount].x, sdList[i].markerPositionList[posCount++].y + 20));
-					}
-					cCount++;
-				}
-				currentDialogs.SetFullText(sdList[i].fullText);
-				currentDialogs.SetIsRecorded();
-				dialogList.Insert(dialogSelectIndex <= 0 ? 0 : dialogSelectIndex, currentDialogs);
-				clonedObjects.Insert(dialogSelectIndex <= 0 ? 0 : dialogSelectIndex, currentDialogsObject);
-				currentDialogs.SetIndex(dialogSelectIndex <= 0 ? 0 : dialogSelectIndex);
-				currentDialogsObject.GetComponent<RectTransform>().SetParent(savedSentenceContent.GetComponent<RectTransform>());
-				currentDialogsObject.GetComponent<RectTransform>().localScale = Vector3.one;
-				//newClone.GetComponent<RectTransform>().SetParent(savedSentenceContent.GetComponent<RectTransform>());
-				//newClone.GetComponent<RectTransform>().localScale = Vector3.one;
-				currentDialogs.HideMarker();
-
-
-				CreateCurrentDialogs();
-
-
-				editorsTextInputField.text = "";
-				caretPositionRecord = 0;
-				caretPositionVector = new Vector3(-465.0f, 95.0f);
-				DoRemap();
-				SetDialogSelectIndex(clonedObjects.Count);
-				currentDialogs.Start();
-
-			}
-			fs.Close();
-
-		}
-		else
-		{
-			Debug.Log("File Does Not Exist!");
-		}
-	}*/
-
-
 	IEnumerator _CameraShake()
 	{
 
