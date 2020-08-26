@@ -228,7 +228,18 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 		smallMarker.GetComponent<Image>().color = new Color(1.0f, 1.0f, 1.0f, 0.5f); //bg => white
 
 	}
-
+	public void AddEffect(int key, int effectNum)
+	{
+		if(effects.ContainsKey(key))
+		{
+			effects[key].Add(effectNum);
+		}
+		else
+		{
+			effects[key] = new List<int>();
+			effects[key].Add(effectNum);
+		}
+	}
 	public void AddEffect(int key, int effectNum, Vector2 markerPosition)
 	{
 		//markerPositionList.Add(new Vector3(markerPosition.x, markerPosition.y));
@@ -298,6 +309,18 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 		clonem.SetSmallMarker(smallMarker);
 		smallMarker.GetComponent<Image>().color = new Color(1.0f, 0.5f, 0.5f, 0.5f); //effect => red
 		
+	}
+	public void AddIllustrationL(int key, int illustrationNum)
+	{
+		if (illustrationsL.ContainsKey(key))
+		{
+			illustrationsL[key].Add(illustrationNum);
+		}
+		else
+		{
+			illustrationsL[key] = new List<int>();
+			illustrationsL[key].Add(illustrationNum);
+		}
 	}
 	public void AddIllustrationL(int key, int illustrationNum, Vector2 markerPosition)
 	{
@@ -373,6 +396,18 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 		clonem.SetSmallMarker(smallMarker);
 		smallMarker.GetComponent<Image>().color = new Color(0.5f, 1.0f, 0.5f, 0.5f); //Illustration - > green
 	}
+	public void AddIllustrationR(int key, int illustrationNum)
+	{
+		if (illustrationsR.ContainsKey(key))
+		{
+			illustrationsR[key].Add(illustrationNum);
+		}
+		else
+		{
+			illustrationsR[key] = new List<int>();
+			illustrationsR[key].Add(illustrationNum);
+		}
+	}
 	public void AddIllustrationR(int key, int illustrationNum, Vector2 markerPosition)
 	{
 		//markerPositionList.Add(new Vector3(markerPosition.x, markerPosition.y));
@@ -446,6 +481,18 @@ public class Dialogs : MonoBehaviour, ISelectHandler
 		smallMarker.GetComponent<RectTransform>().localScale = Vector3.one;
 		clonem.SetSmallMarker(smallMarker);
 		smallMarker.GetComponent<Image>().color = new Color(0.5f, 1.0f, 0.5f, 0.5f); //Illustration - > green
+	}
+	public void AddName(int key, string name)
+	{
+		if (names.ContainsKey(key))
+		{
+			names[key].Add(name);
+		}
+		else
+		{
+			names[key] = new List<string>();
+			names[key].Add(name);
+		}
 	}
 	public void AddName(int key, string name, Vector2 markerPosition)
 	{

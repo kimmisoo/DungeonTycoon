@@ -7,6 +7,7 @@ using UnityEngine;
 public enum ActorName {Catherine, Maximilian, Iris, Emil, Hana, John, Jangyeonhwa, Murat, Wal, Nyang, Oldman, Player, Narration, Other}
 public class DialogActor{
 
+	
 	public string actorName;
 	public Sprite portrait;
 	public Color nameColor;
@@ -20,14 +21,15 @@ public class DialogActor{
 	}
 	public DialogActor(string _name, Sprite _portrait, Color _color)
 	{
-		customName = _name;
+		//customName = _name;
 		portrait = _portrait;
 		nameColor = _color;
 	}
 
 	public string GetName()
 	{
-		switch()
+		//switch()
+		return "";
 	}
 
 }

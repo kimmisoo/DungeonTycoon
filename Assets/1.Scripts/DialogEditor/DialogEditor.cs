@@ -32,12 +32,12 @@ using System.Runtime.Serialization.Json;
  * 10 : 냥나리우스
  */
 [Serializable]
-class DialogList
+public class DialogList
 {
 	List<Dialogs> dialog;
 }
 [Serializable]
-class DialogSaveData
+public class DialogSaveData
 {
 	public Dictionary<int, List<int>> effects;
 	public Dictionary<int, List<int>> illustrationsL;
@@ -1264,30 +1264,19 @@ public class DialogEditor : MonoBehaviour
 
 		//FileStream fs2 = new FileStream(Application.persistentDataPath + "\\metest.json", FileMode.OpenOrCreate);
 	}
+	public void LoadDialogs(string fileName)
+	{
+		
+	}
 	public void DoLoad()
 	{
-		/*Debug.Log(Application.persistentDataPath);
-		if (File.Exists(Application.persistentDataPath + "/" + loadFileName.text + ".json"))
-		{
-			string jsonText = File.ReadAllText(Application.persistentDataPath + "/" + loadFileName.text + ".json");
-			JSONNode json = JSON.Parse(jsonText);
-			for (int i = 0; i < json["savedSentence"].Count; i++)
-			{
-				GameObject newClone = Instantiate(forCloneTextObject);
-				clonedObjects.Add(newClone);
-				newClone.GetComponent<RectTransform>().SetParent(savedSentenceContent.GetComponent<RectTransform>());
-				newClone.GetComponent<RectTransform>().localScale = Vector3.one;
-				newClone.GetComponent<Dialogs>().SetIndex(i);
-				newClone.GetComponent<Dialogs>().SetDialogEditor(this);
-				newClone.GetComponent<Text>().text = json["savedSentence"][i];
-			}
-		}*/
 		if(File.Exists(Application.persistentDataPath+"/"+loadFileName.text+".json"))
 		{
 			List<DialogSaveData> sdList = new List<DialogSaveData>();
 			FileStream fs = new FileStream(Application.persistentDataPath + "/" + loadFileName.text + ".json", FileMode.OpenOrCreate);
 			DataContractJsonSerializer serializer = new DataContractJsonSerializer(sdList.GetType());
 			sdList = (List<DialogSaveData>)serializer.ReadObject(fs);
+			
 			for(int i =0; i<sdList.Count; i++)
 			{
 				currentDialogs.type = sdList[i].textType;
