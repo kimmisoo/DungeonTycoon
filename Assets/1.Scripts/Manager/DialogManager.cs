@@ -34,13 +34,26 @@ using System.Runtime.Serialization.Json;
 
 public class DialogManager : MonoBehaviour
 {
+	public static DialogManager Instance
+	{
+		get
+		{
+			if (_instance == null)
+			{
+				Debug.Log("DialogManager._instance is Null");
+			}
+			return _instance;
+		}
+	}
+	private static DialogManager _instance = null;
 	public GameObject dialogUI; //Hide , Show 에 사용
+	public GameObject dialogObjectParent;
 	public Vector3 dialogUIOriginPosition; //Hide, Show 에 사용
 	public List<Sprite> preLoadedIllustrations; // Illustration sprite 들
 	public List<Sprite> preLoadedSmallIllustrations;
 	public List<Sprite> preLoadedBigIllustrations;
 	public List<Sprite> preLoadedBackgrounds;
-	public List<Dialogs> dialogList;
+	public List<DialogsForPlay> dialogList;
 
 	public int illustrationPosition = 0; // 일러스트 추가시 or 
 										 // 버튼 이미지 바꾸는 방식으로 변경함. 18.06.26 김미수
@@ -80,7 +93,7 @@ public class DialogManager : MonoBehaviour
 	public Text dialogType;
 	int dialogTypeNum = 2; // 0 = 독백 / 1 = 나레이션 / 2 = 대사
 
-	public Dialogs selectedDialogs;
+	//public Dialogs selectedDialogs;
 
 	public Coroutine waitForTouch;
 	public Coroutine doPlay;
@@ -102,7 +115,10 @@ public class DialogManager : MonoBehaviour
 	public int emotionOffset = 0;
 	public Image backGroundImage;
 
-
+	private void Awake()
+	{
+		_instance = this;
+	}
 	// Use this for initialization 
 	void Start()
 	{
@@ -120,8 +136,8 @@ public class DialogManager : MonoBehaviour
 		originLocal = tr.localPosition;
 		nextButtonPosition = nextButton.transform.localPosition;
 		grayscale = Camera.main.gameObject.GetComponent<Grayscale>();
-
-		dialogList = new List<Dialogs>();
+		
+		dialogList = new List<DialogsForPlay>();
 		dialogUIOriginPosition = dialogPanel.GetComponent<RectTransform>().anchoredPosition3D;
 		preLoadedIllustrations = new List<Sprite>();
 		preLoadedSmallIllustrations = new List<Sprite>();
@@ -197,18 +213,13 @@ public class DialogManager : MonoBehaviour
 
 	public void DoPlay()
 	{
-
-		if (selectedDialogs == null)
-			return;
 		showingNameBox.text = "";
 		showingTextBox.text = "";
 		DoIllustrationChangeL(0);
 		DoIllustrationChangeR(0);
 		isPlaying = true;
-
 		if (doPlay != null)
 			StopCoroutine(doPlay);
-		selectedDialogs.GetComponent<Image>().color = new Color32(0xFF, 0xFF, 0xFF, 0x84);
 		doPlay = StartCoroutine(_DoPlay());
 	}
 
@@ -226,9 +237,9 @@ public class DialogManager : MonoBehaviour
 		
 		for (int i = 0; i < dialogList.Count; i++) // dialog
 		{
-			selectedDialogs = dialogList[i];
+			
 			playText[0] = string.Empty;
-			playText[2] = selectedDialogs.fullText;
+			playText[2] = dialogList[i].fullText;
 
 			int progress = 0;
 			DoChangeTextColor(dialogList[i].type);
@@ -237,14 +248,13 @@ public class DialogManager : MonoBehaviour
 				//showingNameBG.color = new Color32(0x74, 0x5D, 0x5D, 0xB4);
 				showingNameBG.gameObject.SetActive(false);
 				showingNameBox.enabled = false;
-
 			}
 			else
 			{
 				showingNameBG.gameObject.SetActive(true);
 				showingNameBox.enabled = true;
 			}
-			foreach (char c in selectedDialogs.fullText)
+			foreach (char c in dialogList[i].fullText)
 			{
 				int smallIndex = 0;
 				int bigIndex = 0;
@@ -356,7 +366,7 @@ public class DialogManager : MonoBehaviour
 						}
 
 					}
-					showingTextBox.text = selectedDialogs.fullText;
+					showingTextBox.text = dialogList[i].fullText;
 					isTouchDown = false;
 					break;
 				}
@@ -462,8 +472,6 @@ public class DialogManager : MonoBehaviour
 			showingNameBG.color = new Color32(0x74, 0xA0, 0xCC, 0xB4);
 		else
 			showingNameBG.color = new Color32(0x74, 0x5D, 0x5D, 0xB4);
-		//
-		Debug.Log("n" + name);
 	}
 	public void DoChangeTextColor(int type)
 	{
@@ -558,7 +566,7 @@ public class DialogManager : MonoBehaviour
 	{
 		TextAsset dialogText;
 		List<DialogSaveData> loadedDataList = new List<DialogSaveData>();
-		Dialogs tempDialog = null; ;
+		DialogsForPlay tempDialog = null; ;
 		dialogList.Clear();
 		if((dialogText = Resources.Load<TextAsset>("Dialogs/"+fileName)) != null)
 		{
@@ -567,7 +575,7 @@ public class DialogManager : MonoBehaviour
 			loadedDataList = (List<DialogSaveData>)serializer.ReadObject(ms);
 			for (int i = 0; i < loadedDataList.Count; i++)
 			{
-				tempDialog = new Dialogs();
+				tempDialog = new DialogsForPlay();
 				tempDialog.type = loadedDataList[i].textType;
 
 				int cCount = 0;
