@@ -530,6 +530,7 @@ public class CombatAreaManager : MonoBehaviour
             GameManager.Instance.OnHuntingAreaOpenToPublic();
 
         HuntingAreaConquerStart();
+		
         //Debug.Log("OnHuntingAreaConquered");
         if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea)
         {

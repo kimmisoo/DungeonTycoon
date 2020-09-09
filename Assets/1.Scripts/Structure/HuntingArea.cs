@@ -64,7 +64,6 @@ public class HuntingArea : CombatArea
     private IEnumerator MonsterRegenCycle()
     {
         int needed;
-
         while (true)
         {
             // 몬스터 몇마리 리젠할 것인지 계산.

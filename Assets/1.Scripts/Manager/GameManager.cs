@@ -1934,7 +1934,8 @@ public class GameManager : MonoBehaviour
         //GenerateTravelers(regenAmount/ 2 + regenAmount % 2); // 나머지는 무조건 관광객이 가져감.
         //GenerateAdventurers(regenAmount / 2);
         FillTrvAdvVacancies();
-    }
+		
+	}
     
     public void FillTrvAdvVacancies()
     {
