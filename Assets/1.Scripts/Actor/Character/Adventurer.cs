@@ -205,8 +205,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #if DEBUG_ADV_STATE
                 Debug.Log("SE");
 #endif
-                SearchingExit();
-                superState = SuperState.ExitingDungeon;
+				superState = SuperState.ExitingDungeon;
+				curCoroutine = StartCoroutine(SearchingExit());
+                
                 //Going to outside 
                 break;
             case State.Exit:
@@ -378,6 +379,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 case SuperState.Battle:
                     curState = State.ApproachingToEnemy;
                     break;
+				case SuperState.ExitingDungeon:
+					//퇴장처리
+					pathFindCount = 0;
+					curState = State.MovingToDestination;
+					yield break;
+					break;
                 default: //SearchingHuntingArea, EnteringHuntingArea, ExitingDungeon, ExitingHuntingArea, SearchingMonster_Wandering, SolvingDesire_Wandering, SolvingDesire
                     curState = State.MovingToDestination;
                     break;
@@ -633,8 +640,13 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         //    curState = State.PathFinding;
         //}
     }
-
-    protected IEnumerator Rescued()
+	protected override IEnumerator SearchingExit()
+	{
+		destinationTile = GameManager.Instance.GetRandomEntrance();
+		curState = State.PathFinding;
+		yield return null;
+	}
+	protected IEnumerator Rescued()
     {
         List<TileForMove> temp = GetWay(pathFinder.GetPath());
         // TODO: GetWayForMove로 고치기. 이건 아직 구현안됐으니 별 상관없음

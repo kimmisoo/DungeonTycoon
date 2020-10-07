@@ -854,7 +854,6 @@ public class SpecialAdventurer : Adventurer
     protected override IEnumerator Battle()
     {
         //enemy.healthBelowZeroEvent += OnEnemyHealthBelowZero;
-
         while (ValidatingEnemy(enemy))
         {
             if (CheckInRange())
