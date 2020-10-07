@@ -27,7 +27,8 @@ public class Item
     public int OptimalLevelUpper { get; set; }
     public int DemandedLevel { get; set; }
     public string Explanation { get; set; }
-	Sprite itemImage=null;
+    public string BonusText { get; set; } // UI용 보너스 텍스트
+    Sprite itemImage=null;
     // 세이브용
     public int itemNum;
     public string itemCategory;
