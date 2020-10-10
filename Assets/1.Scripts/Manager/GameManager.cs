@@ -1117,6 +1117,15 @@ public class GameManager : MonoBehaviour
         return playerGold;
     }
 
+    // 플레이어가 선택한 일선 모험가 Get. 없으면 null
+    public GameObject GetPlayerSpAdv()
+    {
+        if (playerSpAdvIndex != -1)
+            return specialAdventurers[playerSpAdvIndex];
+        else
+            return null;
+    }
+
     // Scene 데이터 설정
     public void SetSceneData(JSONNode aData)
     {

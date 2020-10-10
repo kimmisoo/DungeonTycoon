@@ -288,6 +288,14 @@ public class BattleStat
         }
     }
 
+    public float MoveSpeed
+    {
+        get
+        {
+            return battleStatContinuous[StatType.MoveSpeed].GetCalculatedValue();
+        }
+    }
+
     public int CurExp
     {
         get
