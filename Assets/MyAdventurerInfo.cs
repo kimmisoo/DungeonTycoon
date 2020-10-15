@@ -8,6 +8,8 @@ public class MyAdventurerInfo : MonoBehaviour
     #region StatInfo
     public Text advName;
     public Text advLevel1;
+    public Image advPortrait;
+    //public Image adv
     #endregion
 
     #region BattleStatInfo
@@ -47,6 +49,11 @@ public class MyAdventurerInfo : MonoBehaviour
 
         advName.text = playerSpAdv.stat.actorName;
         advLevel1.text = pBattleStat.Level.ToString();
+
+        string imagePath = "UISprites/Portrait/" + playerSpAdv.nameKey; //키 값이 더 적절해서 키값 사용
+        Sprite temp = Resources.Load<Sprite>(imagePath);
+        if (temp != null)
+            advPortrait.sprite = temp;
     }
 
     private void RefreshBattleStatInfo()
@@ -60,9 +67,9 @@ public class MyAdventurerInfo : MonoBehaviour
         advAttackSpeed.text = string.Format("{0:0.0000}", pBattleStat.AttackSpeed);
         advMoveSpeed.text = string.Format("{0:0}%", pBattleStat.MoveSpeed * 100);
         advCriticalChance.text = string.Format("{0:0.00}%", pBattleStat.CriticalChance * 100);
-        advCriticalDamage.text = string.Format("{0:0}%", pBattleStat.CriticalDamage *100);
+        advCriticalDamage.text = string.Format("{0:0}%", pBattleStat.CriticalDamage * 100);
         advAttackRange.text = string.Format("{0:0}칸", pBattleStat.Range);
-        advDps.text = string.Format("{0:0.00}", pBattleStat.Attack * pBattleStat.AttackSpeed * ((1+pBattleStat.CriticalChance) * (pBattleStat.CriticalDamage -1)));
+        advDps.text = string.Format("{0:0.00}", pBattleStat.Attack * pBattleStat.AttackSpeed * ((1 + pBattleStat.CriticalChance) * (pBattleStat.CriticalDamage - 1)));
         advPenetration.text = string.Format("{0:0} | {0:0}%", pBattleStat.PenetrationFixed, pBattleStat.PenetrationMult);
     }
 
@@ -70,8 +77,12 @@ public class MyAdventurerInfo : MonoBehaviour
     {
         SpecialAdventurer playerSpAdv = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>();
         Skill uniqueSkill = playerSpAdv.GetSkills()[playerSpAdv.nameKey];
-        skillName.text = uniqueSkill.Name;
+        skillName.text = uniqueSkill.SkillName;
         skillExplanation.text = uniqueSkill.Explanation;
-        //skillImage;
-}
+
+        string imagePath = "Icons/" + uniqueSkill.key; //키 값이 더 적절해서 키값 사용
+        Sprite temp = Resources.Load<Sprite>(imagePath);
+        if(temp != null)
+            skillImage.sprite = temp;
+    }
 }

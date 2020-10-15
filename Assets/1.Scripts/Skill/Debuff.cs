@@ -33,7 +33,7 @@ public class CrackSkill : Skill
     public override void InitSkill()
     {
         //SetNameAndExplanation("균열", "적을 공격할 때마다 방어력을 6% 감소시키는 디버프를 남깁니다. 디버프는 최대 5번까지 중첩되며 2초간 지속됩니다.");
-        defDebuff = new TemporaryEffect(name, 2, STACK_LIMIT);
+        defDebuff = new TemporaryEffect(skillName, 2, STACK_LIMIT);
         defMod = new StatModContinuous(StatType.Defence, ModType.Mult, DEF_PENALTY_RATE);
         defDebuff.AddContinuousMod(defMod);
     }
