@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,9 @@ public class MyAdventurerInfo : MonoBehaviour
     public Text advName;
     public Text advLevel1;
     public Image advPortrait;
-    //public Image adv
+
+    public GameObject advSpritesHolder;
+    Dictionary<string, GameObject> advSprites = new Dictionary<string, GameObject>();
     #endregion
 
     #region BattleStatInfo
@@ -32,6 +35,13 @@ public class MyAdventurerInfo : MonoBehaviour
     public Image skillImage;
     #endregion
 
+    private void Awake()
+    {
+        FillSpriteDict();
+        for (int i = 0; i < advSprites.Keys.Count; i++)
+            Debug.Log(advSprites.Keys.ToList()[i]);
+    }
+
     void OnEnable()
     {
         RefreshStatInfo();
@@ -39,6 +49,14 @@ public class MyAdventurerInfo : MonoBehaviour
         RefreshUniqueSkillInfo();
     }
 
+    private void FillSpriteDict()
+    {
+        for (int i = 0; i < advSpritesHolder.transform.childCount; i++)
+        {
+            GameObject temp = advSpritesHolder.transform.GetChild(i).gameObject;
+            advSprites.Add(temp.name, temp);
+        }
+    }
 
 
     private void RefreshStatInfo()
@@ -54,6 +72,8 @@ public class MyAdventurerInfo : MonoBehaviour
         Sprite temp = Resources.Load<Sprite>(imagePath);
         if (temp != null)
             advPortrait.sprite = temp;
+        Debug.Log(playerSpAdv.nameKey);
+        advSprites[playerSpAdv.nameKey].SetActive(true);
     }
 
     private void RefreshBattleStatInfo()
