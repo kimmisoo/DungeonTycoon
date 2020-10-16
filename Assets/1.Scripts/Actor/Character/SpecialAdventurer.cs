@@ -685,6 +685,7 @@ public class SpecialAdventurer : Adventurer
                 curState = State.SearchingMonster;
                 break;
             case SuperState.ExitingDungeon:
+				Debug.Log("SpecialAdventurer going to Exiting Dungeon");
                 curState = State.SearchingExit;
                 break;
             case SuperState.SearchingMonster_Wandering:
@@ -841,14 +842,17 @@ public class SpecialAdventurer : Adventurer
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
         destinationPlace = CombatAreaManager.Instance.FindHuntingAreaSpAdv(battleStat.Level);
 
-        if (destinationPlace == null)
-            curState = State.SearchingExit;
-        else
-        {
-            destinationTile = destinationPlace.GetEntrance();
-            // TODO: 이거 destination TileForMove에 뭐 집어넣게 바꿔야
-            curState = State.PathFinding;
-        }
+		if (destinationPlace == null)
+		{
+			curState = State.SearchingExit;
+			Debug.Log("SpecialAdventurer : SearchingHuntingArea Failed. destinationPlace is null!!");
+		}
+		else
+		{
+			destinationTile = destinationPlace.GetEntrance();
+			// TODO: 이거 destination TileForMove에 뭐 집어넣게 바꿔야
+			curState = State.PathFinding;
+		}
     }
 
     protected override IEnumerator Battle()
