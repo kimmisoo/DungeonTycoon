@@ -230,7 +230,7 @@ public class Traveler : Actor
 		curState = State.SearchingStructure;
 		
 	}
-    protected IEnumerator SolvingDesire_Wandering()
+    protected virtual IEnumerator SolvingDesire_Wandering()
     {
         if (wanderCount < wanderCountMax)
         {
@@ -249,7 +249,7 @@ public class Traveler : Actor
     }
 
 
-    protected IEnumerator SearchingStructure()
+    protected virtual IEnumerator SearchingStructure()
     {
 		
 		yield return null;
@@ -435,7 +435,6 @@ public class Traveler : Actor
 	}
 	IEnumerator CoroutinePathFindSuccess()
 	{
-		
 		if(GetSuperState() == SuperState.ExitingDungeon)
 		{
 			//퇴장처리
@@ -480,7 +479,6 @@ public class Traveler : Actor
 	IEnumerator CoroutinePathFindFail()
 	{
 		//Debug.Log("----------------------------------------------------------PF Fail." + destinationPlace is Structure ? (destinationPlace as Structure).name : "Tile..");
-
 		if(superState == SuperState.ExitingDungeon)
 		{
 			//즉시탈출

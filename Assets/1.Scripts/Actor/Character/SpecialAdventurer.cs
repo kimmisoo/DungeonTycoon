@@ -835,8 +835,66 @@ public class SpecialAdventurer : Adventurer
         SetDestinationTowardEnemy();
         curState = State.PathFinding;
     }
+	protected override IEnumerator SolvingDesire_Wandering()
+	{
+		if (wanderCount < wanderCountMax)
+		{
+			do
+			{
+				destinationTile = tileLayer.GetTileAsComponent(Random.Range(0, tileLayer.GetLayerWidth() - 1), Random.Range(0, tileLayer.GetLayerHeight() - 1));
+				yield return null;
+			} while (!ValidateNextTile(destinationTile)); // Wandering -> 지나갈 수 있는 타일이면
+			curState = State.PathFinding;
+		}
+		else
+		{
+			curState = State.SearchingExit;
+		}
+	}
 
-    protected override IEnumerator SearchingHuntingArea()
+	protected override IEnumerator SearchingStructure()
+	{
+		yield return null;
+
+		if (structureListByPref == null) // List가 비어있을때 . // 건물 이용 후 List 비워줘야함.
+		{
+			if (stat == null)
+				Debug.Log(name + " : Stat is null");
+			DesireType[] sortedTypeArray = stat.GetSortedDesireArray(); // 욕구종류를 높은 순으로 정렬
+			int index = 0;
+			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Length <= 0)) // 모든 Type별로 건물 있는지 조사
+			{
+				yield return null;
+				structureListByPref = StructureManager.Instance.FindStructureByDesire(sortedTypeArray[index++], this);
+			}
+			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
+			if (structureListByPref == null || structureListByPref.Length == 0) // 건물이 하나도 없다면
+			{
+				//Debug.Log("--------------------------------------------------StructureList is Null");
+				//curState = State.SolvingDesire_Wandering;
+				curState = State.SearchingHuntingArea;
+				yield break;
+			}
+		}
+
+		if (structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
+		{
+			//Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
+			pathFindCount = 0;
+			curState = State.SearchingHuntingArea;
+		}
+		else // 검색 결과 건물로 길찾기진행.
+		{
+			//Debug.Log("------------------------------------------------------------Found Structure!");
+			destinationTile = structureListByPref[pathFindCount].GetEntrance();
+			destinationPlace = structureListByPref[pathFindCount];
+			curState = State.PathFinding;
+		}
+
+		//길찾기 시작
+		//pathfind success, fail delegate call
+	}
+	protected override IEnumerator SearchingHuntingArea()
     {
         yield return null;
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
@@ -846,6 +904,7 @@ public class SpecialAdventurer : Adventurer
 		{
 			curState = State.SearchingExit;
 			Debug.Log("SpecialAdventurer : SearchingHuntingArea Failed. destinationPlace is null!!");
+			yield break;
 		}
 		else
 		{
