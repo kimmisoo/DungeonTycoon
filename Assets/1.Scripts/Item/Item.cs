@@ -131,4 +131,8 @@ public class Item
 	{
 		return itemImage;
 	}
+    public bool hasItemSkill()
+    {
+        return (itemSkillKey != null);
+    }
 }
