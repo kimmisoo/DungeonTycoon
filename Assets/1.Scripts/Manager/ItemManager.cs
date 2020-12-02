@@ -132,4 +132,9 @@ public class ItemManager : MonoBehaviour
                 return -1;
         }
     }
+
+    public JSONNode GetItemJSONNode()
+    {
+        return itemsJson;
+    }
 }
