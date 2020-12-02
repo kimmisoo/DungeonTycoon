@@ -5,6 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ItemCategory
+{
+    Weapon, Armor, Accessory
+}
+
 public class ItemManager : MonoBehaviour
 {
     private static ItemManager _instance;
@@ -111,5 +116,20 @@ public class ItemManager : MonoBehaviour
         tempItem.itemNum = tempItemIndex;
 
         return tempItem;
+    }
+
+    public int GetItemCount(ItemCategory category)
+    {
+        switch (category)
+        {
+            case ItemCategory.Weapon:
+                return itemsJson["Weapon"].Count;
+            case ItemCategory.Armor:
+                return itemsJson["Armor"].Count;
+            case ItemCategory.Accessory:
+                return itemsJson["Accessory"].Count;
+            default:
+                return -1;
+        }
     }
 }

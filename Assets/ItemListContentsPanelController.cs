@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemListContentsController : MonoBehaviour
+public class ItemListContentsPanelController : MonoBehaviour
 {
     private int rowNum, colNum;
     //private float rowHeight, colWidth;
@@ -14,7 +14,13 @@ public class ItemListContentsController : MonoBehaviour
         AdjustHeight();
     }
 
-    public void GetGridAttribute()
+    //public void Update()
+    //{
+    //    AdjustHeight();
+    //}
+
+    // 그리드 레이아웃에서 필요한 정보 가져오는 메서드
+    public void GetGridLayoutAttribute()
     {
         //rowHeight = gridLayoutGroup.cellSize.y;
         //colNum = gridLayoutGroup.
@@ -22,15 +28,19 @@ public class ItemListContentsController : MonoBehaviour
         rowNum = Mathf.CeilToInt(gameObject.transform.childCount / colNum); 
     }
 
+    // 내용물 양에 따라 크기 조절
     public void AdjustHeight()
     {
-        GetGridAttribute();
+        GetGridLayoutAttribute();
 
+        
         float x, y, width, height;
         x = gameObject.GetComponent<RectTransform>().rect.x;
         y = gameObject.GetComponent<RectTransform>().rect.y;
         width = gameObject.GetComponent<RectTransform>().rect.width;
         height = rowNum * gridLayoutGroup.cellSize.y;
-        gameObject.GetComponent<RectTransform>().rect.Set(x, y, width, height);
+        //gameObject.GetComponent<RectTransform>().rect.Set(x, y, width, height);
+        gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
+        //Debug.Log("AdjustingHeight " + height + "\n" + "new: " + gameObject.GetComponent<RectTransform>().rect.height);
     }
 }
