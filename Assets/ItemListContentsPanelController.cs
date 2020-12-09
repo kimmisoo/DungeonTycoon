@@ -10,24 +10,38 @@ public class ItemListContentsPanelController : MonoBehaviour
     //private float rowHeight, colWidth;
     public GridLayoutGroup gridLayoutGroup;
 
-    public void OnEnable()
+    void Start()
+    {
+        GetContents();
+        //RefreshGridLayout();
+    }
+
+    void OnEnable()
     {
         AdjustHeight();
     }
 
-    public void GetContents()
+    private void GetContents()
     {
         JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
-        GameObject itemIcon = Resources.Load("UIPrefabs/TrainUI/ItemIcon");
+        GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
 
-        for(int i = 0; i<jsonNode["Weapon"].Count; i++)
+        for(int i = 0; i<1/*jsonNode["Weapon"].Count*/; i++)
         {
+            GameObject newIcon = Instantiate<GameObject>(itemIcon);
 
+
+            GameObject iconImage = newIcon.transform.GetChild(1).gameObject;
+            Debug.Log(iconImage.name);
+
+            newIcon.transform.SetParent(gameObject.transform);
+            newIcon.transform.localScale = new Vector3(1.0f, 1.0f);
+            newIcon.transform.localPosition = new Vector3(0, 0, 0);
         }
     }
 
     // 그리드 레이아웃에서 필요한 정보 가져오는 메서드
-    public void GetGridLayoutAttribute()
+    private void GetGridLayoutAttribute()
     {
         //rowHeight = gridLayoutGroup.cellSize.y;
         //colNum = gridLayoutGroup.
@@ -36,10 +50,9 @@ public class ItemListContentsPanelController : MonoBehaviour
     }
 
     // 내용물 양에 따라 크기 조절
-    public void AdjustHeight()
+    private void AdjustHeight()
     {
         GetGridLayoutAttribute();
-
 
         float x, y, width, height;
         x = gameObject.GetComponent<RectTransform>().rect.x;
@@ -50,4 +63,10 @@ public class ItemListContentsPanelController : MonoBehaviour
         gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
         //Debug.Log("AdjustingHeight " + height + "\n" + "new: " + gameObject.GetComponent<RectTransform>().rect.height);
     }
+
+    //private void RefreshGridLayout()
+    //{
+    //    LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.GetComponent<RectTransform>());
+    //    //gameObject.GetComponent<GridLayoutGroup>()
+    //}
 }
