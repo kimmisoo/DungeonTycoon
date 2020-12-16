@@ -14,6 +14,7 @@ public class ItemListContentsPanelController : MonoBehaviour
     {
         GetContents();
         //RefreshGridLayout();
+        AdjustHeight();
     }
 
     void OnEnable()
@@ -24,18 +25,21 @@ public class ItemListContentsPanelController : MonoBehaviour
     private void GetContents()
     {
         JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
-        GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
+        //GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
 
-        for(int i = 0; i<1/*jsonNode["Weapon"].Count*/; i++)
+        for(int i = 0; i<3/*jsonNode["Weapon"].Count*/; i++)
         {
+            string iconPath = "UIPrefabs/TrainUI/ItemIcons/";
+            iconPath += jsonNode["Weapon"][i]["Name"];
+            Debug.Log(iconPath);
+            GameObject itemIcon = (GameObject)Resources.Load(iconPath);
+
             GameObject newIcon = Instantiate<GameObject>(itemIcon);
 
-
             GameObject iconImage = newIcon.transform.GetChild(1).gameObject;
-            Debug.Log(iconImage.name);
 
             newIcon.transform.SetParent(gameObject.transform);
-            newIcon.transform.localScale = new Vector3(1.0f, 1.0f);
+            newIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             newIcon.transform.localPosition = new Vector3(0, 0, 0);
         }
     }
@@ -46,7 +50,7 @@ public class ItemListContentsPanelController : MonoBehaviour
         //rowHeight = gridLayoutGroup.cellSize.y;
         //colNum = gridLayoutGroup.
         colNum = Mathf.FloorToInt(gameObject.GetComponent<RectTransform>().rect.width / gridLayoutGroup.cellSize.x);
-        rowNum = Mathf.CeilToInt(gameObject.transform.childCount / colNum); 
+        rowNum = Mathf.CeilToInt((float)gameObject.transform.childCount / colNum); 
     }
 
     // 내용물 양에 따라 크기 조절
