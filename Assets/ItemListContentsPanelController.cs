@@ -27,9 +27,9 @@ public class ItemListContentsPanelController : MonoBehaviour
         JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
         //GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
 
-        for(int i = 0; i<5/*jsonNode["Weapon"].Count*/; i++)
+        for(int i = 0; i<jsonNode["Weapon"].Count; i++)
         {
-            string iconPath = "UIPrefabs/TrainUI/ItemIcons/";
+            string iconPath = "UIPrefabs/TrainUI/ItemIcons/Weapons/";
             iconPath += jsonNode["Weapon"][i]["Name"];
             Debug.Log(iconPath);
             GameObject itemIcon = (GameObject)Resources.Load(iconPath);
