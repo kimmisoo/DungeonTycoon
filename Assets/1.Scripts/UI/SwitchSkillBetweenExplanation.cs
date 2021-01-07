@@ -17,4 +17,15 @@ public class SwitchSkillBetweenExplanation : MonoBehaviour
         buttonText[curSide % 2].gameObject.SetActive(true);
         contents[curSide % 2].gameObject.SetActive(true);
     }
+
+    public void SwitchToSkill()
+    {
+        curSide = 0;
+
+        buttonText[1].gameObject.SetActive(false);
+        contents[1].gameObject.SetActive(false);
+
+        buttonText[0].gameObject.SetActive(true);
+        contents[0].gameObject.SetActive(true);
+    }
 }

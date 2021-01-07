@@ -1,4 +1,6 @@
-﻿using SimpleJSON;
+﻿#define DEBUG_TRAIN_UI
+
+using SimpleJSON;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +12,19 @@ public class ItemListPanel : MonoBehaviour
     //private int rowNum, colNum;
     //private float rowHeight, colWidth;
     public Dictionary<string, GameObject> itemList = new Dictionary<string, GameObject>();
+    public ScrollRect scrollRect;
 
     void Start()
     {
         GameObject loadedPrefab = (GameObject)Resources.Load("UIPrefabs/TrainUI/ListContentsPanel");
+        scrollRect = GetComponent<ScrollRect>();
 
+        #if DEBUG_TRAIN_UI
         MakeItemListByCategory("Weapon", loadedPrefab);
-        MakeItemListByCategory("Armor", loadedPrefab);
-        MakeItemListByCategory("Accessory", loadedPrefab);
+        //MakeItemListByCategory("Armor", loadedPrefab);
+        //MakeItemListByCategory("Accessory", loadedPrefab);
+        scrollRect.content = itemList["Weapon"].GetComponent<RectTransform>();
+        #endif
     }
 
     void OnEnable()
@@ -32,9 +39,14 @@ public class ItemListPanel : MonoBehaviour
         GameObject newObject = Instantiate<GameObject>(loadedPrefab);
         newObject.transform.SetParent(gameObject.transform);
         newObject.name = prefabName + itemCategory;
-        AdjustHeight(newObject);
+        
         itemList.Add(itemCategory, newObject);
         LoadContents(newObject, itemCategory);
+        AdjustHeight(newObject);
+
+        //newObject.transform.localPosition = new Vector3(0, -875, 0);
+        newObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        
     }
 
     // 아이템 카테고리에 맞는 리스트 보이는 메서드
@@ -47,6 +59,7 @@ public class ItemListPanel : MonoBehaviour
             itemList.Values.ToList()[i].SetActive(false);
         }
         itemList[itemCategory].SetActive(true);
+        scrollRect.content = itemList[itemCategory].GetComponent<RectTransform>();
     }
 
     // 아이템별 아이템 프리팹 불러와서 패널에 집어넣는 메서드
@@ -59,7 +72,7 @@ public class ItemListPanel : MonoBehaviour
         {
             string iconPath = "UIPrefabs/TrainUI/ItemIcons/" + itemCategory + "/";
             iconPath += jsonNode[itemCategory][i]["Name"];
-            Debug.Log(iconPath);
+            //Debug.Log(iconPath);
             GameObject itemIcon = (GameObject)Resources.Load(iconPath);
 
             GameObject newIcon = Instantiate<GameObject>(itemIcon);
@@ -108,13 +121,15 @@ public class ItemListPanel : MonoBehaviour
         int rowNum = Mathf.CeilToInt((float)listObject.transform.childCount / colNum);
 
         float x, y, width, height;
-        x = listObject.GetComponent<RectTransform>().rect.x;
-        y = listObject.GetComponent<RectTransform>().rect.y;
         width = listObject.GetComponent<RectTransform>().rect.width;
         height = rowNum * gridLayoutGroup.cellSize.y;
-        //gameObject.GetComponent<RectTransform>().rect.Set(x, y, width, height);
+
+        x = listObject.GetComponent<RectTransform>().rect.x;
+        y = -height/2;
+
         listObject.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
-        //Debug.Log("AdjustingHeight " + height + "\n" + "new: " + gameObject.GetComponent<RectTransform>().rect.height);
+        listObject.GetComponent<RectTransform>().localPosition = new Vector3(0, y, 0);
+
     }
 
     //private void RefreshGridLayout()
