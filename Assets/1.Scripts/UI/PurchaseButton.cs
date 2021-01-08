@@ -19,7 +19,7 @@ public class PurchaseButton : MonoBehaviour
 
     private void Start()
     {
-        SetEquiped();
+        //SetEquiped();
         //SetOwned();
     }
 
@@ -31,7 +31,7 @@ public class PurchaseButton : MonoBehaviour
         buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/SkyButtonPressed");
     }
 
-    public void SetNotOwned()
+    public void SetNeedPurchase()
     {
         buttonText.text = "구매";
         isOwned = true;

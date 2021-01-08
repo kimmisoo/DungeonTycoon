@@ -8,7 +8,7 @@ public class ItemInfoPanel : MonoBehaviour
     string name, modifier, explanation, skill, price;
     bool isSkill = false;
     Text nameText, modifierText, explanationText, skillText, priceText;
-    Button purchaseBtn;
+    PurchaseButton purchaseBtn;
     public SwitchSkillBetweenExplanation skillExplBtn;
 
     public void ShowInfo()
@@ -21,11 +21,18 @@ public class ItemInfoPanel : MonoBehaviour
         priceText.text = price;
 
         skillExplBtn.SwitchToSkill();
-        if (price == "장착중")
-            purchaseBtn.interactable = false;
-        else if (price == "이미 구매함")
-        {
 
+        switch (price)
+        {
+            case "장착 중":
+                purchaseBtn.SetEquiped();
+                break;
+            case "이미 구매함":
+                purchaseBtn.SetOwned();
+                break;
+            default:
+                purchaseBtn.SetNeedPurchase();
+                break;
         }
     }
 }
