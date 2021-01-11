@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class ItemEquipUI : MonoBehaviour
 {
-    private string selectedSlot = null;
-    private string selectedItem = null;
+    private string selectedItemSlot = null;
+    //private string selectedItemName = null;
+    private int selectedItemIndex = -1;
+    private string selectedItemCategory = null;
     public ItemListPanel listPanel;
+    public ItemInfoPanel infoPanel;
     JSONNode itemJSON = null;
 
     private void Start()
@@ -17,16 +20,14 @@ public class ItemEquipUI : MonoBehaviour
 
     public void SelectSlot(string inputSlot)
     {
-        if (selectedSlot != inputSlot)
+        if (selectedItemSlot != inputSlot)
         {
-            selectedSlot = inputSlot;
+            selectedItemSlot = inputSlot;
 
-            if (selectedSlot == "Accessory1" || selectedSlot == "Accessory2")
-            {
-                listPanel.ShowItemListByCategory("Accessory");
-            }
+            if (selectedItemSlot == "Accessory1" || selectedItemSlot == "Accessory2")
+                selectedItemCategory = "Accessory";
             else
-                listPanel.ShowItemListByCategory(selectedSlot);
+                selectedItemCategory = selectedItemSlot;
         }
     }
 
@@ -37,11 +38,12 @@ public class ItemEquipUI : MonoBehaviour
 
     public void SelectItem(string inputItem)
     {
-        selectedItem = inputItem;
+        //selectedItemName = inputItem;
     }
 
     private void RefreshItemInfo()
     {
-
+        //infoPanel.SetName(selectedItemName);
+        //infoPanel.SetExplanation(itemJSON[selectedItemCategory][selectedItemName]["explanation"]);
     }
 }

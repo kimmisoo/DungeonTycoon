@@ -82,6 +82,7 @@ public class ItemListPanel : MonoBehaviour
             newIcon.transform.SetParent(itemList[itemCategory].transform);
             newIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             newIcon.transform.localPosition = new Vector3(0, 0, 0);
+            Debug.Log(newIcon.name + ", " + itemList[itemCategory].transform.GetChild(i).name);
         }
         //JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
         ////GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
