@@ -36,9 +36,11 @@ public class ItemEquipUI : MonoBehaviour
         itemJSON = ItemManager.Instance.GetItemJSONNode();
     }
 
-    public void SelectItem(string inputItem)
+    public void SelectItem(GameObject clickedIcon)
     {
         //selectedItemName = inputItem;
+        selectedItemIndex = clickedIcon.transform.GetSiblingIndex();
+        Debug.Log(selectedItemCategory + " [" + selectedItemCategory + "] Selected");
     }
 
     private void RefreshItemInfo()

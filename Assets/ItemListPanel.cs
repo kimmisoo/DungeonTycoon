@@ -82,36 +82,10 @@ public class ItemListPanel : MonoBehaviour
             newIcon.transform.SetParent(itemList[itemCategory].transform);
             newIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             newIcon.transform.localPosition = new Vector3(0, 0, 0);
-            Debug.Log(newIcon.name + ", " + itemList[itemCategory].transform.GetChild(i).name);
+            //Debug.Log(newIcon.name + ", " + itemList[itemCategory].transform.GetChild(i).name);
+            //Debug.Log(i + ", " + newIcon.transform.GetSiblingIndex());
         }
-        //JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
-        ////GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
-
-        //for (int i = 0; i<jsonNode[itemCategory].Count; i++)
-        //{
-        //    string iconPath = "UIPrefabs/TrainUI/ItemIcons/" + itemCategory + "/";
-        //    iconPath += jsonNode[itemCategory][i]["Name"];
-        //    Debug.Log(iconPath);
-        //    GameObject itemIcon = (GameObject)Resources.Load(iconPath);
-
-        //    GameObject newIcon = Instantiate<GameObject>(itemIcon);
-
-        //    GameObject iconImage = newIcon.transform.GetChild(1).gameObject;
-
-        //    newIcon.transform.SetParent(gameObject.transform);
-        //    newIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        //    newIcon.transform.localPosition = new Vector3(0, 0, 0);
-        //}
     }
-
-    // 그리드 레이아웃에서 필요한 정보 가져오는 메서드
-    //private void GetGridLayoutAttribute()
-    //{
-    //    //rowHeight = gridLayoutGroup.cellSize.y;
-    //    //colNum = gridLayoutGroup.
-    //    colNum = Mathf.FloorToInt(gameObject.GetComponent<RectTransform>().rect.width / gridLayoutGroup.cellSize.x);
-    //    rowNum = Mathf.CeilToInt((float)gameObject.transform.childCount / colNum);
-    //}
 
     // 내용물 양에 따라 크기 조절
     private void AdjustHeight(GameObject listObject)
