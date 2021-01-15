@@ -5,22 +5,22 @@ using UnityEngine.UI;
 
 public class ItemShopIcon : MonoBehaviour
 {
-    public Button buttonComp;
-    public int index;
+    private Button buttonComp;
+    private int index;
+
+    public void SetIndex(int inputIndex)
+    {
+        index = inputIndex;
+    }
 
     private void Awake()
     {
         buttonComp = gameObject.GetComponent<Button>();
-        buttonComp.onClick.AddListener(() => func2(index));
-        buttonComp.onClick.AddListener(func1);
+        buttonComp.onClick.AddListener(ItemIconClicked);
     }
 
-    public void func1()
+    public void ItemIconClicked()
     {
-        Debug.Log("func1!");
-    }
-    public void func2(int a)
-    {
-        Debug.Log("func2! " + a);
+        UIManager.Instance.itemEquipUI.SelectItem(index);
     }
 }

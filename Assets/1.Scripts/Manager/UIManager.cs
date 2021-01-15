@@ -88,10 +88,14 @@ public class UIManager : MonoBehaviour {
 
 	public SpecificationPanel specPanel;
 
-    #region RPG UI
+    #region Ingame System UI
     public BossRaidUI bossRaidUI;
     public GameObject hpBarRoot;
     public MessageUI messageUI;
+    #endregion
+
+    #region Train UI
+    public ItemEquipUI itemEquipUI;
     #endregion
 
     void Awake()

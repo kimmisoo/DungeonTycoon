@@ -72,6 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224575295517797888}
   - component: {fileID: 114866885849257066}
+  - component: {fileID: 114090876019347422}
   m_Layer: 5
   m_Name: "\uB2E4\uB9C8\uC2A4\uCEE4\uC2A4 \uAC80"
   m_TagString: Untagged
@@ -79,6 +80,17 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114090876019347422
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1993921331233672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c05c9f8058cb744bb9534351cab6e19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114369045878677568
 MonoBehaviour:
   m_ObjectHideFlags: 1

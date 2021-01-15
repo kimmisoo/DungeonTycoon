@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224692033723575350}
   - component: {fileID: 114631330147232602}
+  - component: {fileID: 114226373948606660}
   m_Layer: 5
   m_Name: "K-150 '\uB9C8\uC774\uB108'"
   m_TagString: Untagged
@@ -93,6 +94,17 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 0, y: -5}
   m_UseGraphicAlpha: 1
+--- !u!114 &114226373948606660
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1094011156603286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c05c9f8058cb744bb9534351cab6e19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114293730434862780
 MonoBehaviour:
   m_ObjectHideFlags: 1

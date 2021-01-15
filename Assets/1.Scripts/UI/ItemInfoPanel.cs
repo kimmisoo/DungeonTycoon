@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class ItemInfoPanel : MonoBehaviour
 {
-    string itemName, modifier, explanation, skill, price;
+    string itemName, stat, explanation, skillName, skillEffect, price;
     bool isSkill = false;
-    Text nameText, modifierText, explanationText, skillText, priceText;
+    public Text nameText, statText, explanationText, skillNameText, skillEffectText, priceText;
     PurchaseButton purchaseBtn;
-    public SwitchSkillBetweenExplanation skillExplBtn;
+    public SkillExplSwitchButton skillExplBtn;
 
     public void ShowInfo()
     {
@@ -39,30 +39,51 @@ public class ItemInfoPanel : MonoBehaviour
     public void SetName(string inputName)
     {
         itemName = inputName;
-        nameText.text = name;
+        nameText.text = itemName;
     }
 
-    public void SetModifier(string inputModifier)
+    public void SetStat(string inputStat)
     {
-        modifier = inputModifier;
-        modifierText.text = modifier;
+        stat = inputStat;
+        statText.text = stat;
     }
 
-    public void SetExplanation(string inputExplanation)
+    public void SetSkillEffect(string inputSkillEffect)
     {
-        explanation = inputExplanation;
-        explanationText.text = explanation;
+        skillEffect = inputSkillEffect;
+        skillEffectText.text = skillEffect;
     }
 
-    public void SetSkill(string inputSkill)
+    public void SetSkillName(string inputSkillName)
     {
-        skill = inputSkill;
-        skillText.text = skill;
+        skillName = inputSkillName;
+        skillNameText.text = skillName;
     }
 
     public void SetPrice(string inputPrice)
     {
         price = inputPrice;
         priceText.text = price;
+    }
+
+    public void SetOnlyExpl(string inputExpl)
+    {
+        explanation = inputExpl;
+        explanationText.text = explanation;
+        skillExplBtn.EnableOnlyExlp();
+    }
+
+    public void SetSkillAndExpl(string inputSkillName, string inputSkillEffect, string inputExpl)
+    {
+        explanation = inputExpl;
+        explanationText.text = explanation;
+
+        skillName = inputSkillName;
+        skillNameText.text = skillName;
+
+        skillEffect = inputSkillEffect;
+        skillEffectText.text = inputSkillEffect; 
+
+        skillExplBtn.EnableBoth();
     }
 }

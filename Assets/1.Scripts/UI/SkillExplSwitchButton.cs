@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SwitchSkillBetweenExplanation : MonoBehaviour
+public class SkillExplSwitchButton : MonoBehaviour
 {
     public int curSide = 0;
     public Text[] buttonText = new Text[2];
     public GameObject[] contents = new GameObject[2];
+    private Button buttonComp;
+
+    private void Start()
+    {
+        buttonComp = GetComponent<Button>();
+    }
 
     public void SwapContent()
     {
@@ -27,5 +33,28 @@ public class SwitchSkillBetweenExplanation : MonoBehaviour
 
         buttonText[0].gameObject.SetActive(true);
         contents[0].gameObject.SetActive(true);
+    }
+
+    public void SwitchToExpl()
+    {
+        curSide = 1;
+
+        buttonText[0].gameObject.SetActive(false);
+        contents[0].gameObject.SetActive(false);
+
+        buttonText[1].gameObject.SetActive(true);
+        contents[1].gameObject.SetActive(true);
+    }
+
+    public void EnableOnlyExlp()
+    {
+        buttonComp.interactable = false;
+        SwitchToExpl();
+    }
+
+    public void EnableBoth()
+    {
+        buttonComp.interactable = true;
+        SwitchToSkill();
     }
 }

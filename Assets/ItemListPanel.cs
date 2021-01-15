@@ -79,6 +79,8 @@ public class ItemListPanel : MonoBehaviour
 
             GameObject iconImage = newIcon.transform.GetChild(1).gameObject;
 
+            newIcon.GetComponent<ItemShopIcon>().SetIndex(i);
+
             newIcon.transform.SetParent(itemList[itemCategory].transform);
             newIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             newIcon.transform.localPosition = new Vector3(0, 0, 0);

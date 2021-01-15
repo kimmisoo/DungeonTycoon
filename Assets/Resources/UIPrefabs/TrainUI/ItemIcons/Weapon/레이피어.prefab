@@ -54,6 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224196421208945792}
   - component: {fileID: 114875542878126344}
+  - component: {fileID: 114200953711944488}
   m_Layer: 5
   m_Name: "\uB808\uC774\uD53C\uC5B4"
   m_TagString: Untagged
@@ -94,6 +95,17 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &114200953711944488
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1774382514737030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c05c9f8058cb744bb9534351cab6e19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114490647449135980
 MonoBehaviour:
   m_ObjectHideFlags: 1

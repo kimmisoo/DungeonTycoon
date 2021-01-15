@@ -55,6 +55,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224162745630681380}
   - component: {fileID: 114827670900767750}
+  - component: {fileID: 114941483666116630}
   m_Layer: 5
   m_Name: "\uC18C\uB9E4\uCE58\uAE30\uC758 \uB2E8\uB3C4\uC138\uD2B8"
   m_TagString: Untagged
@@ -274,6 +275,17 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114941483666116630
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1511457362112132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c05c9f8058cb744bb9534351cab6e19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &222264297392337844
 CanvasRenderer:
   m_ObjectHideFlags: 1

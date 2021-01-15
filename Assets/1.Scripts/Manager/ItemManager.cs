@@ -21,6 +21,7 @@ public class ItemManager : MonoBehaviour
     // 아이템 정보 읽어오기용
     public JSONNode itemsJson;
 
+
     public static ItemManager Instance
     {
         get
