@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class ItemInfoPanel : MonoBehaviour
 {
-    string itemName, stat, explanation, skillName, skillEffect, price;
+    string itemName, stat, explanation, skillName, skillEffect, price, demandedLevel;
     bool isSkill = false;
-    public Text nameText, statText, explanationText, skillNameText, skillEffectText, priceText;
+    public Text nameText, statText, explanationText, skillNameText, skillEffectText, priceText, demandedLevelText;
     PurchaseButton purchaseBtn;
     public SkillExplSwitchButton skillExplBtn;
 
@@ -64,6 +64,12 @@ public class ItemInfoPanel : MonoBehaviour
     {
         price = inputPrice;
         priceText.text = price;
+    }
+
+    public void SetDemandedLevel(string inputDemandedLevel)
+    {
+        demandedLevel = inputDemandedLevel;
+        demandedLevelText.text = demandedLevel;
     }
 
     public void SetOnlyExpl(string inputExpl)

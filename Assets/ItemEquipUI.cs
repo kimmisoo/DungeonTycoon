@@ -71,6 +71,15 @@ public class ItemEquipUI : MonoBehaviour
         }
 
         infoPanel.SetStat(MakeStatString());
+
+        if(Mathf.Abs(itemJSON[selectedItemCategory][selectedItemIndex]["DemendedLevel"].AsFloat) <= 0.0f + Mathf.Epsilon)
+        {
+            infoPanel.SetDemandedLevel("1");
+        }
+        else
+        {
+            infoPanel.SetDemandedLevel(itemJSON[selectedItemCategory][selectedItemIndex]["DemendedLevel"]);
+        }
     }
 
     private string MakeStatString()
