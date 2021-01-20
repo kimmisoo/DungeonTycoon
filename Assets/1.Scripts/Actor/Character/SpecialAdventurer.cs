@@ -592,6 +592,7 @@ public class SpecialAdventurer : Adventurer
         }
         else
         {
+			Debug.Log("PF Fail..");
             switch (superState)
             {
                 case SuperState.SearchingMonster:
@@ -862,7 +863,7 @@ public class SpecialAdventurer : Adventurer
 				Debug.Log(name + " : Stat is null");
 			DesireType[] sortedTypeArray = stat.GetSortedDesireArray(); // 욕구종류를 높은 순으로 정렬
 			int index = 0;
-			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Length <= 0)) // 모든 Type별로 건물 있는지 조사
+			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Length <= 0)) // 건물이 나올때 까지 Type별로 건물 있는지 조사
 			{
 				yield return null;
 				structureListByPref = StructureManager.Instance.FindStructureByDesire(sortedTypeArray[index++], this);
@@ -899,9 +900,10 @@ public class SpecialAdventurer : Adventurer
         yield return null;
         // (이 모험가의 level <= 사냥터의 maxLevel)인 사냥터 중 maxLevel이 가장 낮은 걸 찾음.
         destinationPlace = CombatAreaManager.Instance.FindHuntingAreaSpAdv(battleStat.Level);
-
+		Debug.Log("FindHuntingArea...SPADV");
 		if (destinationPlace == null)
 		{
+			Debug.Log("destinationPlace = null.. !!!!");
 			curState = State.SearchingExit;
 			Debug.Log("SpecialAdventurer : SearchingHuntingArea Failed. destinationPlace is null!!");
 			yield break;
@@ -910,6 +912,7 @@ public class SpecialAdventurer : Adventurer
 		{
 			destinationTile = destinationPlace.GetEntrance();
 			// TODO: 이거 destination TileForMove에 뭐 집어넣게 바꿔야
+			Debug.Log("Moving to Destination... - " + superState.ToString());
 			curState = State.PathFinding;
 		}
     }
@@ -1047,7 +1050,6 @@ public class SpecialAdventurer : Adventurer
     private void MatchWon()
     {
         GameManager.Instance.ReportMatchWon(this);
-
         curState = State.WaitingOtherMatch;
     }
 

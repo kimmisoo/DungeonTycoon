@@ -20,7 +20,7 @@ public class Skirmish
     public int curRound;
     public int matchCntCurRound;
     public int curMatch;
-
+	int callCount = 0;
     public Skirmish()
     {
         skirmishParticipants = new List<SpecialAdventurer>();
@@ -34,6 +34,8 @@ public class Skirmish
 
     public void AddSkirmishParticipant(SpecialAdventurer participant)
     {
+		callCount++;
+		Debug.Log("callCount = " + callCount);
         if(skirmishParticipants.Contains(participant) == false)
             skirmishParticipants.Add(participant);
         //skirmishSurvivors.Add(participant);
@@ -144,12 +146,15 @@ public class Skirmish
             spAdv.HealFullHealth(true);
             spAdv.curState = State.Idle;
         }
-        //Debug.Log("EndSkirmish : " + skirmishSurvivors[0].curState + " , " + skirmishSurvivors[0].GetSuperState());
+		//Debug.Log("EndSkirmish : " + skirmishSurvivors[0].curState + " , " + skirmishSurvivors[0].GetSuperState());
+		if (skirmishBracket.Count == 0)
+			Debug.Log("Skirmish Barcket count is 0");
         skirmishBracket[0].HealFullHealth(true);
         skirmishBracket[0].curState = State.EnteringBossArea;
 
         // 그 외 인터페이스 보여주려면 여기서.
         GameManager.Instance.OnSkirmishEnd(skirmishBracket[0].index);
+		curRound = 0;
     }
 
     /// <summary>

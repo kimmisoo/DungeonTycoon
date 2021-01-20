@@ -79,7 +79,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     public void InitAdventurer(Stat statIn, BattleStat battleStat, RewardStat rewardStat) //
     {
-        // 이동가능한 타일인지 확인할 delegate 설정.
+        //이동가능한 타일인지 확인할 delegate 설정.
         pathFinder.SetValidateTile(ValidateNextTile);
         //SetPathFindEventAdventurer();
 
@@ -217,7 +217,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                 Exit();
                 break;
             // 모험가 전투관련
-            case State.SearchingHuntingArea:
+            case State.SearchingHuntingArea: 
 #if DEBUG_ADV_STATE
                 Debug.Log("SearchingHuntingArea");
 #endif
@@ -370,16 +370,16 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         {
             switch (superState)
             {
-                case SuperState.SearchingMonster:
+                case SuperState.SearchingMonster: // in huntingArea.
                     curState = State.ApproachingToEnemy;
                     break;
-                case SuperState.PassedOut:
+                case SuperState.PassedOut: //in huntingArea?
                     curState = State.Rescued;
                     break;
-                case SuperState.Battle:
+                case SuperState.Battle: //inHuntingArea.
                     curState = State.ApproachingToEnemy;
                     break;
-				case SuperState.ExitingDungeon:
+				case SuperState.ExitingDungeon: //still in huntingArea.
 					//퇴장처리
 					pathFindCount = 0;
 					curState = State.MovingToDestination;
@@ -394,14 +394,14 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         {
             switch (superState)
             {
-                case SuperState.SearchingMonster:
+                case SuperState.SearchingMonster: // in huntingArea..
                     curState = State.SearchingMonster;
                     break;
-                case SuperState.Battle:
+                case SuperState.Battle: // in huntingArea..
                     curState = State.PathFinding;
                     break;
                 default:
-                    curState = State.Idle;
+                    curState = State.Idle; // ?
                     break;
             }
         }
@@ -605,7 +605,6 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     protected IEnumerator ExitingHuntingArea()
     {
         destinationTile = curHuntingArea.GetEntrance();
-
         ResetCurHuntingArea();
         ResetBattleParams();
 

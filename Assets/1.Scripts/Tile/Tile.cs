@@ -21,13 +21,31 @@ public class Tile : MonoBehaviour
 	int layer_Num = -1;
 	int tile_Type = -1;
 
+	/*
+	 * 공통 사항
+	 * 1.isNonTile == false - 타일인가?
+	 * 
+	 * 몬스터
+	 * 1.isHuntingArea == true - 사냥터인가?
+	 * 여행자
+	 * 1.isStructed == false - 타일 위에 건설되었는가?
+	 * 2.isHuntingArea == false - 사냥터인가?
+	 * 모험가 - 사냥터 안에서
+	 * 1.isHuntingArea == true - 사냥터인가?
+	 * 2.isStructed == true - 건설되었는가?
+	 * 모험가 - 사냥터 밖에서
+	 * 1.isHuntingArea == false - 사냥터인가?
+	 * 2.isStructed == false - 건설되었는가?
+	 */
+	
     bool isStructed = false;
     bool isNonTile = false;
-
+	
 	bool isBuildingArea = false;
 	bool isHuntingArea = false;
 	bool isRoad = false;
 	bool isActive = false;
+	bool isEntrance = false;
     [SerializeField]
     // 수정요망 이거 Place로 고치고 관련 코드 고쳐야 함. 일단 보류 쓰는 곳 없음.
     Structure structure;
@@ -96,7 +114,6 @@ public class Tile : MonoBehaviour
     {
         structure = s;
     }
-	
 
 	public bool GetBuildingArea()
 	{
@@ -110,15 +127,15 @@ public class Tile : MonoBehaviour
 	//Traveler - Road, 
     public bool GetPassableTraveler() 
     {
-		return isNonTile == false && isActive == true; //&& isStructed == false && isHuntingArea == false;// && isStructed == false && isHuntingArea == false;//isStructed == false ? isRoad || isBuildingArea : false;
+		return isNonTile == false && isActive == true && isStructed == false && isHuntingArea == false; //&& isStructed == false && isHuntingArea == false;// && isStructed == false && isHuntingArea == false;//isStructed == false ? isRoad || isBuildingArea : false;
     }
-    public bool GetPassableAdventurer()
+    public bool GetPassableAdventurer() //
     {
-		return isNonTile == false && isActive == true;//&& isStructed == false;//isStructed == false ? isRoad || isBuildingArea || isHuntingArea : false; 
-    }
+		return isNonTile == false && isActive == true && isStructed == false;//isActive && (isNonTile == false || isHuntingArea == true) && isStructed == false;//&& isStructed == false;//isStructed == false ? isRoad || isBuildingArea || isHuntingArea : false; 
+	}
     public bool GetPassableMonster()
     {
-		return isNonTile == false && isActive == true;// ? isHuntingArea : false;
+		return isHuntingArea;//isNonTile == false && isActive == true;// ? isHuntingArea : false;
 	}
 	public void SetIsBuildingArea(bool _isBuildingArea)
 	{
@@ -169,6 +186,14 @@ public class Tile : MonoBehaviour
 	public bool GetIsActive()
 	{
 		return isActive;
+	}
+	public void SetIsEntrance(bool _isEntrance)
+	{
+		isEntrance = _isEntrance;
+	}
+	public bool GetIsEntrance()
+	{
+		return isEntrance;
 	}
 	public void SetX(int _x)
 	{

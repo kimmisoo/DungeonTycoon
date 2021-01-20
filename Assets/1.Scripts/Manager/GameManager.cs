@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
 
     // Save!
     #region BossPhase
-    Skirmish curSkirmish;
+    public Skirmish curSkirmish;
     //// 보스 페이즈인가?
     public bool isBossPhase;
     //// 응답한 일선 모험가 수
@@ -1882,8 +1882,9 @@ public class GameManager : MonoBehaviour
     public IEnumerator BossRaidPrepTimer(float startTime)
     {
         bossRaidPrepWaitedTime = startTime;
-
-        while (true)
+		responsedSpAdvCnt = 0;
+		isBossRaidPrepTimeOver = false;
+		while (true)
         {
             yield return new WaitForSeconds(SkillConsts.TICK_TIME);
             bossRaidPrepWaitedTime += SkillConsts.TICK_TIME;
@@ -1901,6 +1902,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.bossRaidUI.SetRaidStateText("-전초전-");
 
         bossRaidPrepWaitedTime = 00.0f;
+		
         UIManager.Instance.messageUI.ShowMessage("전초전 시작");
         curSkirmish.StartSkirmish();
     }
@@ -1966,7 +1968,7 @@ public class GameManager : MonoBehaviour
         }
 
         retryTimeLeft = 0;
-        curSkirmish = new Skirmish();
+		curSkirmish = new Skirmish();
         canCallBossRaid = true;
         UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.BeforeApplication;
         //EnableBossRaidUI();

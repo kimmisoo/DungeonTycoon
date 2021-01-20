@@ -14,7 +14,6 @@ public class StageProgressTest : MonoBehaviour
             progressDisplay.text = "BossArea #" + CombatAreaManager.Instance.BossAreaIndex;
         else
             progressDisplay.text = "HuntingArea #" + CombatAreaManager.Instance.ConqueringHuntingAreaIndex;
-
     }
 
     public void AreaConquered()

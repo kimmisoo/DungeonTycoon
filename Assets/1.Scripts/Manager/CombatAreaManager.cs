@@ -33,8 +33,18 @@ public class CombatAreaManager : MonoBehaviour
 
     // 사냥터 몇번까지 활성화됐는지.
     public int PublicHuntingAreaIndex { get; private set; }
-    public int ConqueringHuntingAreaIndex { get { return PublicHuntingAreaIndex + 1; } }
-    public int BossAreaIndex { get; private set; }
+	public int ConqueringHuntingAreaIndex
+	{
+		get
+		{
+			if (PublicHuntingAreaIndex >= huntingAreas.Count - 1)
+			{
+				return PublicHuntingAreaIndex;
+			}
+			return PublicHuntingAreaIndex + 1;
+		}
+	}
+	public int BossAreaIndex { get; private set; }
 
 
     // 맵 내에서 maxLevel이 가장 높은 사냥터의 maxLevel
@@ -154,7 +164,7 @@ public class CombatAreaManager : MonoBehaviour
         //Debug.Log("HA IDX : " + ConqueringHuntingAreaIndex);
         // LevelMax만 검사함. 사냥터에 진입 못할 모험가는 애초에 생성을 안하는 방향으로.
         for (int i = 0; i <= ConqueringHuntingAreaIndex; i++)
-        {
+		{
             if (level <= huntingAreas[i].LevelMax)
             {
                 if (searchResult == null)
@@ -169,7 +179,7 @@ public class CombatAreaManager : MonoBehaviour
             searchResult = huntingAreas[ConqueringHuntingAreaIndex];
 
         return searchResult;
-    }
+	}
 
     public BossArea FindBossArea()
     {
@@ -327,13 +337,18 @@ public class CombatAreaManager : MonoBehaviour
                 }
                 else if (extent[j, i] == 2)
                 {
-                    thatTile.SetIsStructed(true);
+                    //thatTile.SetIsStructed(true);
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 0);
                     //if (thatTile.GetBuildable())
                     //{
                     huntingArea.addEntrance(thatTile);
                     //}
                 }
+				else if(extent[j, i] == 3)
+				{
+					thatTile.SetIsActive(false);
+					thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 0.0f);
+				}
             }
         }
 
@@ -420,7 +435,7 @@ public class CombatAreaManager : MonoBehaviour
                 if (extent[j, i] == 1)
                 {
                     thatTile.SetIsBuildingArea(false);
-                    thatTile.SetIsStructed(false);
+                    //thatTile.SetIsStructed(true);
                     thatTile.SetIsHuntingArea(true);
 
                     //디버깅용임시
@@ -431,9 +446,10 @@ public class CombatAreaManager : MonoBehaviour
                         bossArea.AddTerritory(thatTile.childs[k]);
                     }
                 }
-                else if (extent[j, i] == 2)
+                else if (extent[j, i] == 2) //입구
                 {
-                    thatTile.SetIsStructed(true);
+                    //thatTile.SetIsStructed(false);
+					thatTile.SetIsEntrance(true);
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 1.0f);
                     //if (thatTile.GetBuildable())
                     //{
@@ -532,7 +548,7 @@ public class CombatAreaManager : MonoBehaviour
         HuntingAreaConquerStart();
 		
         //Debug.Log("OnHuntingAreaConquered");
-        if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea)
+        if (huntingAreas[ConqueringHuntingAreaIndex - 1].IsBossArea) // huntingAreas - 0 , 1, 2 부터라 -1 해줌 // huntingAreas 안에도 bossArea가 들어간다는 말?
         {
             // 보스전 신청용 UI 띄우기
             BossAreaConquerStart();
