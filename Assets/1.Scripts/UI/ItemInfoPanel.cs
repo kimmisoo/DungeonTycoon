@@ -8,13 +8,30 @@ public class ItemInfoPanel : MonoBehaviour
     string itemName, stat, explanation, skillName, skillEffect, price, demandedLevel;
     bool isSkill = false;
     public Text nameText, statText, explanationText, skillNameText, skillEffectText, priceText, demandedLevelText;
-    public Image DemandedLevelBG;
+    public Image demandedLevelBG, contentCover;
     PurchaseButton purchaseBtn;
     public SkillExplSwitchButton skillExplBtn;
+    private BattleStat pBattleStat;
 
+    private void OnEnable()
+    {
+        pBattleStat = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat(); // 배틀스탯 받기
+        HideContent();
+    }
+
+    public void HideContent()
+    {
+        contentCover.gameObject.SetActive(true);
+    }
+
+    public void RevealContent()
+    {
+        contentCover.gameObject.SetActive(false);
+    }
 
     public void ShowInfo()
     {
+        //RevealContent();
         isSkill = false;
         //nameText.text = itemName;
         //modifierText.text = modifier;
@@ -72,11 +89,22 @@ public class ItemInfoPanel : MonoBehaviour
     {
         demandedLevel = inputDemandedLevel;
         demandedLevelText.text = demandedLevel;
+
+        DemandedLevelCheck();
     }
 
-    private void RefreshEquippable()
+    private void DemandedLevelCheck()
     {
-        
+        if (pBattleStat.Level >= int.Parse(demandedLevel))
+        {
+            demandedLevelBG.color = new Color(0.4868455f, 0.7921569f, 0.1019608f);
+            Debug.Log("can");
+        }
+        else
+        {
+            demandedLevelBG.color = new Color(1.0f, 0.6039216f, 0.1764706f);
+            Debug.Log("can't");
+        }
     }
 
     public void SetOnlyExpl(string inputExpl)

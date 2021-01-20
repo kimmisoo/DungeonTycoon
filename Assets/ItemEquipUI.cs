@@ -14,7 +14,7 @@ public class ItemEquipUI : MonoBehaviour
     public ItemListPanel listPanel;
     public ItemInfoPanel infoPanel;
     JSONNode itemJSON = null;
-    private BattleStat pBattleStat;
+    //private BattleStat pBattleStat;
 
     private void Start()
     {
@@ -27,8 +27,8 @@ public class ItemEquipUI : MonoBehaviour
         //#if DEBUG_ITEM_INFO_UI
         //        GameManager.Instance.ChooseSpAdv(0);
         //#endif
-        pBattleStat = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat(); // 배틀스탯 받기
-        Debug.Log(pBattleStat.HealthMax);
+        //pBattleStat = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat(); // 배틀스탯 받기
+        //Debug.Log(pBattleStat.HealthMax);
         //pBattleStat = GameManager.Instance.
     }
 
@@ -63,6 +63,7 @@ public class ItemEquipUI : MonoBehaviour
         //if(itemJSON[selectedItemCategory][selectedItemIndex]["PenetrationMult"] == "null")
         //Debug.Log("O");
         RefreshItemInfo();
+        infoPanel.RevealContent();
     }
 
     private void RefreshItemInfo()
