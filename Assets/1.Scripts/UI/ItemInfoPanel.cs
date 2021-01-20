@@ -8,8 +8,10 @@ public class ItemInfoPanel : MonoBehaviour
     string itemName, stat, explanation, skillName, skillEffect, price, demandedLevel;
     bool isSkill = false;
     public Text nameText, statText, explanationText, skillNameText, skillEffectText, priceText, demandedLevelText;
+    public Image DemandedLevelBG;
     PurchaseButton purchaseBtn;
     public SkillExplSwitchButton skillExplBtn;
+
 
     public void ShowInfo()
     {
@@ -70,6 +72,11 @@ public class ItemInfoPanel : MonoBehaviour
     {
         demandedLevel = inputDemandedLevel;
         demandedLevelText.text = demandedLevel;
+    }
+
+    private void RefreshEquippable()
+    {
+        
     }
 
     public void SetOnlyExpl(string inputExpl)

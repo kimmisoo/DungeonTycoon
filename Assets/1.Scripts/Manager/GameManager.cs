@@ -1126,6 +1126,7 @@ public class GameManager : MonoBehaviour
             return null;
     }
 
+
     // Scene 데이터 설정
     public void SetSceneData(JSONNode aData)
     {

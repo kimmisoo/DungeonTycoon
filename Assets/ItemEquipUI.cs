@@ -1,4 +1,6 @@
-﻿using SimpleJSON;
+﻿#define DEBUG_ITEM_INFO_UI
+
+using SimpleJSON;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,11 +14,22 @@ public class ItemEquipUI : MonoBehaviour
     public ItemListPanel listPanel;
     public ItemInfoPanel infoPanel;
     JSONNode itemJSON = null;
+    private BattleStat pBattleStat;
 
     private void Start()
     {
         UIManager.Instance.itemEquipUI = this;
         GetItemData();
+    }
+
+    private void OnEnable()
+    {
+        //#if DEBUG_ITEM_INFO_UI
+        //        GameManager.Instance.ChooseSpAdv(0);
+        //#endif
+        pBattleStat = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat(); // 배틀스탯 받기
+        Debug.Log(pBattleStat.HealthMax);
+        //pBattleStat = GameManager.Instance.
     }
 
     public void SelectSlot(string inputSlot)

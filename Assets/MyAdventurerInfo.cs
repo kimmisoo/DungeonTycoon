@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public class MyAdventurerInfo : MonoBehaviour
 {
+    #region PlayerSpAdv
+    private SpecialAdventurer playerSpAdv;
+    private Stat pStat;
+    private BattleStat pBattleStat;
+    #endregion
+
     #region StatInfo
     public Text advName;
     public Text advLevel1;
@@ -44,6 +50,7 @@ public class MyAdventurerInfo : MonoBehaviour
 
     void OnEnable()
     {
+        LoadPlayerData();
         RefreshStatInfo();
         RefreshBattleStatInfo();
         RefreshUniqueSkillInfo();
@@ -58,13 +65,16 @@ public class MyAdventurerInfo : MonoBehaviour
         }
     }
 
+    private void LoadPlayerData()
+    {
+        playerSpAdv = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>();
+        playerSpAdv.GetStat();
+        pBattleStat = playerSpAdv.GetBattleStat();
+    }
+
 
     private void RefreshStatInfo()
     {
-        SpecialAdventurer playerSpAdv = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>();
-        Stat pStat = playerSpAdv.GetStat();
-        BattleStat pBattleStat = playerSpAdv.GetBattleStat();
-
         advName.text = playerSpAdv.stat.actorName;
         advLevel1.text = pBattleStat.Level.ToString();
 

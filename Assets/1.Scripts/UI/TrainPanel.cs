@@ -8,7 +8,8 @@ public class TrainPanel : UIObject {
 
     public GameObject informationPanel;
     public GameObject spAdvSelectionPanel;
-    public GameObject itemPanel;
+    public GameObject spAdvInfoPanel;
+    public GameObject itemEquipPanel;
     public GameObject bossPanel;
     GameObject currentShowingPanel;
     //Information Panel's
@@ -88,7 +89,7 @@ public class TrainPanel : UIObject {
         GameObject spAdvPanel;
 
         if (isSelected)
-            spAdvPanel = itemPanel;
+            spAdvPanel = spAdvInfoPanel;
         else
             spAdvPanel = spAdvSelectionPanel;
 
@@ -121,7 +122,7 @@ public class TrainPanel : UIObject {
         GameObject spAdvPanel;
 
         if (isSelected)
-            spAdvPanel = itemPanel;
+            spAdvPanel = spAdvInfoPanel;
         else
             spAdvPanel = spAdvSelectionPanel;
 
