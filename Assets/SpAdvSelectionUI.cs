@@ -27,6 +27,7 @@ public class SpAdvSelectionUI : MonoBehaviour
         List<GameObject> spAdvs = GameManager.Instance.specialAdventurers;
         for (int i = 0; i<spAdvs.Count; i++)
         {
+            Debug.Log(nameKeyIn + ", "+i);
             if (spAdvs[i].GetComponent<SpecialAdventurer>().nameKey == nameKeyIn)
                 curSelected = i;
         }

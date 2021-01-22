@@ -826,6 +826,7 @@ public class GameManager : MonoBehaviour
         int spAdvLevel = aData["scene"][sceneNumber]["specialadv_level"].AsInt;
         for (int i = 0; i < aData["scene"][sceneNumber]["specialadventurers"].Count; i++)
             GenAndEnqueueSpecialAdvenuturer(aData["scene"][sceneNumber]["specialadventurers"][i], spAdvLevel);
+        Debug.Log(aData["scene"][sceneNumber]["specialadventurers"].Count);
     }
 
     // 일선모험가 하나 생성해서 큐에 집어넣음. 모험가 이름을 통해 데이터를 불러와서 집어넣음.
