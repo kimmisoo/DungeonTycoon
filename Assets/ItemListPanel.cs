@@ -58,6 +58,8 @@ public class ItemListPanel : MonoBehaviour
         {
             itemList.Values.ToList()[i].SetActive(false);
         }
+        if (itemCategory == null)
+            return;
         itemList[itemCategory].SetActive(true);
         scrollRect.content = itemList[itemCategory].GetComponent<RectTransform>();
     }
@@ -108,7 +110,6 @@ public class ItemListPanel : MonoBehaviour
         listObject.GetComponent<RectTransform>().localPosition = new Vector3(0, y, 0);
 
     }
-
     //private void RefreshGridLayout()
     //{
     //    LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.GetComponent<RectTransform>());

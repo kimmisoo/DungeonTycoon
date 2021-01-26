@@ -5,18 +5,25 @@ using UnityEngine.UI;
 
 public class ItemInfoPanel : MonoBehaviour
 {
-    string itemName, stat, explanation, skillName, skillEffect, price, demandedLevel;
-    bool isSkill = false;
+    private string itemName, stat, explanation, skillName, skillEffect, demandedLevel;
+    private int price;
+    private bool isSkill = false;
     public Text nameText, statText, explanationText, skillNameText, skillEffectText, priceText, demandedLevelText;
     public Image demandedLevelBG, contentCover;
-    PurchaseButton purchaseBtn;
+    public PurchaseButton purchaseBtn;
     public SkillExplSwitchButton skillExplBtn;
     private BattleStat pBattleStat;
+    private bool isPurchase = false;
+    private ItemCondition selectedItemCondition;
 
     private void OnEnable()
     {
+        //GameManager.Instance.ChooseSpAdv(0);
         pBattleStat = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat(); // 배틀스탯 받기
         HideContent();
+
+        //SetPrice(100 + " G");
+        //SetSelectedItemCondition(ItemCondition.None);
     }
 
     public void HideContent()
@@ -41,18 +48,18 @@ public class ItemInfoPanel : MonoBehaviour
 
         skillExplBtn.SwitchToSkill();
 
-        switch (price)
-        {
-            case "장착 중":
-                purchaseBtn.SetEquiped();
-                break;
-            case "이미 구매함":
-                purchaseBtn.SetOwned();
-                break;
-            default:
-                purchaseBtn.SetNeedPurchase();
-                break;
-        }
+        //switch (price)
+        //{
+        //    case "장착 중":
+        //        purchaseBtn.SetEquipped();
+        //        break;
+        //    case "이미 구매함":
+        //        purchaseBtn.SetPurchased();
+        //        break;
+        //    default:
+        //        purchaseBtn.SetNeedPurchase();
+        //        break;
+        //}
     }
 
     public void SetName(string inputName)
@@ -79,10 +86,10 @@ public class ItemInfoPanel : MonoBehaviour
         skillNameText.text = skillName;
     }
 
-    public void SetPrice(string inputPrice)
+    public void SetPrice(int inputPrice)
     {
         price = inputPrice;
-        priceText.text = price;
+        priceText.text = price + " G";
     }
 
     public void SetDemandedLevel(string inputDemandedLevel)
@@ -90,20 +97,23 @@ public class ItemInfoPanel : MonoBehaviour
         demandedLevel = inputDemandedLevel;
         demandedLevelText.text = demandedLevel;
 
-        DemandedLevelCheck();
+        //DemandedLevelCheck();
     }
 
-    private void DemandedLevelCheck()
+    // 요구 레벨 체크해서 장착가능하면 true 반환
+    private bool DemandedLevelCheck()
     {
+        //Debug.Log(pBattleStat);
+        //Debug.Log(demandedLevel);
         if (pBattleStat.Level >= int.Parse(demandedLevel))
         {
             demandedLevelBG.color = new Color(0.4868455f, 0.7921569f, 0.1019608f);
-            Debug.Log("can");
+            return true;
         }
         else
         {
             demandedLevelBG.color = new Color(1.0f, 0.6039216f, 0.1764706f);
-            Debug.Log("can't");
+            return false;
         }
     }
 
@@ -123,8 +133,53 @@ public class ItemInfoPanel : MonoBehaviour
         skillNameText.text = skillName;
 
         skillEffect = inputSkillEffect;
-        skillEffectText.text = inputSkillEffect; 
+        skillEffectText.text = inputSkillEffect;
 
         skillExplBtn.EnableBoth();
+    }
+
+    public void SetSelectedItemCondition(ItemCondition condition)
+    {
+        selectedItemCondition = condition;
+    }
+
+    public void CheckPurchaseConditions()
+    {
+        switch (selectedItemCondition)
+        {
+            case ItemCondition.Equipped:
+                priceText.text = "장착 중";
+                isPurchase = false;
+                purchaseBtn.SetEquipped();
+                break;
+            case ItemCondition.Purchased:
+                priceText.text = "이미 구매함";
+                isPurchase = false;
+                purchaseBtn.SetPurchased();
+                break;
+            case ItemCondition.None:
+                isPurchase = true;
+                purchaseBtn.SetNeedPurchase();
+                break;
+            default:
+                break;
+        }
+
+        if (DemandedLevelCheck() == false)
+        {
+            Debug.Log("레벨 부족");
+            purchaseBtn.SetNotInteractable();
+        }
+        if (GameManager.Instance.GetPlayerGold() < price)
+        {
+            Debug.Log("골드 부족");
+            purchaseBtn.SetNotInteractable();
+        }
+    }
+
+
+    public bool GetIsPurchase()
+    {
+        return isPurchase;
     }
 }

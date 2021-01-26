@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class PurchaseButton : MonoBehaviour
 {
-    bool isOwned = false;
-    Text buttonText;
-    Image buttonImage;
-    Button buttonComp;
+    private Text buttonText;
+    private Image buttonImage;
+    private Button buttonComp;
+    
 
     private void Awake()
     {
@@ -21,29 +21,32 @@ public class PurchaseButton : MonoBehaviour
     {
         //SetEquiped();
         //SetOwned();
+        //SetPurchased();
     }
 
-    public void SetOwned()
+    public void SetPurchased()
     {
         buttonText.text = "장착";
-        isOwned = true;
         buttonComp.interactable = true;
-        buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/SkyButtonPressed");
+        buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/UI_Button_Standard_White");
     }
 
     public void SetNeedPurchase()
     {
         buttonText.text = "구매";
-        isOwned = true;
         buttonComp.interactable = true;
         buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/OrangeButton");
     }
 
-    public void SetEquiped()
+    public void SetEquipped()
     {
         buttonText.text = "장착 중";
-        isOwned = true;
         buttonComp.interactable = false;
-        buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/OrangeButton");
+        buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/UI_Button_Standard_White");
+    }
+
+    public void SetNotInteractable()
+    {
+        buttonComp.interactable = false;
     }
 }

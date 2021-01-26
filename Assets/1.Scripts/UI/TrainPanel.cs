@@ -94,7 +94,7 @@ public class TrainPanel : UIObject {
             spAdvPanel = spAdvSelectionPanel;
 
         spAdvPanel.SetActive(true);
-        informationPanel.SetActive(false);
+        itemEquipPanel.SetActive(false);
         bossPanel.SetActive(false);
         
         base.Show();
