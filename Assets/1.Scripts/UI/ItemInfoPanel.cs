@@ -166,15 +166,9 @@ public class ItemInfoPanel : MonoBehaviour
         }
 
         if (DemandedLevelCheck() == false)
-        {
-            Debug.Log("레벨 부족");
             purchaseBtn.SetNotInteractable();
-        }
         if (GameManager.Instance.GetPlayerGold() < price)
-        {
-            Debug.Log("골드 부족");
             purchaseBtn.SetNotInteractable();
-        }
     }
 
 

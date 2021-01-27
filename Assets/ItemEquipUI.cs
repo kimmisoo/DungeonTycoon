@@ -13,18 +13,20 @@ public enum ItemCondition
 
 public class ItemEquipUI : MonoBehaviour
 {
+    JSONNode itemJSON = null;
+
     private string selectedSlot = null;
-    //private string selectedItemName = null;
     private int selectedItemIndex = -1;
     private string selectedCategory = null;
+
     public ItemListPanel listPanel;
     public ItemInfoPanel infoPanel;
     public GameObject itemSlotsParent;
-    JSONNode itemJSON = null;
+    
     private Dictionary<string, List<ItemCondition>> itemStorage; // 아이템 보유 및 장착 현황
-    private Dictionary<string, int> curEquipped; // 장착중인 아이템 인덱스. -1은 빈칸
+    private Dictionary<string, int> curEquipped; //` 장착중인 아이템 인덱스. -1은 빈칸
     private Dictionary<string, GameObject> itemSlots;
-    //private BattleStat pBattleStat;
+    
     private void Awake()
     {
         curEquipped = new Dictionary<string, int>();
@@ -218,5 +220,12 @@ public class ItemEquipUI : MonoBehaviour
             itemStorage[selectedCategory][curEquipped[selectedSlot]] = ItemCondition.Purchased;
 
         itemStorage[selectedCategory][selectedItemIndex] = ItemCondition.Equipped;
+        
+
+    }
+
+    public void SlotImageChange()
+    {
+        //itemSlots[selectedSlot]
     }
 }

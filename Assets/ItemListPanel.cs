@@ -13,6 +13,7 @@ public class ItemListPanel : MonoBehaviour
     //private float rowHeight, colWidth;
     public Dictionary<string, GameObject> itemList = new Dictionary<string, GameObject>();
     public ScrollRect scrollRect;
+    string selectedCategory = null;
 
     void Start()
     {
@@ -52,8 +53,8 @@ public class ItemListPanel : MonoBehaviour
     // 아이템 카테고리에 맞는 리스트 보이는 메서드
     public void ShowItemListByCategory(string itemCategory)
     {
-        //GetContents(itemList[selectedCategory], selectedCategory);
-        //AdjustHeight();
+        selectedCategory = itemCategory;
+
         for (int i = 0; i < itemList.Count; i++)
         {
             itemList.Values.ToList()[i].SetActive(false);
@@ -89,6 +90,8 @@ public class ItemListPanel : MonoBehaviour
             //Debug.Log(newIcon.name + ", " + itemList[itemCategory].transform.GetChild(i).name);
             //Debug.Log(i + ", " + newIcon.transform.GetSiblingIndex());
         }
+
+       // Debug.Log(itemList["Weapon"].transform.GetChild(0));
     }
 
     // 내용물 양에 따라 크기 조절
@@ -115,4 +118,9 @@ public class ItemListPanel : MonoBehaviour
     //    LayoutRebuilder.ForceRebuildLayoutImmediate(gameObject.GetComponent<RectTransform>());
     //    //gameObject.GetComponent<GridLayoutGroup>()
     //}
+
+    public GameObject GetItemIconByIndex(int index)
+    {
+        return itemList[selectedCategory].transform.GetChild(index).gameObject;        
+    }
 }
