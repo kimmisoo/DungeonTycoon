@@ -44,7 +44,7 @@ public class CombatAreaManager : MonoBehaviour
 			return PublicHuntingAreaIndex + 1;
 		}
 	}
-	public int BossAreaIndex { get; private set; }
+	public int BossAreaIndex {get; private set;}
 
 
     // 맵 내에서 maxLevel이 가장 높은 사냥터의 maxLevel
@@ -449,7 +449,7 @@ public class CombatAreaManager : MonoBehaviour
                 else if (extent[j, i] == 2) //입구
                 {
                     //thatTile.SetIsStructed(false);
-					thatTile.SetIsEntrance(true);
+					//thatTile.SetIsEntrance(true);
                     thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 1.0f);
                     //if (thatTile.GetBuildable())
                     //{

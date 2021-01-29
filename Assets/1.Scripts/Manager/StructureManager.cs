@@ -283,7 +283,7 @@ public class StructureManager : MonoBehaviour
                 else if(extent[j, i] == 2)
                 {
 					//tempTile.SetIsStructed(false);
-					tempTile.SetIsEntrance(true);
+					//tempTile.SetIsEntrance(true);
                     if(tempTile.GetBuildingArea())
                     {
                         structure.addEntrance(tempTile);
