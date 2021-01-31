@@ -105,7 +105,7 @@ public class TrainPanel : UIObject {
     {
         //하위 Object 초기상태로 세팅 후 base.hide 해야함.
         currentShowingPanel = null;
-        SetInitialState();
+        //SetInitialState();
         base.Hide();
     }
 
@@ -148,15 +148,17 @@ public class TrainPanel : UIObject {
             storyPanel.SetActive(true);
         }
     }
-    public void SetInitialState()
-    {
-        statusButtonImage.material = UIManager.Instance.grayScaleMaterial;
-        statusPanel.SetActive(false);
-        storyButtonImage.material = null;
-        storyPanel.SetActive(true);
-        //item  초기상태
 
-    }
+    //
+    //public void SetInitialState()
+    //{
+    //    statusButtonImage.material = UIManager.Instance.grayScaleMaterial;
+    //    statusPanel.SetActive(false);
+    //    storyButtonImage.material = null;
+    //    storyPanel.SetActive(true);
+    //    //item  초기상태
+
+    //}
 
     public void SpAdvSelected()
     {

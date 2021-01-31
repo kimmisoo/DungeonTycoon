@@ -13,6 +13,11 @@ public class ItemShopIcon : MonoBehaviour
         index = inputIndex;
     }
 
+    public int GetIndex()
+    {
+        return index;
+    }
+
     private void Awake()
     {
         buttonComp = gameObject.GetComponent<Button>();
@@ -23,4 +28,5 @@ public class ItemShopIcon : MonoBehaviour
     {
         UIManager.Instance.itemEquipUI.SelectItem(index);
     }
+    
 }
