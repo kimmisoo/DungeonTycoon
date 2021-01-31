@@ -44,8 +44,8 @@ public class MyAdventurerInfo : MonoBehaviour
     private void Awake()
     {
         FillSpriteDict();
-        for (int i = 0; i < advSprites.Keys.Count; i++)
-            Debug.Log(advSprites.Keys.ToList()[i]);
+        //for (int i = 0; i < advSprites.Keys.Count; i++)
+        //    Debug.Log(advSprites.Keys.ToList()[i]);
     }
 
     void OnEnable()

@@ -26,7 +26,7 @@ public class ItemEquipUI : MonoBehaviour
     private Dictionary<string, List<ItemCondition>> itemStorage; // 아이템 보유 및 장착 현황
     private Dictionary<string, int> curEquipped; //` 장착중인 아이템 인덱스. -1은 빈칸
     private Dictionary<string, GameObject> itemSlots;
-    private Dictionary<string, Dictionary<int, GameObject>> slotIcons; // 첫 번째 키 카테고리, 두 번째 키 인덱스
+    private Dictionary<string, Dictionary<int, GameObject>> slotIcons; // 첫 번째 키 슬롯, 두 번째 키 인덱스
     
     private void Awake()
     {
@@ -49,8 +49,10 @@ public class ItemEquipUI : MonoBehaviour
         slotIcons["Weapon"].Add(-1, itemSlotsParent.transform.GetChild(0).GetChild(0).gameObject);
         slotIcons.Add("Armor", new Dictionary<int, GameObject>());
         slotIcons["Armor"].Add(-1, itemSlotsParent.transform.GetChild(1).GetChild(0).gameObject);
-        slotIcons.Add("Accessory", new Dictionary<int, GameObject>());
-        slotIcons["Accessory"].Add(-1, itemSlotsParent.transform.GetChild(2).GetChild(0).gameObject);
+        slotIcons.Add("Accessory1", new Dictionary<int, GameObject>());
+        slotIcons["Accessory1"].Add(-1, itemSlotsParent.transform.GetChild(2).GetChild(0).gameObject);
+        slotIcons.Add("Accessory2", new Dictionary<int, GameObject>());
+        slotIcons["Accessory2"].Add(-1, itemSlotsParent.transform.GetChild(3).GetChild(0).gameObject);
         //slotIcons.Add("Weapon", new Dictionary<int, GameObject>());
     }
 
@@ -125,8 +127,8 @@ public class ItemEquipUI : MonoBehaviour
     {
         selectedIndex = inputIndex;
 
-        if (itemJSON[selectedCategory][selectedIndex]["PenetrationMult"].AsFloat == 0)
-            Debug.Log(itemJSON[selectedCategory][selectedIndex]["PenetrationMult"].AsFloat);
+        //if (itemJSON[selectedCategory][selectedIndex]["PenetrationMult"].AsFloat == 0)
+        //    Debug.Log(itemJSON[selectedCategory][selectedIndex]["PenetrationMult"].AsFloat);
 
         RefreshItemInfo();
         infoPanel.RevealContent();
@@ -140,7 +142,7 @@ public class ItemEquipUI : MonoBehaviour
         if (itemJSON[selectedCategory][selectedIndex]["ItemSkill"] == null)
         {
             infoPanel.SetOnlyExpl(itemJSON[selectedCategory][selectedIndex]["Explanation"]);
-            Debug.Log("Skill X");
+            //Debug.Log("Skill X");
         }
         else
         {
@@ -236,18 +238,18 @@ public class ItemEquipUI : MonoBehaviour
 
     public void SlotIconChange()
     {
-        for(int i = 0; i<slotIcons[selectedCategory].Count; i++)
-            slotIcons[selectedCategory].Values.ToArray()[i].SetActive(false);
+        for(int i = 0; i<slotIcons[selectedSlot].Count; i++)
+            slotIcons[selectedSlot].Values.ToArray()[i].SetActive(false);
 
-        if (slotIcons[selectedCategory].ContainsKey(selectedIndex) == false)
+        if (slotIcons[selectedSlot].ContainsKey(selectedIndex) == false)
             GenSlotIcon();
 
-        slotIcons[selectedCategory][selectedIndex].SetActive(true);
+        slotIcons[selectedSlot][selectedIndex].SetActive(true);
     }
 
     private void GenSlotIcon()
     {
         GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByIndex(selectedIndex));
-        slotIcons[selectedCategory].Add(selectedIndex, newIcon);
+        slotIcons[selectedSlot].Add(selectedIndex, newIcon);
     }
 }
