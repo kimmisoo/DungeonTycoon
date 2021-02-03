@@ -27,6 +27,8 @@ public class ItemShopIcon : MonoBehaviour
     public void ItemIconClicked()
     {
         UIManager.Instance.itemEquipUI.SelectItem(index);
+        //HighlightOn();
+
+        //buttonComp.OnSelect
     }
-    
 }

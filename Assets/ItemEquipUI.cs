@@ -8,7 +8,7 @@ using UnityEngine;
 
 public enum ItemCondition
 {
-    None, Purchased, Equipped
+    None, Purchased, Equipped, Blank // Blank는 인덱스 -1번
 }
 
 public class ItemEquipUI : MonoBehaviour
@@ -23,8 +23,8 @@ public class ItemEquipUI : MonoBehaviour
     public ItemInfoPanel infoPanel;
     public GameObject itemSlotsParent;
     
-    private Dictionary<string, List<ItemCondition>> itemStorage; // 아이템 보유 및 장착 현황
-    private Dictionary<string, int> curEquipped; //` 장착중인 아이템 인덱스. -1은 빈칸
+    private Dictionary<string, Dictionary<int, ItemCondition>> itemStorage; // 아이템 보유 및 장착 현황
+    private Dictionary<string, int> curEquipped; // 장착중인 아이템 인덱스. -1은 빈칸
     private Dictionary<string, GameObject> itemSlots;
     private Dictionary<string, Dictionary<int, GameObject>> slotIcons; // 첫 번째 키 슬롯, 두 번째 키 인덱스
     
@@ -67,22 +67,39 @@ public class ItemEquipUI : MonoBehaviour
     {
         JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
         //GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
-        itemStorage = new Dictionary<string, List<ItemCondition>>();
+        itemStorage = new Dictionary<string, Dictionary<int, ItemCondition>>();
 
-        List<ItemCondition> newList = new List<ItemCondition>(jsonNode["Weapon"].Count);
+        //List<ItemCondition> newList = new List<ItemCondition>(jsonNode["Weapon"].Count);
+        Dictionary<int, ItemCondition> newDict = new Dictionary<int, ItemCondition>();
+
+        newDict.Add(-1, ItemCondition.Blank);
         for (int i = 0; i < jsonNode["Weapon"].Count; i++)
-            newList.Add(ItemCondition.None);
-        itemStorage.Add("Weapon", newList);
+            newDict.Add(i, ItemCondition.None);
+        itemStorage.Add("Weapon", newDict);
 
-        newList = new List<ItemCondition>(jsonNode["Armor"].Count);
+        newDict = new Dictionary<int, ItemCondition>();
+
+        newDict.Add(-1, ItemCondition.Blank);
         for (int i = 0; i < jsonNode["Armor"].Count; i++)
-            newList.Add(ItemCondition.None);
-        itemStorage.Add("Armor", newList);
+            newDict.Add(i, ItemCondition.None);
+        itemStorage.Add("Armor", newDict);
 
-        newList = new List<ItemCondition>(jsonNode["Accessory"].Count);
+        newDict = new Dictionary<int, ItemCondition>();
+
+        newDict.Add(-1, ItemCondition.Blank);
         for (int i = 0; i < jsonNode["Accessory"].Count; i++)
-            newList.Add(ItemCondition.None);
-        itemStorage.Add("Accessory", newList);
+            newDict.Add(i, ItemCondition.None);
+        itemStorage.Add("Accessory", newDict);
+
+        //newList = new List<ItemCondition>(jsonNode["Armor"].Count);
+        //for (int i = 0; i < jsonNode["Armor"].Count; i++)
+        //    newList.Add(ItemCondition.None);
+        //itemStorage.Add("Armor", newList);
+
+        //newList = new List<ItemCondition>(jsonNode["Accessory"].Count);
+        //for (int i = 0; i < jsonNode["Accessory"].Count; i++)
+        //    newList.Add(ItemCondition.None);
+        //itemStorage.Add("Accessory", newList);
     }
 
     private void OnEnable()
@@ -134,8 +151,26 @@ public class ItemEquipUI : MonoBehaviour
         infoPanel.RevealContent();
     }
 
+    // 선택된 카테고리, 인덱스에 해당하는 아이템 정보 infoPanel에 Set
     private void RefreshItemInfo()
     {
+        if(selectedIndex == -1) //빈칸 선택 시.
+        {
+            infoPanel.SetName("장착 해제");
+            infoPanel.SetDemandedLevel("0");
+
+            infoPanel.SetOnlyExpl("");
+            infoPanel.SetStat("이 슬롯을 비워둡니다.");
+
+            infoPanel.SetPrice(0);
+            //infoPanel.SetSelectedItemCondition(ItemCondition.Purchased);
+            infoPanel.CheckPurchaseConditions(itemStorage[selectedCategory][selectedIndex], (curEquipped[selectedSlot] == selectedIndex));
+
+            // 이 부분 수정 필요
+
+            return;
+        }
+
         infoPanel.SetName(itemJSON[selectedCategory][selectedIndex]["Name"]);
         //infoPanel.SetExplanation(itemJSON[selectedItemCategory][selectedItemIndex]["Explanation"]);
 
@@ -149,7 +184,7 @@ public class ItemEquipUI : MonoBehaviour
             string skillName, skillEffect;
             SkillFactory.GetNameAndExplanation(itemJSON[selectedCategory][selectedIndex]["ItemSkill"], out skillName, out skillEffect);
             infoPanel.SetSkillAndExpl(skillName, skillEffect, itemJSON[selectedCategory][selectedIndex]["Explanation"]);
-            Debug.Log("Skill O");
+            //Debug.Log("Skill O");
         }
 
         infoPanel.SetStat(MakeStatString());
@@ -165,8 +200,8 @@ public class ItemEquipUI : MonoBehaviour
 
         //CheckPurchaseConditions();
         infoPanel.SetPrice(itemJSON[selectedCategory][selectedIndex]["Price"].AsInt);
-        infoPanel.SetSelectedItemCondition(itemStorage[selectedCategory][selectedIndex]);
-        infoPanel.CheckPurchaseConditions();
+        //infoPanel.SetSelectedItemCondition(itemStorage[selectedCategory][selectedIndex]);
+        infoPanel.CheckPurchaseConditions(itemStorage[selectedCategory][selectedIndex], (curEquipped[selectedSlot] == selectedIndex));
     }
 
     private string MakeStatString()
@@ -231,9 +266,12 @@ public class ItemEquipUI : MonoBehaviour
         if(curEquipped[selectedSlot] != -1)
             itemStorage[selectedCategory][curEquipped[selectedSlot]] = ItemCondition.Purchased;
 
-        itemStorage[selectedCategory][selectedIndex] = ItemCondition.Equipped;
-        
+        if (selectedIndex != -1)
+            itemStorage[selectedCategory][selectedIndex] = ItemCondition.Equipped;
 
+        curEquipped[selectedCategory] = selectedIndex;
+
+        RefreshItemInfo();
     }
 
     public void SlotIconChange()

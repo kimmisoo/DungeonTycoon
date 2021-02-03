@@ -33,14 +33,16 @@ public class ItemListPanel : MonoBehaviour
         
     }
 
+    // 카테고리 별로 리스트 만드는 메서드
     private void MakeItemListByCategory(string itemCategory, GameObject loadedPrefab)
     {
         string prefabName = "ListContentsPanel ";
 
+        // 부모가 될 게임오브젝트 Instantiate
         GameObject newObject = Instantiate<GameObject>(loadedPrefab);
         newObject.transform.SetParent(gameObject.transform);
         newObject.name = prefabName + itemCategory;
-        
+
         itemList.Add(itemCategory, newObject);
         LoadContents(newObject, itemCategory);
         AdjustHeight(newObject);
@@ -71,6 +73,16 @@ public class ItemListPanel : MonoBehaviour
         JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
         //GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
 
+        // 일단 빈 칸 생성 index 0은 빈 칸인 거 기억!
+        GameObject emptyPrefab = Resources.Load<GameObject>("UIPrefabs/TrainUI/ItemIcons/Empty/List_Empty");
+        GameObject emptyIcon = Instantiate(emptyPrefab);
+
+        emptyIcon.GetComponent<ItemShopIcon>().SetIndex(-1);
+
+        emptyIcon.transform.SetParent(itemList[itemCategory].transform);
+        emptyIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        emptyIcon.transform.localPosition = new Vector3(0, 0, 0);
+
         for (int i = 0; i < jsonNode[itemCategory].Count; i++)
         {
             string iconPath = "UIPrefabs/TrainUI/ItemIcons/" + itemCategory + "/";
@@ -80,7 +92,7 @@ public class ItemListPanel : MonoBehaviour
 
             GameObject newIcon = Instantiate<GameObject>(itemIcon);
 
-            GameObject iconImage = newIcon.transform.GetChild(1).gameObject;
+            //GameObject iconImage = newIcon.transform.GetChild(1).gameObject;
 
             newIcon.GetComponent<ItemShopIcon>().SetIndex(i);
 
@@ -121,6 +133,7 @@ public class ItemListPanel : MonoBehaviour
 
     public GameObject GetItemIconByIndex(int index)
     {
-        return itemList[selectedCategory].transform.GetChild(index).gameObject;        
+        // 빈 칸 때문에 +1한 인덱스에 있는 오브젝트 리턴
+        return itemList[selectedCategory].transform.GetChild(index + 1).gameObject;        
     }
 }

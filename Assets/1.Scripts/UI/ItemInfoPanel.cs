@@ -14,7 +14,7 @@ public class ItemInfoPanel : MonoBehaviour
     public SkillExplSwitchButton skillExplBtn;
     private BattleStat pBattleStat;
     private bool isPurchase = false;
-    private ItemCondition selectedItemCondition;
+    private bool isOwned;
 
     private void OnEnable()
     {
@@ -138,14 +138,14 @@ public class ItemInfoPanel : MonoBehaviour
         skillExplBtn.EnableBoth();
     }
 
-    public void SetSelectedItemCondition(ItemCondition condition)
+    public void SetSelectedItemCondition(bool input)
     {
-        selectedItemCondition = condition;
+        isOwned = input;
     }
 
-    public void CheckPurchaseConditions()
+    public void CheckPurchaseConditions(ItemCondition itemCondition, bool isSame)
     {
-        switch (selectedItemCondition)
+        switch (itemCondition)
         {
             case ItemCondition.Equipped:
                 priceText.text = "장착 중";
@@ -157,18 +157,23 @@ public class ItemInfoPanel : MonoBehaviour
                 isPurchase = false;
                 purchaseBtn.SetPurchased();
                 break;
+            case ItemCondition.Blank:
+                priceText.text = "";
+                purchaseBtn.SetDisarm(isSame);
+                isPurchase = false;
+                break;
             case ItemCondition.None:
                 isPurchase = true;
                 purchaseBtn.SetNeedPurchase();
+
+                if (DemandedLevelCheck() == false)
+                    purchaseBtn.SetNotInteractable();
+                if (GameManager.Instance.GetPlayerGold() < price)
+                    purchaseBtn.SetNotInteractable();
                 break;
             default:
                 break;
         }
-
-        if (DemandedLevelCheck() == false)
-            purchaseBtn.SetNotInteractable();
-        if (GameManager.Instance.GetPlayerGold() < price)
-            purchaseBtn.SetNotInteractable();
     }
 
 

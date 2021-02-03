@@ -45,6 +45,13 @@ public class PurchaseButton : MonoBehaviour
         buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/UI_Button_Standard_White");
     }
 
+    public void SetDisarm(bool isSame)
+    {
+        buttonText.text = "장착 해제";
+        buttonComp.interactable = !isSame;
+        buttonImage.sprite = Resources.Load<Sprite>("UISprites/Button/UI_Button_Standard_White");
+    }
+
     public void SetNotInteractable()
     {
         buttonComp.interactable = false;

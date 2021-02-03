@@ -82,7 +82,7 @@ public class MyAdventurerInfo : MonoBehaviour
         Sprite temp = Resources.Load<Sprite>(imagePath);
         if (temp != null)
             advPortrait.sprite = temp;
-        Debug.Log(playerSpAdv.nameKey);
+        //Debug.Log(playerSpAdv.nameKey);
         advSprites[playerSpAdv.nameKey].SetActive(true);
     }
 
