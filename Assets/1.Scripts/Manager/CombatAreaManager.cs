@@ -32,7 +32,20 @@ public class CombatAreaManager : MonoBehaviour
     public GameObject rootCombatAreaObject;
 
     // 사냥터 몇번까지 활성화됐는지.
-    public int PublicHuntingAreaIndex { get; private set; }
+	private int publicHuntingAreaIndex = -1;
+    public int PublicHuntingAreaIndex
+	{
+		get { return publicHuntingAreaIndex; }
+		private set
+		{
+			if (value >= huntingAreas.Count - 1)
+			{
+				publicHuntingAreaIndex = huntingAreas.Count - 1;
+			}
+			else
+				publicHuntingAreaIndex = value;
+		}
+	}
 	public int ConqueringHuntingAreaIndex
 	{
 		get
@@ -549,8 +562,7 @@ public class CombatAreaManager : MonoBehaviour
 		
         //Debug.Log("OnHuntingAreaConquered");
         if (huntingAreas[ConqueringHuntingAreaIndex - 1].IsBossArea) // huntingAreas - 0 , 1, 2 부터라 -1 해줌 // huntingAreas 안에도 bossArea가 들어간다는 말?
-        {
-            // 보스전 신청용 UI 띄우기
+        {   // 보스전 신청용 UI 띄우기
             BossAreaConquerStart();
         }
     }
@@ -559,7 +571,7 @@ public class CombatAreaManager : MonoBehaviour
     {
         if (ConqueringHuntingAreaIndex < huntingAreas.Count - 1)
         {
-            PublicHuntingAreaIndex++;
+			PublicHuntingAreaIndex++;
             HuntingAreaOpenToPublic();
             if(isLoaded == false)
                 GameManager.Instance.OnHuntingAreaOpenToPublic();
@@ -606,7 +618,7 @@ public class CombatAreaManager : MonoBehaviour
 
     private void OpenCombatAreasToSavedIndex(GameSavedata savedata)
     {
-        while (PublicHuntingAreaIndex < savedata.combatAreaManager.publicHuntingAreaIndex)
+        while(PublicHuntingAreaIndex < savedata.combatAreaManager.publicHuntingAreaIndex)
         {
             if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea)
                 OnBossAreaConquered(true);

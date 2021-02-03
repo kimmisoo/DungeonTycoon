@@ -137,7 +137,6 @@ public class GameManager : MonoBehaviour
             {
                 total += progressInformations[i].guestCapacity;
             }
-
             return total;
         }
     }
@@ -167,7 +166,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     int mapEntranceCount = 0;
     public int vertexCount = 0;
     WaitForSeconds wait;
@@ -187,7 +185,6 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-
     // Use this for initialization
     void Awake()
     {
@@ -253,7 +250,7 @@ public class GameManager : MonoBehaviour
             travelersDisabled[i].GetComponent<Traveler>().index = i;
             travelersDisabled[i].GetComponent<Traveler>().prefabPath = prefabPath;
             //Debug.Log("path : " + travelers[i].GetComponent<Traveler>().prefabPath);
-            // Debug.Log("character instantiate - " + i);
+            //Debug.Log("character instantiate - " + i);
         }
 
         for (int i = 0; i < adventurerMax + SceneConsts.OBJ_POOL_RESERVE; i++)
@@ -261,7 +258,6 @@ public class GameManager : MonoBehaviour
             string prefabPath = "CharacterPrefabs/Adventurer_test";
             GameObject go = (GameObject)Resources.Load(prefabPath);
             //go.GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
-
             // 생성만 해놓고 비활성화
             go.SetActive(false);
 
