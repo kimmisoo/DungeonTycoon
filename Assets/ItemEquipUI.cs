@@ -127,6 +127,8 @@ public class ItemEquipUI : MonoBehaviour
                 selectedCategory = "Accessory";
             else
                 selectedCategory = selectedSlot;
+
+            listPanel.SelectCategory(selectedCategory);
         }
 
         for(int i = 0; i<itemSlots.Count; i++)
@@ -272,6 +274,8 @@ public class ItemEquipUI : MonoBehaviour
         curEquipped[selectedCategory] = selectedIndex;
 
         RefreshItemInfo();
+
+        SlotIconChange();
     }
 
     public void SlotIconChange()
@@ -287,7 +291,27 @@ public class ItemEquipUI : MonoBehaviour
 
     private void GenSlotIcon()
     {
-        GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByIndex(selectedIndex));
+        GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByIndex(selectedIndex + 1)); // Child 인덱스라서 +1해줌
         slotIcons[selectedSlot].Add(selectedIndex, newIcon);
+
+        Debug.Log(newIcon.name);
+
+        newIcon.transform.SetParent(itemSlots[selectedSlot].transform);
+        
+        newIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        newIcon.transform.localPosition = new Vector3(0, 0, 0);
+
+        newIcon.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+        Debug.Log(newIcon.GetComponent<RectTransform>().anchorMin.x + ", " + newIcon.GetComponent<RectTransform>().anchorMin.y);
+        newIcon.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        Debug.Log(newIcon.GetComponent<RectTransform>().anchorMax.x + ", " + newIcon.GetComponent<RectTransform>().anchorMax.y);
+
+        newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
+        newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
+        newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
+        newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
+
+        
+        //newIcon.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
     }
 }

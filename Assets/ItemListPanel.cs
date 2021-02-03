@@ -52,19 +52,22 @@ public class ItemListPanel : MonoBehaviour
         
     }
 
-    // 아이템 카테고리에 맞는 리스트 보이는 메서드
-    public void ShowItemListByCategory(string itemCategory)
+    public void SelectCategory(string category)
     {
-        selectedCategory = itemCategory;
+        selectedCategory = category;
+    }
 
+    // 아이템 카테고리에 맞는 리스트 보이는 메서드
+    public void ShowItemListByCategory()
+    {
         for (int i = 0; i < itemList.Count; i++)
         {
             itemList.Values.ToList()[i].SetActive(false);
         }
-        if (itemCategory == null)
+        if (selectedCategory == null)
             return;
-        itemList[itemCategory].SetActive(true);
-        scrollRect.content = itemList[itemCategory].GetComponent<RectTransform>();
+        itemList[selectedCategory].SetActive(true);
+        scrollRect.content = itemList[selectedCategory].GetComponent<RectTransform>();
     }
 
     // 아이템별 아이템 프리팹 불러와서 패널에 집어넣는 메서드
