@@ -291,7 +291,7 @@ public class ItemEquipUI : MonoBehaviour
 
     private void GenSlotIcon()
     {
-        GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByIndex(selectedIndex + 1)); // Child 인덱스라서 +1해줌
+        GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByIndex(selectedIndex));
         slotIcons[selectedSlot].Add(selectedIndex, newIcon);
 
         Debug.Log(newIcon.name);
@@ -314,7 +314,7 @@ public class ItemEquipUI : MonoBehaviour
         newIcon.GetComponent<RectTransform>().offsetMin = Vector2.zero;
         newIcon.GetComponent<RectTransform>().offsetMax = Vector2.zero;
 
-
+        newIcon.transform.SetAsFirstSibling();
         //newIcon.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
     }
 }
