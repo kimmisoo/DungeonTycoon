@@ -114,7 +114,7 @@ public class ItemManager : MonoBehaviour
 
         // 세이브용
         tempItem.itemCategory = tempItemCategory;
-        tempItem.itemNum = tempItemIndex;
+        tempItem.itemIndex = tempItemIndex;
 
         return tempItem;
     }

@@ -695,7 +695,7 @@ public class ItemData
     public ItemData(Item item)
     {
         itemCategory = item.itemCategory;
-        itemNum = item.itemNum;
+        itemNum = item.itemIndex;
     }
 }
 

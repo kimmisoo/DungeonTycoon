@@ -30,7 +30,7 @@ public class Item
     public string BonusText { get; set; } // UI용 보너스 텍스트
     Sprite itemImage=null;
     // 세이브용
-    public int itemNum;
+    public int itemIndex;
     public string itemCategory;
 
     public Item()
