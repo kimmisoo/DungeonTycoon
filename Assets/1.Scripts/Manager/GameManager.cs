@@ -1126,6 +1126,15 @@ public class GameManager : MonoBehaviour
             return null;
     }
 
+    public void EquipPlayerSpAdvItem(string itemSlot, int itemIndex)
+    {
+        specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().EquipItem(itemSlot, itemIndex);
+    }
+
+    public int GetPlayerSpAdvItem(string itemSlot)
+    {
+        return specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().GetEquipedItemIndex(itemSlot);
+    }
 
     // Scene 데이터 설정
     public void SetSceneData(JSONNode aData)

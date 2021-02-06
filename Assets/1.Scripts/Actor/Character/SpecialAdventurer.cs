@@ -9,6 +9,7 @@ using UnityEngine;
 public class SpecialAdventurer : Adventurer
 {
     private Item weapon, armor, accessory1, accessory2;
+    //private Dictionary<string, Item> itemSlots;
 
     public BossArea curBossArea;
 
@@ -28,6 +29,7 @@ public class SpecialAdventurer : Adventurer
     //    AddSkill(name);
     //}
     //Skill uniqueSkill;
+    
     public void InitSpecialAdventurer(BattleStat battleStat, RewardStat rewardStat, string name)
     {
         base.InitAdventurer(battleStat, rewardStat);
@@ -456,6 +458,63 @@ public class SpecialAdventurer : Adventurer
             accessory2 = item;
             accessory2.SetOwner(this);
             accessory2.ApplyItemEffects();
+        }
+    }
+
+    // 일일이 다른 메서드 호출할 필요 없이 인자로 slot, index 넣으면 호출해주는 메서드
+    public void EquipItem(string slot, int index)
+    {
+        string category;
+        if (slot == "Accessory1" || slot == "Accessory2")
+            category = "Accessory";
+        else
+            category = slot;
+
+        switch (slot)
+        {
+            case "Weapon":
+                EquipWeapon(ItemManager.Instance.CreateItem(category, index));
+                break;
+            case "Armor":
+                EquipArmor(ItemManager.Instance.CreateItem(category, index));
+                break;
+            case "Accessory1":
+                EquipAccessory1(ItemManager.Instance.CreateItem(category, index));
+                break;
+            case "Accessory2":
+                EquipAccessory2(ItemManager.Instance.CreateItem(category, index));
+                break;
+            default:
+                break;
+        }
+    }
+
+    public int GetEquipedItemIndex(string slot)
+    {
+        switch (slot)
+        {
+            case "Weapon":
+                if (weapon != null)
+                    return weapon.itemIndex;
+                else
+                    return -1;
+            case "Armor":
+                if (armor != null)
+                    return armor.itemIndex;
+                else
+                    return -1;
+            case "Accessory1":
+                if (accessory1 != null)
+                    return accessory1.itemIndex;
+                else
+                    return -1;
+            case "Accessory2":
+                if (accessory2 != null)
+                    return accessory2.itemIndex;
+                else
+                    return -1;
+            default:
+                return -1;
         }
     }
 

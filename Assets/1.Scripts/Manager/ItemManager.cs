@@ -67,6 +67,9 @@ public class ItemManager : MonoBehaviour
 
     public Item CreateItem(string tempItemCategory, int tempItemIndex)
     {
+        if (tempItemIndex == -1) // -1은 빈칸이므로 null 반환
+            return null;
+
         Item tempItem = new Item();
 
         switch (tempItemCategory)

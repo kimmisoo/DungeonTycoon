@@ -273,6 +273,8 @@ public class ItemEquipUI : MonoBehaviour
 
         curEquipped[selectedCategory] = selectedIndex;
 
+        GameManager.Instance.EquipPlayerSpAdvItem(selectedSlot, selectedIndex);
+
         RefreshItemInfo();
 
         SlotIconChange();
