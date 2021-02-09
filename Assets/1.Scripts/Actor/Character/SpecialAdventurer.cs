@@ -1214,6 +1214,7 @@ public class SpecialAdventurer : Adventurer
     {
         return accessory2;
     }
+    //public int GetItemIndex();
     //public override ActorType GetActorType()
     //{
     //    return ActorType.SpecialAdventurer;
