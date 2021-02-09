@@ -21,6 +21,7 @@ public class ItemEquipUI : MonoBehaviour
 
     public ItemListPanel listPanel;
     public ItemInfoPanel infoPanel;
+    public ItemComparisonPanel comparisonPanel;
     public GameObject itemSlotsParent;
     
     private Dictionary<string, Dictionary<int, ItemCondition>> itemStorage; // 아이템 보유 및 장착 현황
@@ -149,7 +150,11 @@ public class ItemEquipUI : MonoBehaviour
         //if (itemJSON[selectedCategory][selectedIndex]["PenetrationMult"].AsFloat == 0)
         //    Debug.Log(itemJSON[selectedCategory][selectedIndex]["PenetrationMult"].AsFloat);
 
+        GameManager.Instance.RefreshDummies();
+        GameManager.Instance.ChangeDummyItem(selectedSlot, selectedIndex);
+
         RefreshItemInfo();
+        comparisonPanel.RefreshComparisonPanel();
         infoPanel.RevealContent();
     }
 
@@ -274,8 +279,10 @@ public class ItemEquipUI : MonoBehaviour
         curEquipped[selectedCategory] = selectedIndex;
 
         GameManager.Instance.EquipPlayerSpAdvItem(selectedSlot, selectedIndex);
+        GameManager.Instance.RefreshDummies();
 
         RefreshItemInfo();
+        comparisonPanel.RefreshComparisonPanel();
 
         SlotIconChange();
     }

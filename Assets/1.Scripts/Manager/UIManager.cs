@@ -148,10 +148,6 @@ public class UIManager : MonoBehaviour {
                 goldText.text = GameManager.Instance.GetPlayerGold().ToString();
                 
             }
-
-
-            
-
         }
     }
     
