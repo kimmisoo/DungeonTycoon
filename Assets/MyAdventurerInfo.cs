@@ -43,6 +43,7 @@ public class MyAdventurerInfo : MonoBehaviour
 
     #region ItemSlots
     private Dictionary<string, Dictionary<int, GameObject>> itemSlots;
+    public GameObject slotsParent;
     #endregion
 
     private void Awake()
@@ -58,13 +59,74 @@ public class MyAdventurerInfo : MonoBehaviour
         RefreshStatInfo();
         RefreshBattleStatInfo();
         RefreshUniqueSkillInfo();
-
-
+        InitItemSlots();
     }
 
-    private void SetUpItemSlots()
+    private void InitItemSlots()
     {
         itemSlots = new Dictionary<string, Dictionary<int, GameObject>>();
+
+        itemSlots.Add("Weapon", new Dictionary<int, GameObject>());
+        itemSlots.Add("Armor", new Dictionary<int, GameObject>());
+        itemSlots.Add("Accessory1", new Dictionary<int, GameObject>());
+        itemSlots.Add("Accessory2", new Dictionary<int, GameObject>());
+
+        itemSlots["Weapon"].Add(-1, slotsParent.transform.GetChild(0).GetChild(0).gameObject);
+        itemSlots["Armor"].Add(-1, slotsParent.transform.GetChild(1).GetChild(0).gameObject);
+        itemSlots["Accessory1"].Add(-1, slotsParent.transform.GetChild(2).GetChild(0).gameObject);
+        itemSlots["Accessory2"].Add(-1, slotsParent.transform.GetChild(3).GetChild(0).gameObject);
+
+        //Debug.Log(itemSlots["Accessory1"][-1].name);
+    }
+
+    private void RefreshItemSlots()
+    {
+        int weaponIdx, armorIdx, acc1Idx, acc2Idx;
+        weaponIdx = GameManager.Instance.GetPlayerSpAdvItem("Weapon");
+        armorIdx = GameManager.Instance.GetPlayerSpAdvItem("Armor");
+        acc1Idx = GameManager.Instance.GetPlayerSpAdvItem("Accessory1");
+        acc2Idx = GameManager.Instance.GetPlayerSpAdvItem("Accessory2");
+
+
+        for (int i = 0; i < itemSlots["Weapon"].Count; i++)
+            itemSlots["Weapon"].Values.ToArray()[i].SetActive(false);
+
+        if (itemSlots["Weapon"].ContainsKey(weaponIdx) == false)
+            GenSlotIcon();
+
+        itemSlots["Weapon"][weaponIdx].SetActive(true);
+
+
+        for (int i = 0; i < itemSlots["Armor"].Count; i++)
+            itemSlots["Armor"].Values.ToArray()[i].SetActive(false);
+
+        if (itemSlots["Armor"].ContainsKey(armorIdx) == false)
+            GenSlotIcon();
+
+        itemSlots["Armor"][armorIdx].SetActive(true);
+
+
+        for (int i = 0; i < itemSlots["Accessory1"].Count; i++)
+            itemSlots["Accessory1"].Values.ToArray()[i].SetActive(false);
+
+        if (itemSlots["Accessory1"].ContainsKey(acc1Idx) == false)
+            GenSlotIcon();
+
+        itemSlots["Accessory1"][acc1Idx].SetActive(true);
+
+
+        for (int i = 0; i < itemSlots["Accessory2"].Count; i++)
+            itemSlots["Accessory2"].Values.ToArray()[i].SetActive(false);
+
+        if (itemSlots["Accessory2"].ContainsKey(acc2Idx) == false)
+            GenSlotIcon();
+
+        itemSlots["Accessory2"][acc2Idx].SetActive(true);
+    }
+
+    private void GenSlotIcon()
+    {
+
     }
 
     private void FillSpriteDict()
@@ -125,10 +187,5 @@ public class MyAdventurerInfo : MonoBehaviour
         Sprite temp = Resources.Load<Sprite>(imagePath);
         if(temp != null)
             skillImage.sprite = temp;
-    }
-
-    private void RefreshItemSlots()
-    {
-
     }
 }
