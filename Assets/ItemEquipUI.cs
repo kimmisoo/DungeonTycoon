@@ -326,4 +326,9 @@ public class ItemEquipUI : MonoBehaviour
         newIcon.transform.SetAsFirstSibling();
         //newIcon.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
     }
+
+    public GameObject GetItemIcon(string category, int index)
+    {
+        return listPanel.GetItemIconByCategoryAndIndex(category, index);
+    }
 }

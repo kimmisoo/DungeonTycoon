@@ -41,6 +41,10 @@ public class MyAdventurerInfo : MonoBehaviour
     public Image skillImage;
     #endregion
 
+    #region ItemSlots
+    private Dictionary<string, Dictionary<int, GameObject>> itemSlots;
+    #endregion
+
     private void Awake()
     {
         FillSpriteDict();
@@ -54,6 +58,13 @@ public class MyAdventurerInfo : MonoBehaviour
         RefreshStatInfo();
         RefreshBattleStatInfo();
         RefreshUniqueSkillInfo();
+
+
+    }
+
+    private void SetUpItemSlots()
+    {
+        itemSlots = new Dictionary<string, Dictionary<int, GameObject>>();
     }
 
     private void FillSpriteDict()
@@ -114,5 +125,10 @@ public class MyAdventurerInfo : MonoBehaviour
         Sprite temp = Resources.Load<Sprite>(imagePath);
         if(temp != null)
             skillImage.sprite = temp;
+    }
+
+    private void RefreshItemSlots()
+    {
+
     }
 }

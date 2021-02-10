@@ -139,4 +139,9 @@ public class ItemListPanel : MonoBehaviour
         // 빈 칸 때문에 +1한 인덱스에 있는 오브젝트 리턴
         return itemList[selectedCategory].transform.GetChild(index + 1).gameObject;        
     }
+
+    public GameObject GetItemIconByCategoryAndIndex(string category, int index)
+    {
+        return itemList[category].transform.GetChild(index + 1).gameObject;
+    }
 }
