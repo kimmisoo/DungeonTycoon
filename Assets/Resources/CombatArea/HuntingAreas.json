@@ -44,7 +44,7 @@
 			]
 		},
 		{
-			"name": "Boss1",
+			"name": "MiddleBoss1",
 			"conquerCondition": -1,
 			"isBossArea": true,
 			"levelMax": 25,
@@ -110,7 +110,7 @@
 			]
 		},
 		{
-			"name": "Boss2",
+			"name": "MiddleBoss2",
 			"conquerCondition": -1,
 			"isBossArea": true,
 			"levelMax": 45,
@@ -176,7 +176,7 @@
 			]
 		},
 		{
-			"name": "Boss3",
+			"name": "MiddleBoss3",
 			"conquerCondition": -1,
 			"isBossArea": true,
 			"levelMax": 65,
