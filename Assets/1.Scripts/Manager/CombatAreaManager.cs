@@ -553,15 +553,19 @@ public class CombatAreaManager : MonoBehaviour
 
     private void OnHuntingAreaConquered(bool isLoaded = false)
     {
-        PublicHuntingAreaIndex++;
-        HuntingAreaOpenToPublic();
+		Debug.Log("HuntingArea Conquered! # = " + ConqueringHuntingAreaIndex);
+		if(huntingAreas[ConqueringHuntingAreaIndex].IsBossArea == false)
+		{
+			PublicHuntingAreaIndex++;
+		}
+        HuntingAreaOpenToPublic(); //빈거
         if(isLoaded == false)
             GameManager.Instance.OnHuntingAreaOpenToPublic();
 
-        HuntingAreaConquerStart();
+        HuntingAreaConquerStart(); //빈거
 		
         //Debug.Log("OnHuntingAreaConquered");
-        if (huntingAreas[ConqueringHuntingAreaIndex - 1].IsBossArea) // huntingAreas - 0 , 1, 2 부터라 -1 해줌 // huntingAreas 안에도 bossArea가 들어간다는 말?
+        if (huntingAreas[ConqueringHuntingAreaIndex - 1].IsBossArea) // huntingAreas - 0 , 1, 2 부터라 -1 해줌
         {   // 보스전 신청용 UI 띄우기
             BossAreaConquerStart();
         }
