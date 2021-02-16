@@ -42,7 +42,8 @@ public class MyAdventurerInfo : MonoBehaviour
     #endregion
 
     #region ItemSlots
-    private Dictionary<string, Dictionary<int, GameObject>> itemSlots;
+    private Dictionary<string, GameObject> itemSlots;
+    private Dictionary<string, Dictionary<int, GameObject>> slotIcons;
     public GameObject slotsParent;
     #endregion
 
@@ -51,6 +52,12 @@ public class MyAdventurerInfo : MonoBehaviour
         FillSpriteDict();
         //for (int i = 0; i < advSprites.Keys.Count; i++)
         //    Debug.Log(advSprites.Keys.ToList()[i]);
+        InitItemSlots();
+    }
+
+    private void Start()
+    {
+        
     }
 
     void OnEnable()
@@ -59,22 +66,28 @@ public class MyAdventurerInfo : MonoBehaviour
         RefreshStatInfo();
         RefreshBattleStatInfo();
         RefreshUniqueSkillInfo();
-        InitItemSlots();
+        RefreshItemSlots();
     }
 
     private void InitItemSlots()
     {
-        itemSlots = new Dictionary<string, Dictionary<int, GameObject>>();
+        itemSlots = new Dictionary<string, GameObject>();
+        itemSlots.Add("Weapon", slotsParent.transform.GetChild(0).gameObject);
+        itemSlots.Add("Armor", slotsParent.transform.GetChild(1).gameObject);
+        itemSlots.Add("Accessory1", slotsParent.transform.GetChild(2).gameObject);
+        itemSlots.Add("Accessory2", slotsParent.transform.GetChild(3).gameObject);
 
-        itemSlots.Add("Weapon", new Dictionary<int, GameObject>());
-        itemSlots.Add("Armor", new Dictionary<int, GameObject>());
-        itemSlots.Add("Accessory1", new Dictionary<int, GameObject>());
-        itemSlots.Add("Accessory2", new Dictionary<int, GameObject>());
+        slotIcons = new Dictionary<string, Dictionary<int, GameObject>>();
 
-        itemSlots["Weapon"].Add(-1, slotsParent.transform.GetChild(0).GetChild(0).gameObject);
-        itemSlots["Armor"].Add(-1, slotsParent.transform.GetChild(1).GetChild(0).gameObject);
-        itemSlots["Accessory1"].Add(-1, slotsParent.transform.GetChild(2).GetChild(0).gameObject);
-        itemSlots["Accessory2"].Add(-1, slotsParent.transform.GetChild(3).GetChild(0).gameObject);
+        slotIcons.Add("Weapon", new Dictionary<int, GameObject>());
+        slotIcons.Add("Armor", new Dictionary<int, GameObject>());
+        slotIcons.Add("Accessory1", new Dictionary<int, GameObject>());
+        slotIcons.Add("Accessory2", new Dictionary<int, GameObject>());
+
+        slotIcons["Weapon"].Add(-1, slotsParent.transform.GetChild(0).GetChild(0).gameObject);
+        slotIcons["Armor"].Add(-1, slotsParent.transform.GetChild(1).GetChild(0).gameObject);
+        slotIcons["Accessory1"].Add(-1, slotsParent.transform.GetChild(2).GetChild(0).gameObject);
+        slotIcons["Accessory2"].Add(-1, slotsParent.transform.GetChild(3).GetChild(0).gameObject);
 
         //Debug.Log(itemSlots["Accessory1"][-1].name);
     }
@@ -88,45 +101,77 @@ public class MyAdventurerInfo : MonoBehaviour
         acc2Idx = GameManager.Instance.GetPlayerSpAdvItem("Accessory2");
 
 
-        for (int i = 0; i < itemSlots["Weapon"].Count; i++)
-            itemSlots["Weapon"].Values.ToArray()[i].SetActive(false);
+        for (int i = 0; i < slotIcons["Weapon"].Count; i++)
+            slotIcons["Weapon"].Values.ToArray()[i].SetActive(false);
 
-        if (itemSlots["Weapon"].ContainsKey(weaponIdx) == false)
-            GenSlotIcon();
+        if (slotIcons["Weapon"].ContainsKey(weaponIdx) == false)
+            GenSlotIcon("Weapon", weaponIdx);
 
-        itemSlots["Weapon"][weaponIdx].SetActive(true);
-
-
-        for (int i = 0; i < itemSlots["Armor"].Count; i++)
-            itemSlots["Armor"].Values.ToArray()[i].SetActive(false);
-
-        if (itemSlots["Armor"].ContainsKey(armorIdx) == false)
-            GenSlotIcon();
-
-        itemSlots["Armor"][armorIdx].SetActive(true);
+        slotIcons["Weapon"][weaponIdx].SetActive(true);
 
 
-        for (int i = 0; i < itemSlots["Accessory1"].Count; i++)
-            itemSlots["Accessory1"].Values.ToArray()[i].SetActive(false);
+        for (int i = 0; i < slotIcons["Armor"].Count; i++)
+            slotIcons["Armor"].Values.ToArray()[i].SetActive(false);
 
-        if (itemSlots["Accessory1"].ContainsKey(acc1Idx) == false)
-            GenSlotIcon();
+        if (slotIcons["Armor"].ContainsKey(armorIdx) == false)
+            GenSlotIcon("Armor", armorIdx);
 
-        itemSlots["Accessory1"][acc1Idx].SetActive(true);
+        slotIcons["Armor"][armorIdx].SetActive(true);
 
 
-        for (int i = 0; i < itemSlots["Accessory2"].Count; i++)
-            itemSlots["Accessory2"].Values.ToArray()[i].SetActive(false);
+        for (int i = 0; i < slotIcons["Accessory1"].Count; i++)
+            slotIcons["Accessory1"].Values.ToArray()[i].SetActive(false);
 
-        if (itemSlots["Accessory2"].ContainsKey(acc2Idx) == false)
-            GenSlotIcon();
+        if (slotIcons["Accessory1"].ContainsKey(acc1Idx) == false)
+            GenSlotIcon("Accessory", acc1Idx);
 
-        itemSlots["Accessory2"][acc2Idx].SetActive(true);
+        slotIcons["Accessory1"][acc1Idx].SetActive(true);
+
+
+        for (int i = 0; i < slotIcons["Accessory2"].Count; i++)
+            slotIcons["Accessory2"].Values.ToArray()[i].SetActive(false);
+
+        if (slotIcons["Accessory2"].ContainsKey(acc2Idx) == false)
+            GenSlotIcon("Accessory", acc1Idx);
+
+        slotIcons["Accessory2"][acc2Idx].SetActive(true);
     }
 
-    private void GenSlotIcon()
+    private void GenSlotIcon(string slot, int index)
     {
+        ItemListPanel listPanel = UIManager.Instance.itemEquipUI.listPanel;
+        string category;
 
+        if (slot == "Accessory1" || slot == "Accessory2")
+            category = "Accessory";
+        else
+            category = slot;
+
+        GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByCategoryAndIndex(category, index));
+        slotIcons[slot].Add(index, newIcon);
+
+        Debug.Log(newIcon.name);
+
+        newIcon.transform.SetParent(itemSlots[slot].transform);
+
+        newIcon.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        newIcon.transform.localPosition = new Vector3(0, 0, 0);
+
+        newIcon.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+        //Debug.Log(newIcon.GetComponent<RectTransform>().anchorMin.x + ", " + newIcon.GetComponent<RectTransform>().anchorMin.y);
+        newIcon.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+        //Debug.Log(newIcon.GetComponent<RectTransform>().anchorMax.x + ", " + newIcon.GetComponent<RectTransform>().anchorMax.y);
+
+        //newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
+        //newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
+        //newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
+        //newIcon.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
+
+        newIcon.GetComponent<RectTransform>().offsetMin = Vector2.zero;
+        newIcon.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+
+        newIcon.transform.SetAsFirstSibling();
+        //newIcon.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
     }
 
     private void FillSpriteDict()
