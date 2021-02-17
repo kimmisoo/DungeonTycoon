@@ -10,6 +10,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Linq;
 
+
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance = null;
@@ -311,6 +312,8 @@ public class GameManager : MonoBehaviour
         if (SaveLoadManager.Instance.isLoadedGame == false)
             CombatAreaManager.Instance.InitCombatAreas();
         SaveLoadManager.Instance.InstantiateFromSave();
+
+		StartCoroutine(ClearAssets());
     }
 
     private void ReadDatasFromJSON()
@@ -2234,5 +2237,15 @@ public class GameManager : MonoBehaviour
 	{
 		//다음 씬으로 ...
 	}
-#endregion    
+#endregion   
+	IEnumerator ClearAssets()
+	{
+		WaitForSeconds clearBetween = new WaitForSeconds(30.0f);
+		while(true)
+		{
+			yield return clearBetween;
+			//Resources.UnloadUnusedAssets();
+			UnityEditor.EditorUtility.UnloadUnusedAssetsImmediate();
+		}
+	}
 }

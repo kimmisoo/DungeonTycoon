@@ -1110,15 +1110,17 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     private void DisplayDamage(float damage)
     {
+		/*
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
         tempDamageText.GetComponent<FloatingText>().InitFloatingText(((int)damage).ToString(), textPos);
         //tempDamageText.transform.SetParent(canvas.transform);
-        tempDamageText.SetActive(true);
+        tempDamageText.SetActive(true);*/
     }
 
     public void DisplayHeal(float healed)
     {
+		/*
         GameObject tempHealText = Instantiate(healText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.07f, 0.07f), transform.position.y + Random.Range(-0.05f, 0.05f), transform.position.z);
         tempHealText.GetComponent<FloatingText>().InitFloatingText(((int)healed).ToString(), textPos);
@@ -1128,6 +1130,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         healEffect.SetActive(true);
         healEffect.GetComponent<AttackEffect>().StartEffect();
+		*/
     }
 
     public void DisplayBuff()
@@ -1144,11 +1147,12 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected void DisplayDodge()
     {
+		/*
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
         tempDamageText.GetComponent<FloatingText>().InitFloatingText("Dodged", textPos);
         tempDamageText.GetComponent<RectTransform>().localScale = new Vector3(0.12f, 0.12f, 0.12f);
-        tempDamageText.SetActive(true);
+        tempDamageText.SetActive(true);*/
     }
 
     //public void OnEnemyMoveStarted(TileForMove newDest)
@@ -1229,6 +1233,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #region UI
     public void SetUI()
     {
+		/*
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         hpBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HPSlider"));
         hpSlider = hpBar.GetComponentInChildren<Slider>();
@@ -1244,6 +1249,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         hpBar.SetActive(false);
         shieldBar.SetActive(false);
+		*/
     }
     public void DestroyUI()
     {
@@ -1252,18 +1258,22 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
     }
     public void ShowBattleUI()
     {
+		/*
         hpBar.SetActive(true);
         shieldBar.SetActive(true);
         hpBar.GetComponent<HPBar>().Show();
         shieldBar.GetComponent<ShieldBar>().Show();
+		*/
     }
     public void HideBattleUI()
     {
+		/*
         if (hpBar.activeSelf)
         {
             hpBar.GetComponent<HPBar>().Hide();
             shieldBar.GetComponent<ShieldBar>().Hide();
         }
+		*/
     }
 
 

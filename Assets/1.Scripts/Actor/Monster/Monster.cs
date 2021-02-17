@@ -734,20 +734,22 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
     private void DisplayDamage(float damage)
     {
+		/*
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
         tempDamageText.GetComponent<FloatingText>().InitFloatingText(((int)damage).ToString(), textPos);
         //tempDamageText.transform.SetParent(canvas.transform);
-        tempDamageText.SetActive(true);
+        tempDamageText.SetActive(true);*/
     }
 
     private void DisplayDodge()
     {
+		/*
         GameObject tempDamageText = Instantiate(damageText);
         Vector3 textPos = new Vector3(transform.position.x + Random.Range(-0.05f, 0.05f), transform.position.y + Random.Range(0.0f, 0.1f), transform.position.z);
         tempDamageText.GetComponent<FloatingText>().InitFloatingText("Dodged", textPos);
         //tempDamageText.transform.SetParent(canvas.transform);
-        tempDamageText.SetActive(true);
+        tempDamageText.SetActive(true);*/
     }
 
     public void DisplayHeal(float healed)
@@ -1004,6 +1006,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     #region UI
     public void SetUI()
     {
+		/*
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         hpBar = (GameObject)Instantiate(Resources.Load("UIPrefabs/Battle/HPSlider_Mob"));
         hpSlider = hpBar.GetComponentInChildren<Slider>();
@@ -1013,18 +1016,23 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
 
         hpBar.SetActive(false);
         damageText.transform.SetParent(canvas.transform);
+		*/
     }
 
     public void ShowBattleUI()
     {
+		/*
         hpBar.SetActive(true);
         hpBar.GetComponent<HPBar>().Show();
+		*/
     }
 
     public void HideBattleUI()
     {
+		/*
         if(hpBar.activeSelf)
             hpBar.GetComponent<HPBar>().Hide();
+			*/
     }
     #endregion
 

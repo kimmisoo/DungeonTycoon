@@ -557,18 +557,19 @@ public class CombatAreaManager : MonoBehaviour
 		if(huntingAreas[ConqueringHuntingAreaIndex].IsBossArea == false)
 		{
 			PublicHuntingAreaIndex++;
+			if (isLoaded == false)
+				GameManager.Instance.OnHuntingAreaOpenToPublic();
+		}
+		else
+		{
+			BossAreaConquerStart();
 		}
         HuntingAreaOpenToPublic(); //빈거
-        if(isLoaded == false)
-            GameManager.Instance.OnHuntingAreaOpenToPublic();
-
+        
         HuntingAreaConquerStart(); //빈거
 		
         //Debug.Log("OnHuntingAreaConquered");
-        if (huntingAreas[ConqueringHuntingAreaIndex - 1].IsBossArea) // huntingAreas - 0 , 1, 2 부터라 -1 해줌
-        {   // 보스전 신청용 UI 띄우기
-            BossAreaConquerStart();
-        }
+        
     }
 
     public void OnBossAreaConquered(bool isLoaded = false)
