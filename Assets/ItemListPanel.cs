@@ -22,7 +22,7 @@ public class ItemListPanel : MonoBehaviour
 
         #if DEBUG_TRAIN_UI
         MakeItemListByCategory("Weapon", loadedPrefab);
-        //MakeItemListByCategory("Armor", loadedPrefab);
+        MakeItemListByCategory("Armor", loadedPrefab);
         //MakeItemListByCategory("Accessory", loadedPrefab);
         scrollRect.content = itemList["Weapon"].GetComponent<RectTransform>();
         #endif
@@ -92,9 +92,9 @@ public class ItemListPanel : MonoBehaviour
             iconPath += jsonNode[itemCategory][i]["Name"];
             //Debug.Log(iconPath);
             GameObject itemIcon = (GameObject)Resources.Load(iconPath);
-
+            Debug.Log(iconPath);
             GameObject newIcon = Instantiate<GameObject>(itemIcon);
-
+            
             //GameObject iconImage = newIcon.transform.GetChild(1).gameObject;
 
             newIcon.GetComponent<ItemShopIcon>().SetIndex(i);
