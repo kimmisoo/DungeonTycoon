@@ -469,7 +469,12 @@ public class CombatAreaManager : MonoBehaviour
                     bossArea.addEntrance(thatTile);
                     //}
                 }
-            }
+				else if (extent[j, i] == 3)
+				{
+					thatTile.SetIsActive(false);
+					thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 0.0f);
+				}
+			}
 
             //Debug.Log(debugStr);
         }

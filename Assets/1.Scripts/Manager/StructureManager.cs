@@ -443,10 +443,22 @@ public class StructureManager : MonoBehaviour
                     Tile t = s.point.GetLayer().GetTileAsComponent(s.point.GetX() + j, s.point.GetY() + i);
                     if (t.GetBuildingArea() && ex[j,i] == 2 && !t.GetStructed())
                     {
-                        t.SetIsStructed(true);
-                        s.entrance.Add(t);
-                    }
-                    else if(!t.GetBuildingArea() && ex[j,i] == 2 && t.GetStructed())
+						//t.SetIsStructed(true);
+						if (s.entrance.Exists(
+							delegate (Tile element)
+							{
+								if (element.Equals(t))
+									return true;
+								else
+									return false;
+							}))
+						{
+							//exist ! do nothing;
+						}
+						else
+							s.entrance.Add(t);
+					}
+                    else if(/*!t.GetBuildingArea() &&*/ ex[j,i] == 2 && t.GetStructed())
                     {
                         t.SetIsStructed(false);
                         s.entrance.Remove(t);

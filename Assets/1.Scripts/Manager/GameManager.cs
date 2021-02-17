@@ -2244,8 +2244,8 @@ public class GameManager : MonoBehaviour
 		while(true)
 		{
 			yield return clearBetween;
-			//Resources.UnloadUnusedAssets();
-			UnityEditor.EditorUtility.UnloadUnusedAssetsImmediate();
+			Resources.UnloadUnusedAssets();
+			//UnityEditor.EditorUtility.UnloadUnusedAssetsImmediate();
 		}
 	}
 }
