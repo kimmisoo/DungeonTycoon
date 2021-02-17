@@ -15,17 +15,27 @@ public class ItemListPanel : MonoBehaviour
     public ScrollRect scrollRect;
     string selectedCategory = null;
 
-    void Start()
+    private void Awake()
     {
         GameObject loadedPrefab = (GameObject)Resources.Load("UIPrefabs/TrainUI/ListContentsPanel");
         scrollRect = GetComponent<ScrollRect>();
 
-        #if DEBUG_TRAIN_UI
         MakeItemListByCategory("Weapon", loadedPrefab);
         MakeItemListByCategory("Armor", loadedPrefab);
+    }
+
+    void Start()
+    {
+        //GameObject loadedPrefab = (GameObject)Resources.Load("UIPrefabs/TrainUI/ListContentsPanel");
+        //scrollRect = GetComponent<ScrollRect>();
+
+        //#if DEBUG_TRAIN_UI
+        //MakeItemListByCategory("Weapon", loadedPrefab);
+        //MakeItemListByCategory("Armor", loadedPrefab);
         //MakeItemListByCategory("Accessory", loadedPrefab);
-        scrollRect.content = itemList["Weapon"].GetComponent<RectTransform>();
-        #endif
+        //scrollRect.content = itemList["Weapon"].GetComponent<RectTransform>();
+        //scrollRect.content = itemList["Armor"].GetComponent<RectTransform>();
+        //#endif
     }
 
     void OnEnable()
@@ -55,6 +65,7 @@ public class ItemListPanel : MonoBehaviour
     public void SelectCategory(string category)
     {
         selectedCategory = category;
+        ShowItemListByCategory();
     }
 
     // 아이템 카테고리에 맞는 리스트 보이는 메서드
