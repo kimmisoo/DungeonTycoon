@@ -22,6 +22,7 @@ public class ItemListPanel : MonoBehaviour
 
         MakeItemListByCategory("Weapon", loadedPrefab);
         MakeItemListByCategory("Armor", loadedPrefab);
+        MakeItemListByCategory("Accessory", loadedPrefab);
     }
 
     void Start()

@@ -123,7 +123,7 @@ public class MyAdventurerInfo : MonoBehaviour
             slotIcons["Accessory1"].Values.ToArray()[i].SetActive(false);
 
         if (slotIcons["Accessory1"].ContainsKey(acc1Idx) == false)
-            GenSlotIcon("Accessory", acc1Idx);
+            GenSlotIcon("Accessory1", acc1Idx);
 
         slotIcons["Accessory1"][acc1Idx].SetActive(true);
 
@@ -132,7 +132,7 @@ public class MyAdventurerInfo : MonoBehaviour
             slotIcons["Accessory2"].Values.ToArray()[i].SetActive(false);
 
         if (slotIcons["Accessory2"].ContainsKey(acc2Idx) == false)
-            GenSlotIcon("Accessory", acc1Idx);
+            GenSlotIcon("Accessory2", acc2Idx);
 
         slotIcons["Accessory2"][acc2Idx].SetActive(true);
     }

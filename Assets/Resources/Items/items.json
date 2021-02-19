@@ -1054,7 +1054,7 @@
 			"OptimalLevelUpper": 40
 		},
 		{
-			"Name": "비전서 : 일섬",
+			"Name": "비전서 - 일섬",
 			"Icon": null,
 			"ItemSkill": "JustOneSlash",
 			"Price": 7000,
@@ -1124,7 +1124,7 @@
 			"OptimalLevelUpper": 30
 		},
 		{
-			"Name": "비전서 : 검기",
+			"Name": "비전서 - 검기",
 			"Icon": null,
 			"ItemSkill": "SwordAura",
 			"Price": 2500,
