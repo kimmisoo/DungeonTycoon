@@ -944,7 +944,8 @@ public class GameManager : MonoBehaviour
 
     public void CreateStatDummies()
     {
-        Debug.Assert(playerSpAdvIndex != -1);
+        if (playerSpAdvIndex == -1)
+            return;
 
         dummyParent = GameObject.FindGameObjectWithTag("StatDummy");
         dummyBefore = GenSpecialAdvenuturer(GetPlayerSpAdv().GetComponent<SpecialAdventurer>().nameKey, GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat().Level);
