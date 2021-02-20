@@ -708,7 +708,11 @@ public class CombatantPtr
 
     public CombatantPtr(ICombatant combatant)
     {
+        //if(Debug)
+        //Debug.Log(combatant);
         this.index = combatant.GetIndex();
+        if (index == -1)
+            Debug.Log(index);
         combatantType = combatant.GetActorType();
     }
 }

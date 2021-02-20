@@ -1325,7 +1325,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
         if (isActiveAndEnabled == true)
             skills[key].Activate();
 
-        Debug.Log(skills.Count);
+        //Debug.Log(skills.Count);
     }
 
     public void ApplySkillsToDummy()

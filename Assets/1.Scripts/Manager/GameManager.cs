@@ -919,7 +919,8 @@ public class GameManager : MonoBehaviour
         SetSpAdvEffects(tempSpAdv, name);
 
         //Save용
-        tempSpAdv.index = specialAdventurers.Count - 1;
+        tempSpAdv.index = specialAdventurers.Count;
+        //Debug.Log(tempSpAdv.index);
         tempSpAdv.prefabPath = prefabPath;
         tempSpAdv.nameKey = name;
 
@@ -1693,6 +1694,8 @@ public class GameManager : MonoBehaviour
 
     public void SetICombatantEnemy(ICombatant input, CombatantPtr data)
     {
+        //if (data.index == -1)
+        //    Debug.Log(data.combatantType + " " + data.index);
         switch (data.combatantType)
         {
             case ActorType.Monster: // Mob vs Mob는 없음.
