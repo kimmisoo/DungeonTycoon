@@ -1313,6 +1313,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #region Skill
     public void AddSkill(string key)
     {
+        Debug.Log(key);
         if (skills.ContainsKey(key))
             return; // 이미 같은 종류 있으면 그냥 리턴. 같은 스킬 중복 불가.
 
@@ -1323,6 +1324,18 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
         if (isActiveAndEnabled == true)
             skills[key].Activate();
+
+        Debug.Log(skills.Count);
+    }
+
+    public void ApplySkillsToDummy()
+    {
+        //Debug.Log("SkillCnt : " + skills.Count);
+        for (int i = 0; i < skills.Count; i++)
+        {
+            Debug.Log(skills.Values.ToList()[i].SkillName);
+            skills.Values.ToList()[i].ApplyStatBonuses();
+        }
     }
 
     public void RemoveSkill(string key)

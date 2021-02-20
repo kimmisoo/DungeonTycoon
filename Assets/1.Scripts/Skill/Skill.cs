@@ -92,7 +92,8 @@ public abstract class Skill : MonoBehaviour
     public void Deactivate()
     {
         RemoveStatBonuses();
-        StopCoroutine(curCoroutine);
+        if(curCoroutine != null)
+            StopCoroutine(curCoroutine);
         isActive = false;
     }
 

@@ -77,6 +77,8 @@ public class Item
         foreach (StatModDiscrete mod in discreteMods)
             ownerBattleStat.AddStatModDiscrete(mod);
 
+        //Debug.Log(itemSkillKey);
+        //Debug.Log(itemSkillKey);
         //Debug.Log("ItemSkillKey : " + itemSkillKey);
         if (itemSkillKey != null)
             owner.AddSkill(itemSkillKey);

@@ -975,12 +975,16 @@ public class GameManager : MonoBehaviour
         afterSpAdv.EquipItem("Accessory1", origSpAdv.GetEquipedItemIndex("Accessory1"));
         afterSpAdv.EquipItem("Accessory2", origSpAdv.GetEquipedItemIndex("Accessory2"));
         //Debug.Log(beforeSpAdv.Level + ", " + beforeSpAdv.GetBattleStat().Attack);
+
+        beforeSpAdv.ApplySkillsToDummy();
+        afterSpAdv.ApplySkillsToDummy();
     }
 
     public void ChangeDummyItem(string itemSlot, int itemIndex)
     {
         SpecialAdventurer afterSpAdv = dummyAfter.GetComponent<SpecialAdventurer>();
         afterSpAdv.EquipItem(itemSlot, itemIndex);
+        afterSpAdv.ApplySkillsToDummy();
     }
 
 

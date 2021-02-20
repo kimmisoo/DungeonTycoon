@@ -136,6 +136,11 @@ public class ItemEquipUI : MonoBehaviour
             itemSlots[itemSlots.Keys.ToArray()[i]].GetComponent<ItemSlotButton>().HighlightOff();
 
         itemSlots[selectedSlot].GetComponent<ItemSlotButton>().HighlightOn();
+
+        if (curEquipped[selectedSlot] != -1)
+            SelectItem(curEquipped[selectedSlot]);
+        else
+            infoPanel.HideContent();
     }
 
     public void GetItemData() // JSONNode Get
@@ -276,7 +281,7 @@ public class ItemEquipUI : MonoBehaviour
         if (selectedIndex != -1)
             itemStorage[selectedCategory][selectedIndex] = ItemCondition.Equipped;
 
-        curEquipped[selectedCategory] = selectedIndex;
+        curEquipped[selectedSlot] = selectedIndex;
 
         GameManager.Instance.EquipPlayerSpAdvItem(selectedSlot, selectedIndex);
         GameManager.Instance.RefreshDummies();

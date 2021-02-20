@@ -518,6 +518,11 @@ public class SpecialAdventurer : Adventurer
         }
     }
 
+    public void ApplySkills()
+    {
+        
+    }
+
     #endregion
 
     #region Exclusive Contract
