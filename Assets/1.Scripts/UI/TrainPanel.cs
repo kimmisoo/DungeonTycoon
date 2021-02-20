@@ -88,7 +88,7 @@ public class TrainPanel : UIObject {
     {
         GameObject spAdvPanel;
 
-        if (isSelected)
+        if (GameManager.Instance.playerSpAdvIndex != -1)
             spAdvPanel = spAdvInfoPanel;
         else
             spAdvPanel = spAdvSelectionPanel;
