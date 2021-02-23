@@ -57,6 +57,14 @@ public class GameManager : MonoBehaviour
     public int corporateNum = 1;
     public List<float> popular;
     #endregion
+    public bool HadSpAdvChosen
+    {
+        get
+        {
+            return playerSpAdvIndex != -1;
+        }
+    }
+
     public JSONNode items;
     #endregion
 
@@ -944,7 +952,7 @@ public class GameManager : MonoBehaviour
 
     public void CreateStatDummies()
     {
-        if (playerSpAdvIndex == -1)
+        if (HadSpAdvChosen == false)
             return;
 
         dummyParent = GameObject.FindGameObjectWithTag("StatDummy");

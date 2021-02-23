@@ -78,7 +78,7 @@ public class TrainPanel : UIObject {
     public Text itemsValue;
     //button의   Text
 
-    //Dungeon Panel's
+    public Button itemEquipButton;
 
     // 일선 모험가 선택 관련
     //private bool isSelected = false;
@@ -96,6 +96,8 @@ public class TrainPanel : UIObject {
         spAdvPanel.SetActive(true);
         itemEquipPanel.SetActive(false);
         bossPanel.SetActive(false);
+
+        RefreshEquipButton();
         
         base.Show();
         currentShowingPanel = spAdvPanel;
@@ -147,6 +149,11 @@ public class TrainPanel : UIObject {
             storyButtonImage.material = null;
             storyPanel.SetActive(true);
         }
+    }
+
+    public void RefreshEquipButton()
+    {
+        itemEquipButton.interactable = GameManager.Instance.HadSpAdvChosen;
     }
 
     //

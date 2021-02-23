@@ -326,7 +326,10 @@ public class ItemEquipUI : MonoBehaviour
         SelectItem(GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory2"));
         EquipItem();
 
-        SelectSlot(origSlot);
+        if (origSlot != null)
+            SelectSlot(origSlot);
+        else
+            SelectSlot("Weapon");
         //SelectItem(curEquipped[origSlot]);
     }
 

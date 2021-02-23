@@ -19,6 +19,7 @@ public class SpAdvSelectionUI : MonoBehaviour
             //trainPanel.SpAdvSelected();
 
             trainPanel.OpenSpAdvPanel();
+            trainPanel.RefreshEquipButton();
         }
     }
 
