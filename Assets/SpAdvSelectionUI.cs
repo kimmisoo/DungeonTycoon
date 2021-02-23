@@ -16,7 +16,7 @@ public class SpAdvSelectionUI : MonoBehaviour
         if (curSelected != -1)
         {
             GameManager.Instance.ChooseSpAdv(curSelected);
-            trainPanel.SpAdvSelected();
+            //trainPanel.SpAdvSelected();
 
             trainPanel.OpenSpAdvPanel();
         }

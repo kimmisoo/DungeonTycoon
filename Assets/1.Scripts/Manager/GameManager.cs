@@ -1252,7 +1252,7 @@ public class GameManager : MonoBehaviour
         specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().EquipItem(itemSlot, itemIndex);
     }
 
-    public int GetPlayerSpAdvItem(string itemSlot)
+    public int GetPlayerSpAdvItemIndex(string itemSlot)
     {
         return specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().GetEquipedItemIndex(itemSlot);
     }

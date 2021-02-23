@@ -62,6 +62,8 @@ public class ItemEquipUI : MonoBehaviour
         UIManager.Instance.itemEquipUI = this;
         GetItemData();
         CreateItemStorage();
+
+        InitSlotIcons();
     }
 
     private void CreateItemStorage() // 아이템 보유 및 장착 현황 초기화
@@ -289,10 +291,10 @@ public class ItemEquipUI : MonoBehaviour
         RefreshItemInfo();
         comparisonPanel.RefreshComparisonPanel();
 
-        SlotIconChange();
+        CurSlotIconChange();
     }
 
-    public void SlotIconChange()
+    public void CurSlotIconChange()
     {
         for(int i = 0; i<slotIcons[selectedSlot].Count; i++)
             slotIcons[selectedSlot].Values.ToArray()[i].SetActive(false);
@@ -303,12 +305,35 @@ public class ItemEquipUI : MonoBehaviour
         slotIcons[selectedSlot][selectedIndex].SetActive(true);
     }
 
+    public void InitSlotIcons()
+    {
+        //curEquipped["Weapon"] = GameManager.Instance.GetPlayerSpAdvItemIndex("Weapon");
+        //curEquipped["Armor"] = GameManager.Instance.GetPlayerSpAdvItemIndex("Armor");
+        //curEquipped["Accessory1"] = GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory1");
+        //curEquipped["Accessory2"] = GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory2");
+        string origSlot = selectedSlot;
+        
+        SelectSlot("Weapon");
+        SelectItem(GameManager.Instance.GetPlayerSpAdvItemIndex("Weapon"));
+        EquipItem();
+        SelectSlot("Armor");
+        SelectItem(GameManager.Instance.GetPlayerSpAdvItemIndex("Armor"));
+        EquipItem();
+        SelectSlot("Accessory1");
+        SelectItem(GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory1"));
+        EquipItem();
+        SelectSlot("Accessory2");
+        SelectItem(GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory2"));
+        EquipItem();
+
+        SelectSlot(origSlot);
+        //SelectItem(curEquipped[origSlot]);
+    }
+
     private void GenSlotIcon()
     {
         GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByIndex(selectedIndex));
         slotIcons[selectedSlot].Add(selectedIndex, newIcon);
-
-        Debug.Log(newIcon.name);
 
         newIcon.transform.SetParent(itemSlots[selectedSlot].transform);
         

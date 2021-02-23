@@ -81,7 +81,7 @@ public class TrainPanel : UIObject {
     //Dungeon Panel's
 
     // 일선 모험가 선택 관련
-    private bool isSelected = false;
+    //private bool isSelected = false;
 
 
     public override void Show()
@@ -121,7 +121,7 @@ public class TrainPanel : UIObject {
     {
         GameObject spAdvPanel;
 
-        if (isSelected)
+        if (GameManager.Instance.playerSpAdvIndex != -1)
             spAdvPanel = spAdvInfoPanel;
         else
             spAdvPanel = spAdvSelectionPanel;
@@ -160,8 +160,8 @@ public class TrainPanel : UIObject {
 
     //}
 
-    public void SpAdvSelected()
-    {
-        isSelected = true;
-    }
+    //public void SpAdvSelected()
+    //{
+    //    isSelected = true;
+    //}
 }

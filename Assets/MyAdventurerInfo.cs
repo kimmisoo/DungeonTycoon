@@ -95,10 +95,10 @@ public class MyAdventurerInfo : MonoBehaviour
     private void RefreshItemSlots()
     {
         int weaponIdx, armorIdx, acc1Idx, acc2Idx;
-        weaponIdx = GameManager.Instance.GetPlayerSpAdvItem("Weapon");
-        armorIdx = GameManager.Instance.GetPlayerSpAdvItem("Armor");
-        acc1Idx = GameManager.Instance.GetPlayerSpAdvItem("Accessory1");
-        acc2Idx = GameManager.Instance.GetPlayerSpAdvItem("Accessory2");
+        weaponIdx = GameManager.Instance.GetPlayerSpAdvItemIndex("Weapon");
+        armorIdx = GameManager.Instance.GetPlayerSpAdvItemIndex("Armor");
+        acc1Idx = GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory1");
+        acc2Idx = GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory2");
 
 
         for (int i = 0; i < slotIcons["Weapon"].Count; i++)

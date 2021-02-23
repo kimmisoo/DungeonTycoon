@@ -14,8 +14,16 @@ public class ItemListPanel : MonoBehaviour
     public Dictionary<string, GameObject> itemList = new Dictionary<string, GameObject>();
     public ScrollRect scrollRect;
     string selectedCategory = null;
+    private bool isInited = false;
+
 
     private void Awake()
+    {
+        if(isInited == false)
+            InitItemListPanel();
+    }
+
+    private void InitItemListPanel()
     {
         GameObject loadedPrefab = (GameObject)Resources.Load("UIPrefabs/TrainUI/ListContentsPanel");
         scrollRect = GetComponent<ScrollRect>();
@@ -23,6 +31,8 @@ public class ItemListPanel : MonoBehaviour
         MakeItemListByCategory("Weapon", loadedPrefab);
         MakeItemListByCategory("Armor", loadedPrefab);
         MakeItemListByCategory("Accessory", loadedPrefab);
+
+        isInited = true;
     }
 
     void Start()
@@ -154,6 +164,9 @@ public class ItemListPanel : MonoBehaviour
 
     public GameObject GetItemIconByCategoryAndIndex(string category, int index)
     {
+        if (isInited == false)
+            InitItemListPanel();
+
         return itemList[category].transform.GetChild(index + 1).gameObject;
     }
 }
