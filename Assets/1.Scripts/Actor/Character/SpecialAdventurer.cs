@@ -849,7 +849,7 @@ public class SpecialAdventurer : Adventurer
 		}
 		else
 		{
-			curState = State.SearchingExit;
+			curState = State.SearchingHuntingArea;
 		}
 	}
 
@@ -889,7 +889,17 @@ public class SpecialAdventurer : Adventurer
 			//Debug.Log("------------------------------------------------------------Found Structure!");
 			destinationTile = structureListByPref[pathFindCount].GetEntrance();
 			destinationPlace = structureListByPref[pathFindCount];
-			curState = State.PathFinding;
+			//null 체크
+			if (destinationTile == null)
+			{
+				pathFindCount++;
+				//destinationPlace 길막힘 알림.!
+				state = State.SearchingStructure;
+			}
+			else
+			{
+				curState = State.PathFinding;
+			}
 		}
 
 		//길찾기 시작
@@ -904,7 +914,8 @@ public class SpecialAdventurer : Adventurer
 		if (destinationPlace == null)
 		{
 			Debug.Log("destinationPlace = null.. !!!!");
-			curState = State.SearchingExit;
+			//curState = State.SearchingExit;
+			curState = State.Idle;
 			Debug.Log("SpecialAdventurer : SearchingHuntingArea Failed. destinationPlace is null!!");
 			yield break;
 		}

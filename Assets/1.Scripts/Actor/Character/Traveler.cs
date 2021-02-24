@@ -285,7 +285,17 @@ public class Traveler : Actor
 			//Debug.Log("------------------------------------------------------------Found Structure!");
 			destinationTile = structureListByPref[pathFindCount].GetEntrance();
 			destinationPlace = structureListByPref[pathFindCount];
-			curState = State.PathFinding;
+			//null 체크
+			if (destinationTile == null)
+			{
+				pathFindCount++;
+				//destinationPlace 길막힘 알림.!
+				curState = State.SearchingStructure;
+			}
+			else
+			{
+				curState = State.PathFinding;
+			}
 		}
 		
 		//길찾기 시작

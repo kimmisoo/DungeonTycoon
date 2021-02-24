@@ -42,6 +42,8 @@ public abstract class Place : MonoBehaviour
     public Tile GetEntrance()
     {
         int randNum = Random.Range(0, entrance.Count);
+		if (entrance == null || entrance.Count <= 0)
+			return null;
         return entrance[randNum];
     }
     public int extentWidth
