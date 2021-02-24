@@ -279,6 +279,7 @@ public class StructureManager : MonoBehaviour
 					tempTile.SetIsBuildingArea(false);
                     tempTile.SetIsStructed(true);
                     tempTile.SetStructure(structure);
+					tempTile.SetTileColor(new Color(1.0f, 0.3f, 0.2f));
                 }
                 else if(extent[j, i] == 2)
                 {
@@ -287,6 +288,7 @@ public class StructureManager : MonoBehaviour
                     if(tempTile.GetBuildingArea())
                     {
                         structure.addEntrance(tempTile);
+						tempTile.SetTileColor(new Color(0.2f, 0.2f, 1.0f));
                     }
                 }
 			}

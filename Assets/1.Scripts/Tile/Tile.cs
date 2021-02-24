@@ -74,7 +74,11 @@ public class Tile : MonoBehaviour
 		sr = GetComponent<SpriteRenderer>();
 		origin = sr.sprite;
 	}
-
+	//타일 색상 변경
+	public void SetTileColor(Color color)
+	{
+		sr.color = color;
+	}
     // A*용 메서드
 	public void AddedOpenList()
 	{
