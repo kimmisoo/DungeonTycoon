@@ -16,6 +16,9 @@ public class GameSavedata
     public int playerPopularity;
     public int playerSpAdvIndex;
 
+    // 아이템 보유 및 장착 현황
+    public Dictionary<string, Dictionary<int, ItemCondition>> itemStorage; 
+
     // 카메라 설정
     public Vector3Data cameraPosition;
     public float cameraSize;
@@ -63,6 +66,8 @@ public class GameSavedata
         playerGold = gameManager.playerGold;
         playerPopularity = gameManager.playerPopularity;
         playerSpAdvIndex = gameManager.playerSpAdvIndex;
+
+        itemStorage = gameManager.GetItemStorage();
 
         cameraPosition = new Vector3Data(Camera.main.transform.position);
         cameraSize = Camera.main.orthographicSize;

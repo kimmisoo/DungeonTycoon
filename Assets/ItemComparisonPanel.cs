@@ -70,17 +70,17 @@ public class ItemComparisonPanel : MonoBehaviour
         else
             defenceVariance.text = "";
 
-        moveSpeedValue.text = Mathf.RoundToInt(afterStat.MoveSpeed).ToString()+"%";
+        moveSpeedValue.text = Mathf.RoundToInt(afterStat.MoveSpeed * 100).ToString()+"%";
         varianceTemp = afterStat.MoveSpeed - beforeStat.MoveSpeed;
         if (varianceTemp > 0 + Mathf.Epsilon)
         {
             moveSpeedVariance.color = increaseColor;
-            moveSpeedVariance.text = increaseSymbol + Mathf.Abs(Mathf.RoundToInt(varianceTemp));
+            moveSpeedVariance.text = increaseSymbol + Mathf.Abs(Mathf.RoundToInt(varianceTemp * 100));
         }
         else if (varianceTemp < 0 - Mathf.Epsilon)
         {
             moveSpeedVariance.color = decreaseColor;
-            moveSpeedVariance.text = decreaseSymbol + Mathf.Abs(Mathf.RoundToInt(varianceTemp));
+            moveSpeedVariance.text = decreaseSymbol + Mathf.Abs(Mathf.RoundToInt(varianceTemp * 100));
         }
         else
             moveSpeedVariance.text = "";

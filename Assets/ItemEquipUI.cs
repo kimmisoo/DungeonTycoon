@@ -364,4 +364,14 @@ public class ItemEquipUI : MonoBehaviour
     {
         return listPanel.GetItemIconByCategoryAndIndex(category, index);
     }
+
+    public Dictionary<string, Dictionary<int, ItemCondition>> GetItemStorage()
+    {
+        return itemStorage;
+    }
+
+    public void LoadItemStorage(Dictionary<string, Dictionary<int, ItemCondition>> loadedStorage)
+    {
+        itemStorage = loadedStorage;
+    }
 }

@@ -1366,7 +1366,6 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-
     #region SaveLoad
     // 현재 상황 Save
     public void Save()
@@ -1388,6 +1387,8 @@ public class GameManager : MonoBehaviour
         playerGold = savedata.playerGold;
         playerPopularity = savedata.playerPopularity;
         playerSpAdvIndex = savedata.playerSpAdvIndex;
+
+        UIManager.Instance.itemEquipUI.LoadItemStorage(savedata.itemStorage);
 
         Camera.main.transform.position = new Vector3(savedata.cameraPosition.x, savedata.cameraPosition.y, savedata.cameraPosition.z);
         Camera.main.orthographicSize = savedata.cameraSize;
@@ -1950,6 +1951,10 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.bossRaidUI.SetRaidStateText(savedata.bossRaidStateText);
     }
 
+    public Dictionary<string, Dictionary<int, ItemCondition>> GetItemStorage()
+    {
+        return UIManager.Instance.itemEquipUI.GetItemStorage();
+    }
     #endregion
 
     #region Stage Progress
