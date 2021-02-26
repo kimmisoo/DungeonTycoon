@@ -12,6 +12,10 @@ public class MyAdventurerInfo : MonoBehaviour
     private BattleStat pBattleStat;
     #endregion
 
+    #region ExpInfo
+    public Slider expBar;
+    #endregion
+
     #region StatInfo
     public Text advName;
     public Text advLevel1;
@@ -67,6 +71,12 @@ public class MyAdventurerInfo : MonoBehaviour
         RefreshBattleStatInfo();
         RefreshUniqueSkillInfo();
         RefreshItemSlots();
+    }
+
+    private void Update()
+    {
+        RefreshBattleStatInfo();
+        RefreshExpBar();
     }
 
     private void InitItemSlots()
@@ -206,7 +216,7 @@ public class MyAdventurerInfo : MonoBehaviour
 
     private void RefreshBattleStatInfo()
     {
-        SpecialAdventurer playerSpAdv = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>();
+        playerSpAdv = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>();
         BattleStat pBattleStat = playerSpAdv.GetBattleStat();
         advLevel2.text = pBattleStat.Level.ToString();
         advHealth.text = string.Format("{0:0} / {1:0}", pBattleStat.Health, pBattleStat.HealthMax);
@@ -232,5 +242,12 @@ public class MyAdventurerInfo : MonoBehaviour
         Sprite temp = Resources.Load<Sprite>(imagePath);
         if(temp != null)
             skillImage.sprite = temp;
+    }
+
+    private void RefreshExpBar()
+    {
+        playerSpAdv = GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>();
+        BattleStat pBattleStat = playerSpAdv.GetBattleStat();
+        expBar.value = (float)pBattleStat.CurExp / pBattleStat.NextExp;
     }
 }

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum ItemCondition
 {
@@ -23,6 +24,7 @@ public class ItemEquipUI : MonoBehaviour
     public ItemInfoPanel infoPanel;
     public ItemComparisonPanel comparisonPanel;
     public GameObject itemSlotsParent;
+    public Text goldValue;
     
     private Dictionary<string, Dictionary<int, ItemCondition>> itemStorage; // 아이템 보유 및 장착 현황
     private Dictionary<string, int> curEquipped; // 장착중인 아이템 인덱스. -1은 빈칸
@@ -64,6 +66,12 @@ public class ItemEquipUI : MonoBehaviour
         CreateItemStorage();
 
         InitSlotIcons();
+    }
+
+    private void Update()
+    {
+        RefreshItemInfo();
+        RefreshGold();
     }
 
     private void CreateItemStorage() // 아이템 보유 및 장착 현황 초기화
@@ -373,5 +381,10 @@ public class ItemEquipUI : MonoBehaviour
     public void LoadItemStorage(Dictionary<string, Dictionary<int, ItemCondition>> loadedStorage)
     {
         itemStorage = loadedStorage;
+    }
+
+    public void RefreshGold()
+    {
+        goldValue.text = GameManager.Instance.playerGold + "";
     }
 }
