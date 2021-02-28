@@ -76,6 +76,10 @@ public class ItemEquipUI : MonoBehaviour
 
     private void CreateItemStorage() // 아이템 보유 및 장착 현황 초기화
     {
+        //로드 된 스토리지가 있을 때.
+        if(itemStorage != null)
+            return;
+        
         JSONNode jsonNode = ItemManager.Instance.GetItemJSONNode();
         //GameObject itemIcon = (GameObject)Resources.Load("UIPrefabs/TrainUI/ItemIcon_8");
         itemStorage = new Dictionary<string, Dictionary<int, ItemCondition>>();
@@ -223,6 +227,16 @@ public class ItemEquipUI : MonoBehaviour
         //CheckPurchaseConditions();
         infoPanel.SetPrice(itemJSON[selectedCategory][selectedIndex]["Price"].AsInt);
         //infoPanel.SetSelectedItemCondition(itemStorage[selectedCategory][selectedIndex]);
+
+        // 로드 제대로 안됐음
+        //for (int i = -1; i < itemStorage["Weapon"].Count - 1; i++)
+        //{
+        //    //if (loadedStorage["Weapon"][i] == ItemCondition.Purchased)
+        //    //    Debug.Log(i + "Purchased");
+        //    //else if (loadedStorage["Weapon"][i] == ItemCondition.Equipped)
+        //    //    Debug.Log(i + "Equipped");
+        //    Debug.Log(i + " : " + itemStorage["Weapon"][i]);
+        //}
         infoPanel.CheckPurchaseConditions(itemStorage[selectedCategory][selectedIndex], (curEquipped[selectedSlot] == selectedIndex));
     }
 
@@ -280,6 +294,7 @@ public class ItemEquipUI : MonoBehaviour
         
     //}
 
+
     public void EquipItem()
     {
         if(infoPanel.GetIsPurchase())
@@ -320,7 +335,18 @@ public class ItemEquipUI : MonoBehaviour
         //curEquipped["Accessory1"] = GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory1");
         //curEquipped["Accessory2"] = GameManager.Instance.GetPlayerSpAdvItemIndex("Accessory2");
         string origSlot = selectedSlot;
-        
+
+        //Debug.Log("Weapon : " + GameManager.Instance.GetPlayerSpAdvItemIndex("Weapon") + ", " + itemStorage["Weapon"][GameManager.Instance.GetPlayerSpAdvItemIndex("Weapon")]);
+        //if (itemStorage == null)
+        //    Debug.Log("NULL");
+        //for (int i = -1; i<itemStorage["Weapon"].Count-1; i++)
+        //{
+        //    if (itemStorage["Weapon"][i] == ItemCondition.Purchased)
+        //        Debug.Log(i + "Purchased");
+        //    else if (itemStorage["Weapon"][i] == ItemCondition.Equipped)
+        //        Debug.Log(i + "Equipped");
+        //}
+
         SelectSlot("Weapon");
         SelectItem(GameManager.Instance.GetPlayerSpAdvItemIndex("Weapon"));
         EquipItem();
@@ -380,6 +406,10 @@ public class ItemEquipUI : MonoBehaviour
 
     public void LoadItemStorage(Dictionary<string, Dictionary<int, ItemCondition>> loadedStorage)
     {
+        //for (int i = -1; i < loadedStorage["Weapon"].Count - 1; i++)
+        //{
+        //    Debug.Log(i + " : " + loadedStorage["Weapon"][i]);
+        //}
         itemStorage = loadedStorage;
     }
 

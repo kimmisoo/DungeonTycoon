@@ -160,7 +160,7 @@ public class MyAdventurerInfo : MonoBehaviour
         GameObject newIcon = Instantiate<GameObject>(listPanel.GetComponent<ItemListPanel>().GetItemIconByCategoryAndIndex(category, index));
         slotIcons[slot].Add(index, newIcon);
 
-        Debug.Log(newIcon.name);
+        //Debug.Log(newIcon.name);
 
         newIcon.transform.SetParent(itemSlots[slot].transform);
 
