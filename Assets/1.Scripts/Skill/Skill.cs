@@ -22,11 +22,11 @@ public abstract class Skill : MonoBehaviour
     public bool isActive;
     public string key; // 스킬 생성하고 데이터 받을 때 사용하는 키
 
-    public string Name // 스킬 이름
+    public string SkillName // 스킬 이름
     {
-        get { return name; }
+        get { return skillName; }
     }
-    protected string name;
+    protected string skillName;
     public string Explanation // 스킬 설명
     {
         get { return explanation; }
@@ -92,7 +92,8 @@ public abstract class Skill : MonoBehaviour
     public void Deactivate()
     {
         RemoveStatBonuses();
-        StopCoroutine(curCoroutine);
+        if(curCoroutine != null)
+            StopCoroutine(curCoroutine);
         isActive = false;
     }
 
@@ -227,7 +228,7 @@ public abstract class Skill : MonoBehaviour
     {
         this.key = key;
 
-        SkillFactory.GetNameAndExplanation(key, out name, out explanation);
+        SkillFactory.GetNameAndExplanation(key, out skillName, out explanation);
         // 아마 여기서 아이콘 설정은 이름에 따라 Resource.Load 해주면 될 거 같음
         // 일단 스킬 아이콘은 리소스도 없고 하니 스킵
     }

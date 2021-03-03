@@ -35,7 +35,7 @@ public class Monster : Actor, ICombatant//:Actor, IDamagable {
     RewardStat rewardStat;
     private ICombatant enemy;
     private readonly float RecoveryTimer = 3.0f;
-    private readonly float RecoveryTick = 0.5f;
+    private readonly float RecoveryTick = 1.0f;
     private readonly float DecayTimer = 3.0f;
 
     public event HealthBelowZeroEventHandler healthBelowZeroEvent;

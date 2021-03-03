@@ -21,6 +21,7 @@ TagManager:
   - CombatArea
   - ConstructingArea
   - SelectableCharacter
+  - StatDummy
   layers:
   - Default
   - TransparentFX

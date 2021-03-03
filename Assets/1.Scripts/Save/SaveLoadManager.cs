@@ -129,8 +129,9 @@ public class SaveLoadManager : MonoBehaviour
 
             TileMapGenerator.Instance.SetTileStructure(savedata);
             GameManager.Instance.LoadUI(savedata);
+            GameManager.Instance.CreateStatDummies();
 
-            Debug.Log("불러오기 성공");
+            //Debug.Log("불러오기 성공");
 
             savedata = null;
 

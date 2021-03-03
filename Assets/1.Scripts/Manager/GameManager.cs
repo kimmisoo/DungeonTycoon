@@ -58,6 +58,14 @@ public class GameManager : MonoBehaviour
     public int corporateNum = 1;
     public List<float> popular;
     #endregion
+    public bool HadSpAdvChosen
+    {
+        get
+        {
+            return playerSpAdvIndex != -1;
+        }
+    }
+
     public JSONNode items;
     #endregion
 
@@ -111,6 +119,12 @@ public class GameManager : MonoBehaviour
     JSONNode trvInitialGoldData;
 
     JSONNode desireData;
+
+    #region StatDummies
+    GameObject dummyBefore;
+    GameObject dummyAfter;
+    GameObject dummyParent;
+    #endregion
 
     // Save!
     #region BossPhase
@@ -830,6 +844,65 @@ public class GameManager : MonoBehaviour
     // 일선모험가 하나 생성해서 큐에 집어넣음. 모험가 이름을 통해 데이터를 불러와서 집어넣음.
     private void GenAndEnqueueSpecialAdvenuturer(string name, int level)
     {
+        ///*
+        // * 할배: "OldMan"
+        // * 맥시밀리안: "Maxi"
+        // * 아이리스: "Iris"
+        // * 하나: "Hana"
+        // * 연화: "Yeonhwa"
+        // * 뮈라: "Murat"
+        // * 냥냐리우스: "Nyang"
+        // * 왈멍멍: "Wal"
+        // */
+        //// 아마 고쳐야할 거임
+        //string prefabPath = "CharacterPrefabs/" + name;
+        //GameObject go = Instantiate((GameObject)Resources.Load(prefabPath));
+        ////go.GetComponent<Adventurer>().SetAttackEffect((GameObject)Instantiate(Resources.Load("EffectPrefabs/Default_AttackEffect")));
+
+        //// 생성만 해놓고 비활성화
+        //go.SetActive(false);
+
+        //// List에 추가
+        //specialAdventurers.Add(go);
+        //go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
+        //go.transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
+        //SpecialAdventurer tempSpAdv = go.GetComponent<SpecialAdventurer>();
+
+        //SetSpAdvEffects(tempSpAdv, name);
+
+        ////Save용
+        //tempSpAdv.index = specialAdventurers.Count - 1;
+        //tempSpAdv.prefabPath = prefabPath;
+        //tempSpAdv.nameKey = name;
+
+        //// Debug.Log("character instantiate - " + i);
+        //BattleStat tempBattleStat = GenBattleStat(name, level);
+        ////Stat tempStat = GenStat(name, level);
+        //RewardStat tempRewardStat = GenRewardStat(level);
+
+        ////Debug.Log("Adv " + tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+        ////tempBattleStat.ResetBattleStat();
+        ////int skillID = spAdvSummary[name]["SkillID"].AsInt;
+
+        ////Debug.Log(tempStat.name + " hp: " + tempBattleStat.Health + " atk: " + tempBattleStat.BaseAttack);
+
+        //tempSpAdv.InitSpecialAdventurer(tempBattleStat, tempRewardStat, name);
+        //GenStat(tempSpAdv, name, level);
+        //tempSpAdv.stat.SetOwner(tempSpAdv);
+        //spAdvEnterQ.Enqueue(go);
+
+        GameObject spAdvObj = GenSpecialAdvenuturer(name, level);
+
+        // List에 추가
+        specialAdventurers.Add(spAdvObj);
+        spAdvObj.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
+        spAdvObj.transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
+
+        spAdvEnterQ.Enqueue(spAdvObj);
+    }
+
+    public GameObject GenSpecialAdvenuturer(string name, int level)
+    {
         /*
          * 할배: "OldMan"
          * 맥시밀리안: "Maxi"
@@ -848,16 +921,13 @@ public class GameManager : MonoBehaviour
         // 생성만 해놓고 비활성화
         go.SetActive(false);
 
-        // List에 추가
-        specialAdventurers.Add(go);
-        go.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
-        go.transform.parent = GameObject.FindGameObjectWithTag("Characters").transform;
         SpecialAdventurer tempSpAdv = go.GetComponent<SpecialAdventurer>();
 
         SetSpAdvEffects(tempSpAdv, name);
 
         //Save용
-        tempSpAdv.index = specialAdventurers.Count - 1;
+        tempSpAdv.index = specialAdventurers.Count;
+        //Debug.Log(tempSpAdv.index);
         tempSpAdv.prefabPath = prefabPath;
         tempSpAdv.nameKey = name;
 
@@ -875,7 +945,66 @@ public class GameManager : MonoBehaviour
         tempSpAdv.InitSpecialAdventurer(tempBattleStat, tempRewardStat, name);
         GenStat(tempSpAdv, name, level);
         tempSpAdv.stat.SetOwner(tempSpAdv);
-        spAdvEnterQ.Enqueue(go);
+
+        return go;
+    }
+
+    public void CreateStatDummies()
+    {
+        if (HadSpAdvChosen == false)
+            return;
+
+        dummyParent = GameObject.FindGameObjectWithTag("StatDummy");
+        dummyBefore = GenSpecialAdvenuturer(GetPlayerSpAdv().GetComponent<SpecialAdventurer>().nameKey, GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat().Level);
+        dummyAfter = GenSpecialAdvenuturer(GetPlayerSpAdv().GetComponent<SpecialAdventurer>().nameKey, GetPlayerSpAdv().GetComponent<SpecialAdventurer>().GetBattleStat().Level);
+
+        dummyBefore.transform.SetParent(dummyParent.transform);
+        dummyAfter.transform.SetParent(dummyParent.transform);
+        //Debug.Log(dummyParent.name);
+
+        RefreshDummies();
+    }
+
+    public void RefreshDummies()
+    {
+        SpecialAdventurer beforeSpAdv = dummyBefore.GetComponent<SpecialAdventurer>();
+        SpecialAdventurer afterSpAdv = dummyAfter.GetComponent<SpecialAdventurer>();
+        SpecialAdventurer origSpAdv = GetPlayerSpAdv().GetComponent<SpecialAdventurer>();
+
+        beforeSpAdv.InitSpecialAdventurer(origSpAdv.GetBattleStat(), GenRewardStat(origSpAdv.Level), origSpAdv.nameKey);
+        afterSpAdv.InitSpecialAdventurer(origSpAdv.GetBattleStat(), GenRewardStat(origSpAdv.Level), origSpAdv.nameKey);
+
+        beforeSpAdv.EquipItem("Weapon", origSpAdv.GetEquipedItemIndex("Weapon"));
+        beforeSpAdv.EquipItem("Armor", origSpAdv.GetEquipedItemIndex("Armor"));
+        beforeSpAdv.EquipItem("Accessory1", origSpAdv.GetEquipedItemIndex("Accessory1"));
+        beforeSpAdv.EquipItem("Accessory2", origSpAdv.GetEquipedItemIndex("Accessory2"));
+
+        afterSpAdv.EquipItem("Weapon", origSpAdv.GetEquipedItemIndex("Weapon"));
+        afterSpAdv.EquipItem("Armor", origSpAdv.GetEquipedItemIndex("Armor"));
+        afterSpAdv.EquipItem("Accessory1", origSpAdv.GetEquipedItemIndex("Accessory1"));
+        afterSpAdv.EquipItem("Accessory2", origSpAdv.GetEquipedItemIndex("Accessory2"));
+        //Debug.Log(beforeSpAdv.Level + ", " + beforeSpAdv.GetBattleStat().Attack);
+
+        beforeSpAdv.ApplySkillsToDummy();
+        afterSpAdv.ApplySkillsToDummy();
+    }
+
+    public void ChangeDummyItem(string itemSlot, int itemIndex)
+    {
+        SpecialAdventurer afterSpAdv = dummyAfter.GetComponent<SpecialAdventurer>();
+        afterSpAdv.EquipItem(itemSlot, itemIndex);
+        afterSpAdv.ApplySkillsToDummy();
+    }
+
+
+    public GameObject GetDummyBefore()
+    {
+        return dummyBefore;
+    }
+
+    public GameObject GetDummyAfter()
+    {
+        return dummyAfter;
     }
 
     public void SetSpAdvEffects(SpecialAdventurer spAdv, string name)
@@ -1116,6 +1245,25 @@ public class GameManager : MonoBehaviour
         return playerGold;
     }
 
+    // 플레이어가 선택한 일선 모험가 Get. 없으면 null
+    public GameObject GetPlayerSpAdv()
+    {
+        if (playerSpAdvIndex != -1)
+            return specialAdventurers[playerSpAdvIndex];
+        else
+            return null;
+    }
+
+    public void EquipPlayerSpAdvItem(string itemSlot, int itemIndex)
+    {
+        specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().EquipItem(itemSlot, itemIndex);
+    }
+
+    public int GetPlayerSpAdvItemIndex(string itemSlot)
+    {
+        return specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().GetEquipedItemIndex(itemSlot);
+    }
+
     // Scene 데이터 설정
     public void SetSceneData(JSONNode aData)
     {
@@ -1217,7 +1365,6 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-
     #region SaveLoad
     // 현재 상황 Save
     public void Save()
@@ -1239,6 +1386,8 @@ public class GameManager : MonoBehaviour
         playerGold = savedata.playerGold;
         playerPopularity = savedata.playerPopularity;
         playerSpAdvIndex = savedata.playerSpAdvIndex;
+
+        UIManager.Instance.itemEquipUI.LoadItemStorage(savedata.itemStorage);
 
         Camera.main.transform.position = new Vector3(savedata.cameraPosition.x, savedata.cameraPosition.y, savedata.cameraPosition.z);
         Camera.main.orthographicSize = savedata.cameraSize;
@@ -1554,6 +1703,8 @@ public class GameManager : MonoBehaviour
 
     public void SetICombatantEnemy(ICombatant input, CombatantPtr data)
     {
+        //if (data.index == -1)
+        //    Debug.Log(data.combatantType + " " + data.index);
         switch (data.combatantType)
         {
             case ActorType.Monster: // Mob vs Mob는 없음.
@@ -1799,6 +1950,10 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.bossRaidUI.SetRaidStateText(savedata.bossRaidStateText);
     }
 
+    public Dictionary<string, Dictionary<int, ItemCondition>> GetItemStorage()
+    {
+        return UIManager.Instance.itemEquipUI.GetItemStorage();
+    }
     #endregion
 
     #region Stage Progress
@@ -1810,6 +1965,8 @@ public class GameManager : MonoBehaviour
     {
         playerSpAdvIndex = spAdvIndex;
         specialAdventurers[spAdvIndex].GetComponent<SpecialAdventurer>().SignExclusiveContract();
+
+        CreateStatDummies();
     }
 
     /// <summary>

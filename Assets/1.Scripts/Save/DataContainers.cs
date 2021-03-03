@@ -16,6 +16,9 @@ public class GameSavedata
     public int playerPopularity;
     public int playerSpAdvIndex;
 
+    // 아이템 보유 및 장착 현황
+    public Dictionary<string, Dictionary<int, ItemCondition>> itemStorage; 
+
     // 카메라 설정
     public Vector3Data cameraPosition;
     public float cameraSize;
@@ -63,6 +66,8 @@ public class GameSavedata
         playerGold = gameManager.playerGold;
         playerPopularity = gameManager.playerPopularity;
         playerSpAdvIndex = gameManager.playerSpAdvIndex;
+
+        itemStorage = gameManager.GetItemStorage();
 
         cameraPosition = new Vector3Data(Camera.main.transform.position);
         cameraSize = Camera.main.orthographicSize;
@@ -695,7 +700,7 @@ public class ItemData
     public ItemData(Item item)
     {
         itemCategory = item.itemCategory;
-        itemNum = item.itemNum;
+        itemNum = item.itemIndex;
     }
 }
 
@@ -708,7 +713,11 @@ public class CombatantPtr
 
     public CombatantPtr(ICombatant combatant)
     {
+        //if(Debug)
+        //Debug.Log(combatant);
         this.index = combatant.GetIndex();
+        if (index == -1)
+            Debug.Log(index);
         combatantType = combatant.GetActorType();
     }
 }

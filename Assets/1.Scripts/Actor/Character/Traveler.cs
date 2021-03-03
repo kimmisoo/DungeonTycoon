@@ -584,4 +584,9 @@ public class Traveler : Actor
         return ActorType.Traveler;
     }
     #endregion
+
+    public Stat GetStat()
+    {
+        return stat;
+    }
 }

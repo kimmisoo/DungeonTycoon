@@ -484,7 +484,7 @@
 			"PenetrationMult": null,
 			"Price": 6000,
 			"DemendedLevel": 85,
-			"ItemSkill": "ThunderBolt",
+			"ItemSkill": "Thunderbolt",
 			"Explanation": "천사장이 사용하는 창. 던지면 번개가 되어 날아가며, 주로 공중에서 지상을 폭격하는 식으로 사용한다. 꽂히고 나면 다시 손으로 돌아온다.",
 			"OptimalLevelLower": 85,
 			"OptimalLevelUpper": 100
@@ -799,7 +799,7 @@
 			"OptimalLevelUpper": 65
 		},
 		{
-			"Name": "스팀 파워드 아머",
+			"Name": "스팀파워드 아머",
 			"Icon": null,
 			"Health": 175,
 			"Defence": 23,
@@ -1054,7 +1054,7 @@
 			"OptimalLevelUpper": 40
 		},
 		{
-			"Name": "비전서 : 일섬",
+			"Name": "비전서 - 일섬",
 			"Icon": null,
 			"ItemSkill": "JustOneSlash",
 			"Price": 7000,
@@ -1124,7 +1124,7 @@
 			"OptimalLevelUpper": 30
 		},
 		{
-			"Name": "비전서 : 검기",
+			"Name": "비전서 - 검기",
 			"Icon": null,
 			"ItemSkill": "SwordAura",
 			"Price": 2500,

@@ -5,6 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ItemCategory
+{
+    Weapon, Armor, Accessory
+}
+
 public class ItemManager : MonoBehaviour
 {
     private static ItemManager _instance;
@@ -15,6 +20,7 @@ public class ItemManager : MonoBehaviour
 
     // 아이템 정보 읽어오기용
     public JSONNode itemsJson;
+
 
     public static ItemManager Instance
     {
@@ -61,6 +67,9 @@ public class ItemManager : MonoBehaviour
 
     public Item CreateItem(string tempItemCategory, int tempItemIndex)
     {
+        if (tempItemIndex == -1) // -1은 빈칸이므로 null 반환
+            return null;
+
         Item tempItem = new Item();
 
         switch (tempItemCategory)
@@ -108,8 +117,28 @@ public class ItemManager : MonoBehaviour
 
         // 세이브용
         tempItem.itemCategory = tempItemCategory;
-        tempItem.itemNum = tempItemIndex;
+        tempItem.itemIndex = tempItemIndex;
 
         return tempItem;
+    }
+
+    public int GetItemCount(ItemCategory category)
+    {
+        switch (category)
+        {
+            case ItemCategory.Weapon:
+                return itemsJson["Weapon"].Count;
+            case ItemCategory.Armor:
+                return itemsJson["Armor"].Count;
+            case ItemCategory.Accessory:
+                return itemsJson["Accessory"].Count;
+            default:
+                return -1;
+        }
+    }
+
+    public JSONNode GetItemJSONNode()
+    {
+        return itemsJson;
     }
 }

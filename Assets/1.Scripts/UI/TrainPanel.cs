@@ -7,7 +7,9 @@ using SimpleJSON;
 public class TrainPanel : UIObject {
 
     public GameObject informationPanel;
-    public GameObject itemPanel;
+    public GameObject spAdvSelectionPanel;
+    public GameObject spAdvInfoPanel;
+    public GameObject itemEquipPanel;
     public GameObject bossPanel;
     GameObject currentShowingPanel;
     //Information Panel's
@@ -16,28 +18,28 @@ public class TrainPanel : UIObject {
     public Image statusButtonImage;
     public Image storyButtonImage;
 
-    public Text currentShowingStory;
-    public GameObject adventurerList;
-    public List<GameObject> adventurers;
-    public Image currentAdventurerImage_Small;
-    public Image currentAdventurerImage_Large;
-    public GameObject storyButtonFirst;
-    public List<GameObject> storyButtons;
-    public Text currentAdventurerHealth;
-    public Text currentAdventurerDefense;
-    public Text currentAdventurerMoveSpeed;
-    public Text currentAdventurerRange;
-    public Text currentAdventurerDPS;
-    public Text currentAdventurerAttack;
-    public Text currentAdventurerAttackSpeed;
-    public Text currentAdventurerCritical;
-    public Text currentAdventurerCriticalAttack;
-    public Text currentAdventurerPenetrateFixed;
-    public Text currentAdventurerPenetratePercent;
-    public GameObject currentAdventurerAbilityList;
-    public List<GameObject> currentAdventurerAbilitys;
-    public GameObject currentAdventurerItemList;
-    public List<GameObject> currentAdventurerItems;
+    //public Text currentShowingStory;
+    //public GameObject adventurerList;
+    //public List<GameObject> adventurers;
+    //public Image currentAdventurerImage_Small;
+    //public Image currentAdventurerImage_Large;
+    //public GameObject storyButtonFirst;
+    //public List<GameObject> storyButtons;
+    //public Text currentAdventurerHealth;
+    //public Text currentAdventurerDefense;
+    //public Text currentAdventurerMoveSpeed;
+    //public Text currentAdventurerRange;
+    //public Text currentAdventurerDPS;
+    //public Text currentAdventurerAttack;
+    //public Text currentAdventurerAttackSpeed;
+    //public Text currentAdventurerCritical;
+    //public Text currentAdventurerCriticalAttack;
+    //public Text currentAdventurerPenetrateFixed;
+    //public Text currentAdventurerPenetratePercent;
+    //public GameObject currentAdventurerAbilityList;
+    //public List<GameObject> currentAdventurerAbilitys;
+    //public GameObject currentAdventurerItemList;
+    //public List<GameObject> currentAdventurerItems;
 
 
 
@@ -76,28 +78,36 @@ public class TrainPanel : UIObject {
     public Text itemsValue;
     //button의   Text
 
-    //Dungeon Panel's
+    public Button itemEquipButton;
 
-
-
+    // 일선 모험가 선택 관련
+    //private bool isSelected = false;
 
 
     public override void Show()
     {
-        informationPanel.SetActive(true);
-        itemPanel.SetActive(false);
+        GameObject spAdvPanel;
+
+        if (GameManager.Instance.playerSpAdvIndex != -1)
+            spAdvPanel = spAdvInfoPanel;
+        else
+            spAdvPanel = spAdvSelectionPanel;
+
+        spAdvPanel.SetActive(true);
+        itemEquipPanel.SetActive(false);
         bossPanel.SetActive(false);
 
+        RefreshEquipButton();
         
         base.Show();
-        currentShowingPanel = informationPanel;
+        currentShowingPanel = spAdvPanel;
     }
 
     public override void Hide()
     {
         //하위 Object 초기상태로 세팅 후 base.hide 해야함.
         currentShowingPanel = null;
-        SetInitialState();
+        //SetInitialState();
         base.Hide();
     }
 
@@ -107,8 +117,22 @@ public class TrainPanel : UIObject {
         currentShowingPanel.SetActive(false);
         currentShowingPanel = panel;
         currentShowingPanel.SetActive(true);
-
     }
+
+    public void OpenSpAdvPanel()
+    {
+        GameObject spAdvPanel;
+
+        if (GameManager.Instance.playerSpAdvIndex != -1)
+            spAdvPanel = spAdvInfoPanel;
+        else
+            spAdvPanel = spAdvSelectionPanel;
+
+        currentShowingPanel.SetActive(false);
+        currentShowingPanel = spAdvPanel;
+        currentShowingPanel.SetActive(true);
+    }
+
     public void SwitchStoryStatusPanel(int cat)
     {
         if(cat == 0) // story -> status
@@ -126,14 +150,25 @@ public class TrainPanel : UIObject {
             storyPanel.SetActive(true);
         }
     }
-    public void SetInitialState()
-    {
-        statusButtonImage.material = UIManager.Instance.grayScaleMaterial;
-        statusPanel.SetActive(false);
-        storyButtonImage.material = null;
-        storyPanel.SetActive(true);
-        //item  초기상태
 
+    public void RefreshEquipButton()
+    {
+        itemEquipButton.interactable = GameManager.Instance.HadSpAdvChosen;
     }
 
+    //
+    //public void SetInitialState()
+    //{
+    //    statusButtonImage.material = UIManager.Instance.grayScaleMaterial;
+    //    statusPanel.SetActive(false);
+    //    storyButtonImage.material = null;
+    //    storyPanel.SetActive(true);
+    //    //item  초기상태
+
+    //}
+
+    //public void SpAdvSelected()
+    //{
+    //    isSelected = true;
+    //}
 }
