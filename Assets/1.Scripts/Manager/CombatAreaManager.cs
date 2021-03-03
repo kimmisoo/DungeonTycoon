@@ -361,6 +361,7 @@ public class CombatAreaManager : MonoBehaviour
 				{
 					thatTile.SetIsActive(false);
 					thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 0.0f);
+					thatTile.SetIsWall(true);
 				}
             }
         }
@@ -473,6 +474,7 @@ public class CombatAreaManager : MonoBehaviour
 				{
 					thatTile.SetIsActive(false);
 					thatTile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 0.0f);
+					thatTile.SetIsWall(true);
 				}
 			}
 
@@ -563,14 +565,17 @@ public class CombatAreaManager : MonoBehaviour
 		{
 			PublicHuntingAreaIndex++;
 			if (isLoaded == false)
+			{
 				GameManager.Instance.OnHuntingAreaOpenToPublic();
+				GameManager.Instance.OpenNextStage();
+			}
+			
 		}
 		else
 		{
 			BossAreaConquerStart();
 		}
-        HuntingAreaOpenToPublic(); //빈거
-        
+        HuntingAreaOpenToPublic(); //빈거     
         HuntingAreaConquerStart(); //빈거
 		
         //Debug.Log("OnHuntingAreaConquered");

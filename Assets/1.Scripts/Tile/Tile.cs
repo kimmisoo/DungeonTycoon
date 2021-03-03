@@ -46,6 +46,7 @@ public class Tile : MonoBehaviour
 	bool isRoad = false;
 	bool isActive = false;
 	bool isEntrance = false;
+	bool isWall = false;
     [SerializeField]
     // 수정요망 이거 Place로 고치고 관련 코드 고쳐야 함. 일단 보류 쓰는 곳 없음.
     Structure structure;
@@ -198,6 +199,14 @@ public class Tile : MonoBehaviour
 	public bool GetIsEntrance()
 	{
 		return isEntrance;
+	}
+	public void SetIsWall(bool _isWall)
+	{
+		isWall = _isWall;
+	}
+	public bool GetIsWall()
+	{
+		return isWall;
 	}
 	public void SetX(int _x)
 	{

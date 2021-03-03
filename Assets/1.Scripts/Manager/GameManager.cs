@@ -2383,7 +2383,7 @@ public class GameManager : MonoBehaviour
 				Tile tile = layer.GetTileAsComponent(j, i);
 				if (!tile.GetNonTile())
 				{
-					if (tile.GetLayerNum() == stageIndex)
+					if (tile.GetLayerNum() == stageIndex && tile.GetIsWall() == false)
 						tile.SetIsActive(true);
 				}			
 			}
