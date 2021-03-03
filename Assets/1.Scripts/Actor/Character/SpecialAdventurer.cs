@@ -856,7 +856,6 @@ public class SpecialAdventurer : Adventurer
 	protected override IEnumerator SearchingStructure()
 	{
 		yield return null;
-
 		if (structureListByPref == null) // List가 비어있을때 . // 건물 이용 후 List 비워줘야함.
 		{
 			if (stat == null)
@@ -894,14 +893,14 @@ public class SpecialAdventurer : Adventurer
 			{
 				pathFindCount++;
 				//destinationPlace 길막힘 알림.!
-				state = State.SearchingStructure;
+				curState = State.SearchingStructure;
 			}
 			else
 			{
 				curState = State.PathFinding;
 			}
 		}
-
+		
 		//길찾기 시작
 		//pathfind success, fail delegate call
 	}
