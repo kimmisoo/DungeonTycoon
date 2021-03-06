@@ -11,6 +11,8 @@ public class TrainPanel : UIObject {
     public GameObject spAdvInfoPanel;
     public GameObject itemEquipPanel;
     public GameObject bossPanel;
+    public GameObject otherSpAdvSelectionPanel;
+    public GameObject otherSpAdvInfoPanel;
     GameObject currentShowingPanel;
     //Information Panel's
     public GameObject storyPanel;
@@ -96,8 +98,10 @@ public class TrainPanel : UIObject {
         spAdvPanel.SetActive(true);
         itemEquipPanel.SetActive(false);
         bossPanel.SetActive(false);
+        otherSpAdvSelectionPanel.SetActive(false);
+        otherSpAdvInfoPanel.SetActive(false);
 
-        RefreshEquipButton();
+    RefreshEquipButton();
         
         base.Show();
         currentShowingPanel = spAdvPanel;
@@ -131,6 +135,12 @@ public class TrainPanel : UIObject {
         currentShowingPanel.SetActive(false);
         currentShowingPanel = spAdvPanel;
         currentShowingPanel.SetActive(true);
+    }
+
+    public void OpenOtherSpAdvInfoPanel(string nameKey)
+    {
+        otherSpAdvSelectionPanel.GetComponent<OtherSpAdvSelectionUI>().SelectSpAdv(nameKey);
+        OpenPanel(otherSpAdvInfoPanel);
     }
 
     public void SwitchStoryStatusPanel(int cat)

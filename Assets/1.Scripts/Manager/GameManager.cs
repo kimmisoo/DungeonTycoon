@@ -1255,6 +1255,24 @@ public class GameManager : MonoBehaviour
             return null;
     }
 
+    public GameObject GetSpAdv(int index)
+    {
+        if (index != -1)
+            return specialAdventurers[index];
+        else
+            return null;
+    }
+
+    public GameObject GetSpAdv(string namekey)
+    {
+        for(int i = 0; i<specialAdventurers.Count; i++)
+        {
+            if (specialAdventurers[i].GetComponent<SpecialAdventurer>().nameKey == namekey)
+                return specialAdventurers[i];
+        }
+        return null;
+    }
+
     public void EquipPlayerSpAdvItem(string itemSlot, int itemIndex)
     {
         specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().EquipItem(itemSlot, itemIndex);
@@ -1263,6 +1281,11 @@ public class GameManager : MonoBehaviour
     public int GetPlayerSpAdvItemIndex(string itemSlot)
     {
         return specialAdventurers[playerSpAdvIndex].GetComponent<SpecialAdventurer>().GetEquipedItemIndex(itemSlot);
+    }
+
+    public int GetSpAdvItemIndex(int spAdvIdx, string itemSlot)
+    {
+        return specialAdventurers[spAdvIdx].GetComponent<SpecialAdventurer>().GetEquipedItemIndex(itemSlot);
     }
 
     // Scene 데이터 설정
