@@ -539,7 +539,7 @@ public class GameManager : MonoBehaviour
         tempStat.wealth = WealthType.Upper;
         tempStat.gold = spAdvStatDatas[name][level - 1]["gold"].AsInt;
 
-        SetDesires(ref tempStat, JobType.Adventurer); // 어차피 같으니 그냥 Adventurer로 넣어줌.
+        SetDesires(ref tempStat, JobType.SpecialAdventurer); // 어차피 같으니 그냥 Adventurer로 넣어줌.
 
         //Debug.Log("name :" + tempStat.name + " race :" + tempStat.race + " gender :" + tempStat.gender);
 
@@ -698,8 +698,18 @@ public class GameManager : MonoBehaviour
 #if DEBUG_GEN_ADV
         Debug.Log("AddDesire() : " + desireType);
 #endif
-        const float desireTickBetween = 1.0f;
-        const float desireTickMult = 1.0f;
+        float desireTickBetween = 1.0f;
+		float desireTickMult = 1.0f;
+		if (jobType == JobType.SpecialAdventurer)
+		{
+			desireTickMult = 0.1f;
+			jobType = JobType.Adventurer;
+		}
+		else if(jobType == JobType.Adventurer)
+		{
+			desireTickMult = 0.5f;
+		}
+		
 
         string typeStr;
         switch (desireType)
@@ -945,7 +955,7 @@ public class GameManager : MonoBehaviour
         tempSpAdv.InitSpecialAdventurer(tempBattleStat, tempRewardStat, name);
         GenStat(tempSpAdv, name, level);
         tempSpAdv.stat.SetOwner(tempSpAdv);
-
+		
         return go;
     }
 

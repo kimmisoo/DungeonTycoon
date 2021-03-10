@@ -463,7 +463,9 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 		//Debug.Log("GetSpecificDesire() : " + stat.GetHighestDesire());
 		foreach (KeyValuePair<DesireType, DesireBase> kvp in stat.GetDesireDict())
 		{
-			StartCoroutine(kvp.Value.Tick());
+			if (kvp.Value.GetTickCoroutine() == null)
+				kvp.Value.SetTickCoroutine(StartCoroutine(kvp.Value.Tick()));
+			//StartCoroutine(kvp.Value.Tick());
 		}
 		if (stat.GetSpecificDesire(stat.GetHighestDesire()).desireValue < 50.0f)
             curState = State.SearchingHuntingArea;
