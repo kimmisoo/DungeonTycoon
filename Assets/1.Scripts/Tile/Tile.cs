@@ -138,6 +138,10 @@ public class Tile : MonoBehaviour
     {
 		return isNonTile == false && isActive == true && isStructed == false;//isActive && (isNonTile == false || isHuntingArea == true) && isStructed == false;//&& isStructed == false;//isStructed == false ? isRoad || isBuildingArea || isHuntingArea : false; 
 	}
+	public bool GetPassableSpecialAdventurer()
+	{
+		return isNonTile == false && isStructed == false;
+	}
     public bool GetPassableMonster()
     {
 		return isHuntingArea;//isNonTile == false && isActive == true;// ? isHuntingArea : false;

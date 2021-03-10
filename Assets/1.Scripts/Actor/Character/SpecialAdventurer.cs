@@ -8,6 +8,9 @@ using UnityEngine;
 
 public class SpecialAdventurer : Adventurer
 {
+
+	Coroutine testCoroutine;
+	WaitForSeconds oneSec = new WaitForSeconds(5.0f);
     private Item weapon, armor, accessory1, accessory2;
     //private Dictionary<string, Item> itemSlots;
 
@@ -70,8 +73,18 @@ public class SpecialAdventurer : Adventurer
         //EquipAccessory1(ItemManager.Instance.CreateItem());
         //Debug.Log("[OnEnable] After Atk : " + battleStat.Attack + ", AtkSpd : " + battleStat.AttackSpeed + ", CritChance : " + battleStat.CriticalChance + ", PenFixed : " + battleStat.PenetrationFixed + ", PenMult : " + battleStat.PenetrationMult);
 #endif
+		testCoroutine = StartCoroutine(test());
     }
-
+	IEnumerator test()
+	{
+		float outVal = 0.0f;
+		while(true)
+		{
+			yield return oneSec;
+			Debug.Log("Name = " + name + " ///Health Desire = " + stat.GetDesireDict()[DesireType.Health].desireValue);
+				
+		}
+	}
     public void OnDisable()
     {
         //uniqueSkill.Deactivate();
@@ -968,6 +981,8 @@ public class SpecialAdventurer : Adventurer
 		//길찾기 시작
 		//pathfind success, fail delegate call
 	}
+
+
 	protected override IEnumerator SearchingHuntingArea()
     {
         yield return null;
@@ -1302,5 +1317,10 @@ public class SpecialAdventurer : Adventurer
     {
         return ActorType.SpecialAdventurer;
     }
-    #endregion
+	#endregion
+
+	public override bool ValidateNextTile(Tile tile)
+	{
+		return tile.GetPassableSpecialAdventurer();
+	}
 }

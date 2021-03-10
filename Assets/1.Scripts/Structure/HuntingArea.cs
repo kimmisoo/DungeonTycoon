@@ -130,13 +130,14 @@ public class HuntingArea : CombatArea
         if (killCount < conquerCondition)
         {
             killCount++;
-            if (killCount >= conquerCondition)
-                InvokeAreaConqueredEvent();
-
+			if (killCount >= conquerCondition)
+			{
+				InvokeAreaConqueredEvent();
+			}
             //Debug.Log("killCount : " + killCount);
         }
     }
-
+	
     // Use this for initialization
 #region 수정!
     void Start()
@@ -301,5 +302,9 @@ public class HuntingArea : CombatArea
     {
         return PlaceType.HuntingArea;
     }
+	public void HuntingAreaConquered()
+	{
+		conquerCondition = -1;
+	}
     #endregion
 }

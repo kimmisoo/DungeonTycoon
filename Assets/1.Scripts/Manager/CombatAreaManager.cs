@@ -535,7 +535,7 @@ public class CombatAreaManager : MonoBehaviour
     public void InitCombatAreas()
     {
         // 일단 하나 열어두고 시작.
-        OnHuntingAreaConquered();
+        OnHuntingAreaConqueredFirst();
     }
 
     private void HuntingAreaOpenToPublic()
@@ -557,11 +557,33 @@ public class CombatAreaManager : MonoBehaviour
     {
         GameManager.Instance.OnBossAreaConquerStarted();
     }
+	private void OnHuntingAreaConqueredFirst(bool isLoaded = false)
+	{
+		Debug.Log("HuntingArea Conquered! # = " + ConqueringHuntingAreaIndex + "First");
+		huntingAreas[ConqueringHuntingAreaIndex].HuntingAreaConquered();// ConquerCondition을 -1로.
+		if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea == false)
+		{
+			PublicHuntingAreaIndex++;
+			if (isLoaded == false)
+			{
+				GameManager.Instance.OnHuntingAreaOpenToPublic();
+			}
+		}
+		else
+		{
+			BossAreaConquerStart();
+		}
+		HuntingAreaOpenToPublic(); //빈거     
+		HuntingAreaConquerStart(); //빈거
 
-    private void OnHuntingAreaConquered(bool isLoaded = false)
+		//Debug.Log("OnHuntingAreaConquered");
+
+	}
+	private void OnHuntingAreaConquered(bool isLoaded = false)
     {
 		Debug.Log("HuntingArea Conquered! # = " + ConqueringHuntingAreaIndex);
-		if(huntingAreas[ConqueringHuntingAreaIndex].IsBossArea == false)
+		huntingAreas[ConqueringHuntingAreaIndex].HuntingAreaConquered();// ConquerCondition을 -1로.
+		if (huntingAreas[ConqueringHuntingAreaIndex].IsBossArea == false)
 		{
 			PublicHuntingAreaIndex++;
 			if (isLoaded == false)

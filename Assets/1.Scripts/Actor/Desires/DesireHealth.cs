@@ -7,7 +7,7 @@ public class DesireHealth : DesireBase {
 
 	public override IEnumerator Tick()
 	{
-		if (!(owner is Adventurer))
+		if (!(owner is Adventurer) || !(owner is SpecialAdventurer))
 			yield break;
 		while (true)
 		{

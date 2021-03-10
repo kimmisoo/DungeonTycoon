@@ -527,7 +527,7 @@ public class Traveler : Actor
 	{
 		curCoroutine = StartCoroutine(_OnUsingStructure());
 	}
-	IEnumerator _OnUsingStructure()
+	public virtual IEnumerator _OnUsingStructure()
 	{
 		yield return null;
 		SetInvisible();
@@ -543,7 +543,7 @@ public class Traveler : Actor
 	{
 		curCoroutine = StartCoroutine(_OnExitStructure());
 	}
-	IEnumerator _OnExitStructure()
+	public virtual IEnumerator _OnExitStructure()
 	{
 		yield return null;
 		Debug.Log("\nTraveler.OnExitStructure is Called!!!!!\n");

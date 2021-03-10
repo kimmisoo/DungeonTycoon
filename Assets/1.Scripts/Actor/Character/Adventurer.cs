@@ -529,6 +529,35 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 	//    curState = State.EnteringHuntingArea;
 	//}
 
+	public override IEnumerator _OnExitStructure()
+	{
+		yield return null;
+		Debug.Log("\nTraveler.OnExitStructure is Called!!!!!\n");
+		//퇴장 처리
+		(destinationPlace as Structure).ExitTraveler();
+		SetVisible();
+		// 사용 후에는 비워주기.
+		destinationPlace = null;
+		destinationTile = null;
+		structureListByPref = null;
+		curState = State.Idle;
+	}
+	public override IEnumerator _OnUsingStructure()
+	{
+		yield return null;
+		SetInvisible();
+		curState = State.UsingStructure;
+		//스탯 처리
+		stat.gold -= (destinationPlace as Structure).charge;
+		if((destinationPlace as Structure).resolveType == DesireType.Health)
+			battleStat.Heal(battleStat.MissingHealth / 2);
+		else
+			stat.GetSpecificDesire((destinationPlace as Structure).resolveType).desireValue -= (destinationPlace as Structure).resolveAmount;
+		GameManager.Instance.AddGold((destinationPlace as Structure).charge);
+		
+		
+		
+	}
 	// 수정요망
 	protected virtual IEnumerator SearchingHuntingArea()
     {
