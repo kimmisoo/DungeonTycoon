@@ -1,5 +1,6 @@
-﻿#define DEBUG_ADV
+﻿//#define DEBUG_ADV
 //#define DEBUG_GEN_ADV
+//#define DEBUG_OTHER_SPADV_UI
 
 using UnityEngine;
 using System.Collections;
@@ -312,6 +313,13 @@ public class GameManager : MonoBehaviour
         //StartCoroutine(GCcall())
         GenerateSpecialAdventurers(sceneData);
         StartCoroutine(LateStart());
+
+#if DEBUG_OTHER_SPADV_UI
+        SpecialAdventurer tempSpAdv = specialAdventurers[0].GetComponent<SpecialAdventurer>();
+        tempSpAdv.EquipItem("Weapon", 1);
+        Debug.Log(tempSpAdv.nameKey);
+        Debug.Log(tempSpAdv.GetWeapon().Name);
+#endif
     }
 
     public void SetAdvDefaultEffects(Adventurer inputAdventurer)
@@ -379,9 +387,9 @@ public class GameManager : MonoBehaviour
         TextAsset itemText = Resources.Load<TextAsset>("Items/items");
         items = JSON.Parse(itemText.ToString());
     }
-    #endregion
+#endregion
 
-    #region Generate Characters
+#region Generate Characters
     // 모험가 입장 코루틴
     // 이거에 i 값을 던져주면 활성화 문제는 해결됨.
 
@@ -1163,9 +1171,9 @@ public class GameManager : MonoBehaviour
     {
         return info1.curAdvNum - info2.curAdvNum;
     }
-    #endregion
+#endregion
 
-    #region Stage Progress
+#region Stage Progress
     // 보스 레이드 준비 끝났나?
     public bool IsBossRaidPrepEnded
     {
@@ -1174,7 +1182,7 @@ public class GameManager : MonoBehaviour
             return (responsedSpAdvCnt == specialAdventurers.Count) || isBossRaidPrepTimeOver;
         }
     }
-    #endregion
+#endregion
 
     // 인기도 추가
     public void AddPop(int who, float amount)
@@ -1389,7 +1397,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    #region SaveLoad
+#region SaveLoad
     // 현재 상황 Save
     public void Save()
     {
@@ -1424,7 +1432,7 @@ public class GameManager : MonoBehaviour
         GameObject newObject;
         //GameObject tileMapLayer;
 
-        #region travelersDisabled
+#region travelersDisabled
         // 할당 해제. 다른 Scene일 수도 있으니.
         foreach (GameObject traveler in travelersDisabled)
         {
@@ -1463,9 +1471,9 @@ public class GameManager : MonoBehaviour
             //}
             //SetLoadedTravelerState(travelers[i], savedata.travelers[i]);
         }
-        #endregion
+#endregion
 
-        #region travelersEnabled
+#region travelersEnabled
         // 할당 해제. 다른 Scene일 수도 있으니.
         foreach (GameObject traveler in travelersEnabled)
         {
@@ -1493,9 +1501,9 @@ public class GameManager : MonoBehaviour
             travelersEnabled[i].GetComponent<Traveler>().isNew = false;
 
         }
-        #endregion
+#endregion
 
-        #region trvEnterQ
+#region trvEnterQ
         TravelerData inputTrvData;
         Traveler newTraveler;
         while (trvEnterQ.Count > 0)
@@ -1525,7 +1533,7 @@ public class GameManager : MonoBehaviour
             newTraveler.isNew = true;
             //SetLoadedAdventurerState(tempObject, inputAdvData);
         }
-        #endregion
+#endregion
     }
 
     // 모험가 로드. 비활성화 상태로 로드만 해놓음(enemy때문)
@@ -1536,7 +1544,7 @@ public class GameManager : MonoBehaviour
         Adventurer newAdventurer;
         //GameObject tileMapLayer;
 
-        #region adventurerEnabled
+#region adventurerEnabled
         // 할당 해제. 다른 Scene일 수도 있으니.
         foreach (GameObject adventurer in adventurersEnabled)
         {
@@ -1566,9 +1574,9 @@ public class GameManager : MonoBehaviour
             //adventurersEnabled[i].SetActive(true);
             //SetLoadedAdventurerState(adventurersEnabled[i], savedata.adventurersEnabled[i]);
         }
-        #endregion
+#endregion
 
-        #region adventurerDisabled
+#region adventurerDisabled
         foreach (GameObject adventurer in adventurersDisabled)
         {
             adventurer.GetComponent<Adventurer>().StopAllCoroutines();
@@ -1597,9 +1605,9 @@ public class GameManager : MonoBehaviour
             InitLoadedAdventurer(adventurersDisabled[i], savedata.adventurersDisabled[i]);
             //SetLoadedAdventurerState(adventurersDisabled[i], savedata.adventurersDisabled[i]);
         }
-        #endregion
+#endregion
 
-        #region advEnterQ
+#region advEnterQ
         while (advEnterQ.Count > 0)
         {
             GameObject temp = advEnterQ.Dequeue();
@@ -1626,7 +1634,7 @@ public class GameManager : MonoBehaviour
             newAdventurer.isNew = true;
             //SetLoadedAdventurerState(tempObject, inputAdvData);
         }
-        #endregion
+#endregion
 
         // TEnter 관련은 아직 저장안함
         // 현 상태에서, 모험가 입장도중 저장하면 다른 모험가가 들어오지 않을 가능성 있음.
@@ -1637,7 +1645,7 @@ public class GameManager : MonoBehaviour
     // 비활성화 상태로 로드만 해놓음
     public void LoadSpecialAdventurers(GameSavedata savedata)
     {
-        #region specialAdventurers
+#region specialAdventurers
         for (int i = 0; i < specialAdventurers.Count; i++)
         {
             specialAdventurers[i].GetComponent<SpecialAdventurer>().StopAllCoroutines();
@@ -1667,9 +1675,9 @@ public class GameManager : MonoBehaviour
             //newObject.SetActive(savedata.specialAdventurers[i].isActive);
             //SetLoadedAdventurerState(newObject, savedata.specialAdventurers[i]);
         }
-        #endregion
+#endregion
 
-        #region spAdvEnterQ
+#region spAdvEnterQ
 
         while (spAdvEnterQ.Count > 0)
         {
@@ -1683,31 +1691,31 @@ public class GameManager : MonoBehaviour
             int spAdvIndex = savedata.spAdvEnterQ.Dequeue();
             spAdvEnterQ.Enqueue(specialAdventurers[spAdvIndex]);
         }
-        #endregion
+#endregion
     }
 
     public void SetEveryTrvDestPlace(GameSavedata savedata)
     {
-        #region Travelers
+#region Travelers
         for (int i = 0; i < travelersEnabled.Count; i++)
         {
             SetTrvDestPlace(travelersEnabled[i], savedata.travelersEnabled[i]);
         }
-        #endregion
+#endregion
 
-        #region Adventruers
+#region Adventruers
         for (int i = 0; i < adventurersEnabled.Count; i++)
         {
             SetTrvDestPlace(adventurersEnabled[i], savedata.adventurersEnabled[i]);
         }
-        #endregion
+#endregion
 
-        #region SpecialAdventurers
+#region SpecialAdventurers
         for (int i = 0; i < specialAdventurers.Count; i++)
         {
             SetTrvDestPlace(specialAdventurers[i], savedata.specialAdventurers[i]);
         }
-        #endregion
+#endregion
     }
 
     public void SetAdvsEnemy(GameSavedata savedata)
@@ -1978,9 +1986,9 @@ public class GameManager : MonoBehaviour
     {
         return UIManager.Instance.itemEquipUI.GetItemStorage();
     }
-    #endregion
+#endregion
 
-    #region Stage Progress
+#region Stage Progress
     /// <summary>
     /// 일선 모험가 선택 메서드
     /// </summary>
@@ -2230,7 +2238,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    #region UI
+#region UI
     //public void ShowBossRaidDecisionUI()
     //{
 
@@ -2270,19 +2278,19 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Victory!");
     }
-    #endregion
+#endregion
 
-    #endregion
+#endregion
 
-    #region For Debugging
+#region For Debugging
     public void DebugBossCall()
     {
         ChooseSpAdv(0);
         BossRaidCallEventHandler?.Invoke();
     }
-    #endregion
+#endregion
 
-    #region JSON 처리(Scene 정보 설정)
+#region JSON 처리(Scene 정보 설정)
     private void SetSceneStructureDatas(JSONNode aData, int sceneNumber)
     {
         drink_Max = aData["scene"][sceneNumber]["buildable"]["drink"].AsInt;
@@ -2415,5 +2423,5 @@ public class GameManager : MonoBehaviour
 	{
 		//다음 씬으로 ...
 	}
-#endregion    
+#endregion
 }

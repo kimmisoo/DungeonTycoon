@@ -17,7 +17,7 @@ public class OtherSpAdvSelectionUI : MonoBehaviour
         {
             OtherSpAdvSelectButton curBtn = spAdvList.transform.GetChild(i).GetComponent<OtherSpAdvSelectButton>();
             buttons.Add(curBtn.nameKey, curBtn);
-            Debug.Log(curBtn.nameKey);
+            //Debug.Log(curBtn.nameKey);
         }
         buttons[GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>().nameKey].HighlightOn();
         buttons[GameManager.Instance.GetPlayerSpAdv().GetComponent<SpecialAdventurer>().nameKey].gameObject.GetComponent<Button>().interactable = false;
