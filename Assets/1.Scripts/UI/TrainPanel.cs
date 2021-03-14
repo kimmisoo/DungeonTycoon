@@ -7,13 +7,16 @@ using SimpleJSON;
 public class TrainPanel : UIObject {
 
     public GameObject informationPanel;
-    public GameObject spAdvSelectionPanel;
-    public GameObject spAdvInfoPanel;
+    public GameObject myAdvSelectionPanel;
+    public GameObject myAdvInfoPanel;
     public GameObject itemEquipPanel;
     public GameObject bossPanel;
     public GameObject otherSpAdvSelectionPanel;
     public GameObject otherSpAdvInfoPanel;
-    GameObject currentShowingPanel;
+    public GameObject spAdvPreviewPanel;
+
+    private GameObject currentShowingPanel;
+
     //Information Panel's
     public GameObject storyPanel;
     public GameObject statusPanel;
@@ -91,9 +94,9 @@ public class TrainPanel : UIObject {
         GameObject spAdvPanel;
 
         if (GameManager.Instance.playerSpAdvIndex != -1)
-            spAdvPanel = spAdvInfoPanel;
+            spAdvPanel = myAdvInfoPanel;
         else
-            spAdvPanel = spAdvSelectionPanel;
+            spAdvPanel = myAdvSelectionPanel;
 
         spAdvPanel.SetActive(true);
         itemEquipPanel.SetActive(false);
@@ -128,9 +131,9 @@ public class TrainPanel : UIObject {
         GameObject spAdvPanel;
 
         if (GameManager.Instance.playerSpAdvIndex != -1)
-            spAdvPanel = spAdvInfoPanel;
+            spAdvPanel = myAdvInfoPanel;
         else
-            spAdvPanel = spAdvSelectionPanel;
+            spAdvPanel = myAdvSelectionPanel;
 
         currentShowingPanel.SetActive(false);
         currentShowingPanel = spAdvPanel;
@@ -141,6 +144,11 @@ public class TrainPanel : UIObject {
     {
         otherSpAdvSelectionPanel.GetComponent<OtherSpAdvSelectionUI>().SelectSpAdv(nameKey);
         OpenPanel(otherSpAdvInfoPanel);
+    }
+
+    public void OpenSpAdvPreviewPanel()
+    {
+        OpenPanel(spAdvPreviewPanel);
     }
 
     public void SwitchStoryStatusPanel(int cat)

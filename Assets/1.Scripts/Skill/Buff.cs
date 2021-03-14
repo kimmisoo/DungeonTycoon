@@ -45,7 +45,7 @@ public class NyangUniqueSkill : Skill
     public override void InitSkill()
     {
         SetMyBattleStat();
-        myMod = new StatModContinuous(StatType.Attack, ModType.Mult, 2.0f);
+        myMod = new StatModContinuous(StatType.Attack, ModType.Mult, 3.0f);
 
         //SetNameAndExplanation("선수필승!", "비 전투 상태의 적을 공격할 때 공격력이 200% 증가합니다.");
     }

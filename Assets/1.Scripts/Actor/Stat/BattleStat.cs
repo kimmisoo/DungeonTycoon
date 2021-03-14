@@ -296,6 +296,14 @@ public class BattleStat
         }
     }
 
+    public float AvoidanceChance
+    {
+        get
+        {
+            return battleStatContinuous[StatType.Avoid].GetCalculatedValue();
+        }
+    }
+
     public int CurExp
     {
         get
@@ -391,7 +399,7 @@ public class BattleStat
 	public void TakeDamage(float damage, float penFixed, float penMult,
         out float actualDamage, out bool isEvaded) //계산된 데미지로 피해 처리
 	{
-        if(EvasionAttempt())
+        if(AvoidAttempt())
         {
             // 회피 애니메이션이나 이펙트 관련 여기 넣을 것.
             // 회피 이펙트만 Monster쪽에서 처리.
@@ -441,12 +449,12 @@ public class BattleStat
 		}*/
 	}
 
-    protected bool EvasionAttempt()
+    protected bool AvoidAttempt()
     {
         float randNum = Random.Range(0.0f, 1.0f);
-        float avoidChance = battleStatContinuous[StatType.Avoid].GetCalculatedValue();
+        float avoidanceChance = battleStatContinuous[StatType.Avoid].GetCalculatedValue();
 
-        return randNum <= avoidChance;
+        return randNum <= avoidanceChance;
     }
 
     protected void LevelUp()

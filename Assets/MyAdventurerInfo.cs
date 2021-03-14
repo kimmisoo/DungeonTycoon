@@ -36,7 +36,9 @@ public class MyAdventurerInfo : MonoBehaviour
     public Text advCriticalDamage;
     public Text advAttackRange;
     public Text advDps;
-    public Text advPenetration;
+    public Text advPenFixed;
+    public Text advPenMult;
+    public Text advAvoid;
     #endregion
 
     #region UniqueSkillInfo
@@ -228,7 +230,9 @@ public class MyAdventurerInfo : MonoBehaviour
         advCriticalDamage.text = string.Format("{0:0}%", pBattleStat.CriticalDamage * 100);
         advAttackRange.text = string.Format("{0:0}칸", pBattleStat.Range);
         advDps.text = string.Format("{0:0.00}", pBattleStat.Attack * pBattleStat.AttackSpeed * ((1 + pBattleStat.CriticalChance) * (pBattleStat.CriticalDamage - 1)));
-        advPenetration.text = string.Format("{0:0} | {0:0}%", pBattleStat.PenetrationFixed, pBattleStat.PenetrationMult * 100);
+        advPenFixed.text = string.Format("{0:0}", pBattleStat.PenetrationFixed);
+        advPenMult.text = string.Format("{0:0}%", pBattleStat.PenetrationMult * 100);
+        advAvoid.text = string.Format("{0:0}%", pBattleStat.AvoidanceChance * 100);
     }
 
     private void RefreshUniqueSkillInfo()

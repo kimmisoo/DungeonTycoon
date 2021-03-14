@@ -9,6 +9,7 @@ public class SpAdvSelectionUI : MonoBehaviour
     public Button determineBtn;
     public Button moreInfoBtn;
     public TrainPanel trainPanel;
+    public SpAdvPreviewUI spAdvPreviewUI;
 
     public void DetermineSpAdv()
     {
@@ -35,6 +36,7 @@ public class SpAdvSelectionUI : MonoBehaviour
 
         if (curSelected != -1)
         {
+            spAdvPreviewUI.SelectSpAdv(curSelected);
             determineBtn.interactable = true;
             moreInfoBtn.interactable = true;
         }
