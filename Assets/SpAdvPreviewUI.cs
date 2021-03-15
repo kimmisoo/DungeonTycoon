@@ -57,7 +57,12 @@ public class SpAdvPreviewUI : MonoBehaviour
     #region Preview and Detail
     public GameObject previewParent;
     public GameObject detailParent;
+    public GameObject previewContentsParent;
     private bool isPreviewNow = true;
+    public Text previewLevelText;
+
+    public GameObject buttonTextPreview;
+    public GameObject buttonTextDetail;
     #endregion
 
     #region Features and Lore
@@ -102,12 +107,16 @@ public class SpAdvPreviewUI : MonoBehaviour
         if (isPreviewNow == true)
         {
             previewParent.SetActive(true);
+            buttonTextPreview.SetActive(true);
             detailParent.SetActive(false);
+            buttonTextDetail.SetActive(false);
         }
         else
         {
             previewParent.SetActive(false);
+            buttonTextPreview.SetActive(false);
             detailParent.SetActive(true);
+            buttonTextDetail.SetActive(true);
         }
     }
 
@@ -116,6 +125,8 @@ public class SpAdvPreviewUI : MonoBehaviour
         isPreviewNow = true;
         previewParent.SetActive(true);
         detailParent.SetActive(false);
+
+        ShowSelectedAdvPreview();
     }
     #endregion
 
@@ -123,11 +134,24 @@ public class SpAdvPreviewUI : MonoBehaviour
     private void InitPreviewUI()
     {
         chPreviews = new Dictionary<string, GameObject>();
-        for(int i = 0; i<previewParent.transform.childCount; i++)
+        for (int i = 0; i < previewContentsParent.transform.childCount; i++)
         {
-            GameObject curChild = previewParent.transform.GetChild(i).gameObject;
+            GameObject curChild = previewContentsParent.transform.GetChild(i).gameObject;
             chPreviews.Add(curChild.name, curChild);
-            Debug.Log(curChild.name);
+            Debug.Log(curChild.name + ", " + i);
+        }
+    }
+
+    private void ShowSelectedAdvPreview()
+    {
+        for(int i = 0; i<chPreviews.Count; i++) // 타이틀도 있으니 2번부터 시작
+        {
+            if (chPreviews.Keys.ToArray()[i] == selectedSpAdv.nameKey)
+                chPreviews.Values.ToArray()[i].SetActive(true);
+            else
+                chPreviews.Values.ToArray()[i].SetActive(false);
+
+            previewLevelText.text = "" + selectedSpAdv.GetBattleStat().Level;
         }
     }
     #endregion

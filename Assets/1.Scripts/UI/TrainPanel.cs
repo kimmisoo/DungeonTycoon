@@ -103,6 +103,7 @@ public class TrainPanel : UIObject {
         bossPanel.SetActive(false);
         otherSpAdvSelectionPanel.SetActive(false);
         otherSpAdvInfoPanel.SetActive(false);
+        spAdvPreviewPanel.SetActive(false);
 
     RefreshEquipButton();
         
