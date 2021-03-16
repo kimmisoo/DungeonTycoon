@@ -7,11 +7,16 @@ using SimpleJSON;
 public class TrainPanel : UIObject {
 
     public GameObject informationPanel;
-    public GameObject spAdvSelectionPanel;
-    public GameObject spAdvInfoPanel;
+    public GameObject myAdvSelectionPanel;
+    public GameObject myAdvInfoPanel;
     public GameObject itemEquipPanel;
     public GameObject bossPanel;
-    GameObject currentShowingPanel;
+    public GameObject otherSpAdvSelectionPanel;
+    public GameObject otherSpAdvInfoPanel;
+    public GameObject spAdvPreviewPanel;
+
+    private GameObject currentShowingPanel;
+
     //Information Panel's
     public GameObject storyPanel;
     public GameObject statusPanel;
@@ -89,15 +94,18 @@ public class TrainPanel : UIObject {
         GameObject spAdvPanel;
 
         if (GameManager.Instance.playerSpAdvIndex != -1)
-            spAdvPanel = spAdvInfoPanel;
+            spAdvPanel = myAdvInfoPanel;
         else
-            spAdvPanel = spAdvSelectionPanel;
+            spAdvPanel = myAdvSelectionPanel;
 
         spAdvPanel.SetActive(true);
         itemEquipPanel.SetActive(false);
         bossPanel.SetActive(false);
+        otherSpAdvSelectionPanel.SetActive(false);
+        otherSpAdvInfoPanel.SetActive(false);
+        spAdvPreviewPanel.SetActive(false);
 
-        RefreshEquipButton();
+    RefreshEquipButton();
         
         base.Show();
         currentShowingPanel = spAdvPanel;
@@ -124,13 +132,24 @@ public class TrainPanel : UIObject {
         GameObject spAdvPanel;
 
         if (GameManager.Instance.playerSpAdvIndex != -1)
-            spAdvPanel = spAdvInfoPanel;
+            spAdvPanel = myAdvInfoPanel;
         else
-            spAdvPanel = spAdvSelectionPanel;
+            spAdvPanel = myAdvSelectionPanel;
 
         currentShowingPanel.SetActive(false);
         currentShowingPanel = spAdvPanel;
         currentShowingPanel.SetActive(true);
+    }
+
+    public void OpenOtherSpAdvInfoPanel(string nameKey)
+    {
+        otherSpAdvSelectionPanel.GetComponent<OtherSpAdvSelectionUI>().SelectSpAdv(nameKey);
+        OpenPanel(otherSpAdvInfoPanel);
+    }
+
+    public void OpenSpAdvPreviewPanel()
+    {
+        OpenPanel(spAdvPreviewPanel);
     }
 
     public void SwitchStoryStatusPanel(int cat)

@@ -17,6 +17,7 @@ public class ItemComparisonPanel : MonoBehaviour
     public Text critChanceValue, critChanceVariance;
     public Text critDamageValue, critDamageVariance;
     public Text penFixedValue, penFixedVariance;
+    public Text avoidValue, avoidVariance;
 
     private readonly Color increaseColor = new Color(0.5764706f, 1.0f, 0), decreaseColor = new Color(1.0f, 0.7254902f, 0.1372549f);
     private readonly string increaseSymbol = "▲", decreaseSymbol = "▼";
@@ -211,5 +212,20 @@ public class ItemComparisonPanel : MonoBehaviour
         }
         else
             penFixedVariance.text = "";
+
+        avoidValue.text = string.Format("{0:0}%", afterStat.AvoidanceChance * 100);
+        varianceTemp = afterStat.AvoidanceChance - beforeStat.AvoidanceChance;
+        if (varianceTemp > 0 + Mathf.Epsilon)
+        {
+            avoidVariance.color = increaseColor;
+            avoidVariance.text = increaseSymbol + string.Format("{0:0}", Mathf.Abs(varianceTemp * 100));
+        }
+        else if (varianceTemp < 0 - Mathf.Epsilon)
+        {
+            avoidVariance.color = decreaseColor;
+            avoidVariance.text = decreaseSymbol + string.Format("{0:0}", Mathf.Abs(varianceTemp * 100));
+        }
+        else
+            avoidVariance.text = "";
     }
 }
