@@ -25,14 +25,14 @@ using UnityEngine;
 
 public class Traveler : Actor
 {
-    protected int pathFindCount = 0;
+    //protected int pathFindCount = 0;
     protected int wanderCount = 0;
 	protected const int wanderCountMax = 3;
     protected Coroutine curCoroutine;
 	protected Coroutine curSubCoroutine;
     //protected Tile destinationTile;
     public Place destinationPlace;
-    protected Structure[] structureListByPref;
+    protected List<Structure> structureListByPref;
 	private const float MAX_WAIT_SECONDS = 120.0f;
     // 저장 및 로드를 위한 인덱스. travelerList에서 몇번째인지 저장.
     public int index;
@@ -87,7 +87,7 @@ public class Traveler : Actor
         
         
         // 아마 실패 횟수인 듯.
-        pathFindCount = 0;
+        //pathFindCount = 0;
 		wanderCount = 0;
         curCoroutine = null;
         structureListByPref = null;
@@ -100,8 +100,7 @@ public class Traveler : Actor
 			kvp.Value.SetTickCoroutine(StartCoroutine(kvp.Value.Tick()));
 		}
 		// 기본은 Idle.
-		StartCoroutine(LateStart());
-		
+		StartCoroutine(LateStart());		
 	}
 	
     public void StartOnEntrance()
@@ -260,13 +259,13 @@ public class Traveler : Actor
                 Debug.Log(name + " : Stat is null");
 			DesireType[] sortedTypeArray = stat.GetSortedDesireArray();
 			int index = 0;
-			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Length <= 0)) // 모든 Type별로 건물 있는지 조사
+			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Count <= 0)) // 모든 Type별로 건물 있는지 조사
 			{
 				yield return null;
 				structureListByPref = StructureManager.Instance.FindStructureByDesire(sortedTypeArray[index++], this);
 			}
 			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
-			if (structureListByPref == null || structureListByPref.Length == 0) // 건물이 하나도 없다면
+			if (structureListByPref == null || structureListByPref.Count == 0) // 건물이 하나도 없다면
 			{
 				//Debug.Log("--------------------------------------------------StructureList is Null");
 				curState = State.SolvingDesire_Wandering;
@@ -274,21 +273,41 @@ public class Traveler : Actor
 			}
 		}
 
-		if(structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
+		if(structureListByPref.Count <= 0) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
 		{
 			//Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
-			pathFindCount = 0;
+			//pathFindCount = 0;
 			curState = State.SolvingDesire_Wandering;
 		}
 		else // 검색 결과 건물로 길찾기진행.
 		{
-			//Debug.Log("------------------------------------------------------------Found Structure!");
-			destinationTile = structureListByPref[pathFindCount].GetEntrance();
-			destinationPlace = structureListByPref[pathFindCount];
+			int randIndex = 0;
+			int distanceSum = 0;
+			List<int> distances = new List<int>();
+			int randVal = 0;
+			foreach(Structure s in structureListByPref)
+			{
+				distanceSum += GetDistanceFromOtherTile(s.GetEntrance());
+				distances.Add(distanceSum);
+			}
+			randVal = Random.Range(0, distanceSum);
+			foreach(int distanceVal in distances)
+			{
+				randIndex = 0;
+				if (randVal < distances[randIndex])
+				{
+					break;
+				}
+				else
+					randIndex++;
+			}
+			destinationTile = structureListByPref[randIndex].GetEntrance();
+			destinationPlace = structureListByPref[randIndex];
+			structureListByPref.RemoveAt(randIndex);
 			//null 체크
 			if (destinationTile == null)
 			{
-				pathFindCount++;
+				//pathFindCount++;
 				//destinationPlace 길막힘 알림.!
 				curState = State.SearchingStructure;
 			}
@@ -314,19 +333,19 @@ public class Traveler : Actor
             if (GetSuperState() == SuperState.ExitingDungeon)
             {
                 //퇴장처리
-                pathFindCount = 0;
+                //pathFindCount = 0;
                 curState = State.MovingToDestination;
                 yield break;
             }
             if (destinationPlace != null) // superState == SolvingDesire;
             {
                 //Debug.Log("-----------------------------------PF Success");
-                pathFindCount = 0;
+                //pathFindCount = 0;
                 curState = State.MovingToDestination;
             }
             else if (destinationTile != null) // superState == SolvingDesire_Wandering
             {
-                pathFindCount = 0;
+                //pathFindCount = 0;
                 curState = State.MovingToDestination;
             }
             else
@@ -342,7 +361,7 @@ public class Traveler : Actor
                 //평판 --
                 yield break;
             }
-            pathFindCount++;
+            //pathFindCount++;
             curState = State.SearchingStructure;
         }
         //curState = State.MovingToDestination;
@@ -448,19 +467,19 @@ public class Traveler : Actor
 		if(GetSuperState() == SuperState.ExitingDungeon)
 		{
 			//퇴장처리
-			pathFindCount = 0;
+			//pathFindCount = 0;
 			curState = State.MovingToDestination;
 			yield break;
 		}
 		if(destinationPlace != null) // superState == SolvingDesire;
 		{
 			//Debug.Log("-----------------------------------PF Success");
-			pathFindCount = 0;
+			//pathFindCount = 0;
 			curState = State.MovingToDestination;
 		}
 		else if(destinationTile != null) // superState == SolvingDesire_Wandering
 		{
-			pathFindCount = 0;
+			//pathFindCount = 0;
 			curState = State.MovingToDestination;
 		}
 		else
@@ -495,7 +514,7 @@ public class Traveler : Actor
 			//평판 --
 			yield break;
 		}
-		pathFindCount++;
+		//pathFindCount++;
 		curState = State.SearchingStructure;
 		yield return null;
 	}

@@ -940,13 +940,13 @@ public class SpecialAdventurer : Adventurer
 				Debug.Log(name + " : Stat is null");
 			DesireType[] sortedTypeArray = stat.GetSortedDesireArray(); // 욕구종류를 높은 순으로 정렬
 			int index = 0;
-			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Length <= 0)) // 건물이 나올때 까지 Type별로 건물 있는지 조사
+			while (index < sortedTypeArray.Length && (structureListByPref == null || structureListByPref.Count <= 0)) // 건물이 나올때 까지 Type별로 건물 있는지 조사
 			{
 				yield return null;
 				structureListByPref = StructureManager.Instance.FindStructureByDesire(sortedTypeArray[index++], this);
 			}
 			//structureListByPref = StructureManager.Instance.FindStructureByDesire(stat.GetHighestDesire(), this);
-			if (structureListByPref == null || structureListByPref.Length == 0) // 건물이 하나도 없다면
+			if (structureListByPref == null || structureListByPref.Count <= 0) // 건물이 하나도 없다면
 			{
 				//Debug.Log("--------------------------------------------------StructureList is Null");
 				//curState = State.SolvingDesire_Wandering;
@@ -955,21 +955,41 @@ public class SpecialAdventurer : Adventurer
 			}
 		}
 
-		if (structureListByPref.Length <= pathFindCount) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
+		if (structureListByPref.Count <= 0) // 검색 결과가 없거나 검색한 건물 모두 길찾기 실패했을때... pathFindCount - Global var
 		{
 			//Debug.Log("--------------------------------------------------StructureList is Empty" + " PathFindCount = " + pathFindCount);
-			pathFindCount = 0;
+			//pathFindCount = 0;
 			curState = State.SearchingHuntingArea;
 		}
 		else // 검색 결과 건물로 길찾기진행.
 		{
-			//Debug.Log("------------------------------------------------------------Found Structure!");
-			destinationTile = structureListByPref[pathFindCount].GetEntrance();
-			destinationPlace = structureListByPref[pathFindCount];
+			int randIndex = 0;
+			int distanceSum = 0;
+			List<int> distances = new List<int>();
+			int randVal = 0;
+			foreach (Structure s in structureListByPref)
+			{
+				distanceSum += GetDistanceFromOtherTile(s.GetEntrance());
+				distances.Add(distanceSum);
+			}
+			randVal = Random.Range(0, distanceSum);
+			foreach (int distanceVal in distances)
+			{
+				randIndex = 0;
+				if (randVal < distances[randIndex])
+				{
+					break;
+				}
+				else
+					randIndex++;
+			}
+			destinationTile = structureListByPref[randIndex].GetEntrance();
+			destinationPlace = structureListByPref[randIndex];
+			structureListByPref.RemoveAt(randIndex);
 			//null 체크
 			if (destinationTile == null)
 			{
-				pathFindCount++;
+				//pathFindCount++;
 				//destinationPlace 길막힘 알림.!
 				curState = State.SearchingStructure;
 			}

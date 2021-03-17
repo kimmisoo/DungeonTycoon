@@ -196,7 +196,17 @@ public abstract class Actor : MonoBehaviour
             return int.MaxValue;
         }
     }
-
+	public int GetDistanceFromOtherTile(Tile t)
+	{
+		if (t != null)
+		{
+			return Mathf.Abs(t.GetX() - curTile.GetX()) + Mathf.Abs(t.GetY() - curTile.GetY());
+		}
+		else
+		{
+			return int.MaxValue;
+		}
+	}
     public Direction GetDirectionFromOtherTileForMove(TileForMove tileForMove)
     {
         Direction direction = Direction.DownLeft;

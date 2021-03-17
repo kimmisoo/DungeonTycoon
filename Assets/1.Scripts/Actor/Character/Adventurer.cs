@@ -381,7 +381,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
                     break;
 				case SuperState.ExitingDungeon: //still in huntingArea.
 					//퇴장처리
-					pathFindCount = 0;
+					//pathFindCount = 0;
 					curState = State.MovingToDestination;
 					yield break;
 					break;
@@ -550,7 +550,7 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 		//스탯 처리
 		stat.gold -= (destinationPlace as Structure).charge;
 		if((destinationPlace as Structure).resolveType == DesireType.Health)
-			battleStat.Heal(battleStat.MissingHealth / 2);
+			battleStat.Heal(battleStat.MissingHealth);
 		else
 			stat.GetSpecificDesire((destinationPlace as Structure).resolveType).desireValue -= (destinationPlace as Structure).resolveAmount;
 		GameManager.Instance.AddGold((destinationPlace as Structure).charge);
