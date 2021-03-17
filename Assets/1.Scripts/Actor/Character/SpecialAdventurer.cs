@@ -96,8 +96,9 @@ public class SpecialAdventurer : Adventurer
         if (willBossRaid)
         {
             superState = SuperState.TeleportToBossArea;
-            state = State.TeleportToBossArea;
-            curCoroutine = StartCoroutine(TeleportToBossArea());
+			//state = State.TeleportToBossArea;
+			curState = State.TeleportToBossArea; // curState로 변경하긴했는데 
+			//curCoroutine = StartCoroutine(TeleportToBossArea());
         }
         else
         {

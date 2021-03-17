@@ -449,7 +449,7 @@ public class GameManager : MonoBehaviour
         tempStat.wealth = GetRandomWealth();
         tempStat.gold = GetRandomInitialGold(tempStat.wealth);
 
-        SetDesires(ref tempStat, JobType.Traveler);
+        SetDesires(ref tempStat, JobType.Traveler, trv);
 
         return tempStat;
     }
@@ -501,7 +501,7 @@ public class GameManager : MonoBehaviour
         tempStat.wealth = GetRandomWealth(level);
         tempStat.gold = advStatData[level - 1]["gold"].AsInt;
 
-        SetDesires(ref tempStat, JobType.Adventurer);
+        SetDesires(ref tempStat, JobType.Adventurer, adv);
 
         return tempStat;
     }
@@ -548,7 +548,7 @@ public class GameManager : MonoBehaviour
         tempStat.wealth = WealthType.Upper;
         tempStat.gold = spAdvStatDatas[name][level - 1]["gold"].AsInt;
 
-        SetDesires(ref tempStat, JobType.Adventurer); // 어차피 같으니 그냥 Adventurer로 넣어줌.
+        SetDesires(ref tempStat, JobType.Adventurer, spAdv); // 어차피 같으니 그냥 Adventurer로 넣어줌.
 
         //Debug.Log("name :" + tempStat.name + " race :" + tempStat.race + " gender :" + tempStat.gender);
 
@@ -689,20 +689,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SetDesires(ref Stat inputStat, JobType jobType)
+    private void SetDesires(ref Stat inputStat, JobType jobType, Traveler owner)
     {
-        AddDesire(ref inputStat, DesireType.Thirsty, jobType);
-        AddDesire(ref inputStat, DesireType.Hungry, jobType);
-        AddDesire(ref inputStat, DesireType.Sleep, jobType);
-        AddDesire(ref inputStat, DesireType.Tour, jobType);
-        AddDesire(ref inputStat, DesireType.Convenience, jobType);
-        AddDesire(ref inputStat, DesireType.Fun, jobType);
-        AddDesire(ref inputStat, DesireType.Equipment, jobType);
-        AddDesire(ref inputStat, DesireType.Health, jobType);
+        AddDesire(ref inputStat, DesireType.Thirsty, jobType, owner);
+        AddDesire(ref inputStat, DesireType.Hungry, jobType, owner);
+        AddDesire(ref inputStat, DesireType.Sleep, jobType, owner);
+        AddDesire(ref inputStat, DesireType.Tour, jobType, owner);
+        AddDesire(ref inputStat, DesireType.Convenience, jobType, owner);
+        AddDesire(ref inputStat, DesireType.Fun, jobType, owner);
+		if (owner is Adventurer)
+		{
+			AddDesire(ref inputStat, DesireType.Equipment, jobType, owner);
+			AddDesire(ref inputStat, DesireType.Health, jobType, owner);
+		}
+		
     }
 
     // 욕구 1개 추가. 수치는 JSON에 저장된 min/max 기반으로 랜덤돌림.
-    private void AddDesire(ref Stat inputStat, DesireType desireType, JobType jobType)
+    private void AddDesire(ref Stat inputStat, DesireType desireType, JobType jobType, Traveler owner)
     {
 #if DEBUG_GEN_ADV
         Debug.Log("AddDesire() : " + desireType);
@@ -746,8 +750,37 @@ public class GameManager : MonoBehaviour
         float initialMax = desireData[(int)jobType]["initialValue"][typeStr]["max"].AsFloat;
         float regenMin = desireData[(int)jobType]["regenValue"][typeStr]["min"].AsFloat;
         float regenMax = desireData[(int)jobType]["regenValue"][typeStr]["max"].AsFloat;
-
-        inputStat.AddDesire(new DesireBase(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, null));
+		switch(desireType)
+		{
+			case DesireType.Thirsty:
+				inputStat.AddDesire(new DesireThirsty(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			case DesireType.Hungry:
+				inputStat.AddDesire(new DesireHungry(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			case DesireType.Sleep:
+				inputStat.AddDesire(new DesireSleep(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			case DesireType.Tour:
+				inputStat.AddDesire(new DesireTour(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			case DesireType.Convenience:
+				inputStat.AddDesire(new DesireConvenience(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			case DesireType.Fun:
+				inputStat.AddDesire(new DesireFun(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			case DesireType.Equipment:
+				inputStat.AddDesire(new DesireEquipment(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			case DesireType.Health:
+				inputStat.AddDesire(new DesireHealth(desireType, Random.Range(initialMin, initialMax), Random.Range(regenMin, regenMin), desireTickMult, desireTickBetween, owner));
+				break;
+			default:
+				Debug.Log("Invalid Desire Type!");
+				break;
+		}
+       
     }
 
     IEnumerator TrvEnter()

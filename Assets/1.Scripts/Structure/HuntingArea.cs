@@ -211,11 +211,16 @@ public class HuntingArea : CombatArea
     {
         return killCount;
     }
-
+	
     public void SetKillCount(int killCountIn)
     {
         killCount = killCountIn;
     }
+	public int GetConquerCondition()
+	{
+		return conquerCondition;
+	}
+	
     #endregion
 
     #region SaveLoad

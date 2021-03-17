@@ -126,7 +126,7 @@ public class Stat : MonoBehaviour
 
     public void AddDesire(DesireBase input)
     {
-        desireDict.Add(input.desireName, new DesireBase(input));
+        desireDict.Add(input.desireName, input);
     }
 
     public void SetOwner(Traveler input)

@@ -81,7 +81,7 @@ public class DesireBase {
 	protected float _tickAmountMult = 1.0f;
 	protected float _tickBetween = 1.0f;
 	protected DesireType _desireName;
-	protected Coroutine tickCoroutine;
+	protected Coroutine tickCoroutine = null;
 	protected Traveler owner;
 	
 	public DesireBase(DesireType name, float initDesireValue, float initTickAmount, float initTickMult, float initTickBetween, Traveler _owner)
@@ -118,6 +118,8 @@ public class DesireBase {
 	
 	public virtual IEnumerator Tick()
 	{
+		if (owner is SpecialAdventurer)
+			tickAmountMult = 0.05f;
 		while(true)
 		{
 			yield return tickBetweenWait;

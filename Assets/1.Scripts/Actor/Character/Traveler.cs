@@ -94,9 +94,9 @@ public class Traveler : Actor
 
         // 타일레이어 받기.
         tileLayer = GameManager.Instance.GetMap().GetLayer(0).GetComponent<TileLayer>(); // 이거도 마찬가지 가끔 멈췄다가 세우면 터짐.
+		
 		foreach (KeyValuePair<DesireType, DesireBase> kvp in stat.GetDesireDict())
 		{
-
 			kvp.Value.SetTickCoroutine(StartCoroutine(kvp.Value.Tick()));
 		}
 		// 기본은 Idle.
@@ -554,7 +554,7 @@ public class Traveler : Actor
 		destinationPlace = null;
 		destinationTile = null;
 		structureListByPref = null;
-		curState = State.SearchingStructure;
+		curState = State.Idle;
 	}
 	protected void SetInvisible()
 	{
