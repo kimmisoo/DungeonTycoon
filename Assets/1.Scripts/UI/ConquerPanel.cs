@@ -37,9 +37,10 @@ public class ConquerPanel : MonoBehaviour {
 
 	WaitForSeconds updateTick = new WaitForSeconds(3.0f);
 	Coroutine updateProgressCoroutine = null;
-
+	CombatAreaManager cam;
 	public void OnEnable()
 	{
+		cam = CombatAreaManager.Instance;
 		ShowMonsterInfo(0);
 		updateProgressCoroutine = StartCoroutine(UpdateProgress());
 	}
@@ -48,7 +49,10 @@ public class ConquerPanel : MonoBehaviour {
 		if(updateProgressCoroutine != null)
 			StopCoroutine(updateProgressCoroutine);
 	}
-	
+	public void SetButtonsByHuntingAreas()
+	{
+		
+	}
 	public void ShowMonsterInfo(int monsterNum)
 	{
 		//몬스터 이미지, 이름, 레벨, 능력치, 고유능력.
@@ -57,15 +61,21 @@ public class ConquerPanel : MonoBehaviour {
 	}
 	public IEnumerator UpdateProgress()
 	{
-		CombatAreaManager cam = CombatAreaManager.Instance;
+		int originProgress = (cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex);
 		while(true)
 		{
+			if(originProgress < cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex)
+			{
+				SetButtonsByHuntingAreas();
+				ShowMonsterInfo(0);
+				originProgress = cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex;
+			}
 			//update Progress Info
-			progressCurrent.text = (cam.ConqueringHuntingAreaIndex + 1).ToString();
+			progressCurrent.text = (cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex + 1).ToString();
 			progressTotal.text = (cam.huntingAreas.Count + cam.bossAreas.Count).ToString();
 			currentHuntingAreaKind.text = GameManager.Instance.isBossPhase == true ? commonConqueringText : bossConqueringText;
 			//if boss phase...
-			remainMonsterCount.text = (cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetConquerCondition() - cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetKillCount()).ToString();
+			remainMonsterCount.text = GameManager.Instance.isBossPhase == true ? " " :(cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetConquerCondition() - cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetKillCount()).ToString();
 			//end
 			yield return updateTick;
 		}
