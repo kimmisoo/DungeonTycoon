@@ -38,7 +38,7 @@ public class CombatAreaManager : MonoBehaviour
 		get { return publicHuntingAreaIndex; }
 		private set
 		{
-			if (value >= huntingAreas.Count - 1)
+			if (value >= huntingAreas.Count  + bossAreas.Count - 1)
 			{
 				publicHuntingAreaIndex = huntingAreas.Count - 1;
 			}
@@ -50,7 +50,7 @@ public class CombatAreaManager : MonoBehaviour
 	{
 		get
 		{
-			if (PublicHuntingAreaIndex >= huntingAreas.Count - 1)
+			if (PublicHuntingAreaIndex >= huntingAreas.Count + bossAreas.Count - 1)
 			{
 				return PublicHuntingAreaIndex;
 			}

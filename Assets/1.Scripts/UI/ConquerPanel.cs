@@ -53,6 +53,7 @@ public class ConquerPanel : MonoBehaviour {
 	{
 		//몬스터 이미지, 이름, 레벨, 능력치, 고유능력.
 		
+		
 	}
 	public IEnumerator UpdateProgress()
 	{
@@ -61,8 +62,9 @@ public class ConquerPanel : MonoBehaviour {
 		{
 			//update Progress Info
 			progressCurrent.text = (cam.ConqueringHuntingAreaIndex + 1).ToString();
-			progressTotal.text = cam.huntingAreas.Count.ToString();
+			progressTotal.text = (cam.huntingAreas.Count + cam.bossAreas.Count).ToString();
 			currentHuntingAreaKind.text = GameManager.Instance.isBossPhase == true ? commonConqueringText : bossConqueringText;
+			//if boss phase...
 			remainMonsterCount.text = (cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetConquerCondition() - cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetKillCount()).ToString();
 			//end
 			yield return updateTick;

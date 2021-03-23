@@ -84,8 +84,8 @@ public class TileMapGenerator : MonoBehaviour
 
         layer_Count--;*/
 		layer_Count = mapData["layers"].Count;
-        //맵 데이터 읽기 완료
-
+		//맵 데이터 읽기 완료
+		
         tileMap_Object = new GameObject("TileMap"); // instantiate 할 필요 없음. 씬에 추가까지 자동으로 됨
         tileMap_Object.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
         tileMap = tileMap_Object.AddComponent<TileMap>();

@@ -2433,7 +2433,7 @@ public class GameManager : MonoBehaviour
 		//인덱스 변수 하나 추가하고
 		//보스 잡히면 진행하는걸로 ----
 		//호출은 아마 HuntingArea에서 할듯?
-		if (stageIndex >= stageMax)
+		if (stageIndex > stageMax)
 			return;
 			//or call OpenNextScene();
 		stageIndex += 1;
