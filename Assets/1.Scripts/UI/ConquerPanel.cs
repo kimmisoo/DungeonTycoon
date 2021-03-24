@@ -23,7 +23,7 @@ public class ConquerPanel : MonoBehaviour {
 	public Text monsterHealth;
 	public Text monsterDefence;
 	public Text monsterMoveSpeed;
-	public Text monsterRange;
+	public Text monsterAttackRange;
 	public Text monsterDPS;
 	public Text monsterAttack;
 	public Text monsterAttackSpeed;
@@ -42,17 +42,37 @@ public class ConquerPanel : MonoBehaviour {
 	CombatAreaManager cam;
 	JSONNode monsterColorsJson;
 	List<Color> monsterColors;
+	List<Color> bossColors;
 	List<Sprite> monsterSprites;
+	List<Sprite> bossSprites;
 	int sceneNum = 0;
-	public void Start()
+	public void Awake()
 	{
 		sceneNum = int.Parse(SceneManager.GetActiveScene().name);
 		monsterColors = new List<Color>();
+		bossColors = new List<Color>();
 		monsterSprites = new List<Sprite>();
+		bossSprites = new List<Sprite>();
 		monsterColorsJson = JSON.Parse(Resources.Load<TextAsset>("Monsters/MonsterColors").ToString());
-		for(int i = 0; i<monsterColors.Count; i++)
+		for(int i = 0; i<monsterColorsJson["colorsCount"].AsInt; i++)
 		{
 			monsterColors.Add(new Color(monsterColorsJson["colors"][i]["r"].AsFloat, monsterColorsJson["colors"][i]["g"].AsFloat, monsterColorsJson["colors"][i]["b"].AsFloat));
+		}
+		for(int i = 0; i<monsterColorsJson["bossColorsCount"].AsInt; i++)
+		{
+			bossColors.Add(new Color(monsterColorsJson["bossColors"][i]["r"].AsFloat, monsterColorsJson["bossColors"][i]["g"].AsFloat, monsterColorsJson["bossColors"][i]["b"].AsFloat));
+		}
+		for(int i = 0; i < monsterColors.Count; i++)
+		{
+			monsterSprites.Add(Resources.Load<Sprite>("Monsters/Image/" + i.ToString()));
+			Debug.Log("Color + " + i);
+		}
+		if (monsterSprites[0] == null)
+			Debug.Log("sprite 0 is Null.......");
+		Debug.Log("MonsterSpritesCount.. = " + monsterSprites.Count);
+		for(int i = 0; i < bossColors.Count; i++)
+		{
+			bossSprites.Add(Resources.Load<Sprite>("Monster/Image/Boss" + i.ToString()));
 		}
 	}
 	public void OnEnable()
@@ -88,19 +108,90 @@ public class ConquerPanel : MonoBehaviour {
 	public void ShowMonsterInfo(int monsterNum)
 	{
 		//몬스터 이미지, 이름, 레벨, 능력치, 고유능력.
-		switch(monsterNum)
+		Monster displayingMonster;
+		BattleStat displayingBattleStat;
+		
+		switch (monsterNum)
 		{
 			case 0: //0
-				int a = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				
+				displayingMonster = cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetSampleMonster1();
+				displayingBattleStat = displayingMonster.GetBattleStat();
+				monsterName.text = displayingMonster.name;
+				monsterLevel.text = displayingBattleStat.Level.ToString();
+				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
+				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
+				monsterMoveSpeed.text = string.Format("{0:0}%", (displayingBattleStat.MoveSpeed*100));
+				monsterAttackRange.text = displayingBattleStat.BaseAttackRange.ToString();
+				monsterDPS.text = string.Format("{0:0.00}", (displayingBattleStat.Attack * displayingBattleStat.AttackSpeed * ((1 + displayingBattleStat.CriticalChance) * (displayingBattleStat.CriticalDamage - 1))));
+				monsterAttack.text = string.Format("{0:0}", displayingBattleStat.Attack);
+				monsterAttackSpeed.text = string.Format("{0:0.0000}", displayingBattleStat.AttackSpeed);
+				monsterCritical.text = string.Format("{0:0.00}%", displayingBattleStat.CriticalChance * 100);
+				monsterCriticalAttack.text = string.Format("{0:0.0}%", displayingBattleStat.CriticalDamage * 100);
+				monsterPenetrate.text = string.Format("{0:0}", displayingBattleStat.PenetrationFixed);
+				if (monsterSprites == null)
+					Debug.Log("fuckfuck");
+				Debug.Log("MonsterSpriteCount... = " + monsterSprites.Count);
+				if (monsterSprites[displayingMonster.monsterNum] == null)
+					Debug.Log("nullllllllllllllljdsfkl;afsj;kldafsj;");
+				monsterImage.sprite = monsterSprites[displayingMonster.monsterNum];
+				monsterImage.color = monsterColors[displayingMonster.monsterNum];
 				break;
 			case 1: //1
-				int b = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+					//int b = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				displayingMonster = cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetSampleMonster2();
+				displayingBattleStat = displayingMonster.GetBattleStat();
+				monsterName.text = displayingMonster.name;
+				monsterLevel.text = displayingBattleStat.Level.ToString();
+				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
+				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
+				monsterMoveSpeed.text = string.Format("{0:0}%", (displayingBattleStat.MoveSpeed * 100));
+				monsterAttackRange.text = displayingBattleStat.BaseAttackRange.ToString();
+				monsterDPS.text = string.Format("{0:0.00}", (displayingBattleStat.Attack * displayingBattleStat.AttackSpeed * ((1 + displayingBattleStat.CriticalChance) * (displayingBattleStat.CriticalDamage - 1))));
+				monsterAttack.text = string.Format("{0:0}", displayingBattleStat.Attack);
+				monsterAttackSpeed.text = string.Format("{0:0.0000}", displayingBattleStat.AttackSpeed);
+				monsterCritical.text = string.Format("{0:0.00}%", displayingBattleStat.CriticalChance * 100);
+				monsterCriticalAttack.text = string.Format("{0:0.0}%", displayingBattleStat.CriticalDamage * 100);
+				monsterPenetrate.text = string.Format("{0:0}", displayingBattleStat.PenetrationFixed);
+				monsterImage.sprite = monsterSprites[displayingMonster.monsterNum];
+				monsterImage.color = monsterColors[displayingMonster.monsterNum];
 				break;
 			case 2: //boss
-				int c = cam.bossAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				displayingMonster = cam.bossAreas[cam.BossAreaIndex].GetBossMonsterAsComponent();
+				displayingBattleStat = displayingMonster.GetBattleStat();
+				monsterName.text = displayingMonster.name;
+				monsterLevel.text = displayingBattleStat.Level.ToString();
+				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
+				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
+				monsterMoveSpeed.text = string.Format("{0:0}%", (displayingBattleStat.MoveSpeed * 100));
+				monsterAttackRange.text = displayingBattleStat.BaseAttackRange.ToString();
+				monsterDPS.text = string.Format("{0:0.00}", (displayingBattleStat.Attack * displayingBattleStat.AttackSpeed * ((1 + displayingBattleStat.CriticalChance) * (displayingBattleStat.CriticalDamage - 1))));
+				monsterAttack.text = string.Format("{0:0}", displayingBattleStat.Attack);
+				monsterAttackSpeed.text = string.Format("{0:0.0000}", displayingBattleStat.AttackSpeed);
+				monsterCritical.text = string.Format("{0:0.00}%", displayingBattleStat.CriticalChance * 100);
+				monsterCriticalAttack.text = string.Format("{0:0.0}%", displayingBattleStat.CriticalDamage * 100);
+				monsterPenetrate.text = string.Format("{0:0}", displayingBattleStat.PenetrationFixed);
+				monsterImage.sprite = bossSprites[displayingMonster.monsterNum];
+				monsterImage.color = monsterColors[displayingMonster.monsterNum];
+				
 				break;
 			default:
-				int a = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				displayingMonster = cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetSampleMonster1();
+				displayingBattleStat = displayingMonster.GetBattleStat();
+				monsterName.text = displayingMonster.name;
+				monsterLevel.text = displayingBattleStat.Level.ToString();
+				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
+				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
+				monsterMoveSpeed.text = string.Format("{0:0}%", (displayingBattleStat.MoveSpeed * 100));
+				monsterAttackRange.text = displayingBattleStat.BaseAttackRange.ToString();
+				monsterDPS.text = string.Format("{0:0.00}", (displayingBattleStat.Attack * displayingBattleStat.AttackSpeed * ((1 + displayingBattleStat.CriticalChance) * (displayingBattleStat.CriticalDamage - 1))));
+				monsterAttack.text = string.Format("{0:0}", displayingBattleStat.Attack);
+				monsterAttackSpeed.text = string.Format("{0:0.0000}", displayingBattleStat.AttackSpeed);
+				monsterCritical.text = string.Format("{0:0.00}%", displayingBattleStat.CriticalChance * 100);
+				monsterCriticalAttack.text = string.Format("{0:0.0}%", displayingBattleStat.CriticalDamage * 100);
+				monsterPenetrate.text = string.Format("{0:0}", displayingBattleStat.PenetrationFixed);
+				monsterImage.sprite = monsterSprites[displayingMonster.monsterNum];
+				monsterImage.color = monsterColors[displayingMonster.monsterNum];
 				break;
 		}
 		

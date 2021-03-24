@@ -490,7 +490,7 @@ public class CombatAreaManager : MonoBehaviour
     GameObject LoadMonsterFromJson(string monsterSet, int monsterNum)
     {
         GameObject monster = (GameObject)Instantiate(Resources.Load("MonsterPrefabs/" + monsterSet + "/" + monsterNum));
-        monster.SetActive(false);
+        //monster.SetActive(false);
         monster.transform.position = new Vector3(5000.0f, 5000.0f, 5000.0f);
 
         #region 몬스터 스탯 로드

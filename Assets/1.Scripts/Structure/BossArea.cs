@@ -54,7 +54,10 @@ public class BossArea : HuntingArea
     {
         return bossMonster;
     }
-
+	public Monster GetBossMonsterAsComponent()
+	{
+		return bossMonster.GetComponent<Monster>();
+	}
     public void OnBossKilled(int idx)
     {
         InvokeAreaConqueredEvent();

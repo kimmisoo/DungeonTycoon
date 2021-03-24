@@ -311,5 +311,13 @@ public class HuntingArea : CombatArea
 	{
 		conquerCondition = -1;
 	}
+	public Monster GetSampleMonster1()
+	{
+		return monsterSample1.GetComponent<Monster>();
+	}
+	public Monster GetSampleMonster2()
+	{
+		return monsterSample2.GetComponent<Monster>();
+	}
     #endregion
 }
