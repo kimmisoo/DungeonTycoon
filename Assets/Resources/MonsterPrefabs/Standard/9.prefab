@@ -165,6 +165,8 @@ MonoBehaviour:
   superState: 0
   state: 0
   pathFinder: {fileID: 114689488317095898}
+  prefabPath: 
+  isNew: 1
   canWander: 1
   index: 0
   monsterNum: 0

@@ -132,15 +132,15 @@ public class Tile : MonoBehaviour
 	//Traveler - Road, 
     public bool GetPassableTraveler() 
     {
-		return isNonTile == false && isActive == true && isStructed == false && isHuntingArea == false; //&& isStructed == false && isHuntingArea == false;// && isStructed == false && isHuntingArea == false;//isStructed == false ? isRoad || isBuildingArea : false;
+		return isNonTile == false && isActive == true && isStructed == false && isHuntingArea == false && isWall == false; //&& isStructed == false && isHuntingArea == false;// && isStructed == false && isHuntingArea == false;//isStructed == false ? isRoad || isBuildingArea : false;
     }
     public bool GetPassableAdventurer() //
     {
-		return isNonTile == false && isActive == true && isStructed == false;//isActive && (isNonTile == false || isHuntingArea == true) && isStructed == false;//&& isStructed == false;//isStructed == false ? isRoad || isBuildingArea || isHuntingArea : false; 
+		return isNonTile == false && isActive == true && isStructed == false && isWall == false;//isActive && (isNonTile == false || isHuntingArea == true) && isStructed == false;//&& isStructed == false;//isStructed == false ? isRoad || isBuildingArea || isHuntingArea : false; 
 	}
 	public bool GetPassableSpecialAdventurer()
 	{
-		return isNonTile == false && isStructed == false;
+		return isNonTile == false && isStructed == false && isWall == false;
 	}
     public bool GetPassableMonster()
     {

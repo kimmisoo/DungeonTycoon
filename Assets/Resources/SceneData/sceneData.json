@@ -9,6 +9,7 @@
       ],
       "specialadv_level": 5,
       "complete_Popularity": 10000,
+	  "start_gold" : 1000,
       "buildable": {
         "drink": 2,
         "food": 3,
@@ -139,6 +140,7 @@
       ],
       "specialadv_level": 26,
       "complete_Popularity": 10000,
+	  "start_gold" : 3000,
       "buildable": {
         "drink": 2,
         "food": 3,
@@ -180,50 +182,30 @@
           "y": 49
         }
       ],
-      "huntingAreaCount": 4,
+      "huntingAreaCount": 3,
       "huntingArea": [
         {
           "huntingAreaNum": 0,
           "x": 18,
-          "y": 37
+          "y": 30
         },
         {
           "huntingAreaNum": 1,
-          "x": 40,
-          "y": 43
+          "x": 23,
+          "y": 12
         },
         {
           "huntingAreaNum": 2,
-          "x": 19,
-          "y": 7
-        },
-        {
-          "huntingAreaNum": 3,
-          "x": 8,
-          "y": 7
-        },
-        {
-          "huntingAreaNum": 4,
-          "x": 45,
-          "y": 37
-        },
-        {
-          "huntingAreaNum": 5,
-          "x": 45,
-          "y": 30
+          "x": 9,
+          "y": 12
         }
       ],
       "bossAreaCount": 1,
       "bossArea": [
         {
           "bossAreaNum": 0,
-          "x": 22,
-          "y": 22
-        },
-        {
-          "bossAreaNum": 1,
-          "x": 36,
-          "y": 23
+          "x": 19,
+          "y": 20
         }
       ],
       "progressInformation": [
@@ -277,6 +259,7 @@
       ],
       "specialadv_level": 25,
       "complete_Popularity": 10000,
+	  "start_gold" : 3000,
       "buildable": {
         "drink": 2,
         "food": 3,
@@ -337,6 +320,7 @@
         "Cat"
       ],
       "complete_Popularity": 10000,
+	  "start_gold" : 3000,
       "buildable": {
         "drink": 2,
         "food": 3,
@@ -397,6 +381,7 @@
         "Cat"
       ],
       "complete_Popularity": 10000,
+	  "start_gold" : 3000,
       "buildable": {
         "drink": 2,
         "food": 3,
@@ -457,6 +442,7 @@
         "Cat"
       ],
       "complete_Popularity": 10000,
+	  "start_gold" : 3000,
       "buildable": {
         "drink": 2,
         "food": 3,
@@ -517,6 +503,7 @@
         "Cat"
       ],
       "complete_Popularity": 10000,
+	  "start_gold" : 3000,
       "buildable": {
         "drink": 2,
         "food": 3,
@@ -577,6 +564,7 @@
         "Cat"
       ],
       "complete_Popularity": 10000,
+	  "start_gold" : 3000,
       "buildable": {
         "drink": 2,
         "food": 3,

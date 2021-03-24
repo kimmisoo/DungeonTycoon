@@ -1360,6 +1360,8 @@ public class GameManager : MonoBehaviour
         // 사냥터 개방될 때마다 전체 수용인원이 몇명 늘어나는지와 각 사냥터의 레벨대를 로드.
         SetSceneProgressInfos(aData, sceneNumber);
 
+		//초기 골드 추가
+		AddGold(aData["scene"][sceneNumber]["start_gold"].AsInt);
 #if DEBUG
         //travelerMax = 50;
         //adventurer_Max = 1;
@@ -2457,4 +2459,12 @@ public class GameManager : MonoBehaviour
 		//다음 씬으로 ...
 	}
 #endregion
+	public string GetSceneName()
+	{
+		return sceneName;
+	}
+	public int GetSceneIndex()
+	{
+		return int.Parse(sceneName);
+	}
 }

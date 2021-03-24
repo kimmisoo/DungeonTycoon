@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SimpleJSON;
+using UnityEngine.SceneManagement;
 
 public class ConquerPanel : MonoBehaviour {
 
@@ -33,14 +35,30 @@ public class ConquerPanel : MonoBehaviour {
 	public Text monsterUniqueSkillContent;
 	#endregion
 
-	public List<Button> huntingAreaButtons;
+	public List<GameObject> huntingAreaButtons;
 
 	WaitForSeconds updateTick = new WaitForSeconds(3.0f);
 	Coroutine updateProgressCoroutine = null;
 	CombatAreaManager cam;
+	JSONNode monsterColorsJson;
+	List<Color> monsterColors;
+	List<Sprite> monsterSprites;
+	int sceneNum = 0;
+	public void Start()
+	{
+		sceneNum = int.Parse(SceneManager.GetActiveScene().name);
+		monsterColors = new List<Color>();
+		monsterSprites = new List<Sprite>();
+		monsterColorsJson = JSON.Parse(Resources.Load<TextAsset>("Monsters/MonsterColors").ToString());
+		for(int i = 0; i<monsterColors.Count; i++)
+		{
+			monsterColors.Add(new Color(monsterColorsJson["colors"][i]["r"].AsFloat, monsterColorsJson["colors"][i]["g"].AsFloat, monsterColorsJson["colors"][i]["b"].AsFloat));
+		}
+	}
 	public void OnEnable()
 	{
 		cam = CombatAreaManager.Instance;
+		SetButtonsByHuntingAreas();
 		ShowMonsterInfo(0);
 		updateProgressCoroutine = StartCoroutine(UpdateProgress());
 	}
@@ -49,14 +67,42 @@ public class ConquerPanel : MonoBehaviour {
 		if(updateProgressCoroutine != null)
 			StopCoroutine(updateProgressCoroutine);
 	}
-	public void SetButtonsByHuntingAreas()
+	public void SetMonsterSprites()
 	{
+		//현재 사냥터에
+		//샘플1,샘플2, 보스 이미지 로드
 		
+	}
+	public void SetButtonsByHuntingAreas()
+	{		
+		if(cam.huntingAreas[cam.ConqueringHuntingAreaIndex].IsBossArea == true)
+		{
+			//보스까지 표시
+			huntingAreaButtons[2].SetActive(true);
+		}
+		else
+		{
+			huntingAreaButtons[2].SetActive(false);
+		}
 	}
 	public void ShowMonsterInfo(int monsterNum)
 	{
 		//몬스터 이미지, 이름, 레벨, 능력치, 고유능력.
-		
+		switch(monsterNum)
+		{
+			case 0: //0
+				int a = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				break;
+			case 1: //1
+				int b = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				break;
+			case 2: //boss
+				int c = cam.bossAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				break;
+			default:
+				int a = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+				break;
+		}
 		
 	}
 	public IEnumerator UpdateProgress()
