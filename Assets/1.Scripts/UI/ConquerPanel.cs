@@ -36,6 +36,9 @@ public class ConquerPanel : MonoBehaviour {
 	#endregion
 
 	public List<GameObject> huntingAreaButtons;
+	public List<Image> huntingAreaButtonImages;
+	Color buttonHighlightColor = new Color(0.738f, 0.933f, 0.957f);
+	Color buttonNormalColor = Color.white;
 
 	WaitForSeconds updateTick = new WaitForSeconds(3.0f);
 	Coroutine updateProgressCoroutine = null;
@@ -46,6 +49,7 @@ public class ConquerPanel : MonoBehaviour {
 	List<Sprite> monsterSprites;
 	List<Sprite> bossSprites;
 	int sceneNum = 0;
+
 	public void Awake()
 	{
 		sceneNum = int.Parse(SceneManager.GetActiveScene().name);
@@ -110,14 +114,23 @@ public class ConquerPanel : MonoBehaviour {
 		//몬스터 이미지, 이름, 레벨, 능력치, 고유능력.
 		Monster displayingMonster;
 		BattleStat displayingBattleStat;
-		
+		string monsterSet;
 		switch (monsterNum)
 		{
 			case 0: //0
-				
+				//버튼 색상 변경
+				for(int i = 0; i<huntingAreaButtons.Count; i++)
+				{
+					if (i == monsterNum)
+						huntingAreaButtonImages[i].color = buttonHighlightColor;
+					else
+						huntingAreaButtonImages[i].color = buttonNormalColor;
+				}
+				///
 				displayingMonster = cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetSampleMonster1();
 				displayingBattleStat = displayingMonster.GetBattleStat();
-				monsterName.text = displayingMonster.name;
+				monsterSet = cam.huntingAreaJson[sceneNum][cam.ConqueringHuntingAreaIndex]["monsterSet"];
+				monsterName.text = cam.monsterJson[monsterSet][displayingMonster.monsterNum]["name"];
 				monsterLevel.text = displayingBattleStat.Level.ToString();
 				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
 				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
@@ -129,19 +142,23 @@ public class ConquerPanel : MonoBehaviour {
 				monsterCritical.text = string.Format("{0:0.00}%", displayingBattleStat.CriticalChance * 100);
 				monsterCriticalAttack.text = string.Format("{0:0.0}%", displayingBattleStat.CriticalDamage * 100);
 				monsterPenetrate.text = string.Format("{0:0}", displayingBattleStat.PenetrationFixed);
-				if (monsterSprites == null)
-					Debug.Log("fuckfuck");
-				Debug.Log("MonsterSpriteCount... = " + monsterSprites.Count);
-				if (monsterSprites[displayingMonster.monsterNum] == null)
-					Debug.Log("nullllllllllllllljdsfkl;afsj;kldafsj;");
 				monsterImage.sprite = monsterSprites[displayingMonster.monsterNum];
 				monsterImage.color = monsterColors[displayingMonster.monsterNum];
 				break;
 			case 1: //1
-					//int b = cam.huntingAreaJson["stage" + GameManager.Instance.GetSceneName()][cam.ConqueringHuntingAreaIndex]["monsterSample1Num"].AsInt;
+					//버튼 색상 변경
+				for (int i = 0; i < huntingAreaButtons.Count; i++)
+				{
+					if (i == monsterNum)
+						huntingAreaButtonImages[i].color = buttonHighlightColor;
+					else
+						huntingAreaButtonImages[i].color = buttonNormalColor;
+				}
+				///
 				displayingMonster = cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetSampleMonster2();
 				displayingBattleStat = displayingMonster.GetBattleStat();
-				monsterName.text = displayingMonster.name;
+				monsterSet = cam.huntingAreaJson[sceneNum][cam.ConqueringHuntingAreaIndex]["monsterSet"];
+				monsterName.text = cam.monsterJson[monsterSet][displayingMonster.monsterNum]["name"];
 				monsterLevel.text = displayingBattleStat.Level.ToString();
 				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
 				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
@@ -157,9 +174,18 @@ public class ConquerPanel : MonoBehaviour {
 				monsterImage.color = monsterColors[displayingMonster.monsterNum];
 				break;
 			case 2: //boss
+					//버튼 색상 변경
+				for (int i = 0; i < huntingAreaButtons.Count; i++)
+				{
+					if (i == monsterNum)
+						huntingAreaButtonImages[i].color = buttonHighlightColor;
+					else
+						huntingAreaButtonImages[i].color = buttonNormalColor;
+				}
+				///
 				displayingMonster = cam.bossAreas[cam.BossAreaIndex].GetBossMonsterAsComponent();
 				displayingBattleStat = displayingMonster.GetBattleStat();
-				monsterName.text = displayingMonster.name;
+				monsterName.text = cam.monsterJson["Boss"][displayingMonster.monsterNum]["name"];
 				monsterLevel.text = displayingBattleStat.Level.ToString();
 				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
 				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
@@ -176,43 +202,28 @@ public class ConquerPanel : MonoBehaviour {
 				
 				break;
 			default:
-				displayingMonster = cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetSampleMonster1();
-				displayingBattleStat = displayingMonster.GetBattleStat();
-				monsterName.text = displayingMonster.name;
-				monsterLevel.text = displayingBattleStat.Level.ToString();
-				monsterHealth.text = string.Format("{0:0}", displayingBattleStat.HealthMax);
-				monsterDefence.text = string.Format("{0:0.0}", displayingBattleStat.Defence);
-				monsterMoveSpeed.text = string.Format("{0:0}%", (displayingBattleStat.MoveSpeed * 100));
-				monsterAttackRange.text = displayingBattleStat.BaseAttackRange.ToString();
-				monsterDPS.text = string.Format("{0:0.00}", (displayingBattleStat.Attack * displayingBattleStat.AttackSpeed * ((1 + displayingBattleStat.CriticalChance) * (displayingBattleStat.CriticalDamage - 1))));
-				monsterAttack.text = string.Format("{0:0}", displayingBattleStat.Attack);
-				monsterAttackSpeed.text = string.Format("{0:0.0000}", displayingBattleStat.AttackSpeed);
-				monsterCritical.text = string.Format("{0:0.00}%", displayingBattleStat.CriticalChance * 100);
-				monsterCriticalAttack.text = string.Format("{0:0.0}%", displayingBattleStat.CriticalDamage * 100);
-				monsterPenetrate.text = string.Format("{0:0}", displayingBattleStat.PenetrationFixed);
-				monsterImage.sprite = monsterSprites[displayingMonster.monsterNum];
-				monsterImage.color = monsterColors[displayingMonster.monsterNum];
+				Debug.Log("Monster Number missing !");
 				break;
 		}
 		
 	}
 	public IEnumerator UpdateProgress()
 	{
-		int originProgress = (cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex);
+		int originProgress = (cam.ConqueringHuntingAreaIndex);
 		while(true)
 		{
-			if(originProgress < cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex)
+			if(originProgress <cam.ConqueringHuntingAreaIndex)
 			{
 				SetButtonsByHuntingAreas();
 				ShowMonsterInfo(0);
-				originProgress = cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex;
+				originProgress = cam.ConqueringHuntingAreaIndex;
 			}
 			//update Progress Info
-			progressCurrent.text = (cam.BossAreaIndex + cam.ConqueringHuntingAreaIndex + 1).ToString();
-			progressTotal.text = (cam.huntingAreas.Count + cam.bossAreas.Count).ToString();
-			currentHuntingAreaKind.text = GameManager.Instance.isBossPhase == true ? commonConqueringText : bossConqueringText;
+			progressCurrent.text = (cam.ConqueringHuntingAreaIndex).ToString();
+			progressTotal.text = (cam.huntingAreas.Count).ToString();
+			currentHuntingAreaKind.text = GameManager.Instance.isBossPhase == true ? bossConqueringText : commonConqueringText;
 			//if boss phase...
-			remainMonsterCount.text = GameManager.Instance.isBossPhase == true ? " " :(cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetConquerCondition() - cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetKillCount()).ToString();
+			remainMonsterCount.text = GameManager.Instance.isBossPhase == true ? "-1-" :(cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetConquerCondition() - cam.huntingAreas[cam.ConqueringHuntingAreaIndex].GetKillCount()).ToString();
 			//end
 			yield return updateTick;
 		}
