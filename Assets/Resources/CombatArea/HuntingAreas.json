@@ -1,7 +1,7 @@
 {
 	"stage1": [{
 			"name": "1~10",
-			"conquerCondition": 30,
+			"conquerCondition": 1,
 			"isBossArea": false,
 			"levelMax": 10,
 			"monsterMax": 21,
@@ -23,7 +23,7 @@
 		},
 		{
 			"name": "11~20",
-			"conquerCondition": 30,
+			"conquerCondition": 1,
 			"isBossArea": false,
 			"levelMax": 20,
 			"monsterMax": 21,
@@ -45,7 +45,7 @@
 		},
 		{
 			"name": "21~30",
-			"conquerCondition": 30,
+			"conquerCondition": 1,
 			"isBossArea": true,
 			"levelMax": 30,
 			"monsterMax": 21,

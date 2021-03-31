@@ -112,6 +112,7 @@ public class Skirmish
         // 라운드 다 진행했으면 스커미시 종료
         if (curRound > roundCnt)
         {
+			Debug.Log("------curRound > roundCnt-------");
             EndSkirmish();
             return;
         }

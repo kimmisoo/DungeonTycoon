@@ -2055,6 +2055,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.PlayerNotParticipating;
     }
 
+
     public void AICalledBossRaid()
     {
         SomeoneCalledBossRaid();
