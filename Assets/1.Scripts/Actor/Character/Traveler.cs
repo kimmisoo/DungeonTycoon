@@ -3,7 +3,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
+using Random = UnityEngine.Random;
 
 
 /*
@@ -301,7 +302,14 @@ public class Traveler : Actor
 				else
 					randIndex++;
 			}
-			destinationTile = structureListByPref[randIndex].GetEntrance();
+			try
+			{
+				destinationTile = structureListByPref[randIndex].GetEntrance();
+			}
+			catch(Exception e)
+			{
+				Debug.Log("Exception!!! - Traveler");//structureListByPref 확인 해보기
+			}
 			destinationPlace = structureListByPref[randIndex];
 			structureListByPref.RemoveAt(randIndex);
 			//null 체크

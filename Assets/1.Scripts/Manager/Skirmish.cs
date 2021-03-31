@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 public class Skirmish
 {
@@ -54,7 +57,7 @@ public class Skirmish
 
         MakeBracket();
 
-        int temp = skirmishParticipants.Count;
+        int temp = skirmishParticipants.Count;      
         while (temp > 1)
         {
             temp = temp / 2 + temp % 2;
@@ -149,9 +152,16 @@ public class Skirmish
 		//Debug.Log("EndSkirmish : " + skirmishSurvivors[0].curState + " , " + skirmishSurvivors[0].GetSuperState());
 		if (skirmishBracket.Count == 0)
 			Debug.Log("Skirmish Barcket count is 0");
-        skirmishBracket[0].HealFullHealth(true);
+		try
+		{
+			skirmishBracket[0].HealFullHealth(true);
+		}
+		catch(Exception e)
+		{
+			Debug.Log("Excpetion !!!"); //배열 길이 및 내용 확인해보기
+		}
         skirmishBracket[0].curState = State.EnteringBossArea;
-
+		
         // 그 외 인터페이스 보여주려면 여기서.
         GameManager.Instance.OnSkirmishEnd(skirmishBracket[0].index);
 		curRound = 0;
