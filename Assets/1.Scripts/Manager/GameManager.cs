@@ -2187,8 +2187,12 @@ public class GameManager : MonoBehaviour
                 break;
             }
         }
-
-        retryTimeLeft = 0;
+		// responsedSpAdvCnt 초기화 안되어있었음 - 
+		responsedSpAdvCnt = 0;
+		isBossRaidPrepTimeOver = false;
+		bossRaidPrepWaitedTime = 0.0f;
+		//
+		retryTimeLeft = 0.0f;
         curSkirmish = new Skirmish();
         canCallBossRaid = true;
         UIManager.Instance.bossRaidUI.State = BossRaidUI.BossRaidUIState.BeforeApplication;

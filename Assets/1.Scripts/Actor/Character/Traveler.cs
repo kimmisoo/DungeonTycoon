@@ -302,14 +302,10 @@ public class Traveler : Actor
 				else
 					randIndex++;
 			}
-			try
-			{
-				destinationTile = structureListByPref[randIndex].GetEntrance();
-			}
-			catch(Exception e)
-			{
-				Debug.Log("Exception!!! - Traveler");//structureListByPref 확인 해보기
-			}
+			if (distances.Count <= 1)
+				randIndex = 0;
+			destinationTile = structureListByPref[randIndex].GetEntrance();
+			
 			destinationPlace = structureListByPref[randIndex];
 			structureListByPref.RemoveAt(randIndex);
 			//null 체크
