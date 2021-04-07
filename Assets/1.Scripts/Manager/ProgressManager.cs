@@ -12,9 +12,9 @@ public class ProgressManager : MonoBehaviour {
 	//-> 씬 번호, 클리어한 방 기준? JSON
 	//
 
+	
 	JSONNode progressJson;
 	
-
 	public static ProgressManager Instance
 	{
 		get
@@ -29,7 +29,6 @@ public class ProgressManager : MonoBehaviour {
 		}
 	}
 
-
 	private static ProgressManager _instance;
 
 	private void Awake()
@@ -42,15 +41,6 @@ public class ProgressManager : MonoBehaviour {
 	public void LoadProgressData()
 	{
 		progressJson = SimpleJSON.JSON.Parse(Resources.Load<TextAsset>("SceneData/Progress").ToString());
-	}
-	void Start () {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-
 }

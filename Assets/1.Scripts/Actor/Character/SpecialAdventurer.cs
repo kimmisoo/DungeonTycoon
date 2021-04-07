@@ -1135,7 +1135,6 @@ public class SpecialAdventurer : Adventurer
         // 도착하면 응답 완료했다고 매니저에 알림
         GameManager.Instance.SpAdvResponsed(true, this);
     }
-
     private IEnumerator StartingSkirmish()
     {
         // 여기서 위치도 정해주는게 좋다.

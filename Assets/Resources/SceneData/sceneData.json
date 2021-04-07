@@ -255,7 +255,11 @@
         "Hana",
         "Iris",
         "Maxi",
-        "Murat"
+        "Murat",
+        "OldMan",
+        "Yeonhwa",
+        "Nyang",
+        "Wal"
       ],
       "specialadv_level": 25,
       "complete_Popularity": 10000,
@@ -315,9 +319,10 @@
         "Iris",
         "Maxi",
         "Murat",
+        "OldMan",
         "Yeonhwa",
-        "dog",
-        "Cat"
+        "Nyang",
+        "Wal"
       ],
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
@@ -376,9 +381,10 @@
         "Iris",
         "Maxi",
         "Murat",
+        "OldMan",
         "Yeonhwa",
-        "dog",
-        "Cat"
+        "Nyang",
+        "Wal"
       ],
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
@@ -437,9 +443,10 @@
         "Iris",
         "Maxi",
         "Murat",
+        "OldMan",
         "Yeonhwa",
-        "dog",
-        "Cat"
+        "Nyang",
+        "Wal"
       ],
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
@@ -498,9 +505,10 @@
         "Iris",
         "Maxi",
         "Murat",
+        "OldMan",
         "Yeonhwa",
-        "dog",
-        "Cat"
+        "Nyang",
+        "Wal"
       ],
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
@@ -559,9 +567,10 @@
         "Iris",
         "Maxi",
         "Murat",
+        "OldMan",
         "Yeonhwa",
-        "dog",
-        "Cat"
+        "Nyang",
+        "Wal"
       ],
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
