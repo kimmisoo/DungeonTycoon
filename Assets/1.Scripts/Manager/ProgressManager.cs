@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
 
+public enum SpAdvNames
+{
+	Hana, Iris, Maxi, Murat, OldMan, Yeonhwa, Nyang, Wal
+}
 public class ProgressManager : MonoBehaviour {
 
 
@@ -13,8 +17,8 @@ public class ProgressManager : MonoBehaviour {
 	//
 
 	
-	JSONNode progressJson;
-	
+	JSONNode dialogBindingJson;
+	public Dictionary<string, int> characterDialogProgressData;
 	public static ProgressManager Instance
 	{
 		get
@@ -33,14 +37,51 @@ public class ProgressManager : MonoBehaviour {
 
 	private void Awake()
 	{
+		if (ProgressManager.Instance != null) // 이미 씬에 있다면(로드했거나 다음씬 진행했을때?)
+		{
+			Destroy(gameObject);
+			return;
+		}
 		_instance = this;
 		LoadProgressData();
 		
 	}
+	private void Start()
+	{
+		GameObject.DontDestroyOnLoad(gameObject);
+		if (SaveLoadManager.Instance.isLoadedGame == false)
+		{
+			characterDialogProgressData = new Dictionary<string, int>();
+			for (int i = 0; i < System.Enum.GetNames(typeof(SpAdvNames)).Length; i++)
+			{
+				characterDialogProgressData.Add(System.Enum.GetName(typeof(SpAdvNames), i), 1);
+			}
+		}
+	}
 	// Use this for initialization
 	public void LoadProgressData()
 	{
-		progressJson = SimpleJSON.JSON.Parse(Resources.Load<TextAsset>("SceneData/Progress").ToString());
+		dialogBindingJson = SimpleJSON.JSON.Parse(Resources.Load<TextAsset>("SceneData/Progress").ToString());
 		
 	}
+
+
+	#region Check
+	public void SceneStarted(int sceneNum)
+	{
+		
+	}
+	public void SceneEnded(int sceneNum)
+	{
+
+	}
+	public void ConquerStarted(int sceneNum, int areaNum)
+	{
+
+	}
+	public void ConquerEnded(int sceneNum, int areaNum)
+	{
+
+	}
+	#endregion
 }

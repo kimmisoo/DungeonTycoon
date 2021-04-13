@@ -1453,7 +1453,7 @@ public class GameManager : MonoBehaviour
         playerGold = savedata.playerGold;
         playerPopularity = savedata.playerPopularity;
         playerSpAdvIndex = savedata.playerSpAdvIndex;
-
+		ProgressManager.Instance.characterDialogProgressData = savedata.characterDialogProgressData;
         UIManager.Instance.itemEquipUI.LoadItemStorage(savedata.itemStorage);
 
         Camera.main.transform.position = new Vector3(savedata.cameraPosition.x, savedata.cameraPosition.y, savedata.cameraPosition.z);
@@ -2471,5 +2471,9 @@ public class GameManager : MonoBehaviour
 	public int GetSceneIndex()
 	{
 		return int.Parse(sceneName);
+	}
+	public string GetSpAdvName(int index)
+	{
+		return sceneData["scene"][int.Parse(SceneManager.GetActiveScene().name)]["specialadventurers"][index];
 	}
 }

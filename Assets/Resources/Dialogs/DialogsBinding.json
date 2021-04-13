@@ -1,0 +1,247 @@
+{
+  "oldman" :
+    [
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage1_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage1_Victory.json",
+        "conquerstart" : {},
+        "conquerend" : 
+        {
+          "2" : "Dialogs/Stage/Tutorial_BossPhase.json"            
+        },
+        "buildstructure" : "Dialogs/Stage/Tutorial_BuildStructure.json",
+        "itemequip" : "Dialogs/Stage/Tutorial_ItemEquip.json",
+        "selectspadv" : "Dialogs/Stage/Tutorial_SelectSpAdv.json"
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ],
+  "hana" :
+    [
+      {
+      },
+      {
+        "introdue" : "Dialogs/Hana/0.json",
+        "scenestart" : "Dialogs/Stage/Stage2_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage2_Victory.json",
+        "conquerstart" : 
+        {
+          "3" : "Dialogs/Hana/1_1.json"  
+        },
+        "conquerend" : 
+        {
+          "5" : "Dialogs/Hana/1_2.json"
+        }
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage3_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage3_Victory.json",
+        "conquerstart" : 
+        {
+          "6" : "Dialogs/Hana/2.json"
+        },
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ],
+  "iris" :
+    [
+      {
+      },
+      {
+        "introdue" : "Dialogs/Iris/0.json",
+        "scenestart" : "Dialogs/Stage/Stage2_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage2_Victory.json",
+        "conquerstart" : {},
+        "conquerend" : {"5" : "Dialogs/Iris/1.json"}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage3_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage3_Victory.json",
+        "conquerstart" : {
+          "3" : "Dialogs/Iris/2_1.json",
+          "6" : "Dialogs/Iris/2_1.json"                
+        },
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ],
+  "maxi" :
+    [
+      {
+      },
+      {
+        "introdue" : "Dialogs/Maxi/0.json",
+        "scenestart" : "Dialogs/Stage/Stage2_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage2_Victory.json",
+        "conquerstart" : {},
+        "conquerend" : {"5" : "Dialogs/Maxi/1.json"}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage3_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage3_Victory.json",
+        "conquerstart" : {
+          "3" : "Dialogs/Maxi/2_1.json",
+          "6" : "Dialogs/Maxi/2_2.json"
+        },
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ],
+  "murat" :
+    [
+      {
+      },
+      {
+        "introdue" : "Dialogs/Murat/0.json",
+        "scenestart" : "Dialogs/Stage/Stage2_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage2_Victory.json",
+        "conquerstart" : {},
+        "conquerend" : {"5" : "Dialogs/Murat/1.json"}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage3_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage3_Victory.json",
+        "conquerstart" : {
+          "6" : "Dialogs/Murat/2.json"
+        },
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ],
+  "nyang" :
+    [
+      {
+      },
+      {
+        "introdue" : "Dialogs/Nyang/0.json",
+        "scenestart" : "Dialogs/Stage/Stage2_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage2_Victory.json",
+        "conquerstart" : {},
+        "conquerend" : {"5" : "Dialogs/Nyang/1.json"}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage3_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage3_Victory.json",
+        "conquerstart" : {
+          "6" : "Dialogs/Nyang/2.json"
+        },
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ],
+  "wal" :
+    [
+      {
+      },
+      {
+        "introdue" : "Dialogs/Wal/0.json",
+        "scenestart" : "Dialogs/Stage/Stage2_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage2_Victory.json",
+        "conquerstart" : {},
+        "conquerend" : {"5" : "Dialogs/Wal/1.json"}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage3_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage3_Victory.json",
+        "conquerstart" : {
+          "6" : "Dialogs/Wal/2.json"
+        },
+        "conquerend" : {}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ],
+  "yeonhwa" :
+    [
+      {
+      },
+      {
+        "introdue" : "Dialogs/Yeonhwa/0.json",
+        "scenestart" : "Dialogs/Stage/Stage2_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage2_Victory.json",
+        "conquerstart" : {"3" : "Dialogs/Yeonhwa/1_1.json"},
+        "conquerend" : {"5" : "Dialogs/Yeonhwa/1_2.json"}
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "Dialogs/Stage/Stage3_Start.json",
+        "sceneend" : "Dialogs/Stage/Stage3_Victory.json",
+        "conquerstart" : {
+          "3" : "Dialogs/Yeonhwa/2_1.json",
+          "6" : "Dialogs/Yeonhwa/2_2.json"
+        },
+        "conquerend" : {
+          
+        }
+      },
+      {
+        "introdue" : "",
+        "scenestart" : "",
+        "sceneend" : "",
+        "conquerstart" : {},
+        "conquerend" : {}
+      }
+    ]
+}

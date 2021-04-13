@@ -15,12 +15,13 @@ public class GameSavedata
     public int playerGold;
     public int playerPopularity;
     public int playerSpAdvIndex;
-
+	
     // 아이템 보유 및 장착 현황
-    public Dictionary<string, Dictionary<int, ItemCondition>> itemStorage; 
+    public Dictionary<string, Dictionary<int, ItemCondition>> itemStorage;
+	public Dictionary<string, int> characterDialogProgressData;
 
-    // 카메라 설정
-    public Vector3Data cameraPosition;
+	// 카메라 설정
+	public Vector3Data cameraPosition;
     public float cameraSize;
 
     #region CombatAreas
@@ -66,6 +67,7 @@ public class GameSavedata
         playerGold = gameManager.playerGold;
         playerPopularity = gameManager.playerPopularity;
         playerSpAdvIndex = gameManager.playerSpAdvIndex;
+		characterDialogProgressData = ProgressManager.Instance.characterDialogProgressData;
 
         itemStorage = gameManager.GetItemStorage();
 
@@ -751,3 +753,4 @@ public class TemporaryEffectData
         elapsedTime = tempEffect.elapsedTime;
     }
 }
+
