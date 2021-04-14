@@ -57,7 +57,6 @@ public class DialogManager : MonoBehaviour
 
 	public int illustrationPosition = 0; // 일러스트 추가시 or 
 										 // 버튼 이미지 바꾸는 방식으로 변경함. 18.06.26 김미수
-										 //
 	public float typeWriteBetween = 0.055f;//글자 (character) 출력 시간 간격
 	public float panelMoveBetween = 0.08f; // 대화시작 이펙트 연출 시 이동 시간 간격
 	public float skipTimeBetween = 0.18f; // 스킵 버튼 누를때 스킵 시간 간격
@@ -73,7 +72,7 @@ public class DialogManager : MonoBehaviour
 								// 명찰 색 바꾸기용 18.06.26 김미수
 	public String[] nameArray;
 	public Image showingNameBG;
-	//
+	
 	public GameObject smallIllustrationObject;
 	public Image smallIllustrationImage;
 	public GameObject bigIllustrationObject;
@@ -192,9 +191,9 @@ public class DialogManager : MonoBehaviour
 
 		}
 	}
-	public void StartDialog(string dialogNum)
+	public void StartDialog(string path)
 	{
-		LoadDialogs(dialogNum);
+		LoadDialogs(path);
 		DoPlay();
 	}
 	public void MoveDialogList()
@@ -562,13 +561,13 @@ public class DialogManager : MonoBehaviour
 				break;
 		}
 	}
-	public void LoadDialogs(string fileName)
+	public void LoadDialogs(string path)
 	{
 		TextAsset dialogText;
 		List<DialogSaveData> loadedDataList = new List<DialogSaveData>();
 		DialogsForPlay tempDialog = null; ;
 		dialogList.Clear();
-		if((dialogText = Resources.Load<TextAsset>("Dialogs/"+fileName)) != null)
+		if((dialogText = Resources.Load<TextAsset>(path)) != null)
 		{
 			MemoryStream ms = new MemoryStream(dialogText.bytes);
 			DataContractJsonSerializer serializer = new DataContractJsonSerializer(loadedDataList.GetType());
@@ -632,7 +631,7 @@ public class DialogManager : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("Dialog" + fileName + " does not exist");
+			Debug.Log(path + " does not exist");
 		}
 	}
 	IEnumerator _CameraShake()

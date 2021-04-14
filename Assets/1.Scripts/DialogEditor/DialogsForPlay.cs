@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-/*Onselected ; 
-Delete*/ //2018-03-10
+
 
 
 public class DialogsForPlay
