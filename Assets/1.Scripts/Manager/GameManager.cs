@@ -2476,4 +2476,16 @@ public class GameManager : MonoBehaviour
 	{
 		return sceneData["scene"][int.Parse(SceneManager.GetActiveScene().name)]["specialadventurers"][index];
 	}
+	public string GetPlayerSpAdvName()
+	{
+		if(playerSpAdvIndex == -1)
+		{
+			//not chosen.
+			return string.Empty;
+		}
+		else
+		{
+			return sceneData["scene"][int.Parse(SceneManager.GetActiveScene().name)]["specialadventurers"][playerSpAdvIndex];
+		}
+	}
 }

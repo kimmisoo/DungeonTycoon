@@ -61,8 +61,7 @@ public class ProgressManager : MonoBehaviour {
 	// Use this for initialization
 	public void LoadProgressData()
 	{
-		dialogBindingJson = SimpleJSON.JSON.Parse(Resources.Load<TextAsset>("SceneData/Progress").ToString());
-		
+		dialogBindingJson = SimpleJSON.JSON.Parse(Resources.Load<TextAsset>("SceneData/Progress").ToString());	
 	}
 
 
@@ -74,15 +73,22 @@ public class ProgressManager : MonoBehaviour {
 	}
 	public void SceneEnded(int sceneNum)
 	{
-
+		if (dialogBindingJson["stage"][sceneNum]["sceneend"] != null || ((string)dialogBindingJson["stage"][sceneNum]["sceneend"]).Length > 5) // 빈거 찾으면 어떻게되는지 테스트해봐야함.
+			DialogManager.Instance.StartDialog(dialogBindingJson["stage"][sceneNum]["sceneend"]);
 	}
 	public void ConquerStarted(int sceneNum, int areaNum)
 	{
-
+		if(dialogBindingJson[GetCurSpAdvName()][sceneNum][areaNum.ToString()] != null || dialogBindingJson[GetCurSpAdvName()][sceneNum][areaNum.ToString()].ToString().Length > 5)
+			DialogManager.Instance.StartDialog(dialogBindingJson[GetCurSpAdvName()][sceneNum]["sceneend"]);
 	}
 	public void ConquerEnded(int sceneNum, int areaNum)
 	{
-
+		if (dialogBindingJson[GetCurSpAdvName()][sceneNum][areaNum.ToString()] != null || dialogBindingJson[GetCurSpAdvName()][sceneNum][areaNum.ToString()].ToString().Length > 5)
+			DialogManager.Instance.StartDialog(dialogBindingJson[GetCurSpAdvName()][sceneNum]["sceneend"]);
+	}
+	public string GetCurSpAdvName()
+	{
+		return GameManager.Instance.GetPlayerSpAdvName();
 	}
 	#endregion
 }

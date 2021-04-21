@@ -26,13 +26,6 @@
   "oldman" :
     [
       {
-        "conquerend" : 
-        {
-          "2" : "Dialogs/Stage/Tutorial_BossPhase.json"            
-        },
-        "buildstructure" : "Dialogs/Stage/Tutorial_BuildStructure.json",
-        "itemequip" : "Dialogs/Stage/Tutorial_ItemEquip.json",
-        "selectspadv" : "Dialogs/Stage/Tutorial_SelectSpAdv.json"
       },
       {
         "introdue" : "",
