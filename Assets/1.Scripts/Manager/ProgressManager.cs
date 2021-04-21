@@ -69,7 +69,8 @@ public class ProgressManager : MonoBehaviour {
 	#region Check
 	public void SceneStarted(int sceneNum)
 	{
-		
+		if(dialogBindingJson["stage"][sceneNum]["scenestart"] != null || ((string)dialogBindingJson["stage"][sceneNum]["scenestart"]).Length > 5) // 빈거 찾으면 어떻게되는지 테스트해봐야함.
+			DialogManager.Instance.StartDialog(dialogBindingJson["stage"][sceneNum]["scenestart"]);
 	}
 	public void SceneEnded(int sceneNum)
 	{
