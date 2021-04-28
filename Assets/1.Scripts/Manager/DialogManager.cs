@@ -69,7 +69,7 @@ public class DialogManager : MonoBehaviour
 	public Image illustrationR;
 	public Text showingTextBox; // 실제 출력되는 텍스트
 	public Text showingNameBox; // 실제 출력되는 이름
-								// 명찰 색 바꾸기용 18.06.26 김미수
+								
 	public String[] nameArray;
 	public Image showingNameBG;
 	
@@ -78,8 +78,6 @@ public class DialogManager : MonoBehaviour
 	public GameObject bigIllustrationObject;
 	public Image bigIllustrationImage;
 	public bool dialogUIHide = false;
-	// 대사 전환 버튼용 18.06.26 김미수
-	public String[] changeBtnStringArray;
 	public StringBuilder forShowTextBox;
 
 	Vector3 origin; //대화창 anchroed position
@@ -89,7 +87,7 @@ public class DialogManager : MonoBehaviour
 	Color monologueTextColor;
 	Color dialogTextColor;
 
-	public Text dialogType;
+	
 	int dialogTypeNum = 2; // 0 = 독백 / 1 = 나레이션 / 2 = 대사
 
 	//public Dialogs selectedDialogs;
@@ -431,7 +429,7 @@ public class DialogManager : MonoBehaviour
 	public void DoChangeName(string name)
 	{
 		showingNameBox.text = name;
-		/* 명찰 색상 변경 기능 추가함. 18.06.26 김미수
+		/* 
          * 색상표
          * 1) 카트린     : BD0000B4
          * 2) 막시         : FF4E00B4

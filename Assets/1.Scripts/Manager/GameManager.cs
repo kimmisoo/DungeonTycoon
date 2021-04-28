@@ -334,8 +334,11 @@ public class GameManager : MonoBehaviour
 #if DEBUG_ADV
         //DebugHuntingArea();
 #endif
-        if (SaveLoadManager.Instance.isLoadedGame == false)
-            CombatAreaManager.Instance.InitCombatAreas();
+		if (SaveLoadManager.Instance.isLoadedGame == false)
+		{
+			CombatAreaManager.Instance.InitCombatAreas();
+			ProgressManager.Instance.SceneStarted(GetSceneIndex()); // 씬 시작할때 Dialog 호출.
+		}
         SaveLoadManager.Instance.InstantiateFromSave();
     }
 
@@ -2256,7 +2259,9 @@ public class GameManager : MonoBehaviour
     private void PlayerWon()
     {
         ShowStageClearUI();
-        SetTimeScale(0);
+		ProgressManager.Instance.SceneEnded(GetSceneIndex()); // 씬 완료 Dialog 호출
+		SetTimeScale(0);
+		
     }
 
     private void PlayerLose()

@@ -1,15 +1,14 @@
 {
   "stage" : 
   [
+	{},
     {
       "introdue" : "",
-      "scenestart" : "Dialogs/Stage/Stage1_Start.json",
+      "scenestart" : "Dialogs/Stage/Stage1_Start",
       "sceneend" : "Dialogs/Stage/Stage1_Victory.json",
       "conquerstart" : {},
-      "conquerend" : 
-      {
-        "2" : "Dialogs/Stage/Tutorial_BossPhase.json"            
-      },
+      "conquerend" : {},
+	  "test" : "",
       "buildstructure" : "Dialogs/Stage/Tutorial_BuildStructure.json",
       "itemequip" : "Dialogs/Stage/Tutorial_ItemEquip.json",
       "selectspadv" : "Dialogs/Stage/Tutorial_SelectSpAdv.json"
@@ -26,6 +25,13 @@
   "oldman" :
     [
       {
+        "conquerend" : 
+        {
+          "2" : "Dialogs/Stage/Tutorial_BossPhase.json"            
+        },
+        "buildstructure" : "Dialogs/Stage/Tutorial_BuildStructure.json",
+        "itemequip" : "Dialogs/Stage/Tutorial_ItemEquip.json",
+        "selectspadv" : "Dialogs/Stage/Tutorial_SelectSpAdv.json"
       },
       {
         "introdue" : "",
