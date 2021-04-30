@@ -61,7 +61,7 @@ public class ProgressManager : MonoBehaviour {
 	// Use this for initialization
 	public void LoadProgressData()
 	{
-		dialogBindingJson = SimpleJSON.JSON.Parse(Resources.Load<TextAsset>("Dialogs/DialogsBinding").text);	
+		dialogBindingJson = SimpleJSON.JSON.Parse(Resources.Load<TextAsset>("Dialogs/DialogsBinding").text);
 	}
 	//DialogBinding
 	//dialogBindingJson["stage"][int]는 스테이지 번호 = 인덱스

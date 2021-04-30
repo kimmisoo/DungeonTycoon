@@ -2035,7 +2035,6 @@ public class GameManager : MonoBehaviour
     {
         playerSpAdvIndex = spAdvIndex;
         specialAdventurers[spAdvIndex].GetComponent<SpecialAdventurer>().SignExclusiveContract();
-
         CreateStatDummies();
     }
 
