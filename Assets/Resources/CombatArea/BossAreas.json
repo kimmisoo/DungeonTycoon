@@ -45,7 +45,7 @@
 	],
 	"stage2": [{
 			"name": "MidBossArea",
-			"bossNum": 1,
+			"bossNum": 0,
 			"challengeLevel": 25,
 			"bonus": 3000,
 			"sitewidth": 4,
@@ -60,7 +60,7 @@
 		},
 		{
 			"name": "FinalBossArea",
-			"bossNum": 2,
+			"bossNum": 1,
 			"challengeLevel": 45,
 			"bonus": 50000,
 			"sitewidth": 4,

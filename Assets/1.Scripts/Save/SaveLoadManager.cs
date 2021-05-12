@@ -59,7 +59,6 @@ public class SaveLoadManager : MonoBehaviour
         // 저장
         BinaryFormatter bf = new BinaryFormatter();
         FileStream stream = new FileStream(savedataPath, FileMode.Create);
-
         GameSavedata data = new GameSavedata(sceneName);
 
         bf.Serialize(stream, data);
@@ -130,7 +129,7 @@ public class SaveLoadManager : MonoBehaviour
             TileMapGenerator.Instance.SetTileStructure(savedata);
             GameManager.Instance.LoadUI(savedata);
             GameManager.Instance.CreateStatDummies();
-
+			ProgressManager.Instance.LoadCharacterDialogProgressData(savedata);
             //Debug.Log("불러오기 성공");
 
             savedata = null;

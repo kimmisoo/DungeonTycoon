@@ -71,24 +71,24 @@ public class ProgressManager : MonoBehaviour {
 	//Stage
 	public void SceneStarted(int sceneNum)
 	{
-		
-		if (dialogBindingJson["stage"][sceneNum]["scenestart"] != null) // 빈거 찾으면 어떻게되는지 테스트해봐야함.
+		if (dialogBindingJson["stage"][sceneNum]["scenestart"] != null)
 			DialogManager.Instance.StartDialog(dialogBindingJson["stage"][sceneNum]["scenestart"]);
 	}
 	public void SceneEnded(int sceneNum)
 	{
-		if (dialogBindingJson["stage"][sceneNum]["sceneend"] != null) // 빈거 찾으면 어떻게되는지 테스트해봐야함.
+		if (dialogBindingJson["stage"][sceneNum]["sceneend"] != null)
 			DialogManager.Instance.StartDialog(dialogBindingJson["stage"][sceneNum]["sceneend"]);
+		characterDialogProgressData[GetCurSpAdvName()]++;
 	}
-	public void ConquerStarted(int characterProgress, int areaNum)
+	public void ConquerStarted(int areaNum)
 	{
-		if(dialogBindingJson[GetCurSpAdvName()][characterProgress]["conquerstart"][areaNum.ToString()] != null)
-			DialogManager.Instance.StartDialog(dialogBindingJson[GetCurSpAdvName()][characterProgress]["conquerstart"][areaNum.ToString()]);
+		if(dialogBindingJson[GetCurSpAdvName()][characterDialogProgressData[GetCurSpAdvName()]]["conquerstart"][areaNum.ToString()] != null)
+			DialogManager.Instance.StartDialog(dialogBindingJson[GetCurSpAdvName()][characterDialogProgressData[GetCurSpAdvName()]]["conquerstart"][areaNum.ToString()]);
 	}
-	public void ConquerEnded(int characterProgress, int areaNum)
+	public void ConquerEnded(int areaNum)
 	{
-		if (dialogBindingJson[GetCurSpAdvName()][characterProgress]["conquerend"][areaNum.ToString()] != null)
-			DialogManager.Instance.StartDialog(dialogBindingJson[GetCurSpAdvName()][characterProgress]["conquerend"][areaNum.ToString()]);
+		if (dialogBindingJson[GetCurSpAdvName()][characterDialogProgressData[GetCurSpAdvName()]]["conquerend"][areaNum.ToString()] != null)
+			DialogManager.Instance.StartDialog(dialogBindingJson[GetCurSpAdvName()][characterDialogProgressData[GetCurSpAdvName()]]["conquerend"][areaNum.ToString()]);
 	}
 	//EndStage
 	//Character
@@ -109,5 +109,8 @@ public class ProgressManager : MonoBehaviour {
 	{
 		return GameManager.Instance.GetPlayerSpAdvName();
 	}
-	
+	public void LoadCharacterDialogProgressData(GameSavedata save)
+	{
+		characterDialogProgressData = save.characterDialogProgressData;
+	}
 }

@@ -340,6 +340,7 @@ public class GameManager : MonoBehaviour
 			ProgressManager.Instance.SceneStarted(GetSceneIndex()); // 씬 시작할때 Dialog 호출.
 		}
         SaveLoadManager.Instance.InstantiateFromSave();
+		//이 아래로는 isLoadedGame == false... 
     }
 
     private void ReadDatasFromJSON()
@@ -2260,7 +2261,14 @@ public class GameManager : MonoBehaviour
         ShowStageClearUI();
 		ProgressManager.Instance.SceneEnded(GetSceneIndex()); // 씬 완료 Dialog 호출
 		SetTimeScale(0);
-		
+		if(int.Parse(SceneManager.GetActiveScene().name) < SceneManager.sceneCount)
+		{
+			SceneManager.LoadScene(int.Parse(SceneManager.GetActiveScene().name) + 1);
+		}
+		else
+		{
+			//End of Game
+		}
     }
 
     private void PlayerLose()
