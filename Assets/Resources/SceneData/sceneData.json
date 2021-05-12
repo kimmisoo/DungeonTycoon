@@ -156,36 +156,94 @@
       },
       "mapEntrance": [
         {
-          "x": 42,
-          "y": 78
+          "x": 0,
+          "y": 46
         },
         {
-          "x": 42,
-          "y": 79
+          "x": 0,
+          "y": 47
         },
         {
-          "x": 43,
-          "y": 78
+          "x": 1,
+          "y": 46
         },
         {
-          "x": 43,
-          "y": 79
+          "x": 1,
+          "y": 47
+        }
+      ],
+	  "huntingAreaCount": 4,
+      "huntingArea": [
+        {
+          "huntingAreaNum": 0,
+          "x": 1,
+          "y": 40
         },
         {
-          "x": 44,
-          "y": 78
+          "huntingAreaNum": 1,
+          "x": 1,
+          "y": 12
         },
         {
-          "x": 44,
-          "y": 79
+          "huntingAreaNum": 2,
+          "x": 30,
+          "y": 23
+        },
+		{
+          "huntingAreaNum": 3,
+          "x": 31,
+          "y": 4
+        }
+      ],
+      "bossAreaCount": 2,
+      "bossArea": [
+        {
+          "bossAreaNum": 0,
+          "x": 13,
+          "y": 9
+        ,
+		{
+          "bossAreaNum": 1,
+          "x": 40,
+          "y": 3
+        }
+      ],
+      "progressInformation": [
+        {
+          "huntingAreaIndex": 0,
+          "guestCapacity": 150,
+          "minLevel": 1,
+          "maxLevel": 10
         },
         {
-          "x": 45,
-          "y": 78
+          "huntingAreaIndex": 1,
+          "guestCapacity": 50,
+          "minLevel": 11,
+          "maxLevel": 20
         },
         {
-          "x": 45,
-          "y": 79
+          "huntingAreaIndex": 2,
+          "guestCapacity": 30,
+          "minLevel": 21,
+          "maxLevel": 25
+        },
+        {
+          "huntingAreaIndex": 3,
+          "guestCapacity": 50,
+          "minLevel": 26,
+          "maxLevel": 30
+        },
+        {
+          "huntingAreaIndex": 4,
+          "guestCapacity": 50,
+          "minLevel": 31,
+          "maxLevel": 40
+        },
+        {
+          "huntingAreaIndex": 5,
+          "guestCapacity": 30,
+          "minLevel": 41,
+          "maxLevel": 45
         }
       ]
     },
