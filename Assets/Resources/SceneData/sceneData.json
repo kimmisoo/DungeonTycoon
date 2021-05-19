@@ -135,7 +135,7 @@
         "Nyang",
         "Wal"
       ],
-      "specialadv_level": 25,
+      "specialadv_level": 1,
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
       "buildable": {
@@ -149,6 +149,22 @@
         "santuary": 1,
         "rescue": 1
       },
+	  "compositionOfPopulation": {
+        "race": {
+          "human": 0.9,
+          "elf": 0.02,
+          "dwarf": 0.02,
+          "orc": 0.02,
+          "dog": 0.02,
+          "cat": 0.02
+        },
+        "wealth": {
+          "lower": 0.8,
+          "middle": 0.15,
+          "upper": 0.05
+        }
+      },
+	  "mapEntranceCount" : 4,
       "mapEntrance": [
         {
           "x": 0,
@@ -206,7 +222,7 @@
       "progressInformation": [
         {
           "huntingAreaIndex": 0,
-          "guestCapacity": 150,
+          "guestCapacity": 100,
           "minLevel": 1,
           "maxLevel": 10
         },
@@ -256,6 +272,7 @@
         "Nyang",
         "Wal"
       ],
+      "specialadv_level": 1,
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
       "buildable": {
@@ -269,38 +286,93 @@
         "santuary": 1,
         "rescue": 1
       },
+      "compositionOfPopulation": {
+        "race": {
+          "human": 0.9,
+          "elf": 0.02,
+          "dwarf": 0.02,
+          "orc": 0.02,
+          "dog": 0.02,
+          "cat": 0.02
+        },
+        "wealth": {
+          "lower": 0.8,
+          "middle": 0.15,
+          "upper": 0.05
+        }
+      },
+      "mapEntranceCount": 3,
       "mapEntrance": [
         {
-          "x": 42,
-          "y": 78
+          "x": 19,
+          "y": 49
         },
         {
-          "x": 42,
-          "y": 79
+          "x": 20,
+          "y": 49
         },
         {
-          "x": 43,
-          "y": 78
+          "x": 21,
+          "y": 49
+        }
+      ],
+      "huntingAreaCount": 2,
+      "huntingArea": [
+        {
+          "huntingAreaNum": 0,
+          "x": 18,
+          "y": 28
         },
         {
-          "x": 43,
-          "y": 79
+          "huntingAreaNum": 1,
+          "x": 10,
+          "y": 9
+        }
+      ],
+      "bossAreaCount": 1,
+      "bossArea": [
+        {
+          "bossAreaNum": 0,
+          "x": 21,
+          "y": 2
+        }
+      ],
+      "progressInformation": [
+        {
+          "huntingAreaIndex": 0,
+          "guestCapacity": 100,
+          "minLevel": 1,
+          "maxLevel": 10
         },
         {
-          "x": 44,
-          "y": 78
+          "huntingAreaIndex": 1,
+          "guestCapacity": 50,
+          "minLevel": 11,
+          "maxLevel": 20
         },
         {
-          "x": 44,
-          "y": 79
+          "huntingAreaIndex": 2,
+          "guestCapacity": 30,
+          "minLevel": 21,
+          "maxLevel": 25
         },
         {
-          "x": 45,
-          "y": 78
+          "huntingAreaIndex": 3,
+          "guestCapacity": 50,
+          "minLevel": 26,
+          "maxLevel": 30
         },
         {
-          "x": 45,
-          "y": 79
+          "huntingAreaIndex": 4,
+          "guestCapacity": 50,
+          "minLevel": 31,
+          "maxLevel": 40
+        },
+        {
+          "huntingAreaIndex": 5,
+          "guestCapacity": 30,
+          "minLevel": 41,
+          "maxLevel": 45
         }
       ]
     },
