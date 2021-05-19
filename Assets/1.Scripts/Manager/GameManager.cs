@@ -2260,12 +2260,13 @@ public class GameManager : MonoBehaviour
     {
         ShowStageClearUI();
 		ProgressManager.Instance.SceneEnded(GetSceneIndex()); // 씬 완료 Dialog 호출
-		SetTimeScale(0);
-		if(int.Parse(SceneManager.GetActiveScene().name) < SceneManager.sceneCount)
+															  //timescale = 0 말고
+															  //승리 UI 출력 후 다음씬으로 이동?
+		if (int.Parse(SceneManager.GetActiveScene().name) < SceneManager.sceneCount)
 		{
 			SceneManager.LoadScene(int.Parse(SceneManager.GetActiveScene().name) + 1);
 		}
-		else
+		else;
 		{
 			//End of Game
 		}

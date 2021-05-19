@@ -27,7 +27,6 @@ public class ProgressManager : MonoBehaviour {
 				return _instance;
 			else
 			{
-				Debug.Log("ProgressManager is Null..");
 				return null;
 			}
 		}
