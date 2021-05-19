@@ -68,10 +68,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc47af69f4be8654ab96a8cd07355b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  index: 0
+  isNew: 1
   entrance: []
+  adventurersInside: []
   stageNum: 
+  huntingAreaNum: 0
   bossAreaNum: 0
-  bossAreaIndex: 0
 --- !u!212 &212771754436671630
 SpriteRenderer:
   m_ObjectHideFlags: 1

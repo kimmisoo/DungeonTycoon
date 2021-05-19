@@ -17,7 +17,7 @@
         "Nyang",
         "Wal"
       ],
-      "specialadv_level": 26,
+      "specialadv_level": 1,
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
       "buildable": {
@@ -85,7 +85,7 @@
       "progressInformation": [
         {
           "huntingAreaIndex": 0,
-          "guestCapacity": 150,
+          "guestCapacity": 100,
           "minLevel": 1,
           "maxLevel": 10
         },
@@ -171,7 +171,7 @@
       "huntingArea": [
         {
           "huntingAreaNum": 0,
-          "x": 1,
+          "x": 12,
           "y": 40
         },
         {
@@ -181,12 +181,12 @@
         },
         {
           "huntingAreaNum": 2,
-          "x": 30,
-          "y": 23
+          "x": 27,
+          "y": 17
         },
 		{
           "huntingAreaNum": 3,
-          "x": 31,
+          "x": 29,
           "y": 4
         }
       ],
@@ -194,13 +194,13 @@
       "bossArea": [
         {
           "bossAreaNum": 0,
-          "x": 13,
-          "y": 9
-        ,
+          "x": 12,
+          "y": 8
+        },
 		{
           "bossAreaNum": 1,
-          "x": 40,
-          "y": 3
+          "x": 39,
+          "y": 2
         }
       ],
       "progressInformation": [
