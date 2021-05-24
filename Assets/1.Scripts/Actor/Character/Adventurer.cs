@@ -635,6 +635,10 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 
     protected IEnumerator ExitingHuntingArea()
     {
+		if (curHuntingArea == null)
+		{
+			Debug.LogError("curHuntingArea is Null.... why?");
+		}
         destinationTile = curHuntingArea.GetEntrance();
         ResetCurHuntingArea();
         ResetBattleParams();
@@ -1043,6 +1047,8 @@ public class Adventurer : Traveler, ICombatant//, IDamagable {
 #region ICombatant
     public virtual bool ValidatingEnemy(ICombatant enemy)
     {
+		if (enemy == null)
+			Debug.LogError("enemy is Null... why?");
         SuperState enemySuperState = enemy.GetSuperState();
         // 적이 살아 있을 때.
         if (enemySuperState != SuperState.Dead && enemySuperState != SuperState.SkirmishDefeated && enemySuperState != SuperState.PassedOut)

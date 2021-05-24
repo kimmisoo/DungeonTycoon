@@ -135,7 +135,7 @@
         "Nyang",
         "Wal"
       ],
-      "specialadv_level": 1,
+      "specialadv_level": 20,
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
       "buildable": {
@@ -272,7 +272,7 @@
         "Nyang",
         "Wal"
       ],
-      "specialadv_level": 1,
+      "specialadv_level": 20,
       "complete_Popularity": 10000,
 	  "start_gold" : 3000,
       "buildable": {
@@ -286,7 +286,7 @@
         "santuary": 1,
         "rescue": 1
       },
-      "compositionOfPopulation": {
+	  "compositionOfPopulation": {
         "race": {
           "human": 0.9,
           "elf": 0.02,
@@ -301,39 +301,58 @@
           "upper": 0.05
         }
       },
-      "mapEntranceCount": 3,
+	  "mapEntranceCount" : 4,
       "mapEntrance": [
         {
-          "x": 19,
-          "y": 49
+          "x": 0,
+          "y": 46
         },
         {
-          "x": 20,
-          "y": 49
+          "x": 0,
+          "y": 47
         },
         {
-          "x": 21,
-          "y": 49
+          "x": 1,
+          "y": 46
+        },
+        {
+          "x": 1,
+          "y": 47
         }
       ],
-      "huntingAreaCount": 2,
+	  "huntingAreaCount": 4,
       "huntingArea": [
         {
           "huntingAreaNum": 0,
-          "x": 18,
-          "y": 28
+          "x": 12,
+          "y": 40
         },
         {
           "huntingAreaNum": 1,
-          "x": 10,
-          "y": 9
+          "x": 1,
+          "y": 12
+        },
+        {
+          "huntingAreaNum": 2,
+          "x": 27,
+          "y": 17
+        },
+		{
+          "huntingAreaNum": 3,
+          "x": 29,
+          "y": 4
         }
       ],
-      "bossAreaCount": 1,
+      "bossAreaCount": 2,
       "bossArea": [
         {
           "bossAreaNum": 0,
-          "x": 21,
+          "x": 12,
+          "y": 8
+        },
+		{
+          "bossAreaNum": 1,
+          "x": 39,
           "y": 2
         }
       ],
@@ -373,254 +392,6 @@
           "guestCapacity": 30,
           "minLevel": 41,
           "maxLevel": 45
-        }
-      ]
-    },
-    {
-      "num": 4,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "specialadventurers": [
-        "Hana",
-        "Iris",
-        "Maxi",
-        "Murat",
-        "OldMan",
-        "Yeonhwa",
-        "Nyang",
-        "Wal"
-      ],
-      "complete_Popularity": 10000,
-	  "start_gold" : 3000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 5,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "specialadventurers": [
-        "Hana",
-        "Iris",
-        "Maxi",
-        "Murat",
-        "OldMan",
-        "Yeonhwa",
-        "Nyang",
-        "Wal"
-      ],
-      "complete_Popularity": 10000,
-	  "start_gold" : 3000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 6,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "specialadventurers": [
-        "Hana",
-        "Iris",
-        "Maxi",
-        "Murat",
-        "OldMan",
-        "Yeonhwa",
-        "Nyang",
-        "Wal"
-      ],
-      "complete_Popularity": 10000,
-	  "start_gold" : 3000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
-        }
-      ]
-    },
-    {
-      "num": 7,
-      "traveler_Max": 50,
-      "adventurer_Max": 50,
-      "specialadventurers": [
-        "Hana",
-        "Iris",
-        "Maxi",
-        "Murat",
-        "OldMan",
-        "Yeonhwa",
-        "Nyang",
-        "Wal"
-      ],
-      "complete_Popularity": 10000,
-	  "start_gold" : 3000,
-      "buildable": {
-        "drink": 2,
-        "food": 3,
-        "lodge": 3,
-        "equipment": 2,
-        "tour": 2,
-        "convenience": 2,
-        "fun": 3,
-        "santuary": 1,
-        "rescue": 1
-      },
-      "mapEntrance": [
-        {
-          "x": 42,
-          "y": 78
-        },
-        {
-          "x": 42,
-          "y": 79
-        },
-        {
-          "x": 43,
-          "y": 78
-        },
-        {
-          "x": 43,
-          "y": 79
-        },
-        {
-          "x": 44,
-          "y": 78
-        },
-        {
-          "x": 44,
-          "y": 79
-        },
-        {
-          "x": 45,
-          "y": 78
-        },
-        {
-          "x": 45,
-          "y": 79
         }
       ]
     }
