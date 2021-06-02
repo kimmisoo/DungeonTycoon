@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SimpleJSON;
 
 public class BuildPanel : UIObject {
 
@@ -15,12 +16,27 @@ public class BuildPanel : UIObject {
 
     GameObject currentShowingPanel;
 
+	bool isInstantiated = false;
+	JSONNode structuresInfo;
+	JSONNode 
+
     public override void Awake()
     { 
         base.Awake();
     }
+	public void OnEnable()
+	{
+		if (isInstantiated == true)
+			return;
+		else
+		{
+			//건물 ui Instantiate...
+			
+		}
 
-    public override void Show()
+
+	}
+	public override void Show()
     {
         drinkPanel.SetActive(true);
         foodPanel.SetActive(false);

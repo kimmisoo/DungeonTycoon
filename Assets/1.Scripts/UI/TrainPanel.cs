@@ -23,31 +23,6 @@ public class TrainPanel : UIObject {
     public Image statusButtonImage;
     public Image storyButtonImage;
 
-    //public Text currentShowingStory;
-    //public GameObject adventurerList;
-    //public List<GameObject> adventurers;
-    //public Image currentAdventurerImage_Small;
-    //public Image currentAdventurerImage_Large;
-    //public GameObject storyButtonFirst;
-    //public List<GameObject> storyButtons;
-    //public Text currentAdventurerHealth;
-    //public Text currentAdventurerDefense;
-    //public Text currentAdventurerMoveSpeed;
-    //public Text currentAdventurerRange;
-    //public Text currentAdventurerDPS;
-    //public Text currentAdventurerAttack;
-    //public Text currentAdventurerAttackSpeed;
-    //public Text currentAdventurerCritical;
-    //public Text currentAdventurerCriticalAttack;
-    //public Text currentAdventurerPenetrateFixed;
-    //public Text currentAdventurerPenetratePercent;
-    //public GameObject currentAdventurerAbilityList;
-    //public List<GameObject> currentAdventurerAbilitys;
-    //public GameObject currentAdventurerItemList;
-    //public List<GameObject> currentAdventurerItems;
-
-
-
     //Item Panel's
     public GameObject itemWeaponsView;
     public GameObject itemArmorsView;
