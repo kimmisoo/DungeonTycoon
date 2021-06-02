@@ -18,23 +18,32 @@ public class BuildPanel : UIObject {
 
 	bool isInstantiated = false;
 	JSONNode structuresInfo;
-	JSONNode 
+	JSONNode structuresMaxInfo;
+
+	public GameObject structureUIEntity; // for dup
 
     public override void Awake()
     { 
         base.Awake();
     }
-	public void OnEnable()
+
+	public void Start()
 	{
+		StartCoroutine(LateStart());
+	}
+	IEnumerator LateStart()
+	{
+		yield return null;
 		if (isInstantiated == true)
-			return;
+			yield break;
 		else
 		{
 			//건물 ui Instantiate...
-			
+			structuresInfo = StructureManager.Instance.GetStructuresJSON();
+			structuresMaxInfo = GameManager.Instance.GetStructureMaxInfo();
+
+			isInstantiated = true;
 		}
-
-
 	}
 	public override void Show()
     {
@@ -85,4 +94,5 @@ public class BuildPanel : UIObject {
         Debug.Log("BuilPanel.FindChildScroll() returns null!!\n GameObject name == " + panel.name);
         return null;
     }
+	
 }

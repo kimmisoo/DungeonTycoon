@@ -2356,7 +2356,10 @@ public class GameManager : MonoBehaviour
         santuary_Max = aData["scene"][sceneNumber]["buildable"]["santuary"].AsInt;
         rescue_Max = aData["scene"][sceneNumber]["buildable"]["rescue"].AsInt;
     }
-
+	public JSONNode GetStructureMaxInfo()
+	{
+		return sceneData["scene"][int.Parse(SceneManager.GetActiveScene().name)]["buildable"];
+	}
     private void SetSceneRatioDatas(JSONNode aData, int sceneNumber)
     {
         raceRatios = new List<KeyValuePair<string, float>>();
